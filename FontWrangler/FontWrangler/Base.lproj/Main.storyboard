@@ -31,45 +31,55 @@
                         <rect key="frame" x="0.0" y="0.0" width="834" height="1112"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <label clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" text="Detail view content goes here" textAlignment="center" lineBreakMode="characterWrap" numberOfLines="16" minimumFontSize="10" translatesAutoresizingMaskIntoConstraints="NO" id="0XM-y9-sOw">
-                                <rect key="frame" x="20" y="256.5" width="794" height="599"/>
-                                <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" constant="794" id="Uam-mT-c20"/>
-                                    <constraint firstAttribute="height" constant="599" id="w4R-LO-pHm"/>
-                                </constraints>
-                                <fontDescription key="fontDescription" type="system" pointSize="32"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Font Name" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="PO1-ap-W1R">
-                                <rect key="frame" x="20" y="120" width="794" height="24"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="24" id="PAC-xK-Wrp"/>
-                                </constraints>
-                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                <nil key="textColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Font State" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="pTu-Of-OYx">
-                                <rect key="frame" x="31" y="152" width="783" height="21"/>
+                                <rect key="frame" x="20" y="58" width="794" height="21"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="21" id="VsA-Fd-hc3"/>
+                                    <constraint firstAttribute="height" constant="21" id="orP-Ag-bXh"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="48" minValue="10" maxValue="144" translatesAutoresizingMaskIntoConstraints="NO" id="qJB-Ox-ARY">
+                                <rect key="frame" x="267" y="1063" width="300" height="30"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="29" id="9S7-vE-Fi3"/>
+                                    <constraint firstAttribute="width" constant="296" id="num-qZ-UMD"/>
+                                </constraints>
+                                <connections>
+                                    <action selector="setFontSize:" destination="JEX-9P-axG" eventType="valueChanged" id="qfn-zc-iXq"/>
+                                </connections>
+                            </slider>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Font Size" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="IoY-2B-4ip">
+                                <rect key="frame" x="20" y="1034" width="794" height="21"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="21" id="KpW-Dn-3RH"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" text="Detail view content goes here" textAlignment="center" lineBreakMode="characterWrap" numberOfLines="16" minimumFontSize="10" translatesAutoresizingMaskIntoConstraints="NO" id="0XM-y9-sOw">
+                                <rect key="frame" x="20" y="87" width="794" height="939"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="32"/>
                                 <nil key="highlightedColor"/>
                             </label>
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                         <constraints>
-                            <constraint firstItem="VUw-jc-0yf" firstAttribute="trailing" secondItem="pTu-Of-OYx" secondAttribute="trailing" constant="20" id="3A0-gX-uiE"/>
-                            <constraint firstItem="PO1-ap-W1R" firstAttribute="top" secondItem="VUw-jc-0yf" secondAttribute="top" constant="70" id="F7x-Ys-U3u"/>
-                            <constraint firstItem="VUw-jc-0yf" firstAttribute="trailing" secondItem="PO1-ap-W1R" secondAttribute="trailing" constant="20" id="SU5-rb-t9y"/>
-                            <constraint firstItem="0XM-y9-sOw" firstAttribute="centerX" secondItem="svH-Pt-448" secondAttribute="centerX" id="XCl-QC-23U"/>
-                            <constraint firstItem="PO1-ap-W1R" firstAttribute="leading" secondItem="VUw-jc-0yf" secondAttribute="leading" constant="20" id="cdt-Bd-31p"/>
-                            <constraint firstItem="0XM-y9-sOw" firstAttribute="centerY" secondItem="svH-Pt-448" secondAttribute="centerY" id="mNT-lP-XPE"/>
-                            <constraint firstItem="pTu-Of-OYx" firstAttribute="leading" secondItem="VUw-jc-0yf" secondAttribute="leading" constant="31" id="vZB-b0-pr5"/>
-                            <constraint firstItem="pTu-Of-OYx" firstAttribute="top" secondItem="PO1-ap-W1R" secondAttribute="bottom" constant="8" id="zpb-rt-5yU"/>
+                            <constraint firstItem="VUw-jc-0yf" firstAttribute="trailing" secondItem="IoY-2B-4ip" secondAttribute="trailing" constant="20" id="FIw-zV-64O"/>
+                            <constraint firstItem="VUw-jc-0yf" firstAttribute="bottom" secondItem="qJB-Ox-ARY" secondAttribute="bottom" constant="20" id="Fdv-nR-HXR"/>
+                            <constraint firstItem="IoY-2B-4ip" firstAttribute="top" secondItem="0XM-y9-sOw" secondAttribute="bottom" constant="8" id="M1n-RG-cu5"/>
+                            <constraint firstItem="0XM-y9-sOw" firstAttribute="top" secondItem="pTu-Of-OYx" secondAttribute="bottom" constant="8" id="N2Y-eE-B4F"/>
+                            <constraint firstItem="pTu-Of-OYx" firstAttribute="leading" secondItem="VUw-jc-0yf" secondAttribute="leading" constant="20" id="R0P-WR-jnN"/>
+                            <constraint firstItem="VUw-jc-0yf" firstAttribute="trailing" secondItem="pTu-Of-OYx" secondAttribute="trailing" constant="20" id="X7M-hs-FwF"/>
+                            <constraint firstItem="0XM-y9-sOw" firstAttribute="leading" secondItem="VUw-jc-0yf" secondAttribute="leading" constant="20" id="XsA-vn-EuB"/>
+                            <constraint firstItem="VUw-jc-0yf" firstAttribute="trailing" secondItem="0XM-y9-sOw" secondAttribute="trailing" constant="20" id="an3-7B-yIr"/>
+                            <constraint firstItem="pTu-Of-OYx" firstAttribute="top" secondItem="VUw-jc-0yf" secondAttribute="top" constant="8" id="dpM-X4-Z34"/>
+                            <constraint firstItem="IoY-2B-4ip" firstAttribute="leading" secondItem="VUw-jc-0yf" secondAttribute="leading" constant="20" id="pDb-w1-oPi"/>
+                            <constraint firstItem="qJB-Ox-ARY" firstAttribute="centerX" secondItem="svH-Pt-448" secondAttribute="centerX" id="wAh-fp-fSm"/>
+                            <constraint firstItem="qJB-Ox-ARY" firstAttribute="top" secondItem="IoY-2B-4ip" secondAttribute="bottom" constant="8" id="wbM-It-SME"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="VUw-jc-0yf"/>
                     </view>
@@ -77,7 +87,8 @@
                     <navigationItem key="navigationItem" title="Font Info" id="mOI-FS-AaM"/>
                     <connections>
                         <outlet property="detailDescriptionLabel" destination="0XM-y9-sOw" id="deQ-Na-JPF"/>
-                        <outlet property="fontFilenameLabel" destination="PO1-ap-W1R" id="khg-6i-1uV"/>
+                        <outlet property="fontSizeLabel" destination="IoY-2B-4ip" id="BMC-ZX-MC7"/>
+                        <outlet property="fontSizeSlider" destination="qJB-Ox-ARY" id="4BA-GL-v06"/>
                         <outlet property="isInstalledLabel" destination="pTu-Of-OYx" id="mav-z2-Jkn"/>
                     </connections>
                 </viewController>

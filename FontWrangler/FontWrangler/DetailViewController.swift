@@ -8,15 +8,17 @@ import UIKit
 class DetailViewController: UIViewController {
 
     @IBOutlet weak var detailDescriptionLabel: UILabel!
-    @IBOutlet weak var fontFilenameLabel: UILabel!
+    @IBOutlet weak var fontSizeLabel: UILabel!
     @IBOutlet weak var isInstalledLabel: UILabel!
+    @IBOutlet weak var fontSizeSlider: UISlider!
 
+    var fontSize: Float = 48.0
 
     var detailItem: UserFont? {
         
         didSet {
             // When set, display immediately
-            configureView()
+            self.configureView()
         }
     }
     
@@ -26,12 +28,7 @@ class DetailViewController: UIViewController {
     override func viewDidLoad() {
         
         super.viewDidLoad()
-
-        // Hide the labels initially
-        self.detailDescriptionLabel.isHidden = true
-        self.fontFilenameLabel.isHidden = true
-        self.isInstalledLabel.isHidden = true
-        configureView()
+        self.configureView()
     }
     
 
@@ -42,8 +39,9 @@ class DetailViewController: UIViewController {
         // Update the user interface for the detail item.
 
         guard let detailLabel = self.detailDescriptionLabel else { return }
-        guard let fileLabel = self.fontFilenameLabel else { return }
         guard let installedLabel = self.isInstalledLabel else { return }
+        guard let sizeLabel = self.fontSizeLabel else { return }
+        guard let sizeSlider = self.fontSizeSlider else { return }
 
         if let detail = self.detailItem {
             
@@ -51,7 +49,7 @@ class DetailViewController: UIViewController {
                                                            .process,
                                                            nil)
 
-            if let font = UIFont.init(name: detail.name, size: 48.0) {
+            if let font = UIFont.init(name: detail.name, size: CGFloat(self.fontSize)) {
                 detailLabel.font = font
             }
 
@@ -59,14 +57,32 @@ class DetailViewController: UIViewController {
             detailLabel.isHidden = false
 
             let ext = (detail.path as NSString).pathExtension.lowercased()
-            fileLabel.text = (ext == "ttf" ? "A TrueType (.ttf) font" : "An OpenType (.otf) font")
-            fileLabel.isHidden = false
-
-            installedLabel.text = (detail.isInstalled ? "Installed" : "Not installed") + " on this iPad"
+            var labelText = "This is " + (ext == "otf" ? "an OpenType" : "a TrueType" ) + " font and is "
+            labelText += (detail.isInstalled ? "installed" : "not installed") + " on this iPad"
+            installedLabel.text = labelText
             installedLabel.isHidden = false
 
+            sizeSlider.isEnabled = true
+            sizeLabel.text = "Size: \(Int(self.fontSize))pt"
+
             self.title = detail.name
+        } else {
+            // Hide the labels; disable the slider
+            detailLabel.isHidden = true
+            installedLabel.isHidden = true
+            sizeLabel.text = ""
+            sizeSlider.value = self.fontSize
+            sizeSlider.isEnabled = false
+            self.title = "Font Info"
         }
+    }
+
+
+    @IBAction func setFontSize(_ sender: Any) {
+
+        self.fontSize = self.fontSizeSlider.value
+        self.fontSizeLabel.text = "Size: \(Int(self.fontSize))pt"
+        self.configureView()
     }
 
 }

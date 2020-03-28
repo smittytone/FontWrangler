@@ -49,7 +49,7 @@ class MasterViewController: UITableViewController {
         self.refreshControl!.attributedTitle = NSAttributedString.init(string: "Checking for new fonts...",
                                                                        attributes: [ NSAttributedString.Key.foregroundColor : UIColor.black ])
         self.refreshControl!.addTarget(self,
-                                       action: #selector(self.processNewFonts),
+                                       action: #selector(self.initializeDisplay),
                                        for: UIControl.Event.valueChanged)
 
 
@@ -77,6 +77,34 @@ class MasterViewController: UITableViewController {
         // Stop the refresh control if it's running
         if self.refreshControl!.isRefreshing { self.refreshControl!.endRefreshing() }
 
+        self.initializeDisplay()
+    }
+    
+    
+    override func viewDidAppear(_ animated: Bool) {
+        
+        super.viewDidAppear(animated)
+
+        self.setInstallButtonState()
+    }
+    
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        
+        super.viewWillDisappear(animated)
+
+        // Stop editing the table view
+        if self.tableView.isEditing {
+            self.tableView.isEditing = false
+            self.isEditing = false
+        }
+    }
+    
+
+    // MARK: - Font List Management Functions
+
+    @objc func initializeDisplay() {
+
         // Load the saved list
         self.loadFontList()
 
@@ -86,47 +114,13 @@ class MasterViewController: UITableViewController {
         // Remove any dead fonts
         self.processDeadFonts()
 
-        // Update the table
+        // Sort the list
         self.sortFonts()
+
+        // Reload the table data
         self.tableView.reloadData()
     }
-    
-    
-    override func viewDidAppear(_ animated: Bool) {
-        
-        super.viewDidAppear(animated)
 
-        // If we have a list of fonts (see viewWillAppear()), determine whether
-        // we need to enable or disable the install button
-        if self.fonts.count > 0 {
-            var installedCount = 0
-
-            for font in self.fonts {
-                if font.isInstalled {
-                    installedCount += 1
-                }
-            }
-
-            // Only enable the install button if the number of fonts installed
-            // doesn't equal the number listed
-            self.installButton?.isEnabled = (self.fonts.count != installedCount)
-        } else {
-            // No listed fonts, so enable the install button
-            self.installButton?.isEnabled = true
-        }
-    }
-    
-    
-    override func viewWillDisappear(_ animated: Bool) {
-        
-        super.viewWillDisappear(animated)
-
-        // Save the list of current fonts before we go
-        self.saveFontList()
-    }
-    
-
-    // MARK: - Font List Management Functions
 
     func loadFontList() {
 
@@ -438,6 +432,7 @@ class MasterViewController: UITableViewController {
                 dvc.configureView()
             }
 
+            self.setInstallButtonState()
             self.tableView.reloadData()
         }
     }
@@ -531,7 +526,9 @@ class MasterViewController: UITableViewController {
             // Remove font from bundle
             // NOTE This deregisters the font
             //      and deletes the file
-            processDeadFonts()
+            self.processDeadFonts()
+            self.setInstallButtonState()
+            self.detailViewController?.detailItem = nil
 
             // Save the list
             self.saveFontList()
@@ -554,6 +551,29 @@ class MasterViewController: UITableViewController {
         self.present(alert,
                      animated: true,
                      completion: nil)
+    }
+
+
+    func setInstallButtonState() {
+
+        // If we have a list of fonts (see viewWillAppear()), determine whether
+        // we need to enable or disable the install button
+        if self.fonts.count > 0 {
+            var installedCount = 0
+
+            for font in self.fonts {
+                if font.isInstalled {
+                    installedCount += 1
+                }
+            }
+
+            // Only enable the install button if the number of fonts installed
+            // doesn't equal the number listed
+            self.installButton?.isEnabled = (self.fonts.count != installedCount)
+        } else {
+            // No listed fonts, so enable the install button
+            self.installButton?.isEnabled = true
+        }
     }
 }
 
