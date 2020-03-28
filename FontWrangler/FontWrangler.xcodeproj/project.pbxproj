@@ -24,7 +24,7 @@
 		3B879A2F242E00B400BE47DC /* MasterViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MasterViewController.swift; sourceTree = "<group>"; };
 		3B879A31242E00B400BE47DC /* DetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailViewController.swift; sourceTree = "<group>"; };
 		3B879A34242E00B400BE47DC /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
-		3B879A36242E00B600BE47DC /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		3B879A36242E00B600BE47DC /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Assets.xcassets; path = /Users/smitty/OneDrive/Programming/FontWrangler/Assets.xcassets; sourceTree = "<absolute>"; };
 		3B879A39242E00B600BE47DC /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		3B879A3B242E00B600BE47DC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		3B879A41242E010200BE47DC /* FontWrangler.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = FontWrangler.entitlements; sourceTree = "<group>"; };
@@ -65,8 +65,8 @@
 				3B879A2B242E00B400BE47DC /* AppDelegate.swift */,
 				3B879A2D242E00B400BE47DC /* SceneDelegate.swift */,
 				3B879A2F242E00B400BE47DC /* MasterViewController.swift */,
-				3B879A42242E1C0100BE47DC /* UserFont.swift */,
 				3B879A31242E00B400BE47DC /* DetailViewController.swift */,
+				3B879A42242E1C0100BE47DC /* UserFont.swift */,
 				3B879A33242E00B400BE47DC /* Main.storyboard */,
 				3B879A36242E00B600BE47DC /* Assets.xcassets */,
 				3B879A38242E00B600BE47DC /* LaunchScreen.storyboard */,
