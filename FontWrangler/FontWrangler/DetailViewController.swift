@@ -69,7 +69,7 @@ class DetailViewController: UIViewController {
 
             // Set the font size slider control and label
             sizeSlider.isEnabled = true
-            sizeLabel.text = "Size: \(Int(self.fontSize))pt"
+            sizeLabel.text = "\(Int(self.fontSize))pt"
 
             // Set the view title
             self.title = detail.name
@@ -94,7 +94,7 @@ class DetailViewController: UIViewController {
         // Respond to the user adjusting the font size slider
         
         self.fontSize = self.fontSizeSlider.value
-        self.fontSizeLabel.text = "Size: \(Int(self.fontSize))pt"
+        self.fontSizeLabel.text = "\(Int(self.fontSize))pt"
         self.configureView()
     }
 
