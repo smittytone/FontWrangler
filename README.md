@@ -4,7 +4,7 @@ FontWrangler provides a means to install OpenType (`.otf`) and TrueType (`.ttf`)
 
 ## Usage ##
 
-Copy fonts you for which you have legitimate usage rights to FontWrangler’s Documents folder on your iPad. To do so, connect your iPad to your computer using Finder (macOS Catalina or above) or iTunes (macOS Mojave or under), then transfer font files using the **Apps** tab.
+Copy fonts you for which you have legitimate usage rights to FontWrangler’s Documents folder on your iPad. To do so, connect your iPad to your computer using Finder (macOS Catalina or above) or iTunes (macOS Mojave or under), then transfer font files using the **Files** (Finder) or **Apps** (iTunes) stab.
 
 When you run FontWrangler, it will process your fonts, removing them from the Documents folder as it does so.
 
