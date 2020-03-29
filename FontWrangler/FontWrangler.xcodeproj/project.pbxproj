@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3B6E85E42430AB8500C6549A /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B6E85E32430AB8500C6549A /* Constants.swift */; };
 		3B879A2C242E00B400BE47DC /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B879A2B242E00B400BE47DC /* AppDelegate.swift */; };
 		3B879A2E242E00B400BE47DC /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B879A2D242E00B400BE47DC /* SceneDelegate.swift */; };
 		3B879A30242E00B400BE47DC /* MasterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B879A2F242E00B400BE47DC /* MasterViewController.swift */; };
@@ -18,6 +19,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		3B6E85E32430AB8500C6549A /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		3B879A28242E00B400BE47DC /* FontWrangler.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FontWrangler.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3B879A2B242E00B400BE47DC /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		3B879A2D242E00B400BE47DC /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -62,6 +64,7 @@
 			isa = PBXGroup;
 			children = (
 				3B879A41242E010200BE47DC /* FontWrangler.entitlements */,
+				3B6E85E32430AB8500C6549A /* Constants.swift */,
 				3B879A2B242E00B400BE47DC /* AppDelegate.swift */,
 				3B879A2D242E00B400BE47DC /* SceneDelegate.swift */,
 				3B879A2F242E00B400BE47DC /* MasterViewController.swift */,
@@ -151,6 +154,7 @@
 				3B879A43242E1C0100BE47DC /* UserFont.swift in Sources */,
 				3B879A30242E00B400BE47DC /* MasterViewController.swift in Sources */,
 				3B879A32242E00B400BE47DC /* DetailViewController.swift in Sources */,
+				3B6E85E42430AB8500C6549A /* Constants.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -304,6 +308,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0.0;
+				"OTHER_SWIFT_FLAGS[arch=*]" = "-DDEBUG";
 				PRODUCT_BUNDLE_IDENTIFIER = com.bps.FontWrangler;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
@@ -325,6 +330,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0.0;
+				"OTHER_SWIFT_FLAGS[arch=*]" = "-DRELEASE";
 				PRODUCT_BUNDLE_IDENTIFIER = com.bps.FontWrangler;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
