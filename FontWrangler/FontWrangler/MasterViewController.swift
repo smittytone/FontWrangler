@@ -442,7 +442,6 @@ class MasterViewController: UITableViewController {
             cell = tableView.dequeueReusableCell(withIdentifier: "master.cell", for: indexPath)
             let font = self.fonts[indexPath.row - 1]
             cell.textLabel!.text = font.name
-            cell.textLabel!.textColor = font.isDownloaded ? UIColor.systemBlue : UIColor.label
 
             if let accessoryImage: UIImage = font.isInstalled ? UIImage.init(systemName: "checkmark.circle.fill") : UIImage.init(systemName: "circle") {
                 let accessoryView: UIView = UIImageView.init(image: accessoryImage)
