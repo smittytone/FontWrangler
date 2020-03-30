@@ -22,7 +22,7 @@ class UserFont: NSObject, NSCoding, NSSecureCoding {
     var path: String = ""                   // The location of the font file
     var tag: String = ""                    // The asset catalog tag
     var isInstalled: Bool = false           // Is the font installed on the iPad?
-    var isDownloaded: Bool = true           // Is the font newly extracted from the app's Documents folder?
+    var isDownloaded: Bool = false           // Is the font newly extracted from the app's Documents folder?
 
 
     // MARK: - Initialization Methods
@@ -34,7 +34,7 @@ class UserFont: NSObject, NSCoding, NSSecureCoding {
         self.path = ""
         self.tag = ""
         self.isInstalled = false
-        self.isDownloaded = true
+        self.isDownloaded = false
     }
     
     

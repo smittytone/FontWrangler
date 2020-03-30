@@ -112,7 +112,13 @@
 			attributes = {
 				KnownAssetTags = (
 					audiowide,
+					blackopsone,
+					bungee,
 					caesar,
+					concertone,
+					creepster,
+					fruktur,
+					monoton,
 					roboto,
 				);
 				LastSwiftUpdateCheck = 1130;

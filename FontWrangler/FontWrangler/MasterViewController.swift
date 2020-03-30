@@ -139,7 +139,6 @@ class MasterViewController: UITableViewController {
                 newFont.name = aFont["name"] ?? ""
                 newFont.path = aFont["path"] ?? ""
                 newFont.tag = aFont["tag"] ?? ""
-                newFont.isDownloaded = true
                 self.fonts.append(newFont)
             }
         }
@@ -405,7 +404,7 @@ class MasterViewController: UITableViewController {
                 controller.navigationItem.leftItemsSupplementBackButton = true
                 self.detailViewController = controller
                 
-                self.splitViewController?.toggleMasterView()
+                //self.splitViewController?.toggleMasterView()
             }
         }
     }
@@ -470,7 +469,7 @@ class MasterViewController: UITableViewController {
                                                                         self.getFont(font)
                                                                         handler(true)
             }
-            action.backgroundColor = UIColor.green
+            action.backgroundColor = UIColor.systemBlue
             let config: UISwipeActionsConfiguration = UISwipeActionsConfiguration.init(actions: [action])
             config.performsFirstActionWithFullSwipe = false
             return config
@@ -507,7 +506,7 @@ class MasterViewController: UITableViewController {
                                                                         self.getFont(font)
                                                                         handler(true)
             }
-            action.backgroundColor = UIColor.green
+            action.backgroundColor = UIColor.systemBlue
             let config: UISwipeActionsConfiguration = UISwipeActionsConfiguration.init(actions: [action])
             config.performsFirstActionWithFullSwipe = false
             return config
