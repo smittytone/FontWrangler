@@ -115,11 +115,14 @@
 					blackopsone,
 					bungee,
 					caesar,
+					comfortaa,
 					concertone,
 					creepster,
 					fruktur,
 					monoton,
+					righteous,
 					roboto,
+					specialelite,
 				);
 				LastSwiftUpdateCheck = 1130;
 				LastUpgradeCheck = 1130;
