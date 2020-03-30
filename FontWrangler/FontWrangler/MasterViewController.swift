@@ -69,9 +69,12 @@ class MasterViewController: UITableViewController {
                        selector: #selector(fontStatesChanged(_:)),
                        name: kCTFontManagerRegisteredFontsChangedNotification as NSNotification.Name,
                        object: nil)
-        
+
         // Load up the default list
         self.loadDefaults()
+
+        // DEBUG ONLY
+        //self.kill()
     }
 
     
@@ -301,7 +304,7 @@ class MasterViewController: UITableViewController {
                             return
                         } else {
                             // Keep the downloaded file around permanently
-                            Bundle.main.setPreservationPriority(1.0, forTags: tags)
+                            Bundle.main.setPreservationPriority(0.9, forTags: tags)
                         }
                     }
                 }
@@ -571,6 +574,18 @@ class MasterViewController: UITableViewController {
             // No listed fonts, so enable the install button
             self.installButton?.isEnabled = true
         }
+    }
+
+    func kill() {
+
+        var tagsArray = [String]()
+        for font: UserFont in self.fonts {
+            tagsArray.append(font.tag)
+        }
+
+        let tags: Set<String> = Set.init(tagsArray)
+        let fontRequest = NSBundleResourceRequest.init(tags: tags)
+        fontRequest.endAccessingResources()
     }
     
 }
