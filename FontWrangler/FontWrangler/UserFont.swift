@@ -20,8 +20,9 @@ class UserFont: NSObject, NSCoding, NSSecureCoding {
     private var version: String = "1.0.0"   // Record version number - used to check for fields added later
     var name: String = ""                   // The font's PostScript name
     var path: String = ""                   // The location of the font file
+    var tag: String = ""                    // The asset catalog tag
     var isInstalled: Bool = false           // Is the font installed on the iPad?
-    var isNew:Bool = true                   // Is the font newly extracted from the app's Documents folder?
+    var isDownloaded: Bool = true           // Is the font newly extracted from the app's Documents folder?
 
 
     // MARK: - Initialization Methods
@@ -31,8 +32,9 @@ class UserFont: NSObject, NSCoding, NSSecureCoding {
         // Set defaults
         self.name = ""
         self.path = ""
+        self.tag = ""
         self.isInstalled = false
-        self.isNew = true
+        self.isDownloaded = true
     }
     
     
@@ -43,15 +45,17 @@ class UserFont: NSObject, NSCoding, NSSecureCoding {
         // Set defaults
         self.name = ""
         self.path = ""
+        self.tag = ""
         self.isInstalled = false
-        self.isNew = false
+        self.isDownloaded = false
        
         // Support iOS 12+ secure method for decoding objects
         self.version = decoder.decodeObject(of: NSString.self, forKey: "font.version") as String? ?? ""
         self.name = decoder.decodeObject(of: NSString.self, forKey: "font.name") as String? ?? ""
         self.path = decoder.decodeObject(of: NSString.self, forKey: "font.path") as String? ?? ""
+        self.tag = decoder.decodeObject(of: NSString.self, forKey: "font.tag") as String? ?? ""
         self.isInstalled = decoder.decodeObject(of: NSNumber.self, forKey: "font.installed") as! Bool
-        self.isNew = decoder.decodeObject(of: NSNumber.self, forKey: "font.new") as! Bool
+        self.isDownloaded = decoder.decodeObject(of: NSNumber.self, forKey: "font.downloaded") as! Bool
     }
 
     
@@ -61,7 +65,8 @@ class UserFont: NSObject, NSCoding, NSSecureCoding {
         encoder.encode(self.version as NSString, forKey: "font.version")
         encoder.encode(self.name as NSString, forKey: "font.name")
         encoder.encode(self.path as NSString, forKey: "font.path")
+        encoder.encode(self.tag as NSString, forKey: "font.tag")
         encoder.encode(NSNumber(value: self.isInstalled), forKey: "font.installed")
-        encoder.encode(NSNumber(value: self.isNew), forKey: "font.new")
+        encoder.encode(NSNumber(value: self.isDownloaded), forKey: "font.downloaded")
     }
 }

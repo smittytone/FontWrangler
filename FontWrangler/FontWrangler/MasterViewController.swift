@@ -5,6 +5,13 @@
 
 import UIKit
 
+extension UISplitViewController {
+    func toggleMasterView() {
+        let barButtonItem = self.displayModeButtonItem
+        let _ = UIApplication.shared.sendAction(barButtonItem.action!, to: barButtonItem.target, from: nil, for: nil)
+    }
+}
+
 class MasterViewController: UITableViewController {
 
     // MARK:- Private Instance Properties
@@ -15,9 +22,8 @@ class MasterViewController: UITableViewController {
     
     // MARK:- Private Instance Constants
 
-    private let docsPath = NSSearchPathForDirectoriesInDomains(FileManager.SearchPathDirectory.documentDirectory, FileManager.SearchPathDomainMask.userDomainMask, true)
+    private let docsPath = NSSearchPathForDirectoriesInDomains(FileManager.SearchPathDirectory.documentDirectory, FileManager.SearchPathDomainMask.userDomainMask, true)[0]
     private let bundlePath = Bundle.main.bundlePath
-    
 
     // MARK:- Lifecycle Functions
 
@@ -26,13 +32,13 @@ class MasterViewController: UITableViewController {
         super.viewDidLoad()
 
         // Set up the 'Edit' button on the left
-        navigationItem.leftBarButtonItem = editButtonItem
+        // navigationItem.leftBarButtonItem = editButtonItem
 
         // Set up the 'Install' button on the right
-        let rightButton = UIBarButtonItem(title: "Install",
+        let rightButton = UIBarButtonItem(title: "Add All",
                                           style: .plain,
                                           target: self,
-                                          action: #selector(self.installFont(_:)))
+                                          action: #selector(self.installAll(_:)))
         navigationItem.rightBarButtonItem = rightButton
 
         // Retain button for future use (enable and disable)
@@ -43,17 +49,6 @@ class MasterViewController: UITableViewController {
             let controllers = split.viewControllers
             self.detailViewController = (controllers[controllers.count-1] as! UINavigationController).topViewController as? DetailViewController
         }
-
-        // Set up the refresh control - the searching indicator
-        self.refreshControl = UIRefreshControl.init()
-        self.refreshControl!.backgroundColor = UIColor.systemBackground
-        self.refreshControl!.tintColor = UIColor.label
-        self.refreshControl!.attributedTitle = NSAttributedString.init(string: "Checking for new fonts...",
-                                                                       attributes: [ NSAttributedString.Key.foregroundColor : UIColor.black ])
-        self.refreshControl!.addTarget(self,
-                                       action: #selector(self.initializeFontList),
-                                       for: UIControl.Event.valueChanged)
-
 
         // Watch for app moving into the background
         let nc: NotificationCenter = NotificationCenter.default
@@ -72,6 +67,9 @@ class MasterViewController: UITableViewController {
                        selector: #selector(fontStatesChanged(_:)),
                        name: kCTFontManagerRegisteredFontsChangedNotification as NSNotification.Name,
                        object: nil)
+        
+        // Load up the default list
+        self.loadDefaults()
     }
 
     
@@ -101,22 +99,12 @@ class MasterViewController: UITableViewController {
         // The View Controller has been notified that the app has
         // gone into the background
 
-        // Mark all new fonts as old
-        if self.fonts.count > 0 {
-            for font: UserFont in self.fonts {
-                font.isNew = false
-            }
-        }
-
         // Save the list
         self.saveFontList()
     }
 
 
     @objc func willForeground() {
-
-        // Stop the refresh control if it's running
-        if self.refreshControl!.isRefreshing { self.refreshControl!.endRefreshing() }
 
         // Prepare the font list table
         self.initializeFontList()
@@ -126,6 +114,44 @@ class MasterViewController: UITableViewController {
 
     // MARK: - Font List Management Functions
 
+    func loadDefaults() {
+        
+        // Load in the default list of available fonts
+        let fm = FileManager.default
+        let defaultFontsPath = self.bundlePath + kDefaultsPath
+        var fontDictionary: [String: Any] = [:]
+        
+        if fm.fileExists(atPath: defaultFontsPath) {
+            do {
+                let fileData = try Data(contentsOf: URL.init(fileURLWithPath: defaultFontsPath))
+                fontDictionary = try JSONSerialization.jsonObject(with: fileData, options: []) as! [String: Any]
+            } catch {
+                NSLog("[ERROR] can't load defaults: \(error.localizedDescription)")
+                self.showAlert("Can’t load defaults", "Sorry, FontWrangler has become damaged. Please delete and reinstall it.")
+                return
+            }
+            
+            // Extract the JSON data into UserFont instances
+            let fonts = fontDictionary["fonts"] as! [Any]
+            for font in fonts {
+                let aFont = font as! [String:String]
+                let newFont = UserFont()
+                newFont.name = aFont["name"] ?? ""
+                newFont.path = aFont["path"] ?? ""
+                newFont.tag = aFont["tag"] ?? ""
+                newFont.isDownloaded = true
+                self.fonts.append(newFont)
+            }
+        }
+        
+        // Sort the list
+        self.sortFonts()
+        
+        // Generate the font state database
+        self.saveFontList()
+    }
+    
+    
     @objc func initializeFontList() {
 
         // Update and display the list of available fonts that
@@ -135,10 +161,10 @@ class MasterViewController: UITableViewController {
         self.loadFontList()
 
         // Check for any new fonts in the Documents folder
-        self.processNewFonts()
+        // self.processNewFonts()
 
         // Remove any stored fonts that are no longer referenced
-        self.processDeadFonts()
+        // self.processDeadFonts()
 
         // Sort the list of fonts A-Z
         self.sortFonts()
@@ -153,7 +179,7 @@ class MasterViewController: UITableViewController {
         // Load in the persisted font list, if it is present
 
         // Get the path to the list file
-        let loadPath = self.bundlePath + kFontListFileSubPath
+        let loadPath = self.docsPath + kFontListFileSubPath
 
         if FileManager.default.fileExists(atPath: loadPath) {
             // Create an array of UserFont instances to hold the loaded data
@@ -189,176 +215,6 @@ class MasterViewController: UITableViewController {
             }
         }
     }
-
-
-    @objc func processNewFonts() {
-
-        // Read in any font files in the app's Documents folder and move
-        // them into the bundle folder, if they have not yet been moved
-
-        let fm = FileManager.default
-        let docsPath = self.docsPath[0]
-        let bundlePath = self.bundlePath + kFontsDirectoryPath
-
-        #if DEBUG
-            print(docsPath)
-            print(bundlePath)
-        #endif
-
-        // Make sure the bundle contains a 'fonts' folder - if it
-        // doesn't, attempt to create one now
-        if !fm.fileExists(atPath: bundlePath) {
-            do {
-                try fm.createDirectory(atPath: bundlePath,
-                                       withIntermediateDirectories: false,
-                                       attributes: nil)
-            } catch {
-                NSLog("[ERROR] Can't create fonts folder in bundle: \(error.localizedDescription)")
-                return
-            }
-        }
-
-        do {
-            // Get all the files in the Documents folder
-            var docsFiles = try fm.contentsOfDirectory(atPath: docsPath)
-
-            // Remove all non-font files from the list
-            var index = 0
-            for file in docsFiles {
-                // Get the current file's extension
-                let fileExtension = (file as NSString).pathExtension.lowercased()
-                if fileExtension == "otf" || fileExtension == "ttf" {
-                    index += 1
-                } else {
-                    docsFiles.remove(at: index)
-                }
-            }
-
-            if docsFiles.count != 0 {
-                // We have some fonts to process
-                var fontsWereAdded = false
-                for file in docsFiles {
-                    // Get the current file's extension
-                    let fileExtension = (file as NSString).pathExtension.lowercased()
-                    if fileExtension == "otf" || fileExtension == "ttf" {
-                        // Only process OTF and TTF files
-                        let sourcePath = (docsPath as NSString).appendingPathComponent(file)
-                        let destPath = (bundlePath as NSString).appendingPathComponent(file)
-                        var success = false
-                        
-                        if !fm.fileExists(atPath: destPath) {
-                            // Font file has not been copied to the bundle yet...
-                            do {
-                                // ...so try to move it thers
-                                try fm.moveItem(atPath: sourcePath, toPath: destPath)
-                                success = true
-                            } catch {
-                                NSLog("[ERROR] can't transfer font \(file): \(error.localizedDescription)")
-                            }
-                        }
-                        
-                        if success {
-                            // The move to bundle was successful, so record the font
-                            let font = UserFont()
-
-                            // Use the file name as a fallback, but we will shortly attempt
-                            // to get the font's PostScript name
-                            font.name = (file as NSString).deletingPathExtension
-                            font.path = destPath
-                            font.isNew = true
-                            self.fonts.append(font)
-                            fontsWereAdded = true
-
-                            // Get the font's PostScript name if we can
-                            if let fileDescCFArray = CTFontManagerCreateFontDescriptorsFromURL(URL(fileURLWithPath: destPath) as CFURL) {
-                                let fileDescArray = fileDescCFArray as Array
-                                let fileDesc: UIFontDescriptor = fileDescArray[0] as! UIFontDescriptor
-                                font.name = fileDesc.postscriptName
-                            }
-                        }
-                    }
-                }
-
-                if fontsWereAdded {
-                    // Persist the fonts database if changes were made
-                    self.saveFontList()
-                }
-            } else {
-                // No font files found in Documents. Issue a guide note if
-                // there are no previously added files either
-                if self.fonts.count == 0 {
-                    self.showAlert("You have not added any font files", "Connect your iPad to a Mac and copy your font files to this app’s Documents folder.")
-                }
-            }
-        } catch {
-            // App's Documents folder missing -- VERY unlikely, but...
-            NSLog("[ERROR] Missing Documents folder")
-            self.showAlert("Missing Docs Folder", "Sorry, thsis app has become damaged and will need to be deleted and re-installed.")
-        }
-
-        // Turn off the refresh control, if it's active
-        if self.refreshControl!.isRefreshing { self.refreshControl!.endRefreshing() }
-    }
-
-
-    func processDeadFonts() {
-
-        // Remove any font files in the bundle that are no longer in the list
-
-        let fm = FileManager.default
-        let bundlePath = self.bundlePath + kFontsDirectoryPath
-        do {
-            // Get a list of the app's fonts
-            let bundleFiles = try fm.contentsOfDirectory(atPath: bundlePath)
-            if bundleFiles.count > 0 {
-                var deletables = [String]()
-
-                // Run through the list of bundle font files and if any are
-                // not listed in the app font database, mark them for deletion
-                for file in bundleFiles {
-                    let fileExtension = (file as NSString).pathExtension.lowercased()
-                    if fileExtension == "otf" || fileExtension == "ttf" {
-                        // Only process .otf and .ttf files
-                        let filePath = (bundlePath as NSString).appendingPathComponent(file)
-                        var got = false
-                        for font: UserFont in self.fonts {
-                            if filePath == font.path {
-                                got = true
-                                break
-                            }
-                        }
-
-                        if !got {
-                            // Mark the font for deletion
-                            deletables.append(filePath)
-                        }
-                    }
-                }
-
-                // Do we have any fonts to remove?
-                if deletables.count > 0 {
-                    // We do, so deregister them first
-                    uninstallFonts(deletables)
-
-                    // EXPERIMENTAL Delete the dead files after 10s to allow time for
-                    //              asynchronous font de-registration to complete
-                    let _ = Timer.scheduledTimer(withTimeInterval: kDeregisterFontTimeout,
-                                                 repeats: false) { (timer) in
-                                                    let fm = FileManager.default
-                                                    for filePath in deletables {
-                                                        do {
-                                                            try fm.removeItem(atPath: filePath)
-                                                        } catch {
-                                                            NSLog("[ERROR] Can't delete file \(filePath) :\(error.localizedDescription)")
-                                                        }
-                                                    }
-                                                }
-                }
-            }
-        } catch {
-            NSLog("[ERROR] Can't get contents of bundle :\(error.localizedDescription)")
-        }
-    }
     
 
     @objc func saveFontList() {
@@ -366,7 +222,7 @@ class MasterViewController: UITableViewController {
         // Persist the app's font database
 
         // The app is going into the background or closing, so save the list of devices
-        let savePath = self.bundlePath + kFontListFileSubPath
+        let savePath = self.docsPath + kFontListFileSubPath
 
         do {
             // Try to encode the object to data and then try to write out the data
@@ -396,60 +252,59 @@ class MasterViewController: UITableViewController {
 
     // MARK: - Font Handling
 
-    @objc func installFont(_ sender: Any) {
-
-        // The user has clicked on the Install button
-        // For now we assume all uninstalled fonts are to be installed
-
-        // Assemble the URLs of the fonts for installation
-        var fontURLs = [URL]()
-        for font: UserFont in self.fonts {
-            if !font.isInstalled {
-                fontURLs.append(URL(fileURLWithPath: font.path))
+    @objc func installAll(_ sender: Any) {
+        
+        if self.fonts.count > 0 {
+            for font: UserFont in fonts {
+                if !font.isInstalled {
+                    getFont(font)
+                }
             }
         }
-
-        // Regsiter (install) the font with the system
-        // NOTE This pops up the 'do you want to install' dialog
-        if fontURLs.count > 0 {
-
-            #if DEBUG
-                print("\(fontURLs.count) fonts to be registered")
-            #endif
-
-            CTFontManagerRegisterFontURLs(fontURLs as CFArray,
-                                          .persistent,
-                                          true,
-                                          self.registrationHandler(errors:done:))
+    }
+    
+    
+    func getFont(_ font: UserFont) {
+        
+        if !font.isDownloaded {
+            // Get the font's assect catalog tag and assemble a Bundle request
+            let tags: Set<String> = Set.init([font.tag])
+            let fontRequest = NSBundleResourceRequest.init(tags: tags)
+            fontRequest.beginAccessingResources { (error) in
+                // Check for a download error
+                if error != nil {
+                    // Handle errors on main thread
+                    DispatchQueue.main.async {
+                        print("[ERROR] \(error!.localizedDescription)")
+                    }
+                } else {
+                    // Keep the downloaded file around permanently
+                    Bundle.main.setPreservationPriority(1.0, forTags: tags)
+                    
+                    // Register the font
+                    self.registerFont(font)
+                }
+            }
+        } else {
+            // Register the font
+            self.registerFont(font)
         }
     }
-
-
-    func uninstallFonts(_ fontsToGo: [String]) {
-
-        // The user has deleted some fonts from the list, so
-        // we need to de-register them
-
-        // Assemble the URLs of the fonts for removal
-        var fontURLs = [URL]()
-        for fontPath in fontsToGo {
-            fontURLs.append(URL(fileURLWithPath: fontPath))
-        }
-
-        // De-regsiter (uninstall) the font with the system
-        if fontURLs.count > 0 {
-
-            #if DEBUG
-                print("\(fontURLs.count) fonts to be deregistered")
-            #endif
-
-            CTFontManagerUnregisterFontURLs(fontURLs as CFArray,
-                                            .persistent,
-                                            self.registrationHandler(errors:done:))
-        }
+    
+    
+    func registerFont(_ font: UserFont) {
+        
+        // Register a single font
+        
+        font.isDownloaded = true
+        CTFontManagerRegisterFontsWithAssetNames([font.name] as CFArray,
+                                                 nil,
+                                                 .persistent,
+                                                 true,
+                                                 self.registrationHandler(errors:done:))
     }
-
-
+    
+    
     func registrationHandler(errors: CFArray, done: Bool) -> Bool {
 
         // A callback triggered in response to system-level font registration
@@ -472,7 +327,12 @@ class MasterViewController: UITableViewController {
         // System sets 'done' to true on the final call
         // (according to the header file)
         if done {
+            self.updateListedFonts()
             self.saveFontList()
+            
+            DispatchQueue.main.async {
+                self.tableView.reloadData()
+            }
         }
 
         return true
@@ -511,14 +371,14 @@ class MasterViewController: UITableViewController {
             // Assume no fonts hve been installed
             for font: UserFont in self.fonts {
                 font.isInstalled = false
-                font.isNew = false
+                font.isDownloaded = false
             }
 
             // Map regsitered fonts to our list to record which have been registered
             for registeredDescriptor in registeredDescriptors {
-                if let fontURL = CTFontDescriptorCopyAttribute(registeredDescriptor, kCTFontURLAttribute) as? URL {
+                if let fontName = CTFontDescriptorCopyAttribute(registeredDescriptor, kCTFontNameAttribute) as? String {
                     for font: UserFont in self.fonts {
-                        if font.path == fontURL.path {
+                        if font.name == fontName {
                             font.isInstalled = true
                             break
                         }
@@ -536,7 +396,7 @@ class MasterViewController: UITableViewController {
 
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         
-        if segue.identifier == "showDetail" {
+        if segue.identifier == "show.detail" {
             if let indexPath = tableView.indexPathForSelectedRow {
                 let font: UserFont = fonts[indexPath.row]
                 let controller = (segue.destination as! UINavigationController).topViewController as! DetailViewController
@@ -544,11 +404,13 @@ class MasterViewController: UITableViewController {
                 controller.navigationItem.leftBarButtonItem = splitViewController?.displayModeButtonItem
                 controller.navigationItem.leftItemsSupplementBackButton = true
                 self.detailViewController = controller
+                
+                self.splitViewController?.toggleMasterView()
             }
         }
     }
-
-
+    
+    
     // MARK: - Table View
 
     override func numberOfSections(in tableView: UITableView) -> Int {
@@ -568,7 +430,7 @@ class MasterViewController: UITableViewController {
         let cell = tableView.dequeueReusableCell(withIdentifier: "master.cell", for: indexPath)
         let font = self.fonts[indexPath.row]
         cell.textLabel!.text = font.name
-        cell.textLabel!.textColor = font.isNew ? UIColor.systemBlue : UIColor.label
+        cell.textLabel!.textColor = font.isDownloaded ? UIColor.systemBlue : UIColor.label
 
         if let accessoryImage: UIImage = font.isInstalled ? UIImage.init(systemName: "checkmark.circle.fill") : UIImage.init(systemName: "circle") {
             let accessoryView: UIView = UIImageView.init(image: accessoryImage)
@@ -577,35 +439,83 @@ class MasterViewController: UITableViewController {
 
         return cell
     }
-
-
-    override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
+    
+    
+    override func tableView(_ tableView: UITableView, leadingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
         
-        // Return false if you do not want the specified item to be editable.
-        return true
+        let font: UserFont = self.fonts[indexPath.row]
+        
+        if font.isInstalled {
+            let action: UIContextualAction = UIContextualAction.init(style: .normal,
+                                                                     title: "Remove") { (theAction, theView, handler) in
+                                                                        let font: UserFont = self.fonts[indexPath.row]
+                                                                        font.isInstalled = false
+                                                                        
+                                                                        var fontDescs = [UIFontDescriptor]()
+                                                                        let fontDesc: UIFontDescriptor = UIFontDescriptor.init(name: font.name, size: 48.0)
+                                                                        fontDescs.append(fontDesc)
+                                                                        
+                                                                        CTFontManagerUnregisterFontDescriptors(fontDescs as CFArray,
+                                                                                                               .persistent,
+                                                                                                               self.registrationHandler(errors:done:))
+                                                                        handler(true)
+            }
+            action.backgroundColor = UIColor.red
+            let config: UISwipeActionsConfiguration = UISwipeActionsConfiguration.init(actions: [action])
+            return config
+        } else {
+            let action: UIContextualAction = UIContextualAction.init(style: .normal,
+                                                                     title: "Add") { (theAction, theView, handler) in
+                                                                        let font: UserFont = self.fonts[indexPath.row]
+                                                                        self.getFont(font)
+                                                                        handler(true)
+            }
+            action.backgroundColor = UIColor.green
+            let config: UISwipeActionsConfiguration = UISwipeActionsConfiguration.init(actions: [action])
+            config.performsFirstActionWithFullSwipe = false
+            return config
+        }
     }
-
-
-    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+    
+    
+    override func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
         
-        if editingStyle == .delete {
-            self.fonts.remove(at: indexPath.row)
-            tableView.deleteRows(at: [indexPath], with: .fade)
-            
-            // Remove font from bundle
-            // NOTE This deregisters the font
-            //      and deletes the file
-            self.processDeadFonts()
-            self.setInstallButtonState()
-            self.detailViewController?.detailItem = nil
-
-            // Save the list
-            self.saveFontList()
+        let font: UserFont = self.fonts[indexPath.row]
+        
+        if font.isInstalled {
+            let action: UIContextualAction = UIContextualAction.init(style: .normal,
+                                                                     title: "Remove") { (theAction, theView, handler) in
+                                                                        let font: UserFont = self.fonts[indexPath.row]
+                                                                        font.isInstalled = false
+                                                                        
+                                                                        var fontDescs = [UIFontDescriptor]()
+                                                                        let fontDesc: UIFontDescriptor = UIFontDescriptor.init(name: font.name, size: 48.0)
+                                                                        fontDescs.append(fontDesc)
+                                                                        
+                                                                        CTFontManagerUnregisterFontDescriptors(fontDescs as CFArray,
+                                                                                                               .persistent,
+                                                                                                               self.registrationHandler(errors:done:))
+                                                                        handler(true)
+            }
+            action.backgroundColor = UIColor.red
+            let config: UISwipeActionsConfiguration = UISwipeActionsConfiguration.init(actions: [action])
+            return config
+        } else {
+            let action: UIContextualAction = UIContextualAction.init(style: .normal,
+                                                                     title: "Add") { (theAction, theView, handler) in
+                                                                        let font: UserFont = self.fonts[indexPath.row]
+                                                                        self.getFont(font)
+                                                                        handler(true)
+            }
+            action.backgroundColor = UIColor.green
+            let config: UISwipeActionsConfiguration = UISwipeActionsConfiguration.init(actions: [action])
+            config.performsFirstActionWithFullSwipe = false
+            return config
         }
     }
 
-
-    // MARK: - Utility Functions
+    
+    // MARK: - UI Utility Functions
     
     func showAlert(_ title: String, _ message: String) {
         
@@ -627,6 +537,7 @@ class MasterViewController: UITableViewController {
 
         // If we have a list of fonts (see viewWillAppear()), determine whether
         // we need to enable or disable the install button
+        
         if self.fonts.count > 0 {
             var installedCount = 0
 
@@ -644,5 +555,6 @@ class MasterViewController: UITableViewController {
             self.installButton?.isEnabled = true
         }
     }
+    
 }
 

@@ -53,30 +53,39 @@ class DetailViewController: UIViewController {
         if let detail = self.detailItem {
             // We have an item to display, so load the font and register
             // it for this process only
-            let _ = CTFontManagerRegisterFontsForURL(URL(fileURLWithPath: detail.path) as CFURL,
-                                                           .process,
-                                                           nil)
-            // Set the detail label's font to match the loaded one
-            if let font = UIFont.init(name: detail.name, size: CGFloat(self.fontSize)) {
-                detailLabel.font = font
+            
+            if detail.isInstalled {
+                // Set the detail label's font to match the loaded one
+                if let font = UIFont.init(name: detail.name, size: CGFloat(self.fontSize)) {
+                    detailLabel.font = font
+                    detailLabel.text = kFontSampleText_1
+                }
+                
+                // Set the font installation state label
+                let ext = (detail.path as NSString).pathExtension.lowercased()
+                var labelText = "This is " + (ext == "otf" ? "an OpenType" : "a TrueType" ) + " font and is "
+                labelText += (detail.isInstalled ? "installed" : "not installed") + " on this iPad"
+                installedLabel.text = labelText
+
+                // Set the font size slider control and label
+                sizeSlider.isEnabled = true
+                sizeLabel.text = "\(Int(self.fontSize))pt"
+
+            } else {
+                detailLabel.font = UIFont.init(name: "Arial", size: 38.0)
+                detailLabel.text = "This font is not installed"
+                
+                let ext = (detail.path as NSString).pathExtension.lowercased()
+                let labelText = "This is " + (ext == "otf" ? "an OpenType" : "a TrueType" ) + " font"
+                installedLabel.text = labelText
+                
+                sizeSlider.isEnabled = false
             }
 
-            // Set the font installation state label
-            let ext = (detail.path as NSString).pathExtension.lowercased()
-            var labelText = "This is " + (ext == "otf" ? "an OpenType" : "a TrueType" ) + " font and is "
-            labelText += (detail.isInstalled ? "installed" : "not installed") + " on this iPad"
-            installedLabel.text = labelText
-
-            // Set the font size slider control and label
-            sizeSlider.isEnabled = true
-            sizeLabel.text = "\(Int(self.fontSize))pt"
-
-            // Set the view title
+            // Set the view title and show the detail
             self.title = detail.name
-
-            // Unhide UI elements
-            installedLabel.isHidden = false
             detailLabel.isHidden = false
+            installedLabel.isHidden = false
         } else {
             // Hide the labels; disable the slider
             detailLabel.isHidden = true
