@@ -140,6 +140,38 @@
                                     <segue destination="vC3-pB-5Vb" kind="showDetail" identifier="show.detail" id="6S0-TO-JiA"/>
                                 </connections>
                             </tableViewCell>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" reuseIdentifier="header.cell" rowHeight="32" id="1hT-GC-xrd">
+                                <rect key="frame" x="0.0" y="71.5" width="320" height="32"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="1hT-GC-xrd" id="la4-em-uxp">
+                                    <rect key="frame" x="0.0" y="0.0" width="320" height="32"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="NAME" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="XGN-om-g6w">
+                                            <rect key="frame" x="16" y="10" width="288" height="11"/>
+                                            <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="12"/>
+                                            <nil key="textColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="ADDED" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="DxU-Q2-YLb">
+                                            <rect key="frame" x="16" y="8" width="288" height="15"/>
+                                            <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="12"/>
+                                            <nil key="textColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                    </subviews>
+                                    <constraints>
+                                        <constraint firstItem="DxU-Q2-YLb" firstAttribute="leading" secondItem="la4-em-uxp" secondAttribute="leading" constant="16" id="6aY-v9-9L6"/>
+                                        <constraint firstItem="DxU-Q2-YLb" firstAttribute="top" secondItem="la4-em-uxp" secondAttribute="top" constant="8" id="6vL-t3-rSA"/>
+                                        <constraint firstAttribute="trailing" secondItem="XGN-om-g6w" secondAttribute="trailing" constant="16" id="NvB-B4-1vu"/>
+                                        <constraint firstAttribute="bottom" secondItem="DxU-Q2-YLb" secondAttribute="bottom" constant="9" id="QHJ-5Z-u5Y"/>
+                                        <constraint firstAttribute="trailing" secondItem="DxU-Q2-YLb" secondAttribute="trailing" constant="16" id="VVZ-Y0-ncq"/>
+                                        <constraint firstItem="XGN-om-g6w" firstAttribute="top" secondItem="la4-em-uxp" secondAttribute="top" constant="10" id="bIN-1z-wdK"/>
+                                        <constraint firstItem="XGN-om-g6w" firstAttribute="leading" secondItem="la4-em-uxp" secondAttribute="leading" constant="16" id="sSQ-WF-myw"/>
+                                        <constraint firstAttribute="bottom" secondItem="XGN-om-g6w" secondAttribute="bottom" constant="11" id="uZW-Ib-iFO"/>
+                                    </constraints>
+                                </tableViewCellContentView>
+                            </tableViewCell>
                         </prototypes>
                         <sections/>
                         <connections>
@@ -151,7 +183,7 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Rux-fX-hf1" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="709" y="-630"/>
+            <point key="canvasLocation" x="708.6330935251799" y="-630.21582733812954"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="r7l-gg-dq7">

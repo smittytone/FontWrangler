@@ -19,12 +19,14 @@ class MasterViewController: UITableViewController {
     private var detailViewController: DetailViewController? = nil
     private var fonts = [UserFont]()
     private var installButton: UIBarButtonItem? = nil
+  
     
     // MARK:- Private Instance Constants
 
     private let docsPath = NSSearchPathForDirectoriesInDomains(FileManager.SearchPathDirectory.documentDirectory, FileManager.SearchPathDomainMask.userDomainMask, true)[0]
     private let bundlePath = Bundle.main.bundlePath
 
+    
     // MARK:- Lifecycle Functions
 
     override func viewDidLoad() {
@@ -230,11 +232,11 @@ class MasterViewController: UITableViewController {
             try data.write(to: URL.init(fileURLWithPath: savePath))
 
             #if DEBUG
-                print("Device list saved (%@)", savePath)
+                print("Font state saved \(savePath)")
             #endif
 
         } catch {
-            NSLog("Couldn't write to save file: \(error.localizedDescription)")
+            NSLog("Can't write font state file: \(error.localizedDescription)")
         }
     }
 
@@ -253,10 +255,12 @@ class MasterViewController: UITableViewController {
 
     @objc func installAll(_ sender: Any) {
         
+        // Install all available fonts, downloading as necessary
         if self.fonts.count > 0 {
-            for font: UserFont in fonts {
+            for font: UserFont in self.fonts {
+                // Only attempt to get uninstalled fonts
                 if !font.isInstalled {
-                    getFont(font)
+                    self.getFont(font)
                 }
             }
         }
@@ -269,23 +273,25 @@ class MasterViewController: UITableViewController {
             // Get the font's assect catalog tag and assemble a Bundle request
             let tags: Set<String> = Set.init([font.tag])
             let fontRequest = NSBundleResourceRequest.init(tags: tags)
+            
             fontRequest.beginAccessingResources { (error) in
                 // Check for a download error
                 if error != nil {
                     // Handle errors on main thread
                     DispatchQueue.main.async {
-                        print("[ERROR] \(error!.localizedDescription)")
+                        NSLog("[ERROR] \(error!.localizedDescription)")
+                        self.showAlert("Font Unavailable", "Sorry, FontWrangler can’t download \(font.name) right now. Please try again later")
                     }
                 } else {
                     // Keep the downloaded file around permanently
                     Bundle.main.setPreservationPriority(1.0, forTags: tags)
                     
-                    // Register the font
+                    // Register the font with the OS
                     self.registerFont(font)
                 }
             }
         } else {
-            // Register the font
+            // Register the font with the OS
             self.registerFont(font)
         }
     }
@@ -294,6 +300,7 @@ class MasterViewController: UITableViewController {
     func registerFont(_ font: UserFont) {
         
         // Register a single font
+        // NOTE This displays the system's Install dialog
         
         font.isDownloaded = true
         CTFontManagerRegisterFontsWithAssetNames([font.name] as CFArray,
@@ -315,7 +322,7 @@ class MasterViewController: UITableViewController {
             for err in errs {
                 // For now, just print the error
                 // TODO better error handling
-                print(err)
+                NSLog("[ERROR] \(err)")
             }
 
             // As recommended, return false on error to
@@ -329,6 +336,7 @@ class MasterViewController: UITableViewController {
             self.updateListedFonts()
             self.saveFontList()
             
+            // Update table on main thread
             DispatchQueue.main.async {
                 self.tableView.reloadData()
             }
@@ -352,7 +360,9 @@ class MasterViewController: UITableViewController {
             if let dvc = self.detailViewController {
                 dvc.configureView()
             }
-
+            
+            // Set the 'Add All' button state and
+            // update the table
             self.setInstallButtonState()
             self.tableView.reloadData()
         }
@@ -370,7 +380,6 @@ class MasterViewController: UITableViewController {
             // Assume no fonts hve been installed
             for font: UserFont in self.fonts {
                 font.isInstalled = false
-                font.isDownloaded = false
             }
 
             // Map regsitered fonts to our list to record which have been registered
@@ -397,13 +406,12 @@ class MasterViewController: UITableViewController {
         
         if segue.identifier == "show.detail" {
             if let indexPath = tableView.indexPathForSelectedRow {
-                let font: UserFont = fonts[indexPath.row]
+                let font: UserFont = fonts[indexPath.row - 1]
                 let controller = (segue.destination as! UINavigationController).topViewController as! DetailViewController
                 controller.detailItem = font
                 controller.navigationItem.leftBarButtonItem = splitViewController?.displayModeButtonItem
                 controller.navigationItem.leftItemsSupplementBackButton = true
                 self.detailViewController = controller
-                
                 //self.splitViewController?.toggleMasterView()
             }
         }
@@ -426,34 +434,38 @@ class MasterViewController: UITableViewController {
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        let cell = tableView.dequeueReusableCell(withIdentifier: "master.cell", for: indexPath)
-        let font = self.fonts[indexPath.row]
-        cell.textLabel!.text = font.name
-        cell.textLabel!.textColor = font.isDownloaded ? UIColor.systemBlue : UIColor.label
+        var cell: UITableViewCell
+        
+        if indexPath.row == 0 {
+            cell = tableView.dequeueReusableCell(withIdentifier: "header.cell", for: indexPath)
+        } else {
+            cell = tableView.dequeueReusableCell(withIdentifier: "master.cell", for: indexPath)
+            let font = self.fonts[indexPath.row - 1]
+            cell.textLabel!.text = font.name
+            cell.textLabel!.textColor = font.isDownloaded ? UIColor.systemBlue : UIColor.label
 
-        if let accessoryImage: UIImage = font.isInstalled ? UIImage.init(systemName: "checkmark.circle.fill") : UIImage.init(systemName: "circle") {
-            let accessoryView: UIView = UIImageView.init(image: accessoryImage)
-            cell.accessoryView = accessoryView
+            if let accessoryImage: UIImage = font.isInstalled ? UIImage.init(systemName: "checkmark.circle.fill") : UIImage.init(systemName: "circle") {
+                let accessoryView: UIView = UIImageView.init(image: accessoryImage)
+                cell.accessoryView = accessoryView
+            }
         }
-
+        
         return cell
     }
     
     
     override func tableView(_ tableView: UITableView, leadingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
         
-        let font: UserFont = self.fonts[indexPath.row]
+        let font: UserFont = self.fonts[indexPath.row - 1]
         
         if font.isInstalled {
             let action: UIContextualAction = UIContextualAction.init(style: .normal,
                                                                      title: "Remove") { (theAction, theView, handler) in
-                                                                        let font: UserFont = self.fonts[indexPath.row]
+                                                                        let font: UserFont = self.fonts[indexPath.row - 1]
                                                                         font.isInstalled = false
-                                                                        
                                                                         var fontDescs = [UIFontDescriptor]()
                                                                         let fontDesc: UIFontDescriptor = UIFontDescriptor.init(name: font.name, size: 48.0)
                                                                         fontDescs.append(fontDesc)
-                                                                        
                                                                         CTFontManagerUnregisterFontDescriptors(fontDescs as CFArray,
                                                                                                                .persistent,
                                                                                                                self.registrationHandler(errors:done:))
@@ -465,7 +477,7 @@ class MasterViewController: UITableViewController {
         } else {
             let action: UIContextualAction = UIContextualAction.init(style: .normal,
                                                                      title: "Add") { (theAction, theView, handler) in
-                                                                        let font: UserFont = self.fonts[indexPath.row]
+                                                                        let font: UserFont = self.fonts[indexPath.row - 1]
                                                                         self.getFont(font)
                                                                         handler(true)
             }
@@ -479,18 +491,16 @@ class MasterViewController: UITableViewController {
     
     override func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
         
-        let font: UserFont = self.fonts[indexPath.row]
+        let font: UserFont = self.fonts[indexPath.row - 1]
         
         if font.isInstalled {
             let action: UIContextualAction = UIContextualAction.init(style: .normal,
                                                                      title: "Remove") { (theAction, theView, handler) in
-                                                                        let font: UserFont = self.fonts[indexPath.row]
+                                                                        let font: UserFont = self.fonts[indexPath.row - 1]
                                                                         font.isInstalled = false
-                                                                        
                                                                         var fontDescs = [UIFontDescriptor]()
                                                                         let fontDesc: UIFontDescriptor = UIFontDescriptor.init(name: font.name, size: 48.0)
                                                                         fontDescs.append(fontDesc)
-                                                                        
                                                                         CTFontManagerUnregisterFontDescriptors(fontDescs as CFArray,
                                                                                                                .persistent,
                                                                                                                self.registrationHandler(errors:done:))
@@ -502,7 +512,7 @@ class MasterViewController: UITableViewController {
         } else {
             let action: UIContextualAction = UIContextualAction.init(style: .normal,
                                                                      title: "Add") { (theAction, theView, handler) in
-                                                                        let font: UserFont = self.fonts[indexPath.row]
+                                                                        let font: UserFont = self.fonts[indexPath.row - 1]
                                                                         self.getFont(font)
                                                                         handler(true)
             }
