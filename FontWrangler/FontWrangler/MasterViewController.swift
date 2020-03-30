@@ -262,6 +262,22 @@ class MasterViewController: UITableViewController {
             }
         }
     }
+
+
+    func removeAll() {
+
+        var fontDescs = [UIFontDescriptor]()
+        for font: UserFont in self.fonts {
+            let fontDesc: UIFontDescriptor = UIFontDescriptor.init(name: font.name, size: 48.0)
+            fontDescs.append(fontDesc)
+            font.isInstalled = false
+            font.isDownloaded = false
+        }
+
+        CTFontManagerUnregisterFontDescriptors(fontDescs as CFArray,
+                                               .persistent,
+                                               self.registrationHandler(errors:done:))
+    }
     
     
     func getFont(_ font: UserFont) {
@@ -270,26 +286,29 @@ class MasterViewController: UITableViewController {
             // Get the font's assect catalog tag and assemble a Bundle request
             let tags: Set<String> = Set.init([font.tag])
             let fontRequest = NSBundleResourceRequest.init(tags: tags)
-            
-            fontRequest.beginAccessingResources { (error) in
-                // Check for a download error
-                if error != nil {
-                    // Handle errors on main thread
-                    DispatchQueue.main.async {
-                        NSLog("[ERROR] \(error!.localizedDescription)")
-                        self.showAlert("Font Unavailable", "Sorry, FontWrangler can’t download \(font.name) right now. Please try again later")
+
+            fontRequest.conditionallyBeginAccessingResources { (available) in
+                if !available {
+                    fontRequest.beginAccessingResources { (error) in
+                        // Check for a download error
+                        if error != nil {
+                            // Handle errors on main thread
+                            DispatchQueue.main.async {
+                                NSLog("[ERROR] \(error!.localizedDescription)")
+                                self.showAlert("Font Unavailable", "Sorry, FontWrangler can’t download \(font.name) right now. Please try again later")
+                            }
+
+                            return
+                        } else {
+                            // Keep the downloaded file around permanently
+                            Bundle.main.setPreservationPriority(1.0, forTags: tags)
+                        }
                     }
-                } else {
-                    // Keep the downloaded file around permanently
-                    Bundle.main.setPreservationPriority(1.0, forTags: tags)
-                    
-                    // Register the font with the OS
-                    self.registerFont(font)
                 }
+
+                // Register the font with the OS
+                self.registerFont(font)
             }
-        } else {
-            // Register the font with the OS
-            self.registerFont(font)
         }
     }
     
@@ -457,15 +476,8 @@ class MasterViewController: UITableViewController {
         
         if font.isInstalled {
             let action: UIContextualAction = UIContextualAction.init(style: .normal,
-                                                                     title: "Remove") { (theAction, theView, handler) in
-                                                                        let font: UserFont = self.fonts[indexPath.row - 1]
-                                                                        font.isInstalled = false
-                                                                        var fontDescs = [UIFontDescriptor]()
-                                                                        let fontDesc: UIFontDescriptor = UIFontDescriptor.init(name: font.name, size: 48.0)
-                                                                        fontDescs.append(fontDesc)
-                                                                        CTFontManagerUnregisterFontDescriptors(fontDescs as CFArray,
-                                                                                                               .persistent,
-                                                                                                               self.registrationHandler(errors:done:))
+                                                                     title: "Remove All") { (theAction, theView, handler) in
+                                                                        self.removeAll()
                                                                         handler(true)
             }
             action.backgroundColor = UIColor.red
@@ -473,9 +485,8 @@ class MasterViewController: UITableViewController {
             return config
         } else {
             let action: UIContextualAction = UIContextualAction.init(style: .normal,
-                                                                     title: "Add") { (theAction, theView, handler) in
-                                                                        let font: UserFont = self.fonts[indexPath.row - 1]
-                                                                        self.getFont(font)
+                                                                     title: "Add All") { (theAction, theView, handler) in
+                                                                        self.installAll(self)
                                                                         handler(true)
             }
             action.backgroundColor = UIColor.systemBlue
