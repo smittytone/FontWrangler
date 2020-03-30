@@ -161,11 +161,8 @@ class MasterViewController: UITableViewController {
         // Load the saved list from disk
         self.loadFontList()
 
-        // Check for any new fonts in the Documents folder
-        // self.processNewFonts()
-
-        // Remove any stored fonts that are no longer referenced
-        // self.processDeadFonts()
+        // Double-check what's installed
+        self.updateListedFonts()
 
         // Sort the list of fonts A-Z
         self.sortFonts()
@@ -427,8 +424,9 @@ class MasterViewController: UITableViewController {
 
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        
-        return self.fonts.count
+
+        // NOTE Add one for the header cell
+        return self.fonts.count + 1
     }
 
 
