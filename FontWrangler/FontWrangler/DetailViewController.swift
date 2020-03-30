@@ -11,7 +11,6 @@ class DetailViewController: UIViewController {
     @IBOutlet weak var fontSizeLabel: UILabel!
     @IBOutlet weak var isInstalledLabel: UILabel!
     @IBOutlet weak var fontSizeSlider: UISlider!
-    @IBOutlet weak var helpImage: UIImageView!
 
     var fontSize: Float = 48.0
 
@@ -50,7 +49,6 @@ class DetailViewController: UIViewController {
         guard let installedLabel = self.isInstalledLabel else { return }
         guard let sizeLabel = self.fontSizeLabel else { return }
         guard let sizeSlider = self.fontSizeSlider else { return }
-        guard let helpImage = self.helpImage else { return }
 
         if let detail = self.detailItem {
             // We have an item to display, so load the font and register
@@ -86,7 +84,6 @@ class DetailViewController: UIViewController {
 
             // Set the view title and show the detail
             self.title = detail.name
-            helpImage.isHidden = true
             detailLabel.isHidden = false
             installedLabel.isHidden = false
         } else {

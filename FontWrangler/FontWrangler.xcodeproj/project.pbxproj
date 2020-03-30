@@ -13,9 +13,9 @@
 		3B879A30242E00B400BE47DC /* MasterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B879A2F242E00B400BE47DC /* MasterViewController.swift */; };
 		3B879A32242E00B400BE47DC /* DetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B879A31242E00B400BE47DC /* DetailViewController.swift */; };
 		3B879A35242E00B400BE47DC /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3B879A33242E00B400BE47DC /* Main.storyboard */; };
-		3B879A37242E00B600BE47DC /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3B879A36242E00B600BE47DC /* Assets.xcassets */; };
 		3B879A3A242E00B600BE47DC /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3B879A38242E00B600BE47DC /* LaunchScreen.storyboard */; };
 		3B879A43242E1C0100BE47DC /* UserFont.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B879A42242E1C0100BE47DC /* UserFont.swift */; };
+		3B9C64A32432887B0057B8ED /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3B9C64A22432887B0057B8ED /* Assets.xcassets */; };
 		3BD7E1892431FD2600FD8941 /* Fonts.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3BD7E1882431FD2600FD8941 /* Fonts.xcassets */; };
 		3BD7E18B243212E200FD8941 /* defaults.json in Resources */ = {isa = PBXBuildFile; fileRef = 3BD7E18A243212E100FD8941 /* defaults.json */; };
 /* End PBXBuildFile section */
@@ -28,11 +28,11 @@
 		3B879A2F242E00B400BE47DC /* MasterViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MasterViewController.swift; sourceTree = "<group>"; };
 		3B879A31242E00B400BE47DC /* DetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailViewController.swift; sourceTree = "<group>"; };
 		3B879A34242E00B400BE47DC /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
-		3B879A36242E00B600BE47DC /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Assets.xcassets; path = /Users/smitty/OneDrive/Programming/FontWrangler/Assets.xcassets; sourceTree = "<absolute>"; };
 		3B879A39242E00B600BE47DC /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		3B879A3B242E00B600BE47DC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		3B879A41242E010200BE47DC /* FontWrangler.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = FontWrangler.entitlements; sourceTree = "<group>"; };
 		3B879A42242E1C0100BE47DC /* UserFont.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserFont.swift; sourceTree = "<group>"; };
+		3B9C64A22432887B0057B8ED /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Assets.xcassets; path = ../../../../../OneDrive/Programming/FontWrangler/Assets.xcassets; sourceTree = "<group>"; };
 		3BD7E1882431FD2600FD8941 /* Fonts.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Fonts.xcassets; path = /Users/smitty/OneDrive/Programming/FontWrangler/Fonts.xcassets; sourceTree = "<absolute>"; };
 		3BD7E18A243212E100FD8941 /* defaults.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = defaults.json; path = ../../../../../OneDrive/Programming/FontWrangler/defaults.json; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -74,7 +74,7 @@
 				3B879A31242E00B400BE47DC /* DetailViewController.swift */,
 				3B879A42242E1C0100BE47DC /* UserFont.swift */,
 				3B879A33242E00B400BE47DC /* Main.storyboard */,
-				3B879A36242E00B600BE47DC /* Assets.xcassets */,
+				3B9C64A22432887B0057B8ED /* Assets.xcassets */,
 				3BD7E1882431FD2600FD8941 /* Fonts.xcassets */,
 				3B879A38242E00B600BE47DC /* LaunchScreen.storyboard */,
 				3B879A41242E010200BE47DC /* FontWrangler.entitlements */,
@@ -159,9 +159,9 @@
 			files = (
 				3B879A35242E00B400BE47DC /* Main.storyboard in Resources */,
 				3B879A3A242E00B600BE47DC /* LaunchScreen.storyboard in Resources */,
-				3B879A37242E00B600BE47DC /* Assets.xcassets in Resources */,
 				3BD7E18B243212E200FD8941 /* defaults.json in Resources */,
 				3BD7E1892431FD2600FD8941 /* Fonts.xcassets in Resources */,
+				3B9C64A32432887B0057B8ED /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -290,29 +290,24 @@ class MasterViewController: UITableViewController {
             let tags: Set<String> = Set.init([font.tag])
             let fontRequest = NSBundleResourceRequest.init(tags: tags)
 
-            fontRequest.conditionallyBeginAccessingResources { (available) in
-                if !available {
-                    fontRequest.beginAccessingResources { (error) in
-                        // Check for a download error
-                        if error != nil {
-                            // Handle errors on main thread
-                            DispatchQueue.main.async {
-                                NSLog("[ERROR] \(error!.localizedDescription)")
-                                self.showAlert("Font Unavailable", "Sorry, FontWrangler can’t download \(font.name) right now. Please try again later")
-                            }
-
-                            return
-                        } else {
-                            // Keep the downloaded file around permanently
-                            Bundle.main.setPreservationPriority(0.9, forTags: tags)
-                        }
-                    }
+            fontRequest.beginAccessingResources { (error) in
+                // Check for a download error
+                if error != nil {
+                    // Handle errors on main thread
+                    NSLog("[ERROR] \(error!.localizedDescription)")
+                    return
+                } else {
+                    // Keep the downloaded file around permanently
+                    Bundle.main.setPreservationPriority(1.0, forTags: tags)
                 }
 
                 // Register the font with the OS
                 self.registerFont(font)
             }
         }
+
+        // Register the font with the OS
+        self.registerFont(font)
     }
     
     
