@@ -11,6 +11,8 @@ class DetailViewController: UIViewController {
     @IBOutlet weak var fontSizeLabel: UILabel!
     @IBOutlet weak var isInstalledLabel: UILabel!
     @IBOutlet weak var fontSizeSlider: UISlider!
+    @IBOutlet weak var sampleImageView: UIImageView!
+    @IBOutlet weak var sampleNoteLabel: UILabel!
 
     var fontSize: Float = 48.0
 
@@ -31,7 +33,8 @@ class DetailViewController: UIViewController {
 
         // Set the font sample text
         self.detailDescriptionLabel.text = kFontSampleText_1
-
+        self.sampleNoteLabel.isHidden = true
+        
         // Configure the detail view
         self.configureView()
     }
@@ -49,12 +52,17 @@ class DetailViewController: UIViewController {
         guard let installedLabel = self.isInstalledLabel else { return }
         guard let sizeLabel = self.fontSizeLabel else { return }
         guard let sizeSlider = self.fontSizeSlider else { return }
+        guard let sampleImage = self.sampleImageView else { return }
+        guard let sampleNote = self.sampleNoteLabel else { return }
 
         if let detail = self.detailItem {
             // We have an item to display, so load the font and register
             // it for this process only
             
             if detail.isInstalled {
+                sampleImage.isHidden = true
+                sampleNote.isHidden = true
+
                 // Set the detail label's font to match the loaded one
                 if let font = UIFont.init(name: detail.name, size: CGFloat(self.fontSize)) {
                     detailLabel.font = font
@@ -72,14 +80,18 @@ class DetailViewController: UIViewController {
                 sizeLabel.text = "\(Int(self.fontSize))pt"
 
             } else {
-                detailLabel.font = UIFont.init(name: "Arial", size: 38.0)
-                detailLabel.text = "This font is not installed"
+                //detailLabel.font = UIFont.init(name: "Arial", size: 38.0)
+                detailLabel.text = ""
                 
                 let ext = (detail.path as NSString).pathExtension.lowercased()
                 let labelText = "This is " + (ext == "otf" ? "an OpenType" : "a TrueType" ) + " font"
                 installedLabel.text = labelText
                 
                 sizeSlider.isEnabled = false
+
+                sampleImage.image = UIImage.init(named: detail.name.lowercased())
+                sampleImage.isHidden = false
+                sampleNote.isHidden = false
             }
 
             // Set the view title and show the detail
@@ -90,6 +102,7 @@ class DetailViewController: UIViewController {
             // Hide the labels; disable the slider
             detailLabel.isHidden = true
             installedLabel.isHidden = true
+            sampleImageView.isHidden = true
             sizeLabel.text = ""
             sizeSlider.value = self.fontSize
             sizeSlider.isEnabled = false

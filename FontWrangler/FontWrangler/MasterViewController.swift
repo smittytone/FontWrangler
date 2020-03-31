@@ -72,9 +72,6 @@ class MasterViewController: UITableViewController {
 
         // Load up the default list
         self.loadDefaults()
-
-        // DEBUG ONLY
-        //self.kill()
     }
 
     
@@ -385,8 +382,7 @@ class MasterViewController: UITableViewController {
                 dvc.configureView()
             }
             
-            // Set the 'Add All' button state and
-            // update the table
+            // Set the 'Add All' button state and update the table
             self.setInstallButtonState()
             self.tableView.reloadData()
         }
@@ -424,24 +420,6 @@ class MasterViewController: UITableViewController {
     }
     
     
-    // MARK: - Segues
-
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        
-        if segue.identifier == "show.detail" {
-            if let indexPath = tableView.indexPathForSelectedRow {
-                let font: UserFont = fonts[indexPath.row - 1]
-                let controller = (segue.destination as! UINavigationController).topViewController as! DetailViewController
-                controller.detailItem = font
-                controller.navigationItem.leftBarButtonItem = splitViewController?.displayModeButtonItem
-                controller.navigationItem.leftItemsSupplementBackButton = true
-                self.detailViewController = controller
-                //self.splitViewController?.toggleMasterView()
-            }
-        }
-    }
-    
-    
     // MARK: - Table View
 
     override func numberOfSections(in tableView: UITableView) -> Int {
@@ -460,19 +438,25 @@ class MasterViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         if indexPath.row == 0 {
+            // Show the header cell
             let cell: UITableViewCell = tableView.dequeueReusableCell(withIdentifier: "header.cell", for: indexPath)
             return cell
         } else {
-            // cell = tableView.dequeueReusableCell(withIdentifier: "master.cell", for: indexPath)
-            let cell: FontWranglerFontListTableViewCell = tableView.dequeueReusableCell(withIdentifier: "custom.cell", for: indexPath) as! FontWranglerFontListTableViewCell
+            // Show a font cell
+            let cell: FontWranglerFontListTableViewCell = tableView.dequeueReusableCell(withIdentifier: "custom.cell",
+                                                                                        for: indexPath) as! FontWranglerFontListTableViewCell
 
+            // Get the referenced font and use its name
             let font = self.fonts[indexPath.row - 1]
             cell.fontNameLabel!.text = font.name
 
+            // Add a tick if the font is installed
             if font.isInstalled {
                 if let accessoryImage: UIImage = UIImage.init(systemName: "checkmark.circle.fill") {
                     let accessoryView: UIView = UIImageView.init(image: accessoryImage)
                     cell.accessoryView = accessoryView
+                } else {
+                    cell.accessoryView = nil
                 }
             } else {
                 cell.accessoryView = nil
@@ -485,6 +469,7 @@ class MasterViewController: UITableViewController {
             }
             */
 
+            // Show and animate the UIActivityIndicator during downloads
             if font.progress != nil {
                 if !cell.downloadProgressView.isAnimating {
                     cell.downloadProgressView!.startAnimating()
@@ -501,65 +486,87 @@ class MasterViewController: UITableViewController {
     
     
     override func tableView(_ tableView: UITableView, leadingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
-        
+
+        // Actions that appear when the table view cell is swiped L-R
+
+        var config: UISwipeActionsConfiguration
+        var action: UIContextualAction
+
         let font: UserFont = self.fonts[indexPath.row - 1]
         
         if font.isInstalled {
-            let action: UIContextualAction = UIContextualAction.init(style: .normal,
-                                                                     title: "Remove All") { (theAction, theView, handler) in
-                                                                        self.removeAll()
-                                                                        handler(true)
+            // Configure a 'Remove All' action
+            action = UIContextualAction.init(style: .normal,
+                                             title: "Remove All") { (theAction, theView, handler) in
+                                                self.removeAll()
+                                                handler(true)
             }
+
+            // Set the colour to red
             action.backgroundColor = UIColor.red
-            let config: UISwipeActionsConfiguration = UISwipeActionsConfiguration.init(actions: [action])
-            return config
         } else {
-            let action: UIContextualAction = UIContextualAction.init(style: .normal,
-                                                                     title: "Add All") { (theAction, theView, handler) in
-                                                                        self.installAll(self)
-                                                                        handler(true)
+            // Configure an 'Add All' action
+            action = UIContextualAction.init(style: .normal,
+                                             title: "Add All") { (theAction, theView, handler) in
+                                                self.installAll(self)
+                                                handler(true)
             }
+
+            // Set the colour to blue
             action.backgroundColor = UIColor.systemBlue
-            let config: UISwipeActionsConfiguration = UISwipeActionsConfiguration.init(actions: [action])
-            config.performsFirstActionWithFullSwipe = false
-            return config
         }
+
+        // Create the config to be returned, making sure a full swipe DOESN'T auto-trigger
+        config = UISwipeActionsConfiguration.init(actions: [action])
+        config.performsFirstActionWithFullSwipe = false
+        return config
     }
     
     
     override func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
         
+        // Actions that appear when the table view cell is swiped R-Ls
+
+        var config: UISwipeActionsConfiguration
+        var action: UIContextualAction
+
         let font: UserFont = self.fonts[indexPath.row - 1]
         
         if font.isInstalled {
-            let action: UIContextualAction = UIContextualAction.init(style: .normal,
-                                                                     title: "Remove") { (theAction, theView, handler) in
-                                                                        let font: UserFont = self.fonts[indexPath.row - 1]
-                                                                        font.isInstalled = false
-                                                                        font.isDownloaded = false
-                                                                        var fontDescs = [UIFontDescriptor]()
-                                                                        let fontDesc: UIFontDescriptor = UIFontDescriptor.init(name: font.name, size: 48.0)
-                                                                        fontDescs.append(fontDesc)
-                                                                        CTFontManagerUnregisterFontDescriptors(fontDescs as CFArray,
-                                                                                                               .persistent,
-                                                                                                               self.registrationHandler(errors:done:))
-                                                                        handler(true)
+            // Configure a 'Remove' action -- only one item affected: the table view cell's
+            action = UIContextualAction.init(style: .normal,
+                                             title: "Remove") { (theAction, theView, handler) in
+                                                let font: UserFont = self.fonts[indexPath.row - 1]
+                                                font.isInstalled = false
+                                                font.isDownloaded = false
+                                                var fontDescs = [UIFontDescriptor]()
+                                                let fontDesc: UIFontDescriptor = UIFontDescriptor.init(name: font.name, size: 48.0)
+                                                fontDescs.append(fontDesc)
+                                                CTFontManagerUnregisterFontDescriptors(fontDescs as CFArray,
+                                                                                       .persistent,
+                                                                                       self.registrationHandler(errors:done:))
+                                                handler(true)
             }
+
+            // Configure a 'Remove All' action
             action.backgroundColor = UIColor.red
-            let config: UISwipeActionsConfiguration = UISwipeActionsConfiguration.init(actions: [action])
-            return config
         } else {
-            let action: UIContextualAction = UIContextualAction.init(style: .normal,
-                                                                     title: "Add") { (theAction, theView, handler) in
-                                                                        let font: UserFont = self.fonts[indexPath.row - 1]
-                                                                        self.getFont(font)
-                                                                        handler(true)
+            // Configure an 'Add' action -- only one item affected: the table view cell's
+            action = UIContextualAction.init(style: .normal,
+                                             title: "Add") { (theAction, theView, handler) in
+                                                let font: UserFont = self.fonts[indexPath.row - 1]
+                                                self.getFont(font)
+                                                handler(true)
             }
+
+            // Set the colour to blue
             action.backgroundColor = UIColor.systemBlue
-            let config: UISwipeActionsConfiguration = UISwipeActionsConfiguration.init(actions: [action])
-            config.performsFirstActionWithFullSwipe = false
-            return config
         }
+
+        // Create the config to be returned, making sure a full swipe DOESN'T auto-trigger
+        config = UISwipeActionsConfiguration.init(actions: [action])
+        config.performsFirstActionWithFullSwipe = false
+        return config
     }
 
     
@@ -604,16 +611,22 @@ class MasterViewController: UITableViewController {
         }
     }
 
-    func kill() {
 
-        var tagsArray = [String]()
-        for font: UserFont in self.fonts {
-            tagsArray.append(font.tag)
+    // MARK: - Segues
+
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+
+        if segue.identifier == "show.detail" {
+            if let indexPath = tableView.indexPathForSelectedRow {
+                let font: UserFont = fonts[indexPath.row - 1]
+                let controller = (segue.destination as! UINavigationController).topViewController as! DetailViewController
+                controller.detailItem = font
+                controller.navigationItem.leftBarButtonItem = splitViewController?.displayModeButtonItem
+                controller.navigationItem.leftItemsSupplementBackButton = true
+                self.detailViewController = controller
+                //self.splitViewController?.toggleMasterView()
+            }
         }
-
-        let tags: Set<String> = Set.init(tagsArray)
-        let fontRequest = NSBundleResourceRequest.init(tags: tags)
-        fontRequest.endAccessingResources()
     }
     
 }

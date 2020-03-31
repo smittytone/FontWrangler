@@ -65,18 +65,39 @@
                                     <action selector="setFontSize:" destination="JEX-9P-axG" eventType="valueChanged" id="qfn-zc-iXq"/>
                                 </connections>
                             </slider>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="JCI-jE-mi4">
+                                <rect key="frame" x="20" y="492" width="794" height="128"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="128" id="J5B-DK-RLe"/>
+                                    <constraint firstAttribute="width" constant="794" id="dAW-7Q-onw"/>
+                                </constraints>
+                            </imageView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Install this font to see a full, size-adjustable preview" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="qA2-Cc-Hn3">
+                                <rect key="frame" x="20" y="628" width="794" height="21"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="21" id="dlr-47-JYj"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                         <constraints>
+                            <constraint firstItem="JCI-jE-mi4" firstAttribute="centerX" secondItem="svH-Pt-448" secondAttribute="centerX" id="5DO-24-RaH"/>
+                            <constraint firstItem="VUw-jc-0yf" firstAttribute="trailing" secondItem="qA2-Cc-Hn3" secondAttribute="trailing" constant="20" id="CBI-d4-6GX"/>
                             <constraint firstItem="VUw-jc-0yf" firstAttribute="trailing" secondItem="IoY-2B-4ip" secondAttribute="trailing" constant="20" id="FIw-zV-64O"/>
                             <constraint firstItem="VUw-jc-0yf" firstAttribute="bottom" secondItem="qJB-Ox-ARY" secondAttribute="bottom" constant="20" id="Fdv-nR-HXR"/>
+                            <constraint firstItem="qA2-Cc-Hn3" firstAttribute="leading" secondItem="VUw-jc-0yf" secondAttribute="leading" constant="20" id="H6c-ub-dkX"/>
                             <constraint firstItem="IoY-2B-4ip" firstAttribute="top" secondItem="0XM-y9-sOw" secondAttribute="bottom" constant="8" id="M1n-RG-cu5"/>
                             <constraint firstItem="0XM-y9-sOw" firstAttribute="top" secondItem="pTu-Of-OYx" secondAttribute="bottom" constant="8" id="N2Y-eE-B4F"/>
                             <constraint firstItem="pTu-Of-OYx" firstAttribute="leading" secondItem="VUw-jc-0yf" secondAttribute="leading" constant="20" id="R0P-WR-jnN"/>
+                            <constraint firstItem="qA2-Cc-Hn3" firstAttribute="top" secondItem="JCI-jE-mi4" secondAttribute="bottom" constant="8" id="W3x-gs-mFG"/>
                             <constraint firstItem="VUw-jc-0yf" firstAttribute="trailing" secondItem="pTu-Of-OYx" secondAttribute="trailing" constant="20" id="X7M-hs-FwF"/>
                             <constraint firstItem="0XM-y9-sOw" firstAttribute="leading" secondItem="VUw-jc-0yf" secondAttribute="leading" constant="20" id="XsA-vn-EuB"/>
                             <constraint firstItem="VUw-jc-0yf" firstAttribute="trailing" secondItem="0XM-y9-sOw" secondAttribute="trailing" constant="20" id="an3-7B-yIr"/>
                             <constraint firstItem="pTu-Of-OYx" firstAttribute="top" secondItem="VUw-jc-0yf" secondAttribute="top" constant="8" id="dpM-X4-Z34"/>
+                            <constraint firstItem="JCI-jE-mi4" firstAttribute="centerY" secondItem="svH-Pt-448" secondAttribute="centerY" id="nmB-12-0EZ"/>
                             <constraint firstItem="IoY-2B-4ip" firstAttribute="leading" secondItem="VUw-jc-0yf" secondAttribute="leading" constant="20" id="pDb-w1-oPi"/>
                             <constraint firstItem="qJB-Ox-ARY" firstAttribute="centerX" secondItem="svH-Pt-448" secondAttribute="centerX" id="wAh-fp-fSm"/>
                             <constraint firstItem="qJB-Ox-ARY" firstAttribute="top" secondItem="IoY-2B-4ip" secondAttribute="bottom" constant="8" id="wbM-It-SME"/>
@@ -90,6 +111,8 @@
                         <outlet property="fontSizeLabel" destination="IoY-2B-4ip" id="BMC-ZX-MC7"/>
                         <outlet property="fontSizeSlider" destination="qJB-Ox-ARY" id="4BA-GL-v06"/>
                         <outlet property="isInstalledLabel" destination="pTu-Of-OYx" id="mav-z2-Jkn"/>
+                        <outlet property="sampleImageView" destination="JCI-jE-mi4" id="P1P-aq-CxL"/>
+                        <outlet property="sampleNoteLabel" destination="qA2-Cc-Hn3" id="x9Q-st-zEa"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="FJe-Yq-33r" sceneMemberID="firstResponder"/>
