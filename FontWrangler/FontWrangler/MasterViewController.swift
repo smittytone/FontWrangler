@@ -290,6 +290,11 @@ class MasterViewController: UITableViewController {
             let tags: Set<String> = Set.init([font.tag])
             let fontRequest = NSBundleResourceRequest.init(tags: tags)
 
+            font.progress = fontRequest.progress
+            DispatchQueue.main.async {
+                self.tableView.reloadData()
+            }
+
             fontRequest.beginAccessingResources { (error) in
                 // Check for a download error
                 if error != nil {
@@ -303,6 +308,11 @@ class MasterViewController: UITableViewController {
 
                 // Register the font with the OS
                 self.registerFont(font)
+                font.progress = nil
+                DispatchQueue.main.async {
+                    self.tableView.reloadData()
+                }
+
             }
         }
 
@@ -449,22 +459,44 @@ class MasterViewController: UITableViewController {
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        var cell: UITableViewCell
-        
         if indexPath.row == 0 {
-            cell = tableView.dequeueReusableCell(withIdentifier: "header.cell", for: indexPath)
+            let cell: UITableViewCell = tableView.dequeueReusableCell(withIdentifier: "header.cell", for: indexPath)
+            return cell
         } else {
-            cell = tableView.dequeueReusableCell(withIdentifier: "master.cell", for: indexPath)
-            let font = self.fonts[indexPath.row - 1]
-            cell.textLabel!.text = font.name
+            // cell = tableView.dequeueReusableCell(withIdentifier: "master.cell", for: indexPath)
+            let cell: FontWranglerFontListTableViewCell = tableView.dequeueReusableCell(withIdentifier: "custom.cell", for: indexPath) as! FontWranglerFontListTableViewCell
 
+            let font = self.fonts[indexPath.row - 1]
+            cell.fontNameLabel!.text = font.name
+
+            if font.isInstalled {
+                if let accessoryImage: UIImage = UIImage.init(systemName: "checkmark.circle.fill") {
+                    let accessoryView: UIView = UIImageView.init(image: accessoryImage)
+                    cell.accessoryView = accessoryView
+                }
+            } else {
+                cell.accessoryView = nil
+            }
+
+            /*
             if let accessoryImage: UIImage = font.isInstalled ? UIImage.init(systemName: "checkmark.circle.fill") : UIImage.init(systemName: "circle") {
                 let accessoryView: UIView = UIImageView.init(image: accessoryImage)
                 cell.accessoryView = accessoryView
             }
+            */
+
+            if font.progress != nil {
+                if !cell.downloadProgressView.isAnimating {
+                    cell.downloadProgressView!.startAnimating()
+                }
+            } else {
+                if cell.downloadProgressView.isAnimating {
+                    cell.downloadProgressView!.stopAnimating()
+                }
+            }
+
+            return cell
         }
-        
-        return cell
     }
     
     
@@ -504,6 +536,7 @@ class MasterViewController: UITableViewController {
                                                                      title: "Remove") { (theAction, theView, handler) in
                                                                         let font: UserFont = self.fonts[indexPath.row - 1]
                                                                         font.isInstalled = false
+                                                                        font.isDownloaded = false
                                                                         var fontDescs = [UIFontDescriptor]()
                                                                         let fontDesc: UIFontDescriptor = UIFontDescriptor.init(name: font.name, size: 48.0)
                                                                         fontDescs.append(fontDesc)
