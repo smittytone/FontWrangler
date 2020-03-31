@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>StringsTable</key>
+	<string>Root</string>
+	<key>PreferenceSpecifiers</key>
+	<array>
+		<dict>
+			<key>Type</key>
+			<string>PSGroupSpecifier</string>
+			<key>Title</key>
+			<string>Information</string>
+			<key>FooterText</key>
+			<string>FontWrangler © 2020, Tony Smith. The fonts provided are copyright their various owners. Please see </string>
+		</dict>
+		<dict>
+			<key>Type</key>
+			<string>PSTitleValueSpecifier</string>
+			<key>Title</key>
+			<string>Version</string>
+			<key>Key</key>
+			<string>com.bps.fontwrangler.app.version</string>
+			<key>DefaultValue</key>
+			<string>0.0.0</string>
+		</dict>
+		<dict>
+			<key>Type</key>
+			<string>PSTitleValueSpecifier</string>
+			<key>Title</key>
+			<string>Build</string>
+			<key>Key</key>
+			<string>com.bps.fontwrangler.app.build</string>
+			<key>DefaultValue</key>
+			<string>1</string>
+		</dict>
+		<dict>
+			<key>Type</key>
+			<string>PSChildPaneSpecifier</string>
+			<key>Title</key>
+			<string>Open Font Licence</string>
+			<key>File</key>
+			<string>licence</string>
+		</dict>
+	</array>
+</dict>
+</plist>
