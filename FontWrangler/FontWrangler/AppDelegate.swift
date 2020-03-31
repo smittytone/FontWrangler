@@ -14,7 +14,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        // Override point for customization after application launch.
+
+        // Set data for app settings bundle
+        let defaults: UserDefaults = UserDefaults.standard
+        defaults.set(Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as! String,
+                     forKey: "com.bps.fontwrangler.app.version")
+        defaults.set(Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as! String,
+                     forKey: "com.bps.fontwrangler.app.build")
+        
         return true
     }
 
