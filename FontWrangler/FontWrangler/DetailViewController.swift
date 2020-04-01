@@ -22,6 +22,7 @@ class DetailViewController: UIViewController {
     var fontSize: CGFloat = kBaseDynamicSampleFontSize
     var substituteFont: UIFont? = nil
     var mvc: MasterViewController? = nil
+    var pvc: UIPopoverPresentationController? = nil
 
     
     var detailItem: UserFont? {
@@ -38,6 +39,12 @@ class DetailViewController: UIViewController {
     override func viewDidLoad() {
         
         super.viewDidLoad()
+        
+        let rightButton = UIBarButtonItem(title: "Variants",
+                                          style: .plain,
+                                          target: self,
+                                          action: #selector(self.setupPopover))
+        navigationItem.rightBarButtonItem = rightButton
         
         // Set the base size
         self.substituteFont = UIFont.init(name: "Arial", size: KBaseUserSampleFontSize)
@@ -56,7 +63,11 @@ class DetailViewController: UIViewController {
         self.configureView()
     }
     
-
+    @objc func nop(_ sender: Any) {
+        
+    }
+    
+    
     // MARK: - Presentation Functions
     
     func configureView() {
@@ -126,6 +137,7 @@ class DetailViewController: UIViewController {
             statusLabel.text = "No font selected"
             sizeLabel.text = ""
             sizeSlider.value = Float(self.fontSize)
+            navigationItem.rightBarButtonItem?.isEnabled = false
         }
     }
 
@@ -137,6 +149,29 @@ class DetailViewController: UIViewController {
         self.fontSize = CGFloat(self.fontSizeSlider.value)
         self.fontSizeLabel.text = "\(Int(self.fontSize))pt"
         self.configureView()
+    }
+    
+    
+    @objc func setupPopover() {
+        
+        if let detail = self.detailItem {
+            // Load and configure the menu view controller.
+            let storyboard = UIStoryboard(name: "Main", bundle: nil)
+            let fvc: FontVariantsTableViewController = storyboard.instantiateViewController(withIdentifier: "font.variants.controller") as! FontVariantsTableViewController
+            
+            fvc.fonts = [detail]
+             
+            // Use the popover presentation style for your view controller.
+            fvc.modalPresentationStyle = .popover
+
+            // Specify the anchor point for the popover.
+            fvc.popoverPresentationController?.barButtonItem = navigationItem.rightBarButtonItem
+                       
+            // Present the view controller (in a popover).
+            self.present(fvc, animated: true) {
+               // The popover is visible.
+            }
+        }
     }
 
 }

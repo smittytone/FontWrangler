@@ -36,7 +36,7 @@ class MasterViewController: UITableViewController {
         super.viewDidLoad()
 
         // Set up the 'Edit' button on the left
-        // navigationItem.leftBarButtonItem = editButtonItem
+        navigationItem.leftBarButtonItem = editButtonItem
 
         // Set up the 'Install' button on the right
         let rightButton = UIBarButtonItem(title: "Add All",

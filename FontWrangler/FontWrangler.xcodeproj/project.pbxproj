@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		3B42C8452433668400AF2B13 /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 3B42C8442433668400AF2B13 /* Settings.bundle */; };
+		3B4C6D982434E88A00C1C5CB /* FontVariantsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B4C6D972434E88A00C1C5CB /* FontVariantsTableViewController.swift */; };
+		3B4C6D9A2434E90900C1C5CB /* FontVariantsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B4C6D992434E90900C1C5CB /* FontVariantsTableViewCell.swift */; };
 		3B6E85E42430AB8500C6549A /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B6E85E32430AB8500C6549A /* Constants.swift */; };
 		3B879A2C242E00B400BE47DC /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B879A2B242E00B400BE47DC /* AppDelegate.swift */; };
 		3B879A2E242E00B400BE47DC /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B879A2D242E00B400BE47DC /* SceneDelegate.swift */; };
@@ -25,6 +27,8 @@
 
 /* Begin PBXFileReference section */
 		3B42C8442433668400AF2B13 /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
+		3B4C6D972434E88A00C1C5CB /* FontVariantsTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FontVariantsTableViewController.swift; sourceTree = "<group>"; };
+		3B4C6D992434E90900C1C5CB /* FontVariantsTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FontVariantsTableViewCell.swift; sourceTree = "<group>"; };
 		3B6E85E32430AB8500C6549A /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		3B879A28242E00B400BE47DC /* FontWrangler.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FontWrangler.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3B879A2B242E00B400BE47DC /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -79,6 +83,8 @@
 				3B879A2F242E00B400BE47DC /* MasterViewController.swift */,
 				3B879A31242E00B400BE47DC /* DetailViewController.swift */,
 				3BD0DF4924332B7F002878F7 /* FontWranglerFontListTableViewCell.swift */,
+				3B4C6D972434E88A00C1C5CB /* FontVariantsTableViewController.swift */,
+				3B4C6D992434E90900C1C5CB /* FontVariantsTableViewCell.swift */,
 				3B879A42242E1C0100BE47DC /* UserFont.swift */,
 				3BE5B2AA2434AD6B00A0C33A /* FontFamily.swift */,
 				3B879A33242E00B400BE47DC /* Main.storyboard */,
@@ -187,8 +193,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3B4C6D9A2434E90900C1C5CB /* FontVariantsTableViewCell.swift in Sources */,
 				3B879A2C242E00B400BE47DC /* AppDelegate.swift in Sources */,
 				3B879A2E242E00B400BE47DC /* SceneDelegate.swift in Sources */,
+				3B4C6D982434E88A00C1C5CB /* FontVariantsTableViewController.swift in Sources */,
 				3B879A43242E1C0100BE47DC /* UserFont.swift in Sources */,
 				3B879A30242E00B400BE47DC /* MasterViewController.swift in Sources */,
 				3BE5B2AB2434AD6B00A0C33A /* FontFamily.swift in Sources */,
