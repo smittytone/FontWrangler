@@ -5,12 +5,13 @@
 
 import UIKit
 
-class DetailViewController: UIViewController {
+class DetailViewController: UIViewController, UIPopoverPresentationControllerDelegate {
 
     @IBOutlet weak var fontStatusLabel: UILabel!
     
     @IBOutlet weak var dynamicSampleHeadLabel: UILabel!
     @IBOutlet weak var dynamicSampleTextView: UITextView!
+    @IBOutlet weak var dynamicSampleParentView: UIView!
     
     @IBOutlet weak var userSampleHeadLabel: UILabel!
     @IBOutlet weak var userSampleTextView: UITextView!
@@ -22,8 +23,8 @@ class DetailViewController: UIViewController {
     var fontSize: CGFloat = kBaseDynamicSampleFontSize
     var substituteFont: UIFont? = nil
     var mvc: MasterViewController? = nil
-    var pvc: UIPopoverPresentationController? = nil
-
+    var variantsButton: UIBarButtonItem? = nil
+    var currentFamily: FontFamily? = nil
     
     var detailItem: UserFont? {
         
@@ -43,8 +44,9 @@ class DetailViewController: UIViewController {
         let rightButton = UIBarButtonItem(title: "Variants",
                                           style: .plain,
                                           target: self,
-                                          action: #selector(self.setupPopover))
+                                          action: #selector(self.showVariantsMenu))
         navigationItem.rightBarButtonItem = rightButton
+        self.variantsButton = rightButton
         
         // Set the base size
         self.substituteFont = UIFont.init(name: "Arial", size: KBaseUserSampleFontSize)
@@ -55,16 +57,14 @@ class DetailViewController: UIViewController {
         // Set the font sample text
         self.dynamicSampleTextView.text = kFontSampleText_1
         self.dynamicSampleTextView.isEditable = false
+        self.dynamicSampleTextView.alpha = 0.3
         
         // Block access to the user-entered sample
         self.userSampleTextView.isEditable = false
+        self.userSampleTextView.alpha = 0.3
         
         // Configure the detail view
         self.configureView()
-    }
-    
-    @objc func nop(_ sender: Any) {
-        
     }
     
     
@@ -81,6 +81,7 @@ class DetailViewController: UIViewController {
         guard let sampleNote = self.userSampleTextView else { return }
         guard let sizeLabel = self.fontSizeLabel else { return }
         guard let sizeSlider = self.fontSizeSlider else { return }
+        guard let parentView = self.dynamicSampleParentView else { return }
         
         // Generic cases
         sizeSlider.isEnabled = false
@@ -102,8 +103,10 @@ class DetailViewController: UIViewController {
             
             if detail.isInstalled {
                 sampleNote.isEditable = true
+                sampleNote.alpha = 1.0
                 
                 // Set the samples' fonts
+                dynamicLabel.alpha = 1.0
                 if let font = UIFont.init(name: detail.name, size: CGFloat(self.fontSize)) {
                     dynamicLabel.font = font
                 }
@@ -119,25 +122,37 @@ class DetailViewController: UIViewController {
                 // Set the font size slider control and label
                 sizeSlider.isEnabled = true
                 sizeLabel.text = "\(Int(self.fontSize))pt"
+                
 
             } else {
                 dynamicLabel.font = self.substituteFont
-
+                dynamicLabel.alpha = 0.3
+                
                 sampleNote.font = substituteFont
                 sampleNote.isEditable = false
+                sampleNote.alpha = 0.3
                 
                 labelText = "This is " + (ext == "otf" ? "an OpenType" : "a TrueType" ) + " font"
             }
             
             // Set the font status
             statusLabel.text = labelText
+            
+            // Enable or disable the Variants button according to whether there are any
+            var count = 0
+            if let family = self.currentFamily {
+                if let familyFonts = family.fonts {
+                    count = familyFonts.count
+                }
+            }
+            self.variantsButton?.isEnabled = count > 1 ? true : false
         } else {
             // Hide the labels; disable the slider
             self.title = "Font Info"
             statusLabel.text = "No font selected"
             sizeLabel.text = ""
             sizeSlider.value = Float(self.fontSize)
-            navigationItem.rightBarButtonItem?.isEnabled = false
+            self.variantsButton?.isEnabled = false
         }
     }
 
@@ -152,26 +167,37 @@ class DetailViewController: UIViewController {
     }
     
     
-    @objc func setupPopover() {
+    @objc func showVariantsMenu() {
         
-        if let detail = self.detailItem {
-            // Load and configure the menu view controller.
-            let storyboard = UIStoryboard(name: "Main", bundle: nil)
-            let fvc: FontVariantsTableViewController = storyboard.instantiateViewController(withIdentifier: "font.variants.controller") as! FontVariantsTableViewController
+        // Load and configure the menu view controller.
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        let fvc: FontVariantsTableViewController = storyboard.instantiateViewController(withIdentifier: "font.variants.controller") as! FontVariantsTableViewController
+        fvc.dvc = self
+        
+        // Set the popover's data
+        if let fonts = self.currentFamily!.fonts {
+            fvc.fonts = fonts
             
-            fvc.fonts = [detail]
-             
-            // Use the popover presentation style for your view controller.
-            fvc.modalPresentationStyle = .popover
-
-            // Specify the anchor point for the popover.
-            fvc.popoverPresentationController?.barButtonItem = navigationItem.rightBarButtonItem
-                       
-            // Present the view controller (in a popover).
-            self.present(fvc, animated: true) {
-               // The popover is visible.
+            var index: Int = 0
+            for font: UserFont in fonts {
+                if font == self.detailItem {
+                    fvc.currentFont = index
+                    break
+                }
+                
+                index += 1
             }
         }
+        
+        // Use the popover presentation style for your view controller.
+        fvc.modalPresentationStyle = .popover
+
+        // Specify the anchor point for the popover.
+        fvc.popoverPresentationController?.barButtonItem = navigationItem.rightBarButtonItem
+        fvc.popoverPresentationController?.delegate = self
+                   
+        // Present the view controller (in a popover).
+        self.present(fvc, animated: true, completion: nil)
     }
 
 }

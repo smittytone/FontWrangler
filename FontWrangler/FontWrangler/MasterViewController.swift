@@ -36,7 +36,7 @@ class MasterViewController: UITableViewController {
         super.viewDidLoad()
 
         // Set up the 'Edit' button on the left
-        navigationItem.leftBarButtonItem = editButtonItem
+        //navigationItem.leftBarButtonItem = editButtonItem
 
         // Set up the 'Install' button on the right
         let rightButton = UIBarButtonItem(title: "Add All",
@@ -150,35 +150,6 @@ class MasterViewController: UITableViewController {
         
         // Sort the list
         self.sortFonts()
-    }
-    
-    
-    func getCounts() {
-        
-        var currentFamily: String = ""
-        var currentCount: Int = 0
-        
-        for font: UserFont in self.fonts {
-            if font.tag != currentFamily {
-                currentCount = self.getCount(font.tag)
-                currentFamily = font.tag
-            }
-            
-            font.familyCount = currentCount
-        }
-    }
-    
-    
-    func getCount(_ tag: String) -> Int {
-        
-        var count: Int = 0
-        for font: UserFont in self.fonts {
-            if font.tag == tag {
-                count += 1
-            }
-        }
-        
-        return count
     }
     
     
@@ -302,8 +273,24 @@ class MasterViewController: UITableViewController {
                 }
             }
             
+            // Set the font counts
+            //self.setFamilyCounts()
+            
             // Mark that we're done
             self.gotFontFamilies = true
+        }
+    }
+    
+    
+    func setFamilyCounts() {
+        
+       for font: UserFont in self.fonts {
+            for family: FontFamily in self.families {
+                if font.tag == family.tag {
+                    font.familyCount = family.fonts!.count
+                    break
+                }
+            }
         }
     }
     
@@ -539,7 +526,7 @@ class MasterViewController: UITableViewController {
             let cell: FontWranglerFontListTableViewCell = tableView.dequeueReusableCell(withIdentifier: "custom.cell",
                                                                                         for: indexPath) as! FontWranglerFontListTableViewCell
 
-            // Get the referenced font and use its name
+            // Get the referenced family and use its name
             let family = self.families[indexPath.row - 1]
             cell.fontNameLabel!.text = family.name
             
@@ -593,7 +580,11 @@ class MasterViewController: UITableViewController {
         var config: UISwipeActionsConfiguration
         var action: UIContextualAction
 
-        let font: UserFont = self.fonts[indexPath.row - 1]
+        // Get the referenced family
+        let family = self.families[indexPath.row - 1]
+        
+        // Get the first font in the family as a status check for the whole family
+        let font = family.fonts![0]
         
         if font.isInstalled {
             // Configure a 'Remove All' action
@@ -631,22 +622,36 @@ class MasterViewController: UITableViewController {
         var config: UISwipeActionsConfiguration
         var action: UIContextualAction
 
-        let font: UserFont = self.fonts[indexPath.row - 1]
+        // Get the referenced family
+        let family = self.families[indexPath.row - 1]
+        
+        // Get the first font in the family as a status check for the whole family
+        let font: UserFont = family.fonts![0]
         
         if font.isInstalled {
-            // Configure a 'Remove' action -- only one item affected: the table view cell's
+            // Configure a 'Remove' action -- only one item affected: the table view cell's family
             action = UIContextualAction.init(style: .normal,
                                              title: "Remove") { (theAction, theView, handler) in
-                                                let font: UserFont = self.fonts[indexPath.row - 1]
-                                                font.isInstalled = false
-                                                font.isDownloaded = false
-                                                var fontDescs = [UIFontDescriptor]()
-                                                let fontDesc: UIFontDescriptor = UIFontDescriptor.init(name: font.name, size: 48.0)
-                                                fontDescs.append(fontDesc)
-                                                CTFontManagerUnregisterFontDescriptors(fontDescs as CFArray,
-                                                                                       .persistent,
-                                                                                       self.registrationHandler(errors:done:))
-                                                handler(true)
+                                                // We're removing all of the family's fonts, so get them
+                                                if let fonts = family.fonts {
+                                                    var fontDescs = [UIFontDescriptor]()
+                                                    
+                                                    // Iterate the fonts, clearing their flags and adding their
+                                                    // FontDescriptors to the array we'll use to deregister them
+                                                    for font in fonts {
+                                                        font.isInstalled = false
+                                                        font.isDownloaded = false
+                                                        let fontDesc: UIFontDescriptor = UIFontDescriptor.init(name: font.name, size: 48.0)
+                                                        fontDescs.append(fontDesc)
+                                                    }
+                                                    
+                                                    CTFontManagerUnregisterFontDescriptors(fontDescs as CFArray,
+                                                                                           .persistent,
+                                                                                           self.registrationHandler(errors:done:))
+                                                    handler(true)
+                                                } else {
+                                                    handler(false)
+                                                }
             }
 
             // Configure a 'Remove All' action
@@ -655,9 +660,17 @@ class MasterViewController: UITableViewController {
             // Configure an 'Add' action -- only one item affected: the table view cell's
             action = UIContextualAction.init(style: .normal,
                                              title: "Add") { (theAction, theView, handler) in
-                                                let font: UserFont = self.fonts[indexPath.row - 1]
-                                                self.getFont(font)
-                                                handler(true)
+                                                // We're adding all of the family's fonts, so get them
+                                                if let fonts = family.fonts {
+                                                    // Iterate the fonts, adding them one by one
+                                                    for font in fonts {
+                                                        self.getFont(font)
+                                                    }
+                                                    
+                                                    handler(true)
+                                                } else {
+                                                    handler(false)
+                                                }
             }
 
             // Set the colour to blue
@@ -740,12 +753,14 @@ class MasterViewController: UITableViewController {
         if segue.identifier == "show.detail" {
             if let indexPath = tableView.indexPathForSelectedRow {
                 let family: FontFamily = families[indexPath.row - 1]
+                
                 var font: UserFont? = nil
                 if let fonts = family.fonts {
                     font = fonts[0]
                 }
                 
                 let controller = (segue.destination as! UINavigationController).topViewController as! DetailViewController
+                controller.currentFamily = family
                 controller.detailItem = font
                 controller.navigationItem.leftBarButtonItem = splitViewController?.displayModeButtonItem
                 controller.navigationItem.leftItemsSupplementBackButton = true

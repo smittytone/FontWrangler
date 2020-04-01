@@ -151,6 +151,7 @@
                     <navigationItem key="navigationItem" title="Font Info" id="mOI-FS-AaM"/>
                     <connections>
                         <outlet property="dynamicSampleHeadLabel" destination="rCs-GY-1Kq" id="6SN-n5-J0k"/>
+                        <outlet property="dynamicSampleParentView" destination="Tt5-3t-8Nl" id="3GO-Lb-9Y4"/>
                         <outlet property="dynamicSampleTextView" destination="klB-YI-zKP" id="wGt-Wq-tSK"/>
                         <outlet property="fontSizeLabel" destination="IoY-2B-4ip" id="BMC-ZX-MC7"/>
                         <outlet property="fontSizeSlider" destination="qJB-Ox-ARY" id="4BA-GL-v06"/>
