@@ -462,6 +462,8 @@ class MasterViewController: UITableViewController {
                 cell.accessoryView = nil
             }
 
+            cell.fontPreviewImageView.image = UIImage.init(named: font.tag)
+
             /*
             if let accessoryImage: UIImage = font.isInstalled ? UIImage.init(systemName: "checkmark.circle.fill") : UIImage.init(systemName: "circle") {
                 let accessoryView: UIView = UIImageView.init(image: accessoryImage)

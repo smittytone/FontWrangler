@@ -122,7 +122,7 @@
         <!--Split View Controller-->
         <scene sceneID="Nki-YV-4Qg">
             <objects>
-                <splitViewController id="H1p-Uh-vWS" sceneMemberID="viewController">
+                <splitViewController maximumPrimaryColumnWidth="800" minimumPrimaryColumnWidth="800" id="H1p-Uh-vWS" sceneMemberID="viewController">
                     <toolbarItems/>
                     <connections>
                         <segue destination="RMx-3f-FxP" kind="relationship" relationship="masterViewController" id="BlO-5A-QYV"/>
@@ -171,54 +171,75 @@
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="NAME" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="XGN-om-g6w">
-                                            <rect key="frame" x="16" y="10" width="288" height="11"/>
+                                            <rect key="frame" x="16" y="9" width="288" height="14.5"/>
+                                            <constraints>
+                                                <constraint firstAttribute="height" constant="14.5" id="vqV-Yl-ah3"/>
+                                            </constraints>
                                             <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="12"/>
                                             <nil key="textColor"/>
                                             <nil key="highlightedColor"/>
                                         </label>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="ADDED" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="DxU-Q2-YLb">
-                                            <rect key="frame" x="16" y="8" width="288" height="15"/>
+                                            <rect key="frame" x="16" y="8.5" width="288" height="15"/>
+                                            <constraints>
+                                                <constraint firstAttribute="height" constant="15" id="efC-9Z-VKF"/>
+                                            </constraints>
                                             <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="12"/>
                                             <nil key="textColor"/>
                                             <nil key="highlightedColor"/>
                                         </label>
                                     </subviews>
                                     <constraints>
-                                        <constraint firstItem="DxU-Q2-YLb" firstAttribute="leading" secondItem="la4-em-uxp" secondAttribute="leading" constant="16" id="6aY-v9-9L6"/>
-                                        <constraint firstItem="DxU-Q2-YLb" firstAttribute="top" secondItem="la4-em-uxp" secondAttribute="top" constant="8" id="6vL-t3-rSA"/>
-                                        <constraint firstAttribute="trailing" secondItem="XGN-om-g6w" secondAttribute="trailing" constant="16" id="NvB-B4-1vu"/>
-                                        <constraint firstAttribute="bottom" secondItem="DxU-Q2-YLb" secondAttribute="bottom" constant="9" id="QHJ-5Z-u5Y"/>
-                                        <constraint firstAttribute="trailing" secondItem="DxU-Q2-YLb" secondAttribute="trailing" constant="16" id="VVZ-Y0-ncq"/>
-                                        <constraint firstItem="XGN-om-g6w" firstAttribute="top" secondItem="la4-em-uxp" secondAttribute="top" constant="10" id="bIN-1z-wdK"/>
-                                        <constraint firstItem="XGN-om-g6w" firstAttribute="leading" secondItem="la4-em-uxp" secondAttribute="leading" constant="16" id="sSQ-WF-myw"/>
-                                        <constraint firstAttribute="bottom" secondItem="XGN-om-g6w" secondAttribute="bottom" constant="11" id="uZW-Ib-iFO"/>
+                                        <constraint firstItem="XGN-om-g6w" firstAttribute="centerY" secondItem="la4-em-uxp" secondAttribute="centerY" id="0rQ-MV-yiA"/>
+                                        <constraint firstAttribute="trailing" secondItem="DxU-Q2-YLb" secondAttribute="trailing" constant="16" id="1fz-aD-smI"/>
+                                        <constraint firstItem="XGN-om-g6w" firstAttribute="leading" secondItem="la4-em-uxp" secondAttribute="leading" constant="16" id="etn-v9-dLh"/>
+                                        <constraint firstItem="DxU-Q2-YLb" firstAttribute="centerY" secondItem="la4-em-uxp" secondAttribute="centerY" id="gUZ-Yt-c0E"/>
+                                        <constraint firstItem="DxU-Q2-YLb" firstAttribute="leading" secondItem="la4-em-uxp" secondAttribute="leading" constant="16" id="qVS-n7-nuP"/>
+                                        <constraint firstAttribute="trailing" secondItem="XGN-om-g6w" secondAttribute="trailing" constant="16" id="tDp-iV-oke"/>
                                     </constraints>
                                 </tableViewCellContentView>
                             </tableViewCell>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="custom.cell" rowHeight="43.5" id="v39-Sy-rIy" customClass="FontWranglerFontListTableViewCell" customModule="FontWrangler" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="103.5" width="320" height="43.5"/>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="custom.cell" rowHeight="84" id="v39-Sy-rIy" customClass="FontWranglerFontListTableViewCell" customModule="FontWrangler" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="103.5" width="320" height="84"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="v39-Sy-rIy" id="mHw-1S-Ubx">
-                                    <rect key="frame" x="0.0" y="0.0" width="320" height="43.5"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="320" height="84"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
-                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="eC3-LX-IY4">
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="eC3-LX-IY4">
                                             <rect key="frame" x="16" y="12" width="260" height="19.5"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                            <constraints>
+                                                <constraint firstAttribute="height" constant="19.5" id="fAD-cj-MNn"/>
+                                            </constraints>
                                             <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="16"/>
                                             <nil key="textColor"/>
                                             <nil key="highlightedColor"/>
                                         </label>
-                                        <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" hidesWhenStopped="YES" style="medium" translatesAutoresizingMaskIntoConstraints="NO" id="LGt-vl-ktm">
-                                            <rect key="frame" x="284" y="12" width="20" height="20"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="medium" translatesAutoresizingMaskIntoConstraints="NO" id="LGt-vl-ktm">
+                                            <rect key="frame" x="284" y="12" width="20" height="19.5"/>
                                             <color key="color" systemColor="labelColor" cocoaTouchSystemColor="darkTextColor"/>
                                         </activityIndicatorView>
+                                        <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="PdS-EH-uWa">
+                                            <rect key="frame" x="16" y="39" width="288" height="34"/>
+                                        </imageView>
                                     </subviews>
+                                    <constraints>
+                                        <constraint firstItem="eC3-LX-IY4" firstAttribute="centerY" secondItem="LGt-vl-ktm" secondAttribute="centerY" id="1ra-d8-riy"/>
+                                        <constraint firstItem="eC3-LX-IY4" firstAttribute="leading" secondItem="mHw-1S-Ubx" secondAttribute="leadingMargin" id="65w-Lp-Usz"/>
+                                        <constraint firstItem="eC3-LX-IY4" firstAttribute="top" secondItem="mHw-1S-Ubx" secondAttribute="topMargin" constant="1" id="JJ0-pL-wFq"/>
+                                        <constraint firstItem="LGt-vl-ktm" firstAttribute="trailing" secondItem="PdS-EH-uWa" secondAttribute="trailing" id="KUN-Fr-wRL"/>
+                                        <constraint firstItem="LGt-vl-ktm" firstAttribute="leading" secondItem="eC3-LX-IY4" secondAttribute="trailing" constant="8" id="MKD-va-snv"/>
+                                        <constraint firstItem="eC3-LX-IY4" firstAttribute="leading" secondItem="PdS-EH-uWa" secondAttribute="leading" id="Ybk-hP-qsM"/>
+                                        <constraint firstItem="PdS-EH-uWa" firstAttribute="top" secondItem="eC3-LX-IY4" secondAttribute="bottom" constant="7.5" id="bVg-jF-5wd"/>
+                                        <constraint firstItem="eC3-LX-IY4" firstAttribute="top" secondItem="LGt-vl-ktm" secondAttribute="top" id="fAf-YA-dol"/>
+                                        <constraint firstItem="PdS-EH-uWa" firstAttribute="bottom" secondItem="mHw-1S-Ubx" secondAttribute="bottomMargin" id="kNf-pC-0HP"/>
+                                        <constraint firstItem="LGt-vl-ktm" firstAttribute="trailing" secondItem="mHw-1S-Ubx" secondAttribute="trailingMargin" id="pYv-WF-6gK"/>
+                                    </constraints>
                                 </tableViewCellContentView>
                                 <connections>
                                     <outlet property="downloadProgressView" destination="LGt-vl-ktm" id="LFk-Uu-WSe"/>
                                     <outlet property="fontNameLabel" destination="eC3-LX-IY4" id="WTX-zX-vlR"/>
+                                    <outlet property="fontPreviewImageView" destination="PdS-EH-uWa" id="yyg-6t-Pat"/>
                                     <segue destination="vC3-pB-5Vb" kind="showDetail" identifier="show.detail" id="P8n-YU-qfu"/>
                                 </connections>
                             </tableViewCell>
