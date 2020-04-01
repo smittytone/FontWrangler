@@ -24,6 +24,7 @@ class UserFont: NSObject, NSCoding, NSSecureCoding {
     var isInstalled: Bool = false           // Is the font installed on the iPad?
     var isDownloaded: Bool = false           // Is the font newly extracted from the app's Documents folder?
     var progress: Progress? = nil
+    var familyCount: Int = 0
 
     // MARK: - Initialization Methods
 
@@ -36,6 +37,7 @@ class UserFont: NSObject, NSCoding, NSSecureCoding {
         self.isInstalled = false
         self.isDownloaded = false
         self.progress = nil
+        self.familyCount = 0
     }
     
     
@@ -50,6 +52,7 @@ class UserFont: NSObject, NSCoding, NSSecureCoding {
         self.isInstalled = false
         self.isDownloaded = false
         self.progress = nil
+        self.familyCount = 0
        
         // Support iOS 12+ secure method for decoding objects
         self.version = decoder.decodeObject(of: NSString.self, forKey: "font.version") as String? ?? ""

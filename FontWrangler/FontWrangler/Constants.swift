@@ -4,14 +4,18 @@
 
 
 import Foundation
+import CoreGraphics
+
 
 // MARK: Constants
 
-let kFontsDirectoryPath     = "/fonts"
-let kFontListFileSubPath    = "/.fontlist"
+let kFontsDirectoryPath                 = "/fonts"
+let kFontListFileSubPath                = "/.fontlist"
 
-let kDeregisterFontTimeout  = 10.0
+let kDeregisterFontTimeout              = 10.0
+let KBaseUserSampleFontSize: CGFloat    = 20.0
+let kBaseDynamicSampleFontSize: CGFloat = 20.0
 
-let kFontSampleText_1       = "ABCDEFGHI\nJKLMNOPQ\nRSTUVWXYZ\n\n0123456789\n\nabcdefghi\njklmnopq\nrstuvwxyz\n\n!@£$%^&~*()[]{}"
+let kFontSampleText_1                   = "ABCDEFGHI\nJKLMNOPQ\nRSTUVWXYZ\n0123456789\nabcdefghi\njklmnopq\nrstuvwxyz\n!@£$%^&~*()[]{}"
 
-let kDefaultsPath           = "/defaults.json"
+let kDefaultsPath                       = "/defaults.json"

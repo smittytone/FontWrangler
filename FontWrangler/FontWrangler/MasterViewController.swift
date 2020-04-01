@@ -18,8 +18,10 @@ class MasterViewController: UITableViewController {
 
     private var detailViewController: DetailViewController? = nil
     private var fonts = [UserFont]()
+    private var families = [FontFamily]()
     private var installButton: UIBarButtonItem? = nil
-  
+    private var isFontListLoaded: Bool = false
+    private var gotFontFamilies: Bool = false
     
     // MARK:- Private Instance Constants
 
@@ -135,6 +137,7 @@ class MasterViewController: UITableViewController {
             
             // Extract the JSON data into UserFont instances
             let fonts = fontDictionary["fonts"] as! [Any]
+            
             for font in fonts {
                 let aFont = font as! [String:String]
                 let newFont = UserFont()
@@ -147,9 +150,35 @@ class MasterViewController: UITableViewController {
         
         // Sort the list
         self.sortFonts()
+    }
+    
+    
+    func getCounts() {
         
-        // Generate the font state database
-        self.saveFontList()
+        var currentFamily: String = ""
+        var currentCount: Int = 0
+        
+        for font: UserFont in self.fonts {
+            if font.tag != currentFamily {
+                currentCount = self.getCount(font.tag)
+                currentFamily = font.tag
+            }
+            
+            font.familyCount = currentCount
+        }
+    }
+    
+    
+    func getCount(_ tag: String) -> Int {
+        
+        var count: Int = 0
+        for font: UserFont in self.fonts {
+            if font.tag == tag {
+                count += 1
+            }
+        }
+        
+        return count
     }
     
     
@@ -159,13 +188,16 @@ class MasterViewController: UITableViewController {
         // the app knows about and is managing
 
         // Load the saved list from disk
+        // NOTE If nothing is loaded from disk, 'self.fonts' will be the defaults
         self.loadFontList()
+        
+        // get the font families
+        self.getFamilies()
 
-        // Double-check what's installed
+        // Double-check what's installed and what isn't and
+        // update the fonts' status
+        // NOTE This will save the list always
         self.updateListedFonts()
-
-        // Sort the list of fonts A-Z
-        self.sortFonts()
 
         // Reload the table
         self.tableView.reloadData()
@@ -175,46 +207,106 @@ class MasterViewController: UITableViewController {
     func loadFontList() {
 
         // Load in the persisted font list, if it is present
-
-        // Get the path to the list file
-        let loadPath = self.docsPath + kFontListFileSubPath
-
-        if FileManager.default.fileExists(atPath: loadPath) {
-            // Create an array of UserFont instances to hold the loaded data
-            var loadedFonts = [UserFont]()
-
-            do {
-                // Try to load in the file as data then unarchive that data
-                let data: Data = try Data(contentsOf: URL.init(fileURLWithPath: loadPath))
-                loadedFonts = try NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(data) as! [UserFont]
-            } catch {
-                // Font list is damaged in some way - remove it and warn the user
-                NSLog("[ERROR] Could not font load list file: \(error.localizedDescription)")
+        
+        if !self.isFontListLoaded {
+            // Get the path to the list file
+            let loadPath = self.docsPath + kFontListFileSubPath
+            
+            if FileManager.default.fileExists(atPath: loadPath) {
+                // Create an array of UserFont instances to hold the loaded data
+                var loadedFonts = [UserFont]()
 
                 do {
-                    try FileManager.default.removeItem(atPath: loadPath)
+                    // Try to load in the file as data then unarchive that data
+                    let data: Data = try Data(contentsOf: URL.init(fileURLWithPath: loadPath))
+                    loadedFonts = try NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(data) as! [UserFont]
                 } catch {
-                    NSLog("[ERROR] Could not delete damaged font list file: \(error.localizedDescription)")
+                    // Font list is damaged in some way - remove it and warn the user
+                    NSLog("[ERROR] Could not font load list file: \(error.localizedDescription)")
+
+                    do {
+                        try FileManager.default.removeItem(atPath: loadPath)
+                    } catch {
+                        NSLog("[ERROR] Could not delete damaged font list file: \(error.localizedDescription)")
+                    }
+
+                    self.showAlert("Sorry, your font database has become damaged", "Please re-install your fonts")
+                    return
                 }
 
-                self.showAlert("Sorry, your font database has become damaged", "Please re-install your fonts")
-                return
-            }
+                if loadedFonts.count > 0 {
+                    // We loaded in some valid data so set it as the primary store
+                    // NOTE This must come before any other font addition/removal code
+                    //      because it resets 'self.fonts'
+                    self.fonts = loadedFonts
+                    self.isFontListLoaded = true
 
-            if loadedFonts.count > 0 {
-                // We loaded in some valid data so set it as the primary store
-                // NOTE This must come before any other font addition/removal code
-                //      because it resets 'self.fonts'
-                self.fonts = loadedFonts
-
-                #if DEBUG
-                    print("Font list file loaded: \(loadPath)")
-                #endif
+                    #if DEBUG
+                        print("Font list file loaded: \(loadPath)")
+                    #endif
+                }
+            } else {
+                // NOTE If the file doesn't exist, we use the defaults we previously loaded
+                // TODO Should this be an error we expose to the user? If so, only only later calls
+                self.saveFontList()
             }
         }
     }
     
-
+    
+    func getFamilies() {
+        
+        // Create a list of font families if we don't have one
+        
+        if !self.gotFontFamilies {
+            // Clear the existing list before we begin
+            self.families = [FontFamily]()
+            
+            // Run through the font list to extract family names via tags
+            // NOTE This may change
+            for font: UserFont in self.fonts {
+                var got = false
+                for family: FontFamily in self.families {
+                    if family.name == font.tag.capitalized {
+                        got = true
+                        break
+                    }
+                }
+                
+                if !got {
+                    let newFamily: FontFamily = FontFamily()
+                    newFamily.name = font.tag.capitalized
+                    self.families.append(newFamily)
+                }
+            }
+            
+            // Sort the family list A-Z
+            self.families.sort{ (family_1, family_2) -> Bool in
+                return (family_1.name < family_2.name)
+            }
+            
+            // For each family we now know about, add member fonts
+            // to its own array of fonts
+            for family: FontFamily in self.families {
+                for font: UserFont in self.fonts {
+                    if font.tag.capitalized == family.name {
+                        if family.fonts == nil {
+                            family.fonts = [UserFont]()
+                        }
+                        
+                        if family.fonts != nil {
+                            family.fonts!.append(font)
+                        }
+                    }
+                }
+            }
+            
+            // Mark that we're done
+            self.gotFontFamilies = true
+        }
+    }
+    
+    
     @objc func saveFontList() {
 
         // Persist the app's font database
@@ -401,7 +493,7 @@ class MasterViewController: UITableViewController {
             for font: UserFont in self.fonts {
                 font.isInstalled = false
             }
-
+            
             // Map regsitered fonts to our list to record which have been registered
             for registeredDescriptor in registeredDescriptors {
                 if let fontName = CTFontDescriptorCopyAttribute(registeredDescriptor, kCTFontNameAttribute) as? String {
@@ -431,7 +523,7 @@ class MasterViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
 
         // NOTE Add one for the header cell
-        return self.fonts.count + 1
+        return self.families.count + 1
     }
 
 
@@ -447,22 +539,47 @@ class MasterViewController: UITableViewController {
                                                                                         for: indexPath) as! FontWranglerFontListTableViewCell
 
             // Get the referenced font and use its name
-            let font = self.fonts[indexPath.row - 1]
-            cell.fontNameLabel!.text = font.name
-
-            // Add a tick if the font is installed
-            if font.isInstalled {
-                if let accessoryImage: UIImage = UIImage.init(systemName: "checkmark.circle.fill") {
-                    let accessoryView: UIView = UIImageView.init(image: accessoryImage)
-                    cell.accessoryView = accessoryView
+            let family = self.families[indexPath.row - 1]
+            cell.fontNameLabel!.text = family.name
+            
+            if let fonts = family.fonts {
+                cell.fontCountLabel.text = "Fonts: \(fonts.count)"
+                
+                let font: UserFont = fonts[0]
+                // Add a tick if the font is installed
+                if font.isInstalled {
+                    if let accessoryImage: UIImage = UIImage.init(systemName: "checkmark.circle.fill") {
+                        let accessoryView: UIView = UIImageView.init(image: accessoryImage)
+                        cell.accessoryView = accessoryView
+                    } else {
+                        cell.accessoryView = nil
+                    }
                 } else {
-                    cell.accessoryView = nil
+                    if let accessoryImage: UIImage = UIImage.init(named: "spacer") {
+                        let accessoryView: UIView = UIImageView.init(image: accessoryImage)
+                        cell.accessoryView = accessoryView
+                    } else {
+                        cell.accessoryView = nil
+                    }                }
+                
+                // Show and animate the UIActivityIndicator during downloads
+                if font.progress != nil {
+                    if !cell.downloadProgressView.isAnimating {
+                        cell.downloadProgressView!.startAnimating()
+                    }
+                } else {
+                    if cell.downloadProgressView.isAnimating {
+                        cell.downloadProgressView!.stopAnimating()
+                    }
                 }
             } else {
-                cell.accessoryView = nil
+                cell.fontCountLabel.text = "Fonts: 0"
             }
-
-            cell.fontPreviewImageView.image = UIImage.init(named: font.tag)
+            
+            
+            
+            // Set preview image
+            cell.fontPreviewImageView.image = UIImage.init(named: family.name.lowercased())
 
             /*
             if let accessoryImage: UIImage = font.isInstalled ? UIImage.init(systemName: "checkmark.circle.fill") : UIImage.init(systemName: "circle") {
@@ -471,16 +588,7 @@ class MasterViewController: UITableViewController {
             }
             */
 
-            // Show and animate the UIActivityIndicator during downloads
-            if font.progress != nil {
-                if !cell.downloadProgressView.isAnimating {
-                    cell.downloadProgressView!.startAnimating()
-                }
-            } else {
-                if cell.downloadProgressView.isAnimating {
-                    cell.downloadProgressView!.stopAnimating()
-                }
-            }
+            
 
             return cell
         }
@@ -620,13 +728,17 @@ class MasterViewController: UITableViewController {
 
         if segue.identifier == "show.detail" {
             if let indexPath = tableView.indexPathForSelectedRow {
-                let font: UserFont = fonts[indexPath.row - 1]
+                let family: FontFamily = families[indexPath.row - 1]
+                var font: UserFont? = nil
+                if let fonts = family.fonts {
+                    font = fonts[0]
+                }
+                
                 let controller = (segue.destination as! UINavigationController).topViewController as! DetailViewController
                 controller.detailItem = font
                 controller.navigationItem.leftBarButtonItem = splitViewController?.displayModeButtonItem
                 controller.navigationItem.leftItemsSupplementBackButton = true
                 self.detailViewController = controller
-                //self.splitViewController?.toggleMasterView()
             }
         }
     }

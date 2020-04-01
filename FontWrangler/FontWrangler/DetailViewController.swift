@@ -7,15 +7,22 @@ import UIKit
 
 class DetailViewController: UIViewController {
 
-    @IBOutlet weak var detailDescriptionLabel: UILabel!
+    @IBOutlet weak var fontStatusLabel: UILabel!
+    
+    @IBOutlet weak var dynamicSampleHeadLabel: UILabel!
+    @IBOutlet weak var dynamicSampleTextView: UITextView!
+    
+    @IBOutlet weak var userSampleHeadLabel: UILabel!
+    @IBOutlet weak var userSampleTextView: UITextView!
+    
     @IBOutlet weak var fontSizeLabel: UILabel!
-    @IBOutlet weak var isInstalledLabel: UILabel!
     @IBOutlet weak var fontSizeSlider: UISlider!
-    @IBOutlet weak var sampleImageView: UIImageView!
-    @IBOutlet weak var sampleNoteLabel: UILabel!
+    
 
-    var fontSize: Float = 48.0
+    var fontSize: CGFloat = kBaseDynamicSampleFontSize
+    var substituteFont: UIFont? = nil
 
+    
     var detailItem: UserFont? {
         
         didSet {
@@ -30,10 +37,19 @@ class DetailViewController: UIViewController {
     override func viewDidLoad() {
         
         super.viewDidLoad()
-
+        
+        // Set the base size
+        self.substituteFont = UIFont.init(name: "Arial", size: KBaseUserSampleFontSize)
+        self.fontSize = kBaseDynamicSampleFontSize
+        self.fontSizeSlider.value = Float(self.fontSize)
+        self.fontSizeLabel.text = "\(Int(self.fontSize))pt"
+        
         // Set the font sample text
-        self.detailDescriptionLabel.text = kFontSampleText_1
-        self.sampleNoteLabel.isHidden = true
+        self.dynamicSampleTextView.text = kFontSampleText_1
+        self.dynamicSampleTextView.isEditable = false
+        
+        // Block access to the user-entered sample
+        self.userSampleTextView.isEditable = false
         
         // Configure the detail view
         self.configureView()
@@ -48,65 +64,63 @@ class DetailViewController: UIViewController {
 
         // Make sure we can access the UI items -- they may not have been
         // instantiated, if 'self.detailItem' is set before the view loads
-        guard let detailLabel = self.detailDescriptionLabel else { return }
-        guard let installedLabel = self.isInstalledLabel else { return }
+        guard let statusLabel = self.fontStatusLabel else { return }
+        guard let dynamicLabel = self.dynamicSampleTextView else { return }
+        guard let sampleNote = self.userSampleTextView else { return }
         guard let sizeLabel = self.fontSizeLabel else { return }
         guard let sizeSlider = self.fontSizeSlider else { return }
-        guard let sampleImage = self.sampleImageView else { return }
-        guard let sampleNote = self.sampleNoteLabel else { return }
-
+        
+        // Generic cases
+        sizeSlider.isEnabled = false
+        
         if let detail = self.detailItem {
             // We have an item to display, so load the font and register
             // it for this process only
             
+            // Set the view title and show the detail
+            self.title = detail.name
+            
+            // Prepare the status label
+            let ext = (detail.path as NSString).pathExtension.lowercased()
+            var labelText: String
+            
             if detail.isInstalled {
-                sampleImage.isHidden = true
-                sampleNote.isHidden = true
-
-                // Set the detail label's font to match the loaded one
+                sampleNote.isEditable = true
+                
+                // Set the samples' fonts
                 if let font = UIFont.init(name: detail.name, size: CGFloat(self.fontSize)) {
-                    detailLabel.font = font
-                    detailLabel.text = kFontSampleText_1
+                    dynamicLabel.font = font
                 }
                 
-                // Set the font installation state label
-                let ext = (detail.path as NSString).pathExtension.lowercased()
-                var labelText = "This is " + (ext == "otf" ? "an OpenType" : "a TrueType" ) + " font and is "
+                if let font = UIFont.init(name: detail.name, size: KBaseUserSampleFontSize) {
+                    sampleNote.font = font
+                }
+                
+                // Set the font state label
+                labelText = "This is " + (ext == "otf" ? "an OpenType" : "a TrueType" ) + " font and is "
                 labelText += (detail.isInstalled ? "installed" : "not installed") + " on this iPad"
-                installedLabel.text = labelText
 
                 // Set the font size slider control and label
                 sizeSlider.isEnabled = true
                 sizeLabel.text = "\(Int(self.fontSize))pt"
 
             } else {
-                //detailLabel.font = UIFont.init(name: "Arial", size: 38.0)
-                detailLabel.text = ""
-                
-                let ext = (detail.path as NSString).pathExtension.lowercased()
-                let labelText = "This is " + (ext == "otf" ? "an OpenType" : "a TrueType" ) + " font"
-                installedLabel.text = labelText
-                
-                sizeSlider.isEnabled = false
+                dynamicLabel.font = self.substituteFont
 
-                sampleImage.image = UIImage.init(named: detail.name.lowercased())
-                sampleImage.isHidden = false
-                sampleNote.isHidden = false
+                sampleNote.font = substituteFont
+                sampleNote.isEditable = false
+                
+                labelText = "This is " + (ext == "otf" ? "an OpenType" : "a TrueType" ) + " font"
             }
-
-            // Set the view title and show the detail
-            self.title = detail.name
-            detailLabel.isHidden = false
-            installedLabel.isHidden = false
+            
+            // Set the font status
+            statusLabel.text = labelText
         } else {
             // Hide the labels; disable the slider
-            detailLabel.isHidden = true
-            installedLabel.isHidden = true
-            sampleImageView.isHidden = true
-            sizeLabel.text = ""
-            sizeSlider.value = self.fontSize
-            sizeSlider.isEnabled = false
             self.title = "Font Info"
+            statusLabel.text = "No font selected"
+            sizeLabel.text = ""
+            sizeSlider.value = Float(self.fontSize)
         }
     }
 
@@ -115,7 +129,7 @@ class DetailViewController: UIViewController {
 
         // Respond to the user adjusting the font size slider
         
-        self.fontSize = self.fontSizeSlider.value
+        self.fontSize = CGFloat(self.fontSizeSlider.value)
         self.fontSizeLabel.text = "\(Int(self.fontSize))pt"
         self.configureView()
     }

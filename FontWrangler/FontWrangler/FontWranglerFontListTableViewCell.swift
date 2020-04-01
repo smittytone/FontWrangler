@@ -11,6 +11,7 @@ class FontWranglerFontListTableViewCell: UITableViewCell {
 
     @IBOutlet weak var downloadProgressView: UIActivityIndicatorView!
     @IBOutlet weak var fontNameLabel: UILabel!
+    @IBOutlet weak var fontCountLabel: UILabel!
     @IBOutlet weak var fontPreviewImageView: UIImageView!
 
 
