@@ -10,6 +10,7 @@ class FontFamily: NSObject {
     
     private var version: String = "1.0.0"       // Record version number - used to check for fields added later
     var name: String = ""                       // Family name, taken from the User Font tag
+    var tag: String = ""                        // Family name, taken from the User Font tag
     var fonts: [UserFont]? = nil                // Array of UserFont instances
     
 }

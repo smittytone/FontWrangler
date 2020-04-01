@@ -267,7 +267,7 @@ class MasterViewController: UITableViewController {
             for font: UserFont in self.fonts {
                 var got = false
                 for family: FontFamily in self.families {
-                    if family.name == font.tag.capitalized {
+                    if family.tag == font.tag {
                         got = true
                         break
                     }
@@ -275,7 +275,8 @@ class MasterViewController: UITableViewController {
                 
                 if !got {
                     let newFamily: FontFamily = FontFamily()
-                    newFamily.name = font.tag.capitalized
+                    newFamily.tag = font.tag
+                    newFamily.name = self.getPrinteableName(font.tag)
                     self.families.append(newFamily)
                 }
             }
@@ -289,7 +290,7 @@ class MasterViewController: UITableViewController {
             // to its own array of fonts
             for family: FontFamily in self.families {
                 for font: UserFont in self.fonts {
-                    if font.tag.capitalized == family.name {
+                    if font.tag == family.tag {
                         if family.fonts == nil {
                             family.fonts = [UserFont]()
                         }
@@ -560,7 +561,8 @@ class MasterViewController: UITableViewController {
                         cell.accessoryView = accessoryView
                     } else {
                         cell.accessoryView = nil
-                    }                }
+                    }
+                }
                 
                 // Show and animate the UIActivityIndicator during downloads
                 if font.progress != nil {
@@ -576,19 +578,8 @@ class MasterViewController: UITableViewController {
                 cell.fontCountLabel.text = "Fonts: 0"
             }
             
-            
-            
             // Set preview image
-            cell.fontPreviewImageView.image = UIImage.init(named: family.name.lowercased())
-
-            /*
-            if let accessoryImage: UIImage = font.isInstalled ? UIImage.init(systemName: "checkmark.circle.fill") : UIImage.init(systemName: "circle") {
-                let accessoryView: UIView = UIImageView.init(image: accessoryImage)
-                cell.accessoryView = accessoryView
-            }
-            */
-
-            
+            cell.fontPreviewImageView.image = UIImage.init(named: family.tag)
 
             return cell
         }
@@ -722,6 +713,26 @@ class MasterViewController: UITableViewController {
     }
 
 
+    func getPrinteableName(_ name: String, _ separator: String = "_") -> String {
+        
+        // Get the family human-readable name from the tag,
+        // eg. convert 'my_font_one' to 'My Font One'
+        
+        var printeableName: String = ""
+        let parts = (name as NSString).components(separatedBy: separator)
+        
+        if parts.count > 1 {
+            for part in parts {
+                printeableName += part.capitalized + " "
+            }
+        } else {
+            printeableName = parts[0].capitalized
+        }
+        
+        return printeableName
+    }
+    
+    
     // MARK: - Segues
 
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -739,6 +750,7 @@ class MasterViewController: UITableViewController {
                 controller.navigationItem.leftBarButtonItem = splitViewController?.displayModeButtonItem
                 controller.navigationItem.leftItemsSupplementBackButton = true
                 self.detailViewController = controller
+                self.detailViewController?.mvc = self
             }
         }
     }

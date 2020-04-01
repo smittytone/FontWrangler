@@ -121,17 +121,22 @@
 			attributes = {
 				KnownAssetTags = (
 					audiowide,
+					bebas_neue,
 					bebasneue,
+					black_ops_one,
 					blackopsone,
 					bungee,
 					caesar,
+					caesar_dressing,
 					comfortaa,
+					concert_one,
 					concertone,
 					creepster,
 					fruktur,
 					monoton,
 					righteous,
 					roboto,
+					special_elite,
 					specialelite,
 				);
 				LastSwiftUpdateCheck = 1130;

@@ -21,6 +21,7 @@ class DetailViewController: UIViewController {
 
     var fontSize: CGFloat = kBaseDynamicSampleFontSize
     var substituteFont: UIFont? = nil
+    var mvc: MasterViewController? = nil
 
     
     var detailItem: UserFont? {
@@ -78,7 +79,11 @@ class DetailViewController: UIViewController {
             // it for this process only
             
             // Set the view title and show the detail
-            self.title = detail.name
+            if self.mvc != nil {
+                self.title = self.mvc!.getPrinteableName(detail.name, "-")
+            } else {
+                self.title = detail.name
+            }
             
             // Prepare the status label
             let ext = (detail.path as NSString).pathExtension.lowercased()
