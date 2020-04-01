@@ -132,7 +132,6 @@
 					black_ops_one,
 					blackopsone,
 					bungee,
-					caesar,
 					caesar_dressing,
 					comfortaa,
 					concert_one,
@@ -143,7 +142,6 @@
 					righteous,
 					roboto,
 					special_elite,
-					specialelite,
 				);
 				LastSwiftUpdateCheck = 1130;
 				LastUpgradeCheck = 1130;

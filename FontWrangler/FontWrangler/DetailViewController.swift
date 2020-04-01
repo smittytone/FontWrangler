@@ -62,12 +62,19 @@ class DetailViewController: UIViewController, UIPopoverPresentationControllerDel
         // Block access to the user-entered sample
         self.userSampleTextView.isEditable = false
         self.userSampleTextView.alpha = 0.3
+
+        // Check for on-screen taps to end user sample editing
+        let gr: UITapGestureRecognizer = UITapGestureRecognizer.init(target: self, action: #selector(self.tap))
+        self.view?.addGestureRecognizer(gr)
         
         // Configure the detail view
         self.configureView()
+
+        // Show the master view
+        self.splitViewController?.toggleMasterView()
     }
-    
-    
+
+
     // MARK: - Presentation Functions
     
     func configureView() {
@@ -81,7 +88,6 @@ class DetailViewController: UIViewController, UIPopoverPresentationControllerDel
         guard let sampleNote = self.userSampleTextView else { return }
         guard let sizeLabel = self.fontSizeLabel else { return }
         guard let sizeSlider = self.fontSizeSlider else { return }
-        guard let parentView = self.dynamicSampleParentView else { return }
         
         // Generic cases
         sizeSlider.isEnabled = false
@@ -166,7 +172,15 @@ class DetailViewController: UIViewController, UIPopoverPresentationControllerDel
         self.configureView()
     }
     
-    
+
+    @objc func tap() {
+
+        // End editing of the user sample text view on a tap
+
+        self.userSampleTextView.endEditing(true)
+    }
+
+
     @objc func showVariantsMenu() {
         
         // Load and configure the menu view controller.
