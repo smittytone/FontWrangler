@@ -5,24 +5,16 @@
 
 import UIKit
 
+
 class FontVariantsTableViewCell: UITableViewCell {
 
+    // Simple custom UITableViewCell with its own properties but no
+    // custom or overridden functions. It is used to create the
+    // font variants menu in the app detail view
+    
+
+    // MARK: - UI properties
     
     @IBOutlet weak var name: UILabel!
-    
-    
-    override func awakeFromNib() {
-        
-        super.awakeFromNib()
-        // Initialization code
-    }
-
-    
-    override func setSelected(_ selected: Bool, animated: Bool) {
-        
-        super.setSelected(selected, animated: animated)
-
-        // Configure the view for the selected state
-    }
 
 }

@@ -8,24 +8,16 @@ import UIKit
 
 class FontWranglerFontListTableViewCell: UITableViewCell {
 
-
+    // Simple custom UITableViewCell with its own properties but no
+    // custom or overridden functions. It is used in the app master
+    // view to display each font family
+    
+    
+    // MARK: - UI properties
+    
     @IBOutlet weak var downloadProgressView: UIActivityIndicatorView!
     @IBOutlet weak var fontNameLabel: UILabel!
     @IBOutlet weak var fontCountLabel: UILabel!
     @IBOutlet weak var fontPreviewImageView: UIImageView!
-
-
-    override func awakeFromNib() {
-
-        super.awakeFromNib()
-    }
-
-
-    override func setSelected(_ selected: Bool, animated: Bool) {
-
-        super.setSelected(selected, animated: animated)
-
-        // Configure the view for the selected state
-    }
 
 }

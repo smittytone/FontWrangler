@@ -5,8 +5,11 @@
 
 import UIKit
 
+
 class DetailViewController: UIViewController, UIPopoverPresentationControllerDelegate {
 
+    // MARK: - UI properties
+    
     @IBOutlet weak var fontStatusLabel: UILabel!
     
     @IBOutlet weak var dynamicSampleHeadLabel: UILabel!
@@ -20,6 +23,8 @@ class DetailViewController: UIViewController, UIPopoverPresentationControllerDel
     @IBOutlet weak var fontSizeSlider: UISlider!
     
 
+    // MARK: - Object properties
+    
     var fontSize: CGFloat = kBaseDynamicSampleFontSize
     var substituteFont: UIFont? = nil
     var mvc: MasterViewController? = nil
@@ -64,7 +69,7 @@ class DetailViewController: UIViewController, UIPopoverPresentationControllerDel
         self.userSampleTextView.alpha = 0.3
 
         // Check for on-screen taps to end user sample editing
-        let gr: UITapGestureRecognizer = UITapGestureRecognizer.init(target: self, action: #selector(self.tap))
+        let gr: UITapGestureRecognizer = UITapGestureRecognizer.init(target: self, action: #selector(self.doTap))
         self.view?.addGestureRecognizer(gr)
         
         // Configure the detail view
@@ -97,12 +102,28 @@ class DetailViewController: UIViewController, UIPopoverPresentationControllerDel
             // it for this process only
             
             // Set the view title and show the detail
+            
+
             if self.mvc != nil {
-                self.title = self.mvc!.getPrinteableName(detail.name, "-")
+                if self.currentFamily != nil {
+                    if detail.tag == "bungee" {
+                        // Set Quirk for Bungee, which has non-variant fonts under the same tag
+                        let name: NSString = detail.name as NSString
+                        let index = name.range(of: "-")
+                        let variantType = name.substring(from: index.location + 1)
+                        let range: NSRange = NSRange(location: 6, length: index.location - 6)
+                        let fontName = name.substring(with: range)
+                        self.title = "Bungee " + (fontName != "" ? fontName : variantType)
+                    } else {
+                        self.title = self.currentFamily!.name + " " + self.getVariantName(detail.name)
+                    }
+                } else {
+                    self.title = self.mvc!.getPrinteableName(detail.name, "-")
+                }
             } else {
                 self.title = detail.name
             }
-            
+
             // Prepare the status label
             let ext = (detail.path as NSString).pathExtension.lowercased()
             var labelText: String
@@ -121,10 +142,6 @@ class DetailViewController: UIViewController, UIPopoverPresentationControllerDel
                     sampleNote.font = font
                 }
                 
-                // Set the font state label
-                labelText = "This is " + (ext == "otf" ? "an OpenType" : "a TrueType" ) + " font and is "
-                labelText += (detail.isInstalled ? "installed" : "not installed") + " on this iPad"
-
                 // Set the font size slider control and label
                 sizeSlider.isEnabled = true
                 sizeLabel.text = "\(Int(self.fontSize))pt"
@@ -137,11 +154,11 @@ class DetailViewController: UIViewController, UIPopoverPresentationControllerDel
                 sampleNote.font = substituteFont
                 sampleNote.isEditable = false
                 sampleNote.alpha = 0.3
-                
-                labelText = "This is " + (ext == "otf" ? "an OpenType" : "a TrueType" ) + " font"
             }
             
             // Set the font status
+            labelText = "This is " + (ext == "otf" ? "an OpenType" : "a TrueType" ) + " font and is "
+            labelText += (detail.isInstalled ? "installed" : "not installed") + " on this iPad"
             statusLabel.text = labelText
             
             // Enable or disable the Variants button according to whether there are any
@@ -162,7 +179,9 @@ class DetailViewController: UIViewController, UIPopoverPresentationControllerDel
         }
     }
 
-
+    
+    // MARK: - Action Functions
+    
     @IBAction func setFontSize(_ sender: Any) {
 
         // Respond to the user adjusting the font size slider
@@ -173,7 +192,7 @@ class DetailViewController: UIViewController, UIPopoverPresentationControllerDel
     }
     
 
-    @objc func tap() {
+    @objc func doTap() {
 
         // End editing of the user sample text view on a tap
 
@@ -212,6 +231,14 @@ class DetailViewController: UIViewController, UIPopoverPresentationControllerDel
                    
         // Present the view controller (in a popover).
         self.present(fvc, animated: true, completion: nil)
+    }
+    
+    
+    func getVariantName(_ fontName: String) -> String {
+        
+        let name: NSString = fontName as NSString
+        let index = name.range(of: "-")
+        return name.substring(from: index.location + 1).capitalized
     }
 
 }

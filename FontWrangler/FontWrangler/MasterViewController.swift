@@ -6,14 +6,6 @@
 import UIKit
 
 
-extension UISplitViewController {
-    func toggleMasterView() {
-        let barButtonItem = self.displayModeButtonItem
-        let _ = UIApplication.shared.sendAction(barButtonItem.action!, to: barButtonItem.target, from: nil, for: nil)
-    }
-}
-
-
 class MasterViewController: UITableViewController {
 
     // MARK:- Private Instance Properties
@@ -43,7 +35,7 @@ class MasterViewController: UITableViewController {
                                           style: .plain,
                                           target: self,
                                           action: #selector(self.showHelp(_:)))
-        navigationItem.rightBarButtonItem = helpButton
+        navigationItem.leftBarButtonItem = helpButton
 
         // Set up the 'Install' button on the right
         let rightButton = UIBarButtonItem(title: "Add All",
@@ -163,12 +155,12 @@ class MasterViewController: UITableViewController {
         self.loadFontList()
         
         // Determing the font families available in the font list
-        self.getFamilies()
+        self.setFontFamilies()
 
         // Double-check what's installed and what isn't and
         // update the fonts' status
         // NOTE This will save the list always
-        self.updateListedFontsStatus()
+        self.updateFamilyStatus()
 
         // Reload the table
         self.tableView.reloadData()
@@ -213,7 +205,7 @@ class MasterViewController: UITableViewController {
                     self.isFontListLoaded = true
 
                     #if DEBUG
-                        print("Font list file loaded: \(loadPath)")
+                        //print("Fonts file loaded: \(loadPath)")
                     #endif
                 }
             } else {
@@ -230,38 +222,7 @@ class MasterViewController: UITableViewController {
     }
     
     
-    func updateListedFontsStatus() {
-
-        // Update the app's record of fonts in response to a notification
-        // from the system that some fonts' status has changed
-
-        // Get the registered (installed) fonts from the CTFontManager
-        if let registeredDescriptors = CTFontManagerCopyRegisteredFontDescriptors(.persistent, true) as? [CTFontDescriptor] {
-
-            // Assume no fonts hve been installed
-            for font: UserFont in self.fonts {
-                font.isInstalled = false
-            }
-
-            // Map regsitered fonts to our list to record which have been registered
-            for registeredDescriptor in registeredDescriptors {
-                if let fontName = CTFontDescriptorCopyAttribute(registeredDescriptor, kCTFontNameAttribute) as? String {
-                    for font: UserFont in self.fonts {
-                        if font.name == fontName {
-                            font.isInstalled = true
-                            break
-                        }
-                    }
-                }
-            }
-
-            // Persist the updated font list
-            self.saveFontList()
-        }
-    }
-
-
-    func getFamilies() {
+    func setFontFamilies() {
         
         // Create a list of font families if we don't have one
         
@@ -327,7 +288,7 @@ class MasterViewController: UITableViewController {
             try data.write(to: URL.init(fileURLWithPath: savePath))
 
             #if DEBUG
-                print("Font state saved \(savePath)")
+                //print("Font state saved \(savePath)")
             #endif
 
         } catch {
@@ -335,14 +296,37 @@ class MasterViewController: UITableViewController {
             self.showAlert("Error", "")
         }
     }
+    
+    
+    @objc func fontStatesChanged(_ sender: Any) {
+        
+        // The app has received a font status update notification
+        // eg. the user removed a font using the system UI
+
+        // Update the families' status the UI
+        self.updateFamilyStatus()
+        self.updateUIonMain()
+    }
 
 
-    // MARK: - Font Handling
+    // MARK: - Family Handling Action Functions
 
     @objc func installAll(_ sender: Any) {
         
-        // Install all available fonts, downloading as necessary
-
+        // Install all available font families, downloading as necessary
+        
+        if self.families.count > 0 {
+            for family: FontFamily in self.families {
+                if !family.fontsAreInstalled {
+                    // If the family is not marked as installed,
+                    // assume it is not downloaded (it might be
+                    // present) and attempt to get it
+                    self.getOneFontFamily(family)
+                }
+            }
+        }
+        
+        /*
         if self.fonts.count > 0 {
             for font: UserFont in self.fonts {
                 // Only attempt to get uninstalled fonts
@@ -351,36 +335,51 @@ class MasterViewController: UITableViewController {
                 }
             }
         }
+        */
     }
 
-
+    
     func removeAll() {
 
         // Uninstall all available fonts
-
-        var fontDescs = [UIFontDescriptor]()
-        for font: UserFont in self.fonts {
-            // Create Font Descriptor for the unregister API
-            let fontDesc: UIFontDescriptor = UIFontDescriptor.init(name: font.name, size: 48.0)
-            fontDescs.append(fontDesc)
-
-            // Update our font record
-            font.isInstalled = false
-            font.isDownloaded = false
+        
+        if self.families.count > 0 {
+            var fontDescs = [UIFontDescriptor]()
+            for family: FontFamily in self.families {
+                if family.fontsAreDownloaded {
+                    family.fontsAreInstalled = false
+                    family.fontsAreDownloaded = false
+                    if let fonts: [UserFont] = family.fonts {
+                        for font: UserFont in fonts {
+                            let fontDesc: UIFontDescriptor = UIFontDescriptor.init(name: font.name, size: 48.0)
+                            fontDescs.append(fontDesc)
+                            font.isInstalled = false
+                            font.isDownloaded = false
+                        }
+                    }
+                }
+            }
+            
+            if fontDescs.count > 0 {
+                // Unregister the fonts via the API
+                CTFontManagerUnregisterFontDescriptors(fontDescs as CFArray,
+                                                       .persistent,
+                                                       self.familyRegistrationHandler(errors:done:))
+            }
         }
-
-        // Unregister the fonts via the API
-        CTFontManagerUnregisterFontDescriptors(fontDescs as CFArray,
-                                               .persistent,
-                                               self.registrationHandler(errors:done:))
     }
-
-
+    
+    
     func getOneFontFamily(_ family: FontFamily) {
 
         // Acquire a single font fsmily resource using on-demand
 
         if !family.fontsAreDownloaded {
+            
+            #if DEBUG
+                print("Family \(family.name) not downloaded")
+            #endif
+            
             // The fsmily's font resource has not been downloaded so get its asset catalog tag
             // ('family.tag') and assemble an asset request
             let tags: Set<String> = Set.init([family.tag])
@@ -402,7 +401,11 @@ class MasterViewController: UITableViewController {
                     NSLog("[ERROR] \(error!.localizedDescription)")
                     return
                 }
-
+                
+                #if DEBUG
+                    print("Family \(family.name) now downloaded")
+                #endif
+                
                 // Keep the downloaded file around permanently, ie.
                 // until the app is deleted
                 Bundle.main.setPreservationPriority(1.0, forTags: tags)
@@ -421,11 +424,155 @@ class MasterViewController: UITableViewController {
                 }
             }
         } else {
+            #if DEBUG
+                print("Family \(family.name) already downloaded")
+            #endif
+            
             self.registerFontFamily(family)
         }
     }
 
 
+    func registerFontFamily(_ family: FontFamily) {
+
+        // Register the family's fonts
+        // NOTE This displays the system's Install dialog
+
+        if let fonts: [UserFont] = family.fonts {
+            // Add the fonts' PostScript names to 'fontNames'
+            var fontNames = [String]()
+            for font: UserFont in fonts {
+                fontNames.append(font.name)
+            }
+            
+            #if DEBUG
+                print("Registering family \(family.name)")
+            #endif
+
+            // Register the family's fonts using the API
+            // NOTE outcome is operated asynchronously
+            CTFontManagerRegisterFontsWithAssetNames(fontNames as CFArray,
+                                                     nil,
+                                                     .persistent,
+                                                     true,
+                                                     self.familyRegistrationHandler(errors:done:))
+        }
+    }
+
+
+    func familyRegistrationHandler(errors: CFArray, done: Bool) -> Bool {
+
+        // A callback triggered in response to system-level font registration
+        // and re-registrations - see 'installFonts()' and 'uninstallFonts()'
+
+        // Process any errors passed in
+        let errs = errors as NSArray
+        if errs.count > 0 {
+            for err in errs {
+                // For now, just print the error
+                // TODO better error handling
+                NSLog("[ERROR] \(err)")
+            }
+
+            // As recommended, return false on error to
+            // halt further processing
+            return false
+        }
+
+        // System sets 'done' to true on the final call
+        // (according to the header file)
+        if done {
+            #if DEBUG
+                print("(De)registration operation complete")
+            #endif
+            
+            // Update the fonts' status and update the UI
+            // NOTE Have to do all families becuase we can't know
+            //      which family has been registered
+            self.updateFamilyStatus()
+            self.updateUIonMain()
+        }
+
+        // Signal OK
+        return true
+    }
+    
+    
+    func updateFamilyStatus() {
+        
+        // Update family status properties
+        // Where possible rely on the OS for state data
+        
+        // Update the status of all the fonts
+        self.updateFontStatus()
+        
+        #if DEBUG
+            print("---------------------------------------------------")
+        #endif
+        
+        // Use the font data to set the familiies' status
+        for family: FontFamily in self.families {
+            // Familities fonts have been downloaed - have they been installed?
+            // The number of font installations should match the number of
+            // fonts in the family
+            var installed: Int = 0
+            var downloaded: Int = 0
+            
+            if let fonts = family.fonts {
+                for font in fonts {
+                    installed += (font.isInstalled ? 1 : 0)
+                    downloaded += (font.isDownloaded ? 1 : 0)
+                }
+                
+                // Families are only considered installed if all their members are
+                family.fontsAreInstalled = installed == fonts.count
+                family.fontsAreDownloaded = downloaded == fonts.count
+            
+                #if DEBUG
+                    print("Family \(family.name): \(downloaded) downloads,  \(installed) installs of \(fonts.count)")
+                #endif
+            }
+        }
+    }
+    
+    
+    // MARK: - Font Handling Action Functions
+    
+    func updateFontStatus() {
+
+        // Update the app's record of fonts in response to a notification
+        // from the system that some fonts' status has changed
+        // Called by 'updateFamilyStatus()'
+
+        // Get the registered (installed) fonts from the CTFontManager
+        if let registeredDescriptors = CTFontManagerCopyRegisteredFontDescriptors(.persistent, true) as? [CTFontDescriptor] {
+
+            // Assume no fonts hve been installed
+            for font: UserFont in self.fonts {
+                font.isInstalled = false
+                font.isDownloaded = false
+            }
+
+            // Map regsitered fonts to our list to record which have been registered
+            for registeredDescriptor in registeredDescriptors {
+                if let fontName = CTFontDescriptorCopyAttribute(registeredDescriptor, kCTFontNameAttribute) as? String {
+                    for font: UserFont in self.fonts {
+                        if font.name == fontName {
+                            font.isInstalled = true
+                            font.isDownloaded = true
+                            break
+                        }
+                    }
+                }
+            }
+
+            // Persist the updated font list
+            self.saveFontList()
+        }
+    }
+    
+    
+    // REDUNDANT -- REMOVE NEXT BUILD
     func getOneFont(_ font: UserFont) {
         
         // Acquire a single font resource using on-demand
@@ -473,30 +620,7 @@ class MasterViewController: UITableViewController {
         }
     }
     
-
-    func registerFontFamily(_ family: FontFamily) {
-
-        // Register the family's fonts
-        // NOTE This displays the system's Install dialog
-
-        if let fonts = family.fonts {
-            // Add the fonts' PostScript names to 'fontNames'
-            var fontNames = [String]()
-            for font: UserFont in family.fonts {
-                fontNames.append(font.name)
-            }
-
-            // Register the family's fonts using the API
-            // NOTE outcome is operated asynchronously
-            CTFontManagerRegisterFontsWithAssetNames(fontNames as CFArray,
-                                                     nil,
-                                                     .persistent,
-                                                     true,
-                                    s                 self.registrationHandler(errors:done:))
-        }
-    }
-
-
+    // REDUNDANT -- REMOVE NEXT BUILD
     func registerFont(_ font: UserFont) {
         
         // Register a single font using the CoreText Font Manager
@@ -508,11 +632,12 @@ class MasterViewController: UITableViewController {
                                                  nil,
                                                  .persistent,
                                                  true,
-                                                 self.registrationHandler(errors:done:))
+                                                 self.fontRegistrationHandler(errors:done:))
     }
     
     
-    func registrationHandler(errors: CFArray, done: Bool) -> Bool {
+    // REDUNDANT -- REMOVE NEXT BUILD
+    func fontRegistrationHandler(errors: CFArray, done: Bool) -> Bool {
 
         // A callback triggered in response to system-level font registration
         // and re-registrations - see 'installFonts()' and 'uninstallFonts()'
@@ -536,8 +661,7 @@ class MasterViewController: UITableViewController {
         if done {
             // Update the fonts' status to match the system,
             // save, and update the UI
-            self.updateListedFontsStatus()
-            self.saveFontList()
+            self.updateFontStatus()
             self.updateUIonMain()
         }
 
@@ -546,33 +670,30 @@ class MasterViewController: UITableViewController {
     }
 
 
-    @objc func fontStatesChanged(_ sender: Any) {
-        
-        // The app has received a font status update notification
-        // eg. the user removed a font using the system UI
+    // REDUNDANT -- REMOVE NEXT BUILD
+    func removeAllFonts() {
 
-        // Update the font list's recorded installations, and
-        // update the UI
-        self.updateListedFontsStatus()
-        self.updateUIonMain()
-    }
+        // Uninstall all available fonts
 
+        var fontDescs = [UIFontDescriptor]()
+        for font: UserFont in self.fonts {
+            // Create Font Descriptor for the unregister API
+            let fontDesc: UIFontDescriptor = UIFontDescriptor.init(name: font.name, size: 48.0)
+            fontDescs.append(fontDesc)
 
-    func updateUIonMain() {
-
-        // Update the UI on the main thread
-        // (This function usually called from callbacks)
-
-        DispatchQueue.main.async {
-            if let dvc = self.detailViewController {
-                dvc.configureView()
-            }
-
-            // Set the 'Add All' button state and update the table
-            self.setInstallButtonState()
-            self.tableView.reloadData()
+            // Update our font record
+            font.isInstalled = false
+            font.isDownloaded = false
         }
+
+        // Unregister the fonts via the API
+        CTFontManagerUnregisterFontDescriptors(fontDescs as CFArray,
+                                               .persistent,
+                                               self.fontRegistrationHandler(errors:done:))
     }
+
+
+    
 
 
     // MARK: - Table View Data Source and Delegate Functions
@@ -610,14 +731,14 @@ class MasterViewController: UITableViewController {
             // Get all the fonts in the family
             if let fonts = family.fonts {
                 // Update the number of fonts in the family
-                cell.fontCountLabel.text = "Fonts: \(fonts.count)"
+                cell.fontCountLabel.text = "\(fonts.count) " + (fonts.count == 1 ? "font" : "fonts")
 
                 // Get the first font in the list, which should have the same
                 // status as the others
                 // TODO handle cases where it is not the same
-                let font: UserFont = fonts[0]
+                //let font: UserFont = fonts[0]
 
-                if font.isInstalled {
+                if family.fontsAreInstalled {
                     // Add a circled tick as the accessory if the font is installed
                     if let accessoryImage: UIImage = UIImage.init(systemName: "checkmark.circle.fill") {
                         let accessoryView: UIView = UIImageView.init(image: accessoryImage)
@@ -636,7 +757,7 @@ class MasterViewController: UITableViewController {
                 }
                 
                 // Show and animate the Activity Indicator during downloads
-                if font.progress != nil {
+                if family.progress != nil {
                     if !cell.downloadProgressView.isAnimating {
                         cell.downloadProgressView!.startAnimating()
                     }
@@ -647,7 +768,7 @@ class MasterViewController: UITableViewController {
                 }
             } else {
                 // Display a default font count, but this should never be seen
-                cell.fontCountLabel.text = "Fonts: 0"
+                cell.fontCountLabel.text = "No fonts"
             }
             
             // Set preview image using the font family's tags
@@ -660,47 +781,39 @@ class MasterViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, leadingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
 
         // Actions that appear when the table view cell is swiped L-R
-
+        // NOTE These actions affect all families
+    
         var config: UISwipeActionsConfiguration? = nil
         var action: UIContextualAction
 
         // Get the referenced family
         let family = self.families[indexPath.row - 1]
-        
-        // Get the first font in the family as a status check for the whole family
-        if let fonts = family.fonts {
-            // Get the first font in the list, which should have the same
-            // status as the others
-            // TODO handle cases where it is not the same
-            let font: UserFont = fonts[0]
 
-            if font.isInstalled {
-                // Configure a 'Remove All' action
-                action = UIContextualAction.init(style: .normal,
-                                                 title: "Remove All") { (theAction, theView, handler) in
-                                                    self.removeAll()
-                                                    handler(true)
-                }
-
-                // Set the colour to red
-                action.backgroundColor = UIColor.red
-            } else {
-                // Configure an 'Add All' action
-                action = UIContextualAction.init(style: .normal,
-                                                 title: "Add All") { (theAction, theView, handler) in
-                                                    self.installAll(self)
-                                                    handler(true)
-                }
-
-                // Set the colour to blue
-                action.backgroundColor = UIColor.systemBlue
+        if family.fontsAreInstalled {
+            // Configure a 'Remove All' action
+            action = UIContextualAction.init(style: .normal,
+                                             title: "Remove All") { (theAction, theView, handler) in
+                                                self.removeAll()
+                                                handler(true)
             }
 
-            // Create the config to be returned, making sure a full swipe DOESN'T auto-trigger
-            config = UISwipeActionsConfiguration.init(actions: [action])
-            config?.performsFirstActionWithFullSwipe = false
+            // Set the colour to red
+            action.backgroundColor = UIColor.red
+        } else {
+            // Configure an 'Add All' action
+            action = UIContextualAction.init(style: .normal,
+                                             title: "Add All") { (theAction, theView, handler) in
+                                                self.installAll(self)
+                                                handler(true)
+            }
+
+            // Set the colour to blue
+            action.backgroundColor = UIColor.systemBlue
         }
 
+        // Create the config to be returned, making sure a full swipe DOESN'T auto-trigger
+        config = UISwipeActionsConfiguration.init(actions: [action])
+        config?.performsFirstActionWithFullSwipe = false
         return config
     }
     
@@ -708,71 +821,89 @@ class MasterViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
         
         // Actions that appear when the table view cell is swiped R-Ls
+        // NOTE These actions are family specific
 
         var config: UISwipeActionsConfiguration? = nil
         var action: UIContextualAction
 
         // Get the referenced family
-        let family = self.families[indexPath.row - 1]
+        let family: FontFamily = self.families[indexPath.row - 1]
 
-        if let fonts = family.fonts {
-            // Get the first font in the list, which should have the same
-            // status as the others
-            // TODO handle cases where it is not the same
-            let font: UserFont = fonts[0]
+        // Get the first font in the list, which should have the same
+        // status as the others
+        // TODO handle cases where it is not the same
+        //let font: UserFont = fonts[0]
 
-            if font.isInstalled {
-                // Configure a 'Remove' action -- only one item affected: the table view cell's family
-                action = UIContextualAction.init(style: .normal,
-                                                 title: "Remove") { (theAction, theView, handler) in
-                                                    // We're removing all of the family's fonts, so get them
-                                                    var fontDescs = [UIFontDescriptor]()
-
-                                                    // Iterate the fonts, clearing their flags and adding their
+        if family.fontsAreInstalled {
+            // Configure a 'Remove' action -- only one item affected: the table view cell's family
+            action = UIContextualAction.init(style: .destructive,
+                                             title: "Remove") { (theAction, theView, handler) in
+                                                // We're removing all of the family's fonts, so get them
+                                                if let fonts: [UserFont] = family.fonts {
+                                                    // Iterate the family's fonts, clearing their flags and adding their
                                                     // FontDescriptors to the array we'll use to deregister them
-                                                    for font in fonts {
+                                                    var fontDescs = [UIFontDescriptor]()
+                                                    family.fontsAreInstalled = false
+                                                    family.fontsAreDownloaded = false
+                                                    
+                                                    for font: UserFont in fonts {
                                                         font.isInstalled = false
                                                         font.isDownloaded = false
                                                         let fontDesc: UIFontDescriptor = UIFontDescriptor.init(name: font.name,
                                                                                                                size: 48.0)
                                                         fontDescs.append(fontDesc)
                                                     }
-
-                                                    // Deregister the font using the API
+                                                        
+                                                    // Deregister the fonts using the API
                                                     CTFontManagerUnregisterFontDescriptors(fontDescs as CFArray,
                                                                                            .persistent,
-                                                                                           self.registrationHandler(errors:done:))
+                                                                                           self.fontRegistrationHandler(errors:done:))
                                                     handler(true)
-                }
-
-                // Configure a 'Remove All' action
-                action.backgroundColor = UIColor.red
-            } else {
-                // Configure an 'Add' action -- only one item affected: the table view cell's
-                action = UIContextualAction.init(style: .normal,
-                                                 title: "Add") { (theAction, theView, handler) in
-                                                    // Iterate the fonts, adding them one by one
-                                                    for font in fonts {
-                                                        self.getOneFont(font)
-                                                    }
-
-                                                    handler(true)
-                }
-
-                // Set the colour to blue
-                action.backgroundColor = UIColor.systemBlue
+                                                } else {
+                                                    handler(false)
+                                                }
             }
 
-            // Create the config to be returned, making sure a full swipe DOESN'T auto-trigger
-            config = UISwipeActionsConfiguration.init(actions: [action])
-            config?.performsFirstActionWithFullSwipe = false
+            // Set the colour
+            // action.backgroundColor = UIColor.red
+        } else {
+            // Configure an 'Add' action -- only one item affected: the table view cell's
+            action = UIContextualAction.init(style: .normal,
+                                             title: "Add") { (theAction, theView, handler) in
+                                                // Iterate the fonts, adding them one by one
+                                                self.getOneFontFamily(family)
+                                                handler(true)
+            }
+
+            // Set the colour to blue
+            action.backgroundColor = UIColor.systemBlue
         }
 
+        // Create the config to be returned, making sure a full swipe DOESN'T auto-trigger
+        config = UISwipeActionsConfiguration.init(actions: [action])
+        config?.performsFirstActionWithFullSwipe = false
         return config
     }
 
     
     // MARK: - UI Utility Functions
+    
+    func updateUIonMain() {
+
+        // Update the UI on the main thread
+        // (This function usually called from callbacks)
+
+        DispatchQueue.main.async {
+            if let dvc = self.detailViewController {
+                dvc.configureView()
+            }
+
+            // Set the 'Add All' button state and update the table
+            self.setInstallButtonState()
+            self.tableView.reloadData()
+        }
+    }
+    
     
     func showAlert(_ title: String, _ message: String) {
         
@@ -891,3 +1022,10 @@ class MasterViewController: UITableViewController {
     
 }
 
+
+extension UISplitViewController {
+    func toggleMasterView() {
+        let barButtonItem = self.displayModeButtonItem
+        let _ = UIApplication.shared.sendAction(barButtonItem.action!, to: barButtonItem.target, from: nil, for: nil)
+    }
+}
