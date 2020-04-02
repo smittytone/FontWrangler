@@ -411,6 +411,9 @@
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="uGE-lq-CRL"/>
                     </view>
+                    <connections>
+                        <outlet property="pageTextView" destination="MY1-jv-Fjy" id="1T6-pa-J2w"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="AE2-Rk-31n" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>

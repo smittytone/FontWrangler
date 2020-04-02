@@ -25,10 +25,11 @@ class DetailViewController: UIViewController, UIPopoverPresentationControllerDel
 
     // MARK: - Object properties
     
-    var fontSize: CGFloat = kBaseDynamicSampleFontSize
-    var substituteFont: UIFont? = nil
+    private var substituteFont: UIFont? = nil
+    private var variantsButton: UIBarButtonItem? = nil
+    private var fontSize: CGFloat = kBaseDynamicSampleFontSize
+
     var mvc: MasterViewController? = nil
-    var variantsButton: UIBarButtonItem? = nil
     var currentFamily: FontFamily? = nil
     
     var detailItem: UserFont? {

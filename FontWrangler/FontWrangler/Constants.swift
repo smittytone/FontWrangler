@@ -19,3 +19,5 @@ let kBaseDynamicSampleFontSize: CGFloat = 20.0
 let kFontSampleText_1                   = "ABCDEFGHI\nJKLMNOPQ\nRSTUVWXYZ\n0123456789\nabcdefghi\njklmnopq\nrstuvwxyz\n!@£$%^&~*()[]{}"
 
 let kDefaultsPath                       = "/defaults.json"
+
+let kHelpPageCount                      = 3

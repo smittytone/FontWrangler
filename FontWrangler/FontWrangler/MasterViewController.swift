@@ -489,8 +489,11 @@ class MasterViewController: UITableViewController {
             // Update the fonts' status and update the UI
             // NOTE Have to do all families becuase we can't know
             //      which family has been registered
-            self.updateFamilyStatus()
-            self.updateUIonMain()
+            DispatchQueue.main.async {
+                self.updateFamilyStatus()
+                self.setInstallButtonState()
+                self.tableView.reloadData()
+            }
         }
 
         // Signal OK
@@ -519,7 +522,7 @@ class MasterViewController: UITableViewController {
             var downloaded: Int = 0
             
             if let fonts = family.fonts {
-                for font in fonts {
+                for font: UserFont in fonts {
                     installed += (font.isInstalled ? 1 : 0)
                     downloaded += (font.isDownloaded ? 1 : 0)
                 }
@@ -906,8 +909,6 @@ class MasterViewController: UITableViewController {
         // (This function usually called from callbacks)
 
         DispatchQueue.main.async {
-            self.updateFontStatus()
-
             if let dvc = self.detailViewController {
                 dvc.configureView()
             }

@@ -10,11 +10,12 @@ import WebKit
 class HelpViewController: UIViewController, UIPageViewControllerDelegate, UIPageViewControllerDataSource {
     
     
-    @IBOutlet weak var pageHeaderLabel: UILabel!
-    
-    private var vcs = [HelpPageViewController]()
-    var index: Int = 0
+    // MARK: - Object properties
+
+    private var pageViewControllers = [HelpPageViewController]()
     private var pvc: UIPageViewController? = nil
+
+    var pageIndex: Int = 0
     
     
     // MARK: - Lifecycle Functions
@@ -23,16 +24,16 @@ class HelpViewController: UIViewController, UIPageViewControllerDelegate, UIPage
         
         super.viewDidLoad()
         
-        self.index = 0
+        self.pageIndex = 0
+
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
-        
         for i in 0..<3 {
             let hpvc: HelpPageViewController = storyboard.instantiateViewController(withIdentifier: "help.page.view") as! HelpPageViewController
-            hpvc.titleLabel?.text = "Page \(i)"
             hpvc.index = i
-            vcs.append(hpvc)
+            pageViewControllers.append(hpvc)
         }
-        
+
+        // Instantiate the Page View Controller
         self.pvc = UIPageViewController(transitionStyle: .scroll,
                                         navigationOrientation: .horizontal,
                                         options: nil)
@@ -43,14 +44,16 @@ class HelpViewController: UIViewController, UIPageViewControllerDelegate, UIPage
         frame.origin.y =  frame.origin.y + 40
         self.pvc?.view.frame = frame
         self.pvc?.view.backgroundColor = .clear
-        self.pvc?.setViewControllers([vcs[0]],
+        self.pvc?.setViewControllers([pageViewControllers[0]],
                                      direction: .forward,
                                      animated: true,
                                      completion: nil)
         self.addChild(self.pvc!)
         self.view.addSubview(self.pvc!.view)
         self.pvc?.didMove(toParent: self)
-        
+
+        // Use the proxy to set the Page View Controller's
+        // Page Control colours to work with Dark Mode
         let proxy = UIPageControl.appearance()
         proxy.pageIndicatorTintColor = UIColor.label.withAlphaComponent(0.4)
         proxy.currentPageIndicatorTintColor = UIColor.label
@@ -59,20 +62,25 @@ class HelpViewController: UIViewController, UIPageViewControllerDelegate, UIPage
 
     @IBAction func doClose(_ sender: Any) {
             
+        // Close the Help panel
+
         self.dismiss(animated: true, completion: nil)
     }
     
-    
+
+    // MARK: - Page View Controller Data Source Functions
+
     func pageViewController(_ pageViewController: UIPageViewController, viewControllerBefore viewController: UIViewController) -> UIViewController? {
         
         let hpvc: HelpPageViewController = viewController as! HelpPageViewController
         
         if hpvc.index == 0 {
+            // Return nil to indicate we can't go any further
             return nil
         }
         
-        self.index = hpvc.index - 1
-        return vcs[self.index]
+        self.pageIndex = hpvc.index - 1
+        return pageViewControllers[self.pageIndex]
     }
     
     
@@ -81,21 +89,25 @@ class HelpViewController: UIViewController, UIPageViewControllerDelegate, UIPage
         let hpvc: HelpPageViewController = viewController as! HelpPageViewController
         
         if hpvc.index == 2 {
+            // Return nil to indicate we can't go any further
             return nil
         }
         
-        self.index = hpvc.index + 1
-        return vcs[self.index]
+        self.pageIndex = hpvc.index + 1
+        return pageViewControllers[self.pageIndex]
     }
     
     
     func presentationCount(for: UIPageViewController) -> Int {
         
-        return 3
+        // NOTE This has to be set absolutely - the view controller has not been populated
+        //      when this is first called
+        return kHelpPageCount
     }
     
     func presentationIndex(for: UIPageViewController) -> Int {
         
-        return self.index
+        return self.pageIndex
     }
+
 }

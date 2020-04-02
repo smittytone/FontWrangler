@@ -9,12 +9,15 @@ import WebKit
 
 class HelpPageViewController: UIViewController {
 
-    
-    @IBOutlet weak var titleLabel: UILabel!
-    @IBOutlet weak var webpageView: WKWebView!
-    
+
+    // MARK: - UI properties
+
+    @IBOutlet weak var pageTextView: UITextView!
+
+    // MARK: - Object properties
+
     var index: Int = 0
-    private let bundlePath = Bundle.main.bundlePath
+
     
     override func viewDidLoad() {
         
