@@ -40,7 +40,7 @@ class HelpViewController: UIViewController, UIPageViewControllerDelegate, UIPage
         self.pvc?.delegate = self
         self.pvc?.dataSource = self
         var frame = self.view.frame
-        frame.size.height -= 100
+        frame.size.height -= 40
         frame.origin.y =  frame.origin.y + 40
         self.pvc?.view.frame = frame
         self.pvc?.view.backgroundColor = .clear
@@ -104,6 +104,7 @@ class HelpViewController: UIViewController, UIPageViewControllerDelegate, UIPage
         //      when this is first called
         return kHelpPageCount
     }
+
     
     func presentationIndex(for: UIPageViewController) -> Int {
         

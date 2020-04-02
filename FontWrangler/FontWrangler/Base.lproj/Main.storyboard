@@ -382,12 +382,11 @@
                             <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="zvV-yc-ut6">
                                 <rect key="frame" x="20" y="0.0" width="794" height="1112"/>
                                 <subviews>
-                                    <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" editable="NO" textAlignment="natural" selectable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="MY1-jv-Fjy">
+                                    <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" editable="NO" text="Help has not yet been implemented. It will be added in a future beta release." textAlignment="natural" selectable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="MY1-jv-Fjy">
                                         <rect key="frame" x="0.0" y="0.0" width="794" height="1112"/>
-                                        <string key="text">Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda.</string>
                                         <color key="textColor" systemColor="labelColor" cocoaTouchSystemColor="darkTextColor"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                        <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                                        <textInputTraits key="textInputTraits" autocapitalizationType="sentences" autocorrectionType="no" spellCheckingType="no" smartDashesType="no" smartInsertDeleteType="no"/>
                                     </textView>
                                 </subviews>
                                 <constraints>
@@ -447,33 +446,17 @@
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="oh5-xt-Knq">
-                                <rect key="frame" x="398.5" y="1062" width="37" height="30"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="30" id="05Q-Bu-xkF"/>
-                                    <constraint firstAttribute="width" constant="37" id="ieL-g3-PJc"/>
-                                </constraints>
-                                <state key="normal" title="Done"/>
-                                <connections>
-                                    <action selector="doClose:" destination="Yba-T0-ej9" eventType="touchUpInside" id="5HE-M0-vWZ"/>
-                                </connections>
-                            </button>
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                         <constraints>
-                            <constraint firstItem="oh5-xt-Knq" firstAttribute="centerX" secondItem="BYQ-dv-tgc" secondAttribute="centerX" id="0YF-9V-Igi"/>
                             <constraint firstItem="11w-id-O9F" firstAttribute="top" secondItem="ggl-8a-Lny" secondAttribute="top" id="PM1-45-gHi"/>
                             <constraint firstItem="ggl-8a-Lny" firstAttribute="trailing" secondItem="11w-id-O9F" secondAttribute="trailing" id="TCU-xY-z40"/>
-                            <constraint firstItem="ggl-8a-Lny" firstAttribute="bottom" secondItem="oh5-xt-Knq" secondAttribute="bottom" constant="20" id="URy-GQ-eK0"/>
                             <constraint firstItem="5QY-dF-S3i" firstAttribute="top" secondItem="ggl-8a-Lny" secondAttribute="top" constant="10" id="jhv-vh-nI7"/>
                             <constraint firstItem="5QY-dF-S3i" firstAttribute="leading" secondItem="ggl-8a-Lny" secondAttribute="leading" constant="20" id="qtp-pv-HUe"/>
                             <constraint firstItem="11w-id-O9F" firstAttribute="leading" secondItem="5QY-dF-S3i" secondAttribute="trailing" constant="8" id="y1u-kq-0lI"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="ggl-8a-Lny"/>
                     </view>
-                    <connections>
-                        <outlet property="pageHeaderLabel" destination="5QY-dF-S3i" id="b6j-jA-eSs"/>
-                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="xdt-Sk-O3R" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>

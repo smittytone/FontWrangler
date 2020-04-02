@@ -22,7 +22,19 @@ class HelpPageViewController: UIViewController {
     override func viewDidLoad() {
         
         super.viewDidLoad()
-        
+
+        /* Load in page content using NSAttributedString
+        let url = URL.init(fileURLWithPath: "/help/page\(self.index).html")
+        do {
+            let helpString: NSAttributedString = try NSAttributedString.init(url: url,
+                                                             options: [],
+                                                             documentAttributes: nil)
+            self.pageTextView.attributedText = helpString
+        } catch {
+            // Error
+        }
+        */
+
     }
     
 

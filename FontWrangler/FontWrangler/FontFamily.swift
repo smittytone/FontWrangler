@@ -21,7 +21,7 @@ class FontFamily: NSObject {
     var tag: String = ""                        // Family name, taken from the User Font tag
     var fontsAreDownloaded: Bool = false        // Are all the family's fonts downloaded?
     var fontsAreInstalled: Bool = false         // Are all the family's fonts installed?
-    var fonts: [UserFont]? = nil            // Array of UserFont instances
+    var fontIndices: [Int]? = nil               // Array of indices to fonts in primary array
     var progress: Progress? = nil
     
 }

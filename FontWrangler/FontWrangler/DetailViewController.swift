@@ -165,7 +165,7 @@ class DetailViewController: UIViewController, UIPopoverPresentationControllerDel
             // Enable or disable the Variants button according to whether there are any
             var count = 0
             if let family = self.currentFamily {
-                if let familyFonts = family.fonts {
+                if let familyFonts = family.fontIndices {
                     count = familyFonts.count
                 }
             }
@@ -210,17 +210,15 @@ class DetailViewController: UIViewController, UIPopoverPresentationControllerDel
         fvc.dvc = self
         
         // Set the popover's data
-        if let fonts = self.currentFamily!.fonts {
-            fvc.fonts = fonts
+        if let fontIndices = self.currentFamily!.fontIndices {
+            fvc.fontIndices = fontIndices
             
-            var index: Int = 0
-            for font: UserFont in fonts {
+            for fontIndex: Int in fontIndices {
+                let font: UserFont = mvc!.fonts[fontIndex]
                 if font == self.detailItem {
-                    fvc.currentFont = index
+                    fvc.currentFont = fontIndex
                     break
                 }
-                
-                index += 1
             }
         }
         

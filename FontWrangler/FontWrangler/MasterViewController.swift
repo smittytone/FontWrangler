@@ -12,7 +12,7 @@ class MasterViewController: UITableViewController {
 
     private var detailViewController: DetailViewController? = nil
     private var installButton: UIBarButtonItem? = nil
-    private var fonts = [UserFont]()
+    var fonts = [UserFont]()
     private var families = [FontFamily]()
     private var isFontListLoaded: Bool = false
     private var gotFontFamilies: Bool = false
@@ -257,13 +257,14 @@ class MasterViewController: UITableViewController {
             // For each family we now know about, add the member fonts
             // to its own array of font references
             for family: FontFamily in self.families {
-                for font: UserFont in self.fonts {
+                for i in 0..<self.fonts.count {
+                    let font: UserFont = self.fonts[i]
                     if font.tag == family.tag {
-                        if family.fonts == nil {
-                            family.fonts = [UserFont]()
+                        if family.fontIndices == nil {
+                            family.fontIndices = [Int]()
                         }
                         
-                        family.fonts!.append(font)
+                        family.fontIndices!.append(i)
                     }
                 }
             }
@@ -349,8 +350,9 @@ class MasterViewController: UITableViewController {
                 if family.fontsAreDownloaded {
                     family.fontsAreInstalled = false
                     family.fontsAreDownloaded = false
-                    if let fonts: [UserFont] = family.fonts {
-                        for font: UserFont in fonts {
+                    if let fontIndexes: [Int] = family.fontIndices {
+                        for fontIndex: Int in fontIndexes {
+                            let font: UserFont = self.fonts[fontIndex]
                             let fontDesc: UIFontDescriptor = UIFontDescriptor.init(name: font.name, size: 48.0)
                             fontDescs.append(fontDesc)
                             font.isInstalled = false
@@ -438,10 +440,11 @@ class MasterViewController: UITableViewController {
         // Register the family's fonts
         // NOTE This displays the system's Install dialog
 
-        if let fonts: [UserFont] = family.fonts {
+        if let fontIndexes: [Int] = family.fontIndices {
             // Add the fonts' PostScript names to 'fontNames'
             var fontNames = [String]()
-            for font: UserFont in fonts {
+            for fontIndex: Int in fontIndexes {
+                let font: UserFont = self.fonts[fontIndex]
                 fontNames.append(font.name)
             }
             
@@ -521,18 +524,19 @@ class MasterViewController: UITableViewController {
             var installed: Int = 0
             var downloaded: Int = 0
             
-            if let fonts = family.fonts {
-                for font: UserFont in fonts {
+            if let fontIndexes: [Int] = family.fontIndices {
+                for fontIndex: Int in fontIndexes {
+                    let font: UserFont = self.fonts[fontIndex]
                     installed += (font.isInstalled ? 1 : 0)
                     downloaded += (font.isDownloaded ? 1 : 0)
                 }
                 
                 // Families are only considered installed if all their members are
-                family.fontsAreInstalled = installed == fonts.count
-                family.fontsAreDownloaded = downloaded == fonts.count
+                family.fontsAreInstalled = installed == fontIndexes.count
+                family.fontsAreDownloaded = downloaded == fontIndexes.count
             
                 #if DEBUG
-                    print("Family '\(family.name)': downloads: \(downloaded),  installs: \(installed) of \(fonts.count)")
+                    print("Family '\(family.name)': downloads: \(downloaded),  installs: \(installed) of \(fontIndexes.count)")
                 #endif
             }
         }
@@ -744,9 +748,9 @@ class MasterViewController: UITableViewController {
             cell.fontNameLabel!.text = family.name
 
             // Get all the fonts in the family
-            if let fonts = family.fonts {
+            if let fontIndexes: [Int] = family.fontIndices {
                 // Update the number of fonts in the family
-                cell.fontCountLabel.text = "\(fonts.count) " + (fonts.count == 1 ? "font" : "fonts")
+                cell.fontCountLabel.text = "\(fontIndexes.count) " + (fontIndexes.count == 1 ? "font" : "fonts")
 
                 // Get the first font in the list, which should have the same
                 // status as the others
@@ -854,14 +858,15 @@ class MasterViewController: UITableViewController {
             action = UIContextualAction.init(style: .destructive,
                                              title: "Remove") { (theAction, theView, handler) in
                                                 // We're removing all of the family's fonts, so get them
-                                                if let fonts: [UserFont] = family.fonts {
+                                                if let fontIndexes: [Int] = family.fontIndices {
                                                     // Iterate the family's fonts, clearing their flags and adding their
                                                     // FontDescriptors to the array we'll use to deregister them
                                                     var fontDescs = [UIFontDescriptor]()
                                                     family.fontsAreInstalled = false
                                                     family.fontsAreDownloaded = false
                                                     
-                                                    for font: UserFont in fonts {
+                                                    for fontIndex: Int in fontIndexes {
+                                                        let font: UserFont = self.fonts[fontIndex]
                                                         font.isInstalled = false
                                                         font.isDownloaded = false
                                                         let fontDesc: UIFontDescriptor = UIFontDescriptor.init(name: font.name,
@@ -1027,8 +1032,8 @@ class MasterViewController: UITableViewController {
                 
                 // Get the first font on the list
                 var font: UserFont? = nil
-                if let fonts = family.fonts {
-                    font = fonts[0]
+                if let fontIndexes: [Int] = family.fontIndices {
+                    font = self.fonts[fontIndexes[0]]
                 }
 
                 // Get the detail controller and set key properties
@@ -1047,7 +1052,6 @@ class MasterViewController: UITableViewController {
             }
         }
     }
-    
 }
 
 

@@ -16,7 +16,7 @@ class FontVariantsTableViewController: UITableViewController {
     
     // MARK: - Object properties
     
-    var fonts: [UserFont]? = nil
+    var fontIndices: [Int]? = nil
     var currentFont: Int = -1
     var dvc: DetailViewController? = nil
     
@@ -41,7 +41,7 @@ class FontVariantsTableViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
         // Return the number of rows
-        return self.fonts == nil ? 0 : self.fonts!.count
+        return self.fontIndices == nil ? 0 : self.fontIndices!.count
     }
 
     
@@ -49,8 +49,8 @@ class FontVariantsTableViewController: UITableViewController {
         
         let cell: FontVariantsTableViewCell = tableView.dequeueReusableCell(withIdentifier: "variant.cell", for: indexPath) as! FontVariantsTableViewCell
         
-        if let fonts: [UserFont] = self.fonts {
-            let font: UserFont = fonts[indexPath.row]
+        if let fontIndexes: [Int] = self.fontIndices {
+            let font: UserFont = dvc!.mvc!.fonts[fontIndexes[indexPath.row]]
             
             if font.tag == "bungee" {
                 // Set Quirk for Bungee, which has non-variant fonts under the same tag
@@ -84,9 +84,14 @@ class FontVariantsTableViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
         // Update the (underlying) detail view with the newly selected variant
-        if let fonts: [UserFont] = self.fonts {
-            let font: UserFont = fonts[indexPath.row]
-            self.dvc!.detailItem = font
+        if let fontIndexes: [Int] = self.fontIndices {
+            if let advc = self.dvc {
+                if let amvc = advc.mvc {
+                    let font: UserFont = amvc.fonts[fontIndexes[indexPath.row]]
+                    advc.detailItem = font
+                }
+            }
+
         }
         
         self.dismiss(animated: true, completion: nil)
