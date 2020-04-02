@@ -377,7 +377,7 @@ class MasterViewController: UITableViewController {
         if !family.fontsAreDownloaded {
             
             #if DEBUG
-                print("Family \(family.name) not downloaded")
+                print("Family '\(family.name)' not downloaded")
             #endif
             
             // The fsmily's font resource has not been downloaded so get its asset catalog tag
@@ -403,7 +403,7 @@ class MasterViewController: UITableViewController {
                 }
                 
                 #if DEBUG
-                    print("Family \(family.name) now downloaded")
+                    print("Family '\(family.name)' now downloaded")
                 #endif
                 
                 // Keep the downloaded file around permanently, ie.
@@ -425,7 +425,7 @@ class MasterViewController: UITableViewController {
             }
         } else {
             #if DEBUG
-                print("Family \(family.name) already downloaded")
+                print("Family '\(family.name)' already downloaded")
             #endif
             
             self.registerFontFamily(family)
@@ -529,7 +529,7 @@ class MasterViewController: UITableViewController {
                 family.fontsAreDownloaded = downloaded == fonts.count
             
                 #if DEBUG
-                    print("Family \(family.name): \(downloaded) downloads,  \(installed) installs of \(fonts.count)")
+                    print("Family '\(family.name)': downloads: \(downloaded),  installs: \(installed) of \(fonts.count)")
                 #endif
             }
         }
@@ -556,10 +556,20 @@ class MasterViewController: UITableViewController {
             // Map regsitered fonts to our list to record which have been registered
             for registeredDescriptor in registeredDescriptors {
                 if let fontName = CTFontDescriptorCopyAttribute(registeredDescriptor, kCTFontNameAttribute) as? String {
+
+                    #if DEBUG
+                        print("CoreText Font Manager says '\(fontName)' is registered")
+                    #endif
+
                     for font: UserFont in self.fonts {
                         if font.name == fontName {
                             font.isInstalled = true
                             font.isDownloaded = true
+
+                            #if DEBUG
+                                print("Font list name matched for '\(font.name)'")
+                            #endif
+
                             break
                         }
                     }
@@ -568,6 +578,8 @@ class MasterViewController: UITableViewController {
 
             // Persist the updated font list
             self.saveFontList()
+        } else {
+            NSLog("[ERROR] Could not list new registrations")
         }
     }
     
@@ -661,7 +673,7 @@ class MasterViewController: UITableViewController {
         if done {
             // Update the fonts' status to match the system,
             // save, and update the UI
-            self.updateFontStatus()
+            //self.updateFontStatus()
             self.updateUIonMain()
         }
 
@@ -894,6 +906,8 @@ class MasterViewController: UITableViewController {
         // (This function usually called from callbacks)
 
         DispatchQueue.main.async {
+            self.updateFontStatus()
+
             if let dvc = self.detailViewController {
                 dvc.configureView()
             }

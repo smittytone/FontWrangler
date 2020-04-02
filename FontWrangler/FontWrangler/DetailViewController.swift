@@ -202,7 +202,8 @@ class DetailViewController: UIViewController, UIPopoverPresentationControllerDel
 
     @objc func showVariantsMenu() {
         
-        // Load and configure the menu view controller.
+        // Load and configure the font variants menu view controller
+
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         let fvc: FontVariantsTableViewController = storyboard.instantiateViewController(withIdentifier: "font.variants.controller") as! FontVariantsTableViewController
         fvc.dvc = self
@@ -235,6 +236,8 @@ class DetailViewController: UIViewController, UIPopoverPresentationControllerDel
     
     
     func getVariantName(_ fontName: String) -> String {
+        
+        // Extract the font variant from the font name
         
         let name: NSString = fontName as NSString
         let index = name.range(of: "-")
