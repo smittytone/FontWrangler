@@ -19,6 +19,12 @@
 		3B879A3A242E00B600BE47DC /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3B879A38242E00B600BE47DC /* LaunchScreen.storyboard */; };
 		3B879A43242E1C0100BE47DC /* UserFont.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B879A42242E1C0100BE47DC /* UserFont.swift */; };
 		3B9C64A32432887B0057B8ED /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3B9C64A22432887B0057B8ED /* Assets.xcassets */; };
+		3BA9276824360F9200B4BA99 /* HelpViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BA9276724360F9200B4BA99 /* HelpViewController.swift */; };
+		3BA927722436170400B4BA99 /* NetworkExtension.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3BA927712436170400B4BA99 /* NetworkExtension.framework */; };
+		3BA9277424361D3600B4BA99 /* HelpPageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BA9277324361D3600B4BA99 /* HelpPageViewController.swift */; };
+		3BA927792436281B00B4BA99 /* page1.html in Resources */ = {isa = PBXBuildFile; fileRef = 3BA927762436281A00B4BA99 /* page1.html */; };
+		3BA9277A2436281B00B4BA99 /* page0.html in Resources */ = {isa = PBXBuildFile; fileRef = 3BA927772436281A00B4BA99 /* page0.html */; };
+		3BA9277B2436281B00B4BA99 /* page2.html in Resources */ = {isa = PBXBuildFile; fileRef = 3BA927782436281A00B4BA99 /* page2.html */; };
 		3BD0DF4A24332B7F002878F7 /* FontWranglerFontListTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BD0DF4924332B7F002878F7 /* FontWranglerFontListTableViewCell.swift */; };
 		3BD7E1892431FD2600FD8941 /* Fonts.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3BD7E1882431FD2600FD8941 /* Fonts.xcassets */; };
 		3BD7E18B243212E200FD8941 /* defaults.json in Resources */ = {isa = PBXBuildFile; fileRef = 3BD7E18A243212E100FD8941 /* defaults.json */; };
@@ -41,6 +47,12 @@
 		3B879A41242E010200BE47DC /* FontWrangler.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = FontWrangler.entitlements; sourceTree = "<group>"; };
 		3B879A42242E1C0100BE47DC /* UserFont.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserFont.swift; sourceTree = "<group>"; };
 		3B9C64A22432887B0057B8ED /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Assets.xcassets; path = ../../../../../OneDrive/Programming/FontWrangler/Assets.xcassets; sourceTree = "<group>"; };
+		3BA9276724360F9200B4BA99 /* HelpViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HelpViewController.swift; sourceTree = "<group>"; };
+		3BA927712436170400B4BA99 /* NetworkExtension.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = NetworkExtension.framework; path = System/Library/Frameworks/NetworkExtension.framework; sourceTree = SDKROOT; };
+		3BA9277324361D3600B4BA99 /* HelpPageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HelpPageViewController.swift; sourceTree = "<group>"; };
+		3BA927762436281A00B4BA99 /* page1.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = page1.html; sourceTree = "<group>"; };
+		3BA927772436281A00B4BA99 /* page0.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = page0.html; sourceTree = "<group>"; };
+		3BA927782436281A00B4BA99 /* page2.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = page2.html; sourceTree = "<group>"; };
 		3BD0DF4924332B7F002878F7 /* FontWranglerFontListTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FontWranglerFontListTableViewCell.swift; sourceTree = "<group>"; };
 		3BD7E1882431FD2600FD8941 /* Fonts.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Fonts.xcassets; path = /Users/smitty/OneDrive/Programming/FontWrangler/Fonts.xcassets; sourceTree = "<absolute>"; };
 		3BD7E18A243212E100FD8941 /* defaults.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = defaults.json; path = ../../../../../OneDrive/Programming/FontWrangler/defaults.json; sourceTree = "<group>"; };
@@ -52,6 +64,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3BA927722436170400B4BA99 /* NetworkExtension.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -63,6 +76,7 @@
 			children = (
 				3B879A2A242E00B400BE47DC /* FontWrangler */,
 				3B879A29242E00B400BE47DC /* Products */,
+				3BA927702436170400B4BA99 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -85,9 +99,12 @@
 				3BD0DF4924332B7F002878F7 /* FontWranglerFontListTableViewCell.swift */,
 				3B4C6D972434E88A00C1C5CB /* FontVariantsTableViewController.swift */,
 				3B4C6D992434E90900C1C5CB /* FontVariantsTableViewCell.swift */,
+				3BA9276724360F9200B4BA99 /* HelpViewController.swift */,
+				3BA9277324361D3600B4BA99 /* HelpPageViewController.swift */,
 				3B879A42242E1C0100BE47DC /* UserFont.swift */,
 				3BE5B2AA2434AD6B00A0C33A /* FontFamily.swift */,
 				3B879A33242E00B400BE47DC /* Main.storyboard */,
+				3BA927752436281A00B4BA99 /* help */,
 				3B9C64A22432887B0057B8ED /* Assets.xcassets */,
 				3BD7E1882431FD2600FD8941 /* Fonts.xcassets */,
 				3B879A38242E00B600BE47DC /* LaunchScreen.storyboard */,
@@ -97,6 +114,25 @@
 				3B42C8442433668400AF2B13 /* Settings.bundle */,
 			);
 			path = FontWrangler;
+			sourceTree = "<group>";
+		};
+		3BA927702436170400B4BA99 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				3BA927712436170400B4BA99 /* NetworkExtension.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		3BA927752436281A00B4BA99 /* help */ = {
+			isa = PBXGroup;
+			children = (
+				3BA927762436281A00B4BA99 /* page1.html */,
+				3BA927772436281A00B4BA99 /* page0.html */,
+				3BA927782436281A00B4BA99 /* page2.html */,
+			);
+			name = help;
+			path = ../../../../../OneDrive/Programming/FontWrangler/help;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -177,8 +213,11 @@
 			files = (
 				3B879A35242E00B400BE47DC /* Main.storyboard in Resources */,
 				3B879A3A242E00B600BE47DC /* LaunchScreen.storyboard in Resources */,
+				3BA9277A2436281B00B4BA99 /* page0.html in Resources */,
+				3BA9277B2436281B00B4BA99 /* page2.html in Resources */,
 				3BD7E18B243212E200FD8941 /* defaults.json in Resources */,
 				3BD7E1892431FD2600FD8941 /* Fonts.xcassets in Resources */,
+				3BA927792436281B00B4BA99 /* page1.html in Resources */,
 				3B42C8452433668400AF2B13 /* Settings.bundle in Resources */,
 				3B9C64A32432887B0057B8ED /* Assets.xcassets in Resources */,
 			);
@@ -191,6 +230,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3BA9277424361D3600B4BA99 /* HelpPageViewController.swift in Sources */,
+				3BA9276824360F9200B4BA99 /* HelpViewController.swift in Sources */,
 				3B4C6D9A2434E90900C1C5CB /* FontVariantsTableViewCell.swift in Sources */,
 				3B879A2C242E00B400BE47DC /* AppDelegate.swift in Sources */,
 				3B879A2E242E00B400BE47DC /* SceneDelegate.swift in Sources */,

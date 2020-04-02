@@ -984,7 +984,20 @@ class MasterViewController: UITableViewController {
     @objc func showHelp(_ sender: Any) {
 
         // Display the Help panel
-        // TODO
+        
+        // Load and configure the menu view controller.
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        let hvc: HelpViewController = storyboard.instantiateViewController(withIdentifier: "help.view.controller") as! HelpViewController
+        
+        // Use the popover presentation style for your view controller.
+        hvc.modalPresentationStyle = .pageSheet
+
+        // Specify the anchor point for the popover.
+        hvc.popoverPresentationController?.barButtonItem = navigationItem.rightBarButtonItem
+        //hvc.popoverPresentationController?.delegate = self
+                   
+        // Present the view controller (in a popover).
+        self.present(hvc, animated: true, completion: nil)
     }
 
 
