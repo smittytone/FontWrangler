@@ -37,8 +37,13 @@ class MasterViewController: UITableViewController {
         
         super.viewDidLoad()
 
-        // Set up the 'Edit' button on the left
+        // Set up the 'Help' button on the left
         //navigationItem.leftBarButtonItem = editButtonItem
+        let helpButton = UIBarButtonItem(title: "Help",
+                                          style: .plain,
+                                          target: self,
+                                          action: #selector(self.showHelp(_:)))
+        navigationItem.rightBarButtonItem = helpButton
 
         // Set up the 'Install' button on the right
         let rightButton = UIBarButtonItem(title: "Add All",
@@ -148,8 +153,10 @@ class MasterViewController: UITableViewController {
     
     @objc func initializeFontList() {
 
-        // Update and display the list of available fonts that
-        // the app knows about and is managing
+        // Update and display the list of available fonts that the app knows about and is managing
+        //
+        // This is the called when the app comes into the foreground
+        // and when viewWillAppear() is callled
 
         // Load the saved list from disk
         // NOTE If nothing is loaded from disk, 'self.fonts' will be the defaults
@@ -161,7 +168,7 @@ class MasterViewController: UITableViewController {
         // Double-check what's installed and what isn't and
         // update the fonts' status
         // NOTE This will save the list always
-        self.updateListedFonts()
+        self.updateListedFontsStatus()
 
         // Reload the table
         self.tableView.reloadData()
@@ -223,7 +230,7 @@ class MasterViewController: UITableViewController {
     }
     
     
-    func updateListedFonts() {
+    func updateListedFontsStatus() {
 
         // Update the app's record of fonts in response to a notification
         // from the system that some fonts' status has changed
@@ -340,7 +347,7 @@ class MasterViewController: UITableViewController {
             for font: UserFont in self.fonts {
                 // Only attempt to get uninstalled fonts
                 if !font.isInstalled {
-                    self.getFont(font)
+                    self.getOneFont(font)
                 }
             }
         }
@@ -367,9 +374,59 @@ class MasterViewController: UITableViewController {
                                                .persistent,
                                                self.registrationHandler(errors:done:))
     }
-    
-    
-    func getFont(_ font: UserFont) {
+
+
+    func getOneFontFamily(_ family: FontFamily) {
+
+        // Acquire a single font fsmily resource using on-demand
+
+        if !family.fontsAreDownloaded {
+            // The fsmily's font resource has not been downloaded so get its asset catalog tag
+            // ('family.tag') and assemble an asset request
+            let tags: Set<String> = Set.init([family.tag])
+            let fontRequest = NSBundleResourceRequest.init(tags: tags)
+
+            // Store the progress recorder and update the UI on
+            // the main thread so the Activity Indicator is shown
+            family.progress = fontRequest.progress
+            DispatchQueue.main.async {
+                self.tableView.reloadData()
+            }
+
+            fontRequest.beginAccessingResources { (error) in
+                // THIS BLOCK IS A CLOSURE
+                // Check for a download error
+                if error != nil {
+                    // Handle errors
+                    // NOTE Item not downloaded if 'error' != nl
+                    NSLog("[ERROR] \(error!.localizedDescription)")
+                    return
+                }
+
+                // Keep the downloaded file around permanently, ie.
+                // until the app is deleted
+                Bundle.main.setPreservationPriority(1.0, forTags: tags)
+
+                // Update the font's state
+                family.fontsAreDownloaded = true
+
+                // Register the font with the OS
+                self.registerFontFamily(family)
+
+                // Update the UI (on the main thread) to remove the
+                // Activity Indicator
+                family.progress = nil
+                DispatchQueue.main.async {
+                    self.tableView.reloadData()
+                }
+            }
+        } else {
+            self.registerFontFamily(family)
+        }
+    }
+
+
+    func getOneFont(_ font: UserFont) {
         
         // Acquire a single font resource using on-demand
 
@@ -381,51 +438,72 @@ class MasterViewController: UITableViewController {
 
             // Store the progress recorder and update the UI on
             // the main thread so the Activity Indicator is shown
-            font.progress = fontRequest.progress
-            DispatchQueue.main.async {
-                self.tableView.reloadData()
-            }
+            //font.progress = fontRequest.progress
+            //DispatchQueue.main.async { self.tableView.reloadData() }
 
             // Make the request
             fontRequest.beginAccessingResources { (error) in
                 // THIS BLOCK IS A CLOSURE
                 // Check for a download error
                 if error != nil {
-                    // Handle errors on main thread
+                    // Handle errors
+                    // NOTE Item not downloaded if 'error' != nl
                     NSLog("[ERROR] \(error!.localizedDescription)")
                     return
-                } else {
-                    // Keep the downloaded file around permanently, ie.
-                    // until the app is deleted
-                    Bundle.main.setPreservationPriority(1.0, forTags: tags)
                 }
+
+                // Keep the downloaded file around permanently, ie.
+                // until the app is deleted
+                Bundle.main.setPreservationPriority(1.0, forTags: tags)
+
+                // Update the font's state
+                font.isDownloaded = true
 
                 // Register the font with the OS
                 self.registerFont(font)
 
                 // Update the UI (on the main thread) to remove the
                 // Activity Indicator
-                font.progress = nil
-                DispatchQueue.main.async {
-                    self.tableView.reloadData()
-                }
+                //font.progress = nil
+                //DispatchQueue.main.async { self.tableView.reloadData() }
             }
+        } else {
+            // Font is downloaded, so register it with the OS
+            self.registerFont(font)
         }
-
-        // Register the font with the OS
-        self.registerFont(font)
     }
     
 
-    func registerFont(_ font: UserFont) {
-        
-        // Register a single font
+    func registerFontFamily(_ family: FontFamily) {
+
+        // Register the family's fonts
         // NOTE This displays the system's Install dialog
 
-        // Update the font's state
-        font.isDownloaded = true
+        if let fonts = family.fonts {
+            // Add the fonts' PostScript names to 'fontNames'
+            var fontNames = [String]()
+            for font: UserFont in family.fonts {
+                fontNames.append(font.name)
+            }
+
+            // Register the family's fonts using the API
+            // NOTE outcome is operated asynchronously
+            CTFontManagerRegisterFontsWithAssetNames(fontNames as CFArray,
+                                                     nil,
+                                                     .persistent,
+                                                     true,
+                                    s                 self.registrationHandler(errors:done:))
+        }
+    }
+
+
+    func registerFont(_ font: UserFont) {
+        
+        // Register a single font using the CoreText Font Manager
+        // NOTE This displays the system's Install dialog
 
         // Register the font using the UI
+        // NOTE outcome is operated asynchronously
         CTFontManagerRegisterFontsWithAssetNames([font.name] as CFArray,
                                                  nil,
                                                  .persistent,
@@ -458,7 +536,7 @@ class MasterViewController: UITableViewController {
         if done {
             // Update the fonts' status to match the system,
             // save, and update the UI
-            self.updateListedFonts()
+            self.updateListedFontsStatus()
             self.saveFontList()
             self.updateUIonMain()
         }
@@ -475,7 +553,7 @@ class MasterViewController: UITableViewController {
 
         // Update the font list's recorded installations, and
         // update the UI
-        self.updateListedFonts()
+        self.updateListedFontsStatus()
         self.updateUIonMain()
     }
 
@@ -675,7 +753,7 @@ class MasterViewController: UITableViewController {
                                                  title: "Add") { (theAction, theView, handler) in
                                                     // Iterate the fonts, adding them one by one
                                                     for font in fonts {
-                                                        self.getFont(font)
+                                                        self.getOneFont(font)
                                                     }
 
                                                     handler(true)
@@ -769,6 +847,13 @@ class MasterViewController: UITableViewController {
         self.fonts.sort { (font_1, font_2) -> Bool in
             return (font_1.name < font_2.name)
         }
+    }
+
+
+    @objc func showHelp(_ sender: Any) {
+
+        // Display the Help panel
+        // TODO
     }
 
 
