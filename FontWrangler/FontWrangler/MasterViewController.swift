@@ -803,35 +803,28 @@ class MasterViewController: UITableViewController {
         // NOTE These actions affect all families
     
         var config: UISwipeActionsConfiguration? = nil
-        var action: UIContextualAction
-
-        // Get the referenced family
-        let family = self.families[indexPath.row - 1]
-
-        if family.fontsAreInstalled {
-            // Configure a 'Remove All' action
-            action = UIContextualAction.init(style: .normal,
-                                             title: "Remove All") { (theAction, theView, handler) in
-                                                self.removeAll()
-                                                handler(true)
-            }
-
-            // Set the colour to red
-            action.backgroundColor = UIColor.red
-        } else {
-            // Configure an 'Add All' action
-            action = UIContextualAction.init(style: .normal,
-                                             title: "Add All") { (theAction, theView, handler) in
-                                                self.installAll(self)
-                                                handler(true)
-            }
-
-            // Set the colour to blue
-            action.backgroundColor = UIColor.systemBlue
+        var actions = [UIContextualAction]()
+        var action: UIContextualAction = UIContextualAction.init(style: .destructive,
+                                         title: "Remove All") { (theAction, theView, handler) in
+                                            self.removeAll()
+                                            handler(true)
+        }
+        
+        actions.append(action)
+        
+        // Configure an 'Add All' action
+        action = UIContextualAction.init(style: .normal,
+                                         title: "Add All") { (theAction, theView, handler) in
+                                            self.installAll(self)
+                                            handler(true)
         }
 
+        // Set the colour to blue
+        action.backgroundColor = UIColor.systemBlue
+        actions.append(action)
+        
         // Create the config to be returned, making sure a full swipe DOESN'T auto-trigger
-        config = UISwipeActionsConfiguration.init(actions: [action])
+        config = UISwipeActionsConfiguration.init(actions: actions)
         config?.performsFirstActionWithFullSwipe = false
         return config
     }
