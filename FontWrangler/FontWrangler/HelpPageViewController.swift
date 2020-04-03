@@ -23,17 +23,17 @@ class HelpPageViewController: UIViewController {
         
         super.viewDidLoad()
 
-        /* Load in page content using NSAttributedString
-        let url = URL.init(fileURLWithPath: "/help/page\(self.index).html")
+        // Load in page content using NSAttributedString
+        let bundlePath = Bundle.main.bundlePath
+        let url = URL.init(fileURLWithPath: bundlePath + "/help/page\(self.index).html")
         do {
             let helpString: NSAttributedString = try NSAttributedString.init(url: url,
-                                                             options: [],
+                                                             options: [.documentType: NSAttributedString.DocumentType.html],
                                                              documentAttributes: nil)
             self.pageTextView.attributedText = helpString
         } catch {
             // Error
         }
-        */
 
     }
     
