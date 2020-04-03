@@ -26,7 +26,7 @@ class UserFont: NSObject, NSCoding, NSSecureCoding {
     var tag: String = ""                    // The asset catalog tag
     var isInstalled: Bool = false           // Is the font installed on the iPad?
     var isDownloaded: Bool = false          // Is the font newly extracted from the app's Documents folder?
-
+    var updated: Bool = false
     
     // MARK: - Initialization Methods
 

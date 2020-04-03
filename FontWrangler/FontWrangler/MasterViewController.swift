@@ -201,12 +201,32 @@ class MasterViewController: UITableViewController {
                     // We loaded in some valid data so set it as the primary store
                     // NOTE This must come before any other font addition/removal code
                     //      because it resets 'self.fonts'
-                    self.fonts = loadedFonts
+                    
+                    // Check sizes in case we are updating from an old version and therefore the defaults will
+                    // be larger than the loaded file. BUT we need to port across status values!
+                    if loadedFonts.count != self.fonts.count {
+                        // Copy the loaded status data to the new defaults
+                        #if DEBUG
+                            print("New fonts listed: \(self.fonts.count - loadedFonts.count) added")
+                        #endif
+                        
+                        for font: UserFont in self.fonts {
+                            for lfont: UserFont in loadedFonts {
+                                if lfont.name == font.name {
+                                    font.isInstalled = lfont.isInstalled
+                                    font.isDownloaded = lfont.isDownloaded
+                                    break
+                                }
+                            }
+                        }
+                        
+                        // Store it
+                        self.saveFontList()
+                    } else {
+                        self.fonts = loadedFonts
+                    }
+                    
                     self.isFontListLoaded = true
-
-                    #if DEBUG
-                        //print("Fonts file loaded: \(loadPath)")
-                    #endif
                 }
             } else {
                 // NOTE If the file doesn't exist, we use the defaults we previously loaded
@@ -401,6 +421,10 @@ class MasterViewController: UITableViewController {
                     // Handle errors
                     // NOTE Item not downloaded if 'error' != nl
                     NSLog("[ERROR] \(error!.localizedDescription)")
+                    family.progress = nil
+                    DispatchQueue.main.async {
+                        self.tableView.reloadData()
+                    }
                     return
                 }
                 
@@ -558,9 +582,11 @@ class MasterViewController: UITableViewController {
             for font: UserFont in self.fonts {
                 font.isInstalled = false
                 font.isDownloaded = false
+                font.updated = false
             }
 
             // Map regsitered fonts to our list to record which have been registered
+            var setCount: Int = 0
             for registeredDescriptor in registeredDescriptors {
                 if let fontName = CTFontDescriptorCopyAttribute(registeredDescriptor, kCTFontNameAttribute) as? String {
 
@@ -572,12 +598,39 @@ class MasterViewController: UITableViewController {
                         if font.name == fontName {
                             font.isInstalled = true
                             font.isDownloaded = true
-
+                            font.updated = true
+                            setCount += 1
                             #if DEBUG
                                 print("Font list name matched for '\(font.name)'")
                             #endif
 
                             break
+                        }
+                    }
+                }
+            }
+            
+            if setCount < registeredDescriptors.count {
+                // Some missing fonts, so check by URL
+                for registeredDescriptor in registeredDescriptors {
+                    if let fontName = CTFontDescriptorCopyAttribute(registeredDescriptor, kCTFontNameAttribute) as? String {
+                        for font: UserFont in self.fonts {
+                            if !font.updated {
+                                // Eg. 'TradeWinds' and 'TradeWinds-Regular'
+                                // TODO Needs some safety checking/more efficient
+                                if (font.name as NSString).contains(fontName) {
+                                    font.isInstalled = true
+                                    font.isDownloaded = true
+                                    font.updated = true
+                                    
+                                    #if DEBUG
+                                        print("Font list name changed from '\(font.name)' to '\(fontName)'")
+                                    #endif
+                                    
+                                    font.name = fontName
+                                    break
+                                }
+                            }
                         }
                     }
                 }

@@ -117,7 +117,7 @@ class DetailViewController: UIViewController, UIPopoverPresentationControllerDel
                         let fontName = name.substring(with: range)
                         self.title = "Bungee " + (fontName != "" ? fontName : variantType)
                     } else {
-                        self.title = self.currentFamily!.name + " " + self.getVariantName(detail.name)
+                        self.title = self.currentFamily!.name + self.getVariantName(detail.name)
                     }
                 } else {
                     self.title = self.mvc!.getPrinteableName(detail.name, "-")
@@ -247,7 +247,7 @@ class DetailViewController: UIViewController, UIPopoverPresentationControllerDel
         
         let name: NSString = fontName as NSString
         let index = name.range(of: "-")
-        return name.substring(from: index.location + 1).capitalized
+        return index.location != NSNotFound ? (" " + name.substring(from: index.location + 1).capitalized) : " Regular"
     }
 
 }
