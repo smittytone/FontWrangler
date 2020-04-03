@@ -31,6 +31,7 @@ class DetailViewController: UIViewController, UIPopoverPresentationControllerDel
 
     var mvc: MasterViewController? = nil
     var currentFamily: FontFamily? = nil
+    var currentFontIndex: Int = 0
     
     var detailItem: UserFont? {
         
@@ -212,14 +213,20 @@ class DetailViewController: UIViewController, UIPopoverPresentationControllerDel
         // Set the popover's data
         if let fontIndices = self.currentFamily!.fontIndices {
             fvc.fontIndices = fontIndices
+            fvc.currentFont = currentFontIndex
             
+            /*
             for fontIndex: Int in fontIndices {
                 let font: UserFont = mvc!.fonts[fontIndex]
-                if font == self.detailItem {
+                if font.name == self.detailItem!.name {
+                    #if DEBUG
+                        print("Font '\(font.name)' has index \(fontIndex)")
+                    #endif
                     fvc.currentFont = fontIndex
                     break
                 }
             }
+            */
         }
         
         // Use the popover presentation style for your view controller.

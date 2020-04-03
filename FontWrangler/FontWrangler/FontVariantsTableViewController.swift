@@ -89,9 +89,14 @@ class FontVariantsTableViewController: UITableViewController {
                 if let amvc = advc.mvc {
                     let font: UserFont = amvc.fonts[fontIndexes[indexPath.row]]
                     advc.detailItem = font
+                    advc.currentFontIndex = indexPath.row
+                    self.currentFont = indexPath.row
+                    
+                    #if DEBUG
+                        print("Font selected '\(font.name)' at row \(indexPath.row)")
+                    #endif
                 }
             }
-
         }
         
         self.dismiss(animated: true, completion: nil)

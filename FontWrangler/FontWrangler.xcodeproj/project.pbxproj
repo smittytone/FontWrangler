@@ -26,6 +26,7 @@
 		3BD7E1892431FD2600FD8941 /* Fonts.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3BD7E1882431FD2600FD8941 /* Fonts.xcassets */; };
 		3BD7E18B243212E200FD8941 /* defaults.json in Resources */ = {isa = PBXBuildFile; fileRef = 3BD7E18A243212E100FD8941 /* defaults.json */; };
 		3BE5B2AB2434AD6B00A0C33A /* FontFamily.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BE5B2AA2434AD6B00A0C33A /* FontFamily.swift */; };
+		3BFF9F8924373134008B1EA9 /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3BFF9F8824373134008B1EA9 /* WebKit.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -51,6 +52,7 @@
 		3BD7E1882431FD2600FD8941 /* Fonts.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Fonts.xcassets; path = /Users/smitty/OneDrive/Programming/FontWrangler/Fonts.xcassets; sourceTree = "<absolute>"; };
 		3BD7E18A243212E100FD8941 /* defaults.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = defaults.json; path = ../../../../../OneDrive/Programming/FontWrangler/defaults.json; sourceTree = "<group>"; };
 		3BE5B2AA2434AD6B00A0C33A /* FontFamily.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FontFamily.swift; sourceTree = "<group>"; };
+		3BFF9F8824373134008B1EA9 /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -58,6 +60,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3BFF9F8924373134008B1EA9 /* WebKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -69,6 +72,7 @@
 			children = (
 				3B879A2A242E00B400BE47DC /* FontWrangler */,
 				3B879A29242E00B400BE47DC /* Products */,
+				3BFF9F8724373134008B1EA9 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -106,6 +110,14 @@
 				3B42C8442433668400AF2B13 /* Settings.bundle */,
 			);
 			path = FontWrangler;
+			sourceTree = "<group>";
+		};
+		3BFF9F8724373134008B1EA9 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				3BFF9F8824373134008B1EA9 /* WebKit.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

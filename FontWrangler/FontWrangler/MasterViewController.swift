@@ -1041,6 +1041,7 @@ class MasterViewController: UITableViewController {
                 controller.currentFamily = family
                 controller.detailItem = font
                 controller.mvc = self
+                controller.currentFontIndex = 0
 
                 // Set a back button to show the master view
                 controller.navigationItem.leftBarButtonItem = splitViewController?.displayModeButtonItem
