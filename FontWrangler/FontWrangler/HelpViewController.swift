@@ -4,7 +4,6 @@
 
 
 import UIKit
-import WebKit
 
 
 class HelpViewController: UIViewController, UIPageViewControllerDelegate, UIPageViewControllerDataSource {

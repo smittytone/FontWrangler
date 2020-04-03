@@ -12,7 +12,7 @@ class HelpPageViewController: UIViewController {
 
     // MARK: - UI properties
 
-    @IBOutlet weak var pageTextView: UITextView!
+    @IBOutlet weak var pageWebView: WKWebView!
 
     // MARK: - Object properties
 
@@ -23,29 +23,19 @@ class HelpPageViewController: UIViewController {
         
         super.viewDidLoad()
 
-        // Load in page content using NSAttributedString
-        let bundlePath = Bundle.main.bundlePath
-        let url = URL.init(fileURLWithPath: bundlePath + "/help/page\(self.index).html")
-        do {
-            let helpString: NSAttributedString = try NSAttributedString.init(url: url,
-                                                             options: [.documentType: NSAttributedString.DocumentType.html],
-                                                             documentAttributes: nil)
-            self.pageTextView.attributedText = helpString
-        } catch {
-            // Error
-        }
-
+        // Load in page content using WKWebView
+        self.pageWebView.isHidden = true
+        let url = Bundle.main.url(forResource: "page\(self.index)", withExtension: "html", subdirectory: "help")!
+        self.pageWebView.loadFileURL(url, allowingReadAccessTo: url)
+        let request = URLRequest(url: url)
+        self.pageWebView.load(request)
     }
     
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
+    
+    override func viewWillAppear(_ animated: Bool) {
+        
+        super.viewWillAppear(animated)
+        self.pageWebView.isHidden = false
     }
-    */
 
 }
