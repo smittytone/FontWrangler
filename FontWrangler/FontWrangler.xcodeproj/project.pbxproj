@@ -147,19 +147,18 @@
 			isa = PBXProject;
 			attributes = {
 				KnownAssetTags = (
+					abel,
 					audiowide,
 					bebas_neue,
-					bebasneue,
 					black_ops_one,
-					blackopsone,
 					bungee,
 					caesar_dressing,
 					comfortaa,
 					concert_one,
-					concertone,
 					creepster,
 					fruktur,
 					monoton,
+					oswald,
 					righteous,
 					roboto,
 					special_elite,

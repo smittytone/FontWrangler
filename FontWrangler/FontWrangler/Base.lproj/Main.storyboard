@@ -380,10 +380,10 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <wkWebView contentMode="scaleToFill" allowsLinkPreview="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ezY-cM-xVa">
-                                <rect key="frame" x="20" y="20" width="794" height="1072"/>
+                                <rect key="frame" x="20" y="0.0" width="794" height="1092"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                                 <wkWebViewConfiguration key="configuration" allowsAirPlayForMediaPlayback="NO" allowsPictureInPictureMediaPlayback="NO">
-                                    <dataDetectorTypes key="dataDetectorTypes"/>
+                                    <dataDetectorTypes key="dataDetectorTypes" none="YES"/>
                                     <audiovisualMediaTypes key="mediaTypesRequiringUserActionForPlayback" none="YES"/>
                                     <wkPreferences key="preferences" javaScriptEnabled="NO"/>
                                 </wkWebViewConfiguration>
@@ -391,7 +391,7 @@
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                         <constraints>
-                            <constraint firstItem="ezY-cM-xVa" firstAttribute="top" secondItem="uGE-lq-CRL" secondAttribute="top" constant="20" id="I5e-VJ-uY8"/>
+                            <constraint firstItem="ezY-cM-xVa" firstAttribute="top" secondItem="uGE-lq-CRL" secondAttribute="top" id="I5e-VJ-uY8"/>
                             <constraint firstItem="ezY-cM-xVa" firstAttribute="bottom" secondItem="uGE-lq-CRL" secondAttribute="bottom" constant="-20" id="IGP-mb-TKc"/>
                             <constraint firstItem="ezY-cM-xVa" firstAttribute="leading" secondItem="uGE-lq-CRL" secondAttribute="leading" constant="20" id="N7K-yk-bH3"/>
                             <constraint firstItem="ezY-cM-xVa" firstAttribute="trailing" secondItem="uGE-lq-CRL" secondAttribute="trailing" constant="-20" id="aR0-yX-iR7"/>
