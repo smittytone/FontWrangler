@@ -12,10 +12,13 @@ class MasterViewController: UITableViewController {
 
     private var detailViewController: DetailViewController? = nil
     private var installButton: UIBarButtonItem? = nil
-    var fonts = [UserFont]()
     private var families = [FontFamily]()
     private var isFontListLoaded: Bool = false
     private var gotFontFamilies: Bool = false
+    
+    // MARK:- Public Instance Properties
+    
+    var fonts = [UserFont]()
     
     // MARK:- Private Instance Constants
 
@@ -38,19 +41,19 @@ class MasterViewController: UITableViewController {
         navigationItem.leftBarButtonItem = helpButton
 
         // Set up the 'Install' button on the right
-        let rightButton = UIBarButtonItem(title: "Add All",
-                                          style: .plain,
-                                          target: self,
-                                          action: #selector(self.installAll(_:)))
-        navigationItem.rightBarButtonItem = rightButton
+        let addAllButton = UIBarButtonItem(title: "Add All",
+                                           style: .plain,
+                                           target: self,
+                                           action: #selector(self.installAll(_:)))
+        navigationItem.rightBarButtonItem = addAllButton
 
         // Retain button for future use (enable and disable)
-        self.installButton = rightButton
+        self.installButton = addAllButton
 
         // Set up the split view controller
         if let split = splitViewController {
             let controllers = split.viewControllers
-            self.detailViewController = (controllers[controllers.count-1] as! UINavigationController).topViewController as? DetailViewController
+            self.detailViewController = (controllers[controllers.count - 1] as! UINavigationController).topViewController as? DetailViewController
         }
 
         // Watch for app moving into the background
@@ -122,11 +125,11 @@ class MasterViewController: UITableViewController {
                 fontDictionary = try JSONSerialization.jsonObject(with: fileData, options: []) as! [String: Any]
             } catch {
                 NSLog("[ERROR] can't load defaults: \(error.localizedDescription)")
-                self.showAlert("Can’t load defaults", "Sorry, FontWrangler has become damaged. Please delete and reinstall it.")
+                self.showAlert("Can’t load defaults", "Sorry, FontWrangler has become damaged. Please reinstall it.")
                 return
             }
             
-            // Extract the JSON data into UserFont instances
+            // Extract the data into UserFont instances
             let fonts = fontDictionary["fonts"] as! [Any]
             for font in fonts {
                 let aFont = font as! [String:String]
@@ -136,10 +139,12 @@ class MasterViewController: UITableViewController {
                 newFont.tag = aFont["tag"] ?? ""
                 self.fonts.append(newFont)
             }
+            
+            // Sort the list
+            self.sortFonts()
+        } else {
+            self.showAlert("Can’t load defaults", "Sorry, FontWrangler has become damaged. Please reinstall it.")
         }
-        
-        // Sort the list
-        self.sortFonts()
     }
     
     
@@ -211,10 +216,10 @@ class MasterViewController: UITableViewController {
                         #endif
                         
                         for font: UserFont in self.fonts {
-                            for lfont: UserFont in loadedFonts {
-                                if lfont.name == font.name {
-                                    font.isInstalled = lfont.isInstalled
-                                    font.isDownloaded = lfont.isDownloaded
+                            for loadedFont: UserFont in loadedFonts {
+                                if loadedFont.name == font.name {
+                                    font.isInstalled = loadedFont.isInstalled
+                                    font.isDownloaded = loadedFont.isDownloaded
                                     break
                                 }
                             }
@@ -233,7 +238,8 @@ class MasterViewController: UITableViewController {
                 // TODO Should this be an error we expose to the user? If so, only only later calls
                 if self.fonts.count == 0 {
                     // Load in the defaults if there's no font list in place
-                    self.loadDefaults()
+                    self.showAlert("Can’t load defaults", "Sorry, FontWrangler has become damaged. Please reinstall it.")
+                    return
                 }
 
                 self.saveFontList()
@@ -284,6 +290,8 @@ class MasterViewController: UITableViewController {
                             family.fontIndices = [Int]()
                         }
                         
+                        // Add the font's index in the primary font array
+                        // to its family's own list of fonts
                         family.fontIndices!.append(i)
                     }
                 }
@@ -314,7 +322,7 @@ class MasterViewController: UITableViewController {
 
         } catch {
             NSLog("Can't write font state file: \(error.localizedDescription)")
-            self.showAlert("Error", "")
+            self.showAlert("Error", "Sorry, FontWrangler can’t access its Documents folder.")
         }
     }
     
@@ -346,17 +354,6 @@ class MasterViewController: UITableViewController {
                 }
             }
         }
-        
-        /*
-        if self.fonts.count > 0 {
-            for font: UserFont in self.fonts {
-                // Only attempt to get uninstalled fonts
-                if !font.isInstalled {
-                    self.getOneFont(font)
-                }
-            }
-        }
-        */
     }
 
     
@@ -365,16 +362,22 @@ class MasterViewController: UITableViewController {
         // Uninstall all available fonts
         
         if self.families.count > 0 {
+            // Assemble font descriptors for each of the family's fonts.
+            // These will be passed to the API for deregistration.
             var fontDescs = [UIFontDescriptor]()
             for family: FontFamily in self.families {
                 if family.fontsAreDownloaded {
+                    // Update the family's state information
                     family.fontsAreInstalled = false
                     family.fontsAreDownloaded = false
+                    
                     if let fontIndexes: [Int] = family.fontIndices {
                         for fontIndex: Int in fontIndexes {
                             let font: UserFont = self.fonts[fontIndex]
                             let fontDesc: UIFontDescriptor = UIFontDescriptor.init(name: font.name, size: 48.0)
                             fontDescs.append(fontDesc)
+                            
+                            // Update the font's state information
                             font.isInstalled = false
                             font.isDownloaded = false
                         }
@@ -410,9 +413,7 @@ class MasterViewController: UITableViewController {
             // Store the progress recorder and update the UI on
             // the main thread so the Activity Indicator is shown
             family.progress = fontRequest.progress
-            DispatchQueue.main.async {
-                self.tableView.reloadData()
-            }
+            self.tableView.asyncReloadData()
 
             fontRequest.beginAccessingResources { (error) in
                 // THIS BLOCK IS A CLOSURE
@@ -422,9 +423,7 @@ class MasterViewController: UITableViewController {
                     // NOTE Item not downloaded if 'error' != nl
                     NSLog("[ERROR] \(error!.localizedDescription)")
                     family.progress = nil
-                    DispatchQueue.main.async {
-                        self.tableView.reloadData()
-                    }
+                    self.tableView.asyncReloadData()
                     return
                 }
                 
@@ -445,9 +444,7 @@ class MasterViewController: UITableViewController {
                 // Update the UI (on the main thread) to remove the
                 // Activity Indicator
                 family.progress = nil
-                DispatchQueue.main.async {
-                    self.tableView.reloadData()
-                }
+                self.tableView.asyncReloadData()
             }
         } else {
             #if DEBUG
@@ -610,6 +607,9 @@ class MasterViewController: UITableViewController {
                 }
             }
             
+            // Did we just update fewer fonts than are registered?
+            // If so it's probably because there's a name mismatch, ie.
+            // the filename-derived name != the PostScript name
             if setCount < registeredDescriptors.count {
                 // Some missing fonts, so check by URL
                 for registeredDescriptor in registeredDescriptors {
@@ -644,7 +644,7 @@ class MasterViewController: UITableViewController {
     }
     
     
-    // REDUNDANT -- REMOVE NEXT BUILD
+    /* REDUNDANT -- REMOVE NEXT BUILD
     func getOneFont(_ font: UserFont) {
         
         // Acquire a single font resource using on-demand
@@ -763,10 +763,9 @@ class MasterViewController: UITableViewController {
                                                .persistent,
                                                self.fontRegistrationHandler(errors:done:))
     }
-
+    */
 
     
-
 
     // MARK: - Table View Data Source and Delegate Functions
 
@@ -819,7 +818,7 @@ class MasterViewController: UITableViewController {
                         cell.accessoryView = nil
                     }
                 } else {
-                    // Font is not installed, so add a spacer to ensure consitent column widths
+                    // Family is not installed, so add a spacer to ensure consitent column widths
                     if let accessoryImage: UIImage = UIImage.init(named: "spacer") {
                         let accessoryView: UIView = UIImageView.init(image: accessoryImage)
                         cell.accessoryView = accessoryView
@@ -978,9 +977,9 @@ class MasterViewController: UITableViewController {
         DispatchQueue.main.async {
             let alert = UIAlertController.init(title: title,
                                                message: message,
-                                               preferredStyle: UIAlertController.Style.alert)
+                                               preferredStyle: .alert)
             alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "Default action"),
-                                          style: .`default`,
+                                          style: .default,
                                           handler: nil))
             self.present(alert,
                          animated: true,
@@ -1060,7 +1059,6 @@ class MasterViewController: UITableViewController {
 
         // Specify the anchor point for the popover.
         hvc.popoverPresentationController?.barButtonItem = navigationItem.rightBarButtonItem
-        //hvc.popoverPresentationController?.delegate = self
                    
         // Present the view controller (in a popover).
         self.present(hvc, animated: true, completion: nil)
@@ -1103,8 +1101,21 @@ class MasterViewController: UITableViewController {
 
 
 extension UISplitViewController {
+    
     func toggleMasterView() {
+        
         let barButtonItem = self.displayModeButtonItem
         let _ = UIApplication.shared.sendAction(barButtonItem.action!, to: barButtonItem.target, from: nil, for: nil)
+    }
+}
+
+
+extension UITableView {
+
+    func asyncReloadData() {
+        
+        DispatchQueue.main.async {
+            self.reloadData()
+        }   
     }
 }
