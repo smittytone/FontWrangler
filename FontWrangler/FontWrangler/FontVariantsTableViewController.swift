@@ -47,19 +47,14 @@ class FontVariantsTableViewController: UITableViewController {
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        let cell: FontVariantsTableViewCell = tableView.dequeueReusableCell(withIdentifier: "variant.cell", for: indexPath) as! FontVariantsTableViewCell
+        var cell: FontVariantsTableViewCell = tableView.dequeueReusableCell(withIdentifier: "variant.cell", for: indexPath) as! FontVariantsTableViewCell
         
         if let fontIndexes: [Int] = self.fontIndices {
             let font: UserFont = dvc!.mvc!.fonts[fontIndexes[indexPath.row]]
             
             if font.tag == "bungee" {
                 // Set Quirk for Bungee, which has non-variant fonts under the same tag
-                let name: NSString = font.name as NSString
-                let index = name.range(of: "-")
-                let variantType = name.substring(from: index.location + 1)
-                let range: NSRange = NSRange(location: 6, length: index.location - 6)
-                let fontName = name.substring(with: range)
-                cell.name.text = (fontName != "" ? fontName : variantType)
+                cell = self.doBungee(cell, font)
             } else {
                 // Display the font variant type, extracted from the name:
                 // eg. 'Audio-Regular' -> 'Regular'
@@ -102,4 +97,17 @@ class FontVariantsTableViewController: UITableViewController {
         self.dismiss(animated: true, completion: nil)
     }
 
+
+    // MARK: - Font Quirks
+
+    func doBungee(_ cell: FontVariantsTableViewCell, _ font: UserFont) -> FontVariantsTableViewCell {
+
+        let name: NSString = font.name as NSString
+        let index = name.range(of: "-")
+        let variantType = name.substring(from: index.location + 1)
+        let range: NSRange = NSRange(location: 6, length: index.location - 6)
+        let fontName = name.substring(with: range)
+        cell.name.text = (fontName != "" ? fontName : variantType)
+        return cell
+    }
 }

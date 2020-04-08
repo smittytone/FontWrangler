@@ -706,7 +706,7 @@ class MasterViewController: UITableViewController {
                                                  true,
                                                  self.fontRegistrationHandler(errors:done:))
     }
-    
+    */
     
     // REDUNDANT -- REMOVE NEXT BUILD
     func fontRegistrationHandler(errors: CFArray, done: Bool) -> Bool {
@@ -763,8 +763,6 @@ class MasterViewController: UITableViewController {
                                                .persistent,
                                                self.fontRegistrationHandler(errors:done:))
     }
-    */
-
     
 
     // MARK: - Table View Data Source and Delegate Functions
