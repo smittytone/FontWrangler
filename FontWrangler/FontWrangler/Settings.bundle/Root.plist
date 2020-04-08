@@ -10,9 +10,9 @@
 			<key>Type</key>
 			<string>PSGroupSpecifier</string>
 			<key>Title</key>
-			<string>Information</string>
+			<string>App Info</string>
 			<key>FooterText</key>
-			<string>FontWrangler © 2020, Tony Smith (@smittytone). The fonts provided are copyright their various owners. Please see ‘Open Font Licence’, above, for the licence under which these fonts are made available.</string>
+			<string>FontWrangler © 2020, Tony Smith (@smittytone)</string>
 		</dict>
 		<dict>
 			<key>Type</key>
@@ -36,11 +36,43 @@
 		</dict>
 		<dict>
 			<key>Type</key>
+			<string>PSGroupSpecifier</string>
+			<key>Title</key>
+			<string>Creators</string>
+            <key>FooterText</key>
+            <string>The fonts provided are copyright their various owners. Tap ‘Creators’ to view a list of the creators behind the fonts provided through this app.</string>
+		</dict>
+		<dict>
+			<key>Type</key>
+			<string>PSChildPaneSpecifier</string>
+			<key>Title</key>
+			<string>Font Authors</string>
+			<key>File</key>
+			<string>authors</string>
+		</dict>
+		<dict>
+			<key>Type</key>
+			<string>PSGroupSpecifier</string>
+			<key>Title</key>
+			<string>Licences</string>
+			<key>FooterText</key>
+			<string>The fonts provided through this app are licensed under either the Open Font Licence or the Apache Licence — please see ‘Open Font Licence’ and ‘Apache Licence’, above, for the terms of these licences.</string>
+		</dict>
+		<dict>
+			<key>Type</key>
 			<string>PSChildPaneSpecifier</string>
 			<key>Title</key>
 			<string>Open Font Licence</string>
 			<key>File</key>
 			<string>licence</string>
+		</dict>
+		<dict>
+			<key>Type</key>
+			<string>PSChildPaneSpecifier</string>
+			<key>Title</key>
+			<string>Apache Licence</string>
+			<key>File</key>
+			<string>licence2</string>
 		</dict>
 	</array>
 </dict>

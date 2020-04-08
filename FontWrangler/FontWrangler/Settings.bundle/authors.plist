@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>StringsTable</key>
+	<string>authors</string>
+	<key>PreferenceSpecifiers</key>
+	<array>
+		<dict>
+			<key>Type</key>
+			<string>PSGroupSpecifier</string>
+		</dict>
+		<dict>
+			<key>Type</key>
+			<string>PSTitleValueSpecifier</string>
+			<key>Key</key>
+			<string>com.bps.fontwrangler.app.licence.authors</string>
+			<key>DefaultValue</key>
+			<string>Abel — MADType (Open Font Licence)
+Audiowide — Astigmatic (Open Font Licence)
+Bangers — Vernon Adams (Open Font Licence)
+Baumans — Henadij Zarechnjuk/Cyreal (Open Font Licence)
+Bebas Neue — Ryoichi Tsunekawa (Open Font Licence)
+Black Ops One — James Grieshaber (Open Font Licence)
+Bungee – David Jonathan Ross (Open Font Licence)
+Caesar Dressing — Open Window (Open Font Licence)
+Carter One — Vernon Adams (Open Font Licence)
+Cinzel Decorative — Natanael Gama (Open Font Licence)
+Comfortaa — Johan Aakerlund/Cyreal (Open Font Licence)
+Concert One — Multiple Designers (Open Font Licence)
+Creepster — Sideshow (Open Font Licence)
+Fredoka One — Milena Brandao (Open Font Licence)
+Fruktur — Viktoriya Grabowska (Open Font Licence)
+Girassol — Liam Spradlin (Open Font Licence)
+Gruppo — Vernon Adams (Open Font Licence)
+Gugi — TAE System &amp; Typefaces Co. (Open Font Licence)
+Knewave — Tyler Finck (Open Font Licence)
+Lobster — Impallari Type/Cyreal (Open Font Licence)
+Luckiest Guy — Astigmatic (Apache License)
+Megrim — Daniel Johnson (Open Font Licence)
+Monoton — Vernon Adams (Open Font Licence)
+Nova Cut — Wojciech Kalinowski (Open Font Licence)
+Odibee Sans — James Barnard (Open Font Licence)
+Oswald — Vernon Adams/Kalapi Gajjar/Cyreal (Open Font Licence)
+Poiret One — Denis Masharov (Open Font Licence)
+Righteous — Astigmatic (Open Font Licence)
+Roboto — Christian Robertson (Apache Licence)
+Shrikhand — Jonny Pinhorn (Open Font Licence)
+Special Elite — Astigmatic (Apache License)
+Spicy Rice — Astigmatic (Open Font Licence)
+Trade Winds — Sideshow (Open Font Licence)
+Unica One — Eduardo Tunni (Open Font Licence)</string>
+		</dict>
+	</array>
+</dict>
+</plist>
