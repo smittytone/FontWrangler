@@ -413,7 +413,9 @@ class MasterViewController: UITableViewController {
             // Store the progress recorder and update the UI on
             // the main thread so the Activity Indicator is shown
             family.progress = fontRequest.progress
-            self.tableView.asyncReloadData()
+            DispatchQueue.main.async {
+                self.tableView.reloadData()
+            }
 
             fontRequest.beginAccessingResources { (error) in
                 // THIS BLOCK IS A CLOSURE
@@ -423,7 +425,9 @@ class MasterViewController: UITableViewController {
                     // NOTE Item not downloaded if 'error' != nl
                     NSLog("[ERROR] \(error!.localizedDescription)")
                     family.progress = nil
-                    self.tableView.asyncReloadData()
+                    DispatchQueue.main.async {
+                        self.tableView.reloadData()
+                    }
                     return
                 }
                 
@@ -444,7 +448,9 @@ class MasterViewController: UITableViewController {
                 // Update the UI (on the main thread) to remove the
                 // Activity Indicator
                 family.progress = nil
-                self.tableView.asyncReloadData()
+                DispatchQueue.main.async {
+                    self.tableView.reloadData()
+                }
             }
         } else {
             #if DEBUG
@@ -1104,16 +1110,5 @@ extension UISplitViewController {
         
         let barButtonItem = self.displayModeButtonItem
         let _ = UIApplication.shared.sendAction(barButtonItem.action!, to: barButtonItem.target, from: nil, for: nil)
-    }
-}
-
-
-extension UITableView {
-
-    func asyncReloadData() {
-        
-        DispatchQueue.main.async {
-            self.reloadData()
-        }   
     }
 }
