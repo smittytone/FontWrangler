@@ -16,40 +16,43 @@
 			<key>Key</key>
 			<string>com.bps.fontwrangler.app.licence.authors</string>
 			<key>DefaultValue</key>
-			<string>Abel — MADType (Open Font Licence)
-Audiowide — Astigmatic (Open Font Licence)
-Bangers — Vernon Adams (Open Font Licence)
-Baumans — Henadij Zarechnjuk/Cyreal (Open Font Licence)
-Bebas Neue — Ryoichi Tsunekawa (Open Font Licence)
-Black Ops One — James Grieshaber (Open Font Licence)
-Bungee – David Jonathan Ross (Open Font Licence)
-Caesar Dressing — Open Window (Open Font Licence)
-Carter One — Vernon Adams (Open Font Licence)
-Cinzel Decorative — Natanael Gama (Open Font Licence)
-Comfortaa — Johan Aakerlund/Cyreal (Open Font Licence)
-Concert One — Multiple Designers (Open Font Licence)
-Creepster — Sideshow (Open Font Licence)
-Fredoka One — Milena Brandao (Open Font Licence)
-Fruktur — Viktoriya Grabowska (Open Font Licence)
-Girassol — Liam Spradlin (Open Font Licence)
-Gruppo — Vernon Adams (Open Font Licence)
-Gugi — TAE System &amp; Typefaces Co. (Open Font Licence)
-Knewave — Tyler Finck (Open Font Licence)
-Lobster — Impallari Type/Cyreal (Open Font Licence)
-Luckiest Guy — Astigmatic (Apache License)
-Megrim — Daniel Johnson (Open Font Licence)
-Monoton — Vernon Adams (Open Font Licence)
-Nova Cut — Wojciech Kalinowski (Open Font Licence)
-Odibee Sans — James Barnard (Open Font Licence)
-Oswald — Vernon Adams/Kalapi Gajjar/Cyreal (Open Font Licence)
-Poiret One — Denis Masharov (Open Font Licence)
-Righteous — Astigmatic (Open Font Licence)
-Roboto — Christian Robertson (Apache Licence)
-Shrikhand — Jonny Pinhorn (Open Font Licence)
-Special Elite — Astigmatic (Apache License)
-Spicy Rice — Astigmatic (Open Font Licence)
-Trade Winds — Sideshow (Open Font Licence)
-Unica One — Eduardo Tunni (Open Font Licence)</string>
+			<string>Abel by MADType *
+Audiowide by Astigmatic *
+Bangers by Vernon Adams *
+Baumans by Henadij Zarechnjuk/Cyreal *
+Bebas Neue by Ryoichi Tsunekawa *
+Black Ops One by James Grieshaber *
+Bungee – David Jonathan Ross *
+Caesar Dressing by Open Window *
+Carter One by Vernon Adams *
+Cinzel Decorative by Natanael Gama *
+Comfortaa by Johan Aakerlund/Cyreal *
+Concert One by Multiple Designers *
+Creepster by Sideshow *
+Fredoka One by Milena Brandao *
+Fruktur by Viktoriya Grabowska *
+Girassol by Liam Spradlin *
+Gruppo by Vernon Adams *
+Gugi by TAE System &amp; Typefaces Co. *
+Knewave by Tyler Finck *
+Lobster by Impallari Type/Cyreal *
+Luckiest Guy by Astigmatic †
+Megrim by Daniel Johnson *
+Monoton by Vernon Adams *
+Nova Cut by Wojciech Kalinowski *
+Odibee Sans by James Barnard *
+Oswald by Vernon Adams/Kalapi Gajjar/Cyreal *
+Poiret One by Denis Masharov *
+Righteous by Astigmatic *
+Roboto by Christian Robertson (Apache Licence)
+Shrikhand by Jonny Pinhorn *
+Special Elite by Astigmatic †
+Spicy Rice by Astigmatic *
+Trade Winds by Sideshow *
+Unica One by Eduardo Tunni *
+
+* Open Font Licence
+† Apache Licence</string>
 		</dict>
 	</array>
 </dict>
