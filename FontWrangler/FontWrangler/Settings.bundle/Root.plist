@@ -12,7 +12,7 @@
 			<key>Title</key>
 			<string>App Info</string>
 			<key>FooterText</key>
-			<string>FontWrangler © 2020, Tony Smith (@smittytone)</string>
+			<string>Fontismo © 2020, Tony Smith (@smittytone)</string>
 		</dict>
 		<dict>
 			<key>Type</key>
@@ -39,8 +39,8 @@
 			<string>PSGroupSpecifier</string>
 			<key>Title</key>
 			<string>Creators</string>
-            <key>FooterText</key>
-            <string>The fonts provided are copyright their various owners. Tap ‘Creators’ to view a list of the creators behind the fonts provided through this app.</string>
+			<key>FooterText</key>
+			<string>The fonts provided are copyright their various owners. Tap ‘Creators’ to view a list of the creators behind the fonts provided through this app.</string>
 		</dict>
 		<dict>
 			<key>Type</key>
