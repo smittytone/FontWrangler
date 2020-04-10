@@ -14,7 +14,7 @@ class DetailViewController: UIViewController, UIPopoverPresentationControllerDel
     
     @IBOutlet weak var dynamicSampleHeadLabel: UILabel!
     @IBOutlet weak var dynamicSampleTextView: UITextView!
-    @IBOutlet weak var dynamicSampleParentView: UIView!
+    @IBOutlet weak var dynamicSampleParentView: UserTestSampleView!
     
     @IBOutlet weak var userSampleHeadLabel: UILabel!
     @IBOutlet weak var userSampleTextView: UITextView!
@@ -28,6 +28,8 @@ class DetailViewController: UIViewController, UIPopoverPresentationControllerDel
     private var substituteFont: UIFont? = nil
     private var variantsButton: UIBarButtonItem? = nil
     private var fontSize: CGFloat = kBaseDynamicSampleFontSize
+    private var hasFlipped: Bool = false
+    private var dynamicFlipBoundary: CGFloat = 0.0
 
     var mvc: MasterViewController? = nil
     var currentFamily: FontFamily? = nil
@@ -147,8 +149,6 @@ class DetailViewController: UIViewController, UIPopoverPresentationControllerDel
                 // Set the font size slider control and label
                 sizeSlider.isEnabled = true
                 sizeLabel.text = "\(Int(self.fontSize))pt"
-                
-
             } else {
                 dynamicLabel.font = self.substituteFont
                 dynamicLabel.alpha = 0.3
@@ -187,9 +187,39 @@ class DetailViewController: UIViewController, UIPopoverPresentationControllerDel
     @IBAction func setFontSize(_ sender: Any) {
 
         // Respond to the user adjusting the font size slider
-        
-        self.fontSize = CGFloat(self.fontSizeSlider.value)
-        self.fontSizeLabel.text = "\(Int(self.fontSize))pt"
+
+        // Update the current font size based on the slider value and update the UI
+        self.fontSize = CGFloat(Int(self.fontSizeSlider.value))
+        //self.fontSizeLabel.text = "\(Int(self.fontSize))pt"
+
+        // Check whether we need to flip between the pre-broken line and unbroken line
+        // text strings applied to the view
+        if !self.hasFlipped {
+            // Not yet flipped, so check for flip condition, ie. number of lines is greater than expected
+            // Get the number of displayed lines
+            let numLines = Int(self.dynamicSampleTextView.contentSize.height / self.dynamicSampleTextView.font!.lineHeight)
+
+            if numLines > kFontSampleText_1_Lines && self.fontSize > kFontSampleText_1_Limit {
+                // At least one line has wrapped, so trigger a flip:
+                // Use the un-broken text so it wraps right: no orphans
+                self.dynamicSampleTextView.text = kFontSampleText_2
+                self.hasFlipped = true
+
+                // First time, record the font size at which the flip occurred
+                if self.dynamicFlipBoundary == 0.0 {
+                    self.dynamicFlipBoundary = self.fontSize
+                }
+            }
+        } else {
+            // We are flipped - do we need to flip back? Only if the displayed
+            // font size is less than the size at which we flipped
+            if self.fontSize < self.dynamicFlipBoundary {
+                self.dynamicSampleTextView.text = kFontSampleText_1
+                self.hasFlipped = false
+            }
+        }
+
+        // Update the view
         self.configureView()
     }
     

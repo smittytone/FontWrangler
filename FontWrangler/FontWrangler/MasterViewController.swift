@@ -50,6 +50,8 @@ class MasterViewController: UITableViewController {
         // Retain button for future use (enable and disable)
         self.installButton = addAllButton
 
+        self.title = "Fontismo Fonts"
+
         // Set up the split view controller
         if let split = splitViewController {
             let controllers = split.viewControllers
@@ -125,7 +127,7 @@ class MasterViewController: UITableViewController {
                 fontDictionary = try JSONSerialization.jsonObject(with: fileData, options: []) as! [String: Any]
             } catch {
                 NSLog("[ERROR] can't load defaults: \(error.localizedDescription)")
-                self.showAlert("Can’t load defaults", "Sorry, FontWrangler has become damaged. Please reinstall it.")
+                self.showAlert("Can’t load defaults", "Sorry, Fontismo has become damaged. Please reinstall it.")
                 return
             }
             
@@ -143,7 +145,7 @@ class MasterViewController: UITableViewController {
             // Sort the list
             self.sortFonts()
         } else {
-            self.showAlert("Can’t load defaults", "Sorry, FontWrangler has become damaged. Please reinstall it.")
+            self.showAlert("Can’t load defaults", "Sorry, Fontismo has become damaged. Please reinstall it.")
         }
     }
     
@@ -238,7 +240,7 @@ class MasterViewController: UITableViewController {
                 // TODO Should this be an error we expose to the user? If so, only only later calls
                 if self.fonts.count == 0 {
                     // Load in the defaults if there's no font list in place
-                    self.showAlert("Can’t load defaults", "Sorry, FontWrangler has become damaged. Please reinstall it.")
+                    self.showAlert("Can’t load defaults", "Sorry, Fontismo has become damaged. Please reinstall it.")
                     return
                 }
 
@@ -322,7 +324,7 @@ class MasterViewController: UITableViewController {
 
         } catch {
             NSLog("Can't write font state file: \(error.localizedDescription)")
-            self.showAlert("Error", "Sorry, FontWrangler can’t access its Documents folder.")
+            self.showAlert("Error", "Sorry, Fontismo can’t access its Documents folder.")
         }
     }
     
