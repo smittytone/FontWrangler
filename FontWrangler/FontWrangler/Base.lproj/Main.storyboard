@@ -26,7 +26,7 @@
         <!--Detail-->
         <scene sceneID="yUG-lL-AsK">
             <objects>
-                <viewController title="Detail" id="JEX-9P-axG" customClass="DetailViewController" customModule="FontWrangler" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController title="Detail" id="JEX-9P-axG" customClass="DetailViewController" customModule="Fontismo" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="svH-Pt-448">
                         <rect key="frame" x="0.0" y="0.0" width="834" height="1112"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -36,7 +36,7 @@
                                 <constraints>
                                     <constraint firstAttribute="height" constant="21" id="orP-Ag-bXh"/>
                                 </constraints>
-                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="16"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
@@ -71,7 +71,7 @@
                                 <viewLayoutGuide key="contentLayoutGuide" id="nke-5o-nv0"/>
                                 <viewLayoutGuide key="frameLayoutGuide" id="VvM-2W-j2X"/>
                             </scrollView>
-                            <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="48" minValue="10" maxValue="144" minimumValueImage="slider_min" maximumValueImage="slider_max" translatesAutoresizingMaskIntoConstraints="NO" id="qJB-Ox-ARY">
+                            <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="48" minValue="10" maxValue="288" minimumValueImage="slider_min" maximumValueImage="slider_max" translatesAutoresizingMaskIntoConstraints="NO" id="qJB-Ox-ARY">
                                 <rect key="frame" x="237" y="541.5" width="360" height="30"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="356" id="5AQ-FZ-Zl9"/>
@@ -86,64 +86,64 @@
                                 <constraints>
                                     <constraint firstAttribute="height" constant="21" id="zUB-mm-cvp"/>
                                 </constraints>
-                                <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="14"/>
+                                <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="16"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Tt5-3t-8Nl">
-                                <rect key="frame" x="20" y="626" width="794" height="466"/>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Tt5-3t-8Nl" customClass="UserTestSampleView" customModule="Fontismo" customModuleProvider="target">
+                                <rect key="frame" x="20" y="595" width="794" height="499"/>
                                 <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Enter your own demo text below" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Y7z-w7-orB">
+                                        <rect key="frame" x="8" y="8" width="786" height="17"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="17" id="QBR-ng-ezd"/>
+                                        </constraints>
+                                        <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="16"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
                                     <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="zSe-b3-rdG">
-                                        <rect key="frame" x="26" y="8" width="742" height="438"/>
+                                        <rect key="frame" x="19" y="33" width="756" height="458"/>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <string key="text">Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda.</string>
-                                        <color key="textColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <color key="textColor" systemColor="labelColor" cocoaTouchSystemColor="darkTextColor"/>
                                         <fontDescription key="fontDescription" name="ArialMT" family="Arial" pointSize="20"/>
                                         <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" enablesReturnKeyAutomatically="YES" smartQuotesType="no"/>
                                     </textView>
                                 </subviews>
-                                <color key="backgroundColor" red="0.92995061530000001" green="0.92995061530000001" blue="0.92995061530000001" alpha="0.84705882349999995" colorSpace="custom" customColorSpace="sRGB"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
-                                    <constraint firstAttribute="bottom" secondItem="zSe-b3-rdG" secondAttribute="bottom" constant="20" id="8PU-Bs-nqr"/>
-                                    <constraint firstItem="zSe-b3-rdG" firstAttribute="centerX" secondItem="Tt5-3t-8Nl" secondAttribute="centerX" id="dNu-zk-aAe"/>
-                                    <constraint firstItem="zSe-b3-rdG" firstAttribute="leading" secondItem="Tt5-3t-8Nl" secondAttribute="leading" constant="26" id="yKK-Yr-Djl"/>
-                                    <constraint firstItem="zSe-b3-rdG" firstAttribute="top" secondItem="Tt5-3t-8Nl" secondAttribute="topMargin" id="yp8-Cc-nGR"/>
+                                    <constraint firstItem="zSe-b3-rdG" firstAttribute="leading" secondItem="Tt5-3t-8Nl" secondAttribute="leading" constant="19" id="Avb-QG-4EM"/>
+                                    <constraint firstAttribute="trailing" secondItem="Y7z-w7-orB" secondAttribute="trailing" id="Iht-qR-5Z7"/>
+                                    <constraint firstItem="zSe-b3-rdG" firstAttribute="top" secondItem="Y7z-w7-orB" secondAttribute="bottom" constant="8" id="Qcm-QD-rEJ"/>
+                                    <constraint firstItem="Y7z-w7-orB" firstAttribute="top" secondItem="Tt5-3t-8Nl" secondAttribute="top" constant="8" id="R7j-cY-hHO"/>
+                                    <constraint firstAttribute="bottom" secondItem="zSe-b3-rdG" secondAttribute="bottom" constant="8" id="RR2-HS-9HD"/>
+                                    <constraint firstItem="Y7z-w7-orB" firstAttribute="leading" secondItem="Tt5-3t-8Nl" secondAttribute="leading" constant="8" id="uDK-Ag-lhA"/>
+                                    <constraint firstAttribute="trailing" secondItem="zSe-b3-rdG" secondAttribute="trailing" constant="19" id="wfe-H3-jux"/>
                                 </constraints>
                             </view>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Enter your own demo text below" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Y7z-w7-orB">
-                                <rect key="frame" x="20" y="598.5" width="794" height="17"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="17" id="8sh-jZ-5iR"/>
-                                </constraints>
-                                <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="14"/>
-                                <nil key="textColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                         <constraints>
                             <constraint firstItem="qJB-Ox-ARY" firstAttribute="top" secondItem="IoY-2B-4ip" secondAttribute="bottom" constant="8.5" id="6F4-3y-Gp2"/>
                             <constraint firstItem="IoY-2B-4ip" firstAttribute="leading" secondItem="VUw-jc-0yf" secondAttribute="leading" constant="20" id="6nL-qg-yJa"/>
+                            <constraint firstItem="VUw-jc-0yf" firstAttribute="trailing" secondItem="Tt5-3t-8Nl" secondAttribute="trailing" constant="20" id="7gt-Yu-BHv"/>
                             <constraint firstItem="IoY-2B-4ip" firstAttribute="top" secondItem="cAp-4J-Aez" secondAttribute="bottom" constant="8" id="8ai-EM-RzH"/>
                             <constraint firstItem="cAp-4J-Aez" firstAttribute="leading" secondItem="rCs-GY-1Kq" secondAttribute="leading" id="8tm-g4-Cy4"/>
-                            <constraint firstItem="Tt5-3t-8Nl" firstAttribute="leading" secondItem="VUw-jc-0yf" secondAttribute="leading" constant="20" id="9hH-zm-35J"/>
-                            <constraint firstItem="Tt5-3t-8Nl" firstAttribute="top" secondItem="Y7z-w7-orB" secondAttribute="bottom" constant="10.5" id="CMY-m6-dEe"/>
                             <constraint firstItem="cAp-4J-Aez" firstAttribute="top" secondItem="rCs-GY-1Kq" secondAttribute="bottom" constant="8" id="Ciu-cX-ZbH"/>
                             <constraint firstItem="rCs-GY-1Kq" firstAttribute="leading" secondItem="VUw-jc-0yf" secondAttribute="leading" constant="20" id="F1d-uN-GcF"/>
-                            <constraint firstItem="Y7z-w7-orB" firstAttribute="top" secondItem="qJB-Ox-ARY" secondAttribute="bottom" constant="28" id="GF2-BL-aWF"/>
+                            <constraint firstItem="Tt5-3t-8Nl" firstAttribute="leading" secondItem="VUw-jc-0yf" secondAttribute="leading" constant="20" id="JSx-2P-1AJ"/>
                             <constraint firstItem="rCs-GY-1Kq" firstAttribute="top" secondItem="pTu-Of-OYx" secondAttribute="bottom" constant="8" id="MZS-gu-Ish"/>
                             <constraint firstItem="pTu-Of-OYx" firstAttribute="leading" secondItem="VUw-jc-0yf" secondAttribute="leading" constant="20" id="R0P-WR-jnN"/>
-                            <constraint firstItem="VUw-jc-0yf" firstAttribute="bottom" secondItem="Tt5-3t-8Nl" secondAttribute="bottom" constant="20" id="RAL-pb-srH"/>
-                            <constraint firstItem="VUw-jc-0yf" firstAttribute="trailing" secondItem="Tt5-3t-8Nl" secondAttribute="trailing" constant="20" id="V1a-07-NOb"/>
                             <constraint firstItem="VUw-jc-0yf" firstAttribute="trailing" secondItem="pTu-Of-OYx" secondAttribute="trailing" constant="20" id="X7M-hs-FwF"/>
                             <constraint firstItem="VUw-jc-0yf" firstAttribute="trailing" secondItem="rCs-GY-1Kq" secondAttribute="trailing" constant="20" id="bQ5-Id-h6j"/>
                             <constraint firstItem="VUw-jc-0yf" firstAttribute="trailing" secondItem="IoY-2B-4ip" secondAttribute="trailing" constant="20" id="cfj-RM-9Ls"/>
-                            <constraint firstItem="Y7z-w7-orB" firstAttribute="leading" secondItem="VUw-jc-0yf" secondAttribute="leading" constant="20" id="dKY-S2-I5O"/>
+                            <constraint firstItem="Tt5-3t-8Nl" firstAttribute="top" secondItem="qJB-Ox-ARY" secondAttribute="bottom" constant="24.5" id="cyr-9z-xGM"/>
                             <constraint firstItem="pTu-Of-OYx" firstAttribute="top" secondItem="VUw-jc-0yf" secondAttribute="top" constant="8" id="dpM-X4-Z34"/>
                             <constraint firstItem="qJB-Ox-ARY" firstAttribute="centerY" secondItem="svH-Pt-448" secondAttribute="centerY" id="leZ-tx-bzq"/>
                             <constraint firstItem="cAp-4J-Aez" firstAttribute="trailing" secondItem="rCs-GY-1Kq" secondAttribute="trailing" id="n6D-ja-cRe"/>
                             <constraint firstItem="qJB-Ox-ARY" firstAttribute="centerX" secondItem="svH-Pt-448" secondAttribute="centerX" id="rOE-jZ-yFQ"/>
-                            <constraint firstItem="VUw-jc-0yf" firstAttribute="trailing" secondItem="Y7z-w7-orB" secondAttribute="trailing" constant="20" id="swT-ME-dEe"/>
+                            <constraint firstItem="VUw-jc-0yf" firstAttribute="bottom" secondItem="Tt5-3t-8Nl" secondAttribute="bottom" constant="18" id="x6i-7y-cfe"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="VUw-jc-0yf"/>
                     </view>
@@ -181,7 +181,7 @@
         <!--Fonts-->
         <scene sceneID="smW-Zh-WAh">
             <objects>
-                <tableViewController title="Fonts" clearsSelectionOnViewWillAppear="NO" id="7bK-jq-Zjz" customClass="MasterViewController" customModule="FontWrangler" customModuleProvider="target" sceneMemberID="viewController">
+                <tableViewController title="Fonts" clearsSelectionOnViewWillAppear="NO" id="7bK-jq-Zjz" customClass="MasterViewController" customModule="Fontismo" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="r7i-6Z-zg0">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="1112"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -224,7 +224,7 @@
                                     </constraints>
                                 </tableViewCellContentView>
                             </tableViewCell>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="custom.cell" rowHeight="84" id="v39-Sy-rIy" customClass="FontWranglerFontListTableViewCell" customModule="FontWrangler" customModuleProvider="target">
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="custom.cell" rowHeight="84" id="v39-Sy-rIy" customClass="FontWranglerFontListTableViewCell" customModule="Fontismo" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="60" width="320" height="84"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="v39-Sy-rIy" id="mHw-1S-Ubx">
@@ -314,13 +314,13 @@
         <!--Font Variants Table View Controller-->
         <scene sceneID="1vl-D8-RSI">
             <objects>
-                <viewController storyboardIdentifier="font.variants.controller" id="5Y2-lU-2pS" customClass="FontVariantsTableViewController" customModule="FontWrangler" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="font.variants.controller" id="5Y2-lU-2pS" customClass="FontVariantsTableViewController" customModule="Fontismo" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="xiT-e7-PPT">
                         <rect key="frame" x="0.0" y="0.0" width="834" height="1112"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                         <prototypes>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="variant.cell" id="s6R-e5-hht" customClass="FontVariantsTableViewCell" customModule="FontWrangler" customModuleProvider="target">
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="variant.cell" id="s6R-e5-hht" customClass="FontVariantsTableViewCell" customModule="Fontismo" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="28" width="834" height="43.5"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="s6R-e5-hht" id="roM-ok-dfU">
@@ -354,7 +354,7 @@
         <!--Help Page View Controller-->
         <scene sceneID="L7k-AB-tjn">
             <objects>
-                <viewController storyboardIdentifier="help.page.view" id="Y0d-u1-zqb" customClass="HelpPageViewController" customModule="FontWrangler" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="help.page.view" id="Y0d-u1-zqb" customClass="HelpPageViewController" customModule="Fontismo" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="HvH-7H-aFK">
                         <rect key="frame" x="0.0" y="0.0" width="834" height="1112"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -389,7 +389,7 @@
         <!--Help View Controller-->
         <scene sceneID="cZO-1w-17L">
             <objects>
-                <viewController storyboardIdentifier="help.view.controller" id="Yba-T0-ej9" customClass="HelpViewController" customModule="FontWrangler" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="help.view.controller" id="Yba-T0-ej9" customClass="HelpViewController" customModule="Fontismo" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="BYQ-dv-tgc">
                         <rect key="frame" x="0.0" y="0.0" width="834" height="1112"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
