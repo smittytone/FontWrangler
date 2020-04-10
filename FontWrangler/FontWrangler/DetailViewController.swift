@@ -199,7 +199,7 @@ class DetailViewController: UIViewController, UIPopoverPresentationControllerDel
             // Get the number of displayed lines
             let numLines = Int(self.dynamicSampleTextView.contentSize.height / self.dynamicSampleTextView.font!.lineHeight)
 
-            if numLines > kFontSampleText_1_Lines && self.fontSize > kFontSampleText_1_Limit {
+            if numLines > kFontSampleText_1_Lines && self.fontSize > CGFloat(kFontSampleText_1_Limit) {
                 // At least one line has wrapped, so trigger a flip:
                 // Use the un-broken text so it wraps right: no orphans
                 self.dynamicSampleTextView.text = kFontSampleText_2
