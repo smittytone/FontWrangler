@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3B25B94224407C0A0078B869 /* UserTestSampleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B25B94124407C0A0078B869 /* UserTestSampleView.swift */; };
 		3B42C8452433668400AF2B13 /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 3B42C8442433668400AF2B13 /* Settings.bundle */; };
 		3B45C23524371D1E000782AE /* help in Resources */ = {isa = PBXBuildFile; fileRef = 3B45C23424371D1E000782AE /* help */; };
 		3B4C6D982434E88A00C1C5CB /* FontVariantsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B4C6D972434E88A00C1C5CB /* FontVariantsTableViewController.swift */; };
@@ -30,12 +31,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		3B25B94124407C0A0078B869 /* UserTestSampleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserTestSampleView.swift; sourceTree = "<group>"; };
 		3B42C8442433668400AF2B13 /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
 		3B45C23424371D1E000782AE /* help */ = {isa = PBXFileReference; lastKnownFileType = folder; name = help; path = ../../../../../OneDrive/Programming/FontWrangler/help; sourceTree = "<group>"; };
 		3B4C6D972434E88A00C1C5CB /* FontVariantsTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FontVariantsTableViewController.swift; sourceTree = "<group>"; };
 		3B4C6D992434E90900C1C5CB /* FontVariantsTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FontVariantsTableViewCell.swift; sourceTree = "<group>"; };
 		3B6E85E32430AB8500C6549A /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
-		3B879A28242E00B400BE47DC /* FontWrangler.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FontWrangler.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		3B879A28242E00B400BE47DC /* Fontismo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Fontismo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3B879A2B242E00B400BE47DC /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		3B879A2D242E00B400BE47DC /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		3B879A2F242E00B400BE47DC /* MasterViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MasterViewController.swift; sourceTree = "<group>"; };
@@ -79,7 +81,7 @@
 		3B879A29242E00B400BE47DC /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				3B879A28242E00B400BE47DC /* FontWrangler.app */,
+				3B879A28242E00B400BE47DC /* Fontismo.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -92,6 +94,7 @@
 				3B879A2D242E00B400BE47DC /* SceneDelegate.swift */,
 				3B879A2F242E00B400BE47DC /* MasterViewController.swift */,
 				3B879A31242E00B400BE47DC /* DetailViewController.swift */,
+				3B25B94124407C0A0078B869 /* UserTestSampleView.swift */,
 				3BD0DF4924332B7F002878F7 /* FontWranglerFontListTableViewCell.swift */,
 				3B4C6D972434E88A00C1C5CB /* FontVariantsTableViewController.swift */,
 				3B4C6D992434E90900C1C5CB /* FontVariantsTableViewCell.swift */,
@@ -137,7 +140,7 @@
 			);
 			name = FontWrangler;
 			productName = FontWrangler;
-			productReference = 3B879A28242E00B400BE47DC /* FontWrangler.app */;
+			productReference = 3B879A28242E00B400BE47DC /* Fontismo.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -241,6 +244,7 @@
 				3B879A30242E00B400BE47DC /* MasterViewController.swift in Sources */,
 				3BE5B2AB2434AD6B00A0C33A /* FontFamily.swift in Sources */,
 				3BD0DF4A24332B7F002878F7 /* FontWranglerFontListTableViewCell.swift in Sources */,
+				3B25B94224407C0A0078B869 /* UserTestSampleView.swift in Sources */,
 				3B879A32242E00B400BE47DC /* DetailViewController.swift in Sources */,
 				3B6E85E42430AB8500C6549A /* Constants.swift in Sources */,
 			);
@@ -406,7 +410,7 @@
 				MARKETING_VERSION = 1.0.0;
 				"OTHER_SWIFT_FLAGS[arch=*]" = "-DDEBUG";
 				PRODUCT_BUNDLE_IDENTIFIER = com.bps.fontwrangler;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = Fontismo;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 2;
@@ -431,7 +435,7 @@
 				MARKETING_VERSION = 1.0.0;
 				"OTHER_SWIFT_FLAGS[arch=*]" = "-DRELEASE";
 				PRODUCT_BUNDLE_IDENTIFIER = com.bps.fontwrangler;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = Fontismo;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 2;
