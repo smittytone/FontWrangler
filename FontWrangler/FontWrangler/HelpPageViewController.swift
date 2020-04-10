@@ -7,7 +7,7 @@ import UIKit
 import WebKit
 
 
-class HelpPageViewController: UIViewController {
+class HelpPageViewController: UIViewController, WKNavigationDelegate {
 
 
     // MARK: - UI properties
@@ -24,6 +24,7 @@ class HelpPageViewController: UIViewController {
         super.viewDidLoad()
 
         // Load in page content using WKWebView
+        self.pageWebView.navigationDelegate = self
         self.pageWebView.isHidden = true
         let url = Bundle.main.url(forResource: "page\(self.index)", withExtension: "html", subdirectory: "help")!
         self.pageWebView.loadFileURL(url, allowingReadAccessTo: url)
@@ -38,4 +39,32 @@ class HelpPageViewController: UIViewController {
         self.pageWebView.isHidden = false
     }
 
+
+    func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
+
+    }
+
+
+    func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, preferences: WKWebpagePreferences, decisionHandler: @escaping (WKNavigationActionPolicy, WKWebpagePreferences) -> Void) {
+
+        // Process clicked links to send them via Safari - all other
+        // actions are handled by the WKWebView
+        var policy: WKNavigationActionPolicy
+
+        if navigationAction.navigationType == .linkActivated {
+            // The user clicked on a link
+            if let url = navigationAction.request.url {
+                UIApplication.shared.open(url,
+                                          options: [.universalLinksOnly: false],
+                                          completionHandler: nil)
+            }
+
+            policy = .cancel
+        } else {
+            policy = .allow
+        }
+
+        // Emit the policy outcome
+        decisionHandler(policy, preferences)
+    }
 }
