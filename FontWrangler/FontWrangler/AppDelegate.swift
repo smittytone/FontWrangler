@@ -27,9 +27,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                      forKey: "com.bps.fontwrangler.app.build")
 
         // Whether the app should show first-run guidance
-        defaults.set(true,
-                     forKey: "com.bps.fontwrangler.app.show.intro")
-        
+        // NOTE Check for key presence before writing a default value, otherwise
+        //      the panel is always shown when the app launches
+        let introKeyIsPresent = defaults.object(forKey: "com.bps.fontwrangler.app.show.intro")
+        if introKeyIsPresent == nil {
+            defaults.set(true, forKey: "com.bps.fontwrangler.app.show.intro")
+        }
+
         return true
     }
 

@@ -53,10 +53,16 @@ class HelpPageViewController: UIViewController, WKNavigationDelegate {
 
         if navigationAction.navigationType == .linkActivated {
             // The user clicked on a link
-            if let url = navigationAction.request.url {
-                UIApplication.shared.open(url,
-                                          options: [.universalLinksOnly: false],
-                                          completionHandler: nil)
+            if let linkURL = navigationAction.request.url {
+                print(linkURL.absoluteString)
+                if linkURL.absoluteString == "https://settings/" {
+                    if let settingsURL = URL(string: UIApplication.openSettingsURLString) {
+                        self.openURL(settingsURL)
+                    }
+                } else {
+                    // It's a regular URL
+                    self.openURL(linkURL)
+                }
             }
 
             policy = .cancel
@@ -66,5 +72,15 @@ class HelpPageViewController: UIViewController, WKNavigationDelegate {
 
         // Emit the policy outcome
         decisionHandler(policy, preferences)
+    }
+
+
+    func openURL(_ url: URL) {
+
+        // Just open the external URL specified
+
+        UIApplication.shared.open(url,
+                                  options: [.universalLinksOnly: false],
+                                  completionHandler: nil)
     }
 }
