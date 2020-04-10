@@ -200,7 +200,7 @@ class MasterViewController: UITableViewController {
                         NSLog("[ERROR] Could not delete damaged font list file: \(error.localizedDescription)")
                     }
 
-                    self.showAlert("Sorry, your font database has become damaged", "Please re-install your fonts")
+                    //self.showAlert("Sorry, your font database has become damaged", "Please re-install your fonts")
                     return
                 }
 
