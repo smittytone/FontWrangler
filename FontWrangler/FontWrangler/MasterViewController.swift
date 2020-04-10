@@ -108,6 +108,39 @@ class MasterViewController: UITableViewController {
 
         // Update the UI
         self.setInstallButtonState()
+
+        // Show the intro panel
+        // NOTE 'showIntroPanel()' checks whether the panel should
+        //      actually be shown
+        self.showIntroPanel()
+    }
+
+
+    func showIntroPanel() {
+
+        // If required, display an introductory page of guidance on app usage
+        // NOTE This should appear on the first use of the app, but never again.
+        //      However, the user can choose to re-show the panel by flipping a
+        //      switch in the app settings
+
+        // Get the default to see if we go ahead and display the intro panel
+        let defaults: UserDefaults = UserDefaults.standard
+        let showIntro = defaults.bool(forKey: "com.bps.fontwrangler.app.show.intro")
+
+        if showIntro {
+            // Load and configure the menu view controller.
+            let storyboard = UIStoryboard(name: "Main", bundle: nil)
+            let ivc: IntroViewController = storyboard.instantiateViewController(withIdentifier: "intro.view.controller") as! IntroViewController
+
+            // Use the popover presentation style for your view controller.
+            ivc.modalPresentationStyle = .formSheet
+
+            // Present the view controller (in a popover).
+            self.present(ivc, animated: true, completion: nil)
+
+            // Write out to defaults so that the panel isn't shown again
+            defaults.set(false, forKey: "com.bps.fontwrangler.app.show.intro")
+        }
     }
     
 
@@ -1064,7 +1097,7 @@ class MasterViewController: UITableViewController {
         hvc.modalPresentationStyle = .pageSheet
 
         // Specify the anchor point for the popover.
-        hvc.popoverPresentationController?.barButtonItem = navigationItem.rightBarButtonItem
+        //hvc.popoverPresentationController?.barButtonItem = navigationItem.rightBarButtonItem
                    
         // Present the view controller (in a popover).
         self.present(hvc, animated: true, completion: nil)

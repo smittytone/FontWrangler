@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3B0DF57C2440C8F50037BEDE /* IntroViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B0DF57B2440C8F50037BEDE /* IntroViewController.swift */; };
 		3B25B94224407C0A0078B869 /* UserTestSampleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B25B94124407C0A0078B869 /* UserTestSampleView.swift */; };
 		3B42C8452433668400AF2B13 /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 3B42C8442433668400AF2B13 /* Settings.bundle */; };
 		3B45C23524371D1E000782AE /* help in Resources */ = {isa = PBXBuildFile; fileRef = 3B45C23424371D1E000782AE /* help */; };
@@ -31,6 +32,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		3B0DF57B2440C8F50037BEDE /* IntroViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntroViewController.swift; sourceTree = "<group>"; };
 		3B25B94124407C0A0078B869 /* UserTestSampleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserTestSampleView.swift; sourceTree = "<group>"; };
 		3B42C8442433668400AF2B13 /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
 		3B45C23424371D1E000782AE /* help */ = {isa = PBXFileReference; lastKnownFileType = folder; name = help; path = ../../../../../OneDrive/Programming/FontWrangler/help; sourceTree = "<group>"; };
@@ -100,6 +102,7 @@
 				3B4C6D992434E90900C1C5CB /* FontVariantsTableViewCell.swift */,
 				3BA9276724360F9200B4BA99 /* HelpViewController.swift */,
 				3BA9277324361D3600B4BA99 /* HelpPageViewController.swift */,
+				3B0DF57B2440C8F50037BEDE /* IntroViewController.swift */,
 				3B879A42242E1C0100BE47DC /* UserFont.swift */,
 				3BE5B2AA2434AD6B00A0C33A /* FontFamily.swift */,
 				3B879A33242E00B400BE47DC /* Main.storyboard */,
@@ -172,6 +175,7 @@
 					lobster,
 					luckiest_guy,
 					megrim,
+					monofett,
 					monoton,
 					nova_cut,
 					odibee_sans,
@@ -243,6 +247,7 @@
 				3B879A43242E1C0100BE47DC /* UserFont.swift in Sources */,
 				3B879A30242E00B400BE47DC /* MasterViewController.swift in Sources */,
 				3BE5B2AB2434AD6B00A0C33A /* FontFamily.swift in Sources */,
+				3B0DF57C2440C8F50037BEDE /* IntroViewController.swift in Sources */,
 				3BD0DF4A24332B7F002878F7 /* FontWranglerFontListTableViewCell.swift in Sources */,
 				3B25B94224407C0A0078B869 /* UserTestSampleView.swift in Sources */,
 				3B879A32242E00B400BE47DC /* DetailViewController.swift in Sources */,

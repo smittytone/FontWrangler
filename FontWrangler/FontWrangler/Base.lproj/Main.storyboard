@@ -363,7 +363,7 @@
                                 <rect key="frame" x="20" y="0.0" width="794" height="1092"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                                 <wkWebViewConfiguration key="configuration" allowsAirPlayForMediaPlayback="NO" allowsPictureInPictureMediaPlayback="NO">
-                                    <dataDetectorTypes key="dataDetectorTypes" none="YES"/>
+                                    <dataDetectorTypes key="dataDetectorTypes" link="YES"/>
                                     <audiovisualMediaTypes key="mediaTypesRequiringUserActionForPlayback" none="YES"/>
                                     <wkPreferences key="preferences" javaScriptEnabled="NO"/>
                                 </wkWebViewConfiguration>
@@ -430,25 +430,16 @@
             </objects>
             <point key="canvasLocation" x="-1735.2517985611512" y="-354.49640287769785"/>
         </scene>
-        <!--View Controller-->
+        <!--Intro View Controller-->
         <scene sceneID="PYQ-0y-wMB">
             <objects>
-                <viewController id="T8d-7x-oHV" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="intro.view.controller" id="T8d-7x-oHV" customClass="IntroViewController" customModule="Fontismo" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="4xe-y5-s98">
-                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <rect key="frame" x="0.0" y="0.0" width="834" height="1112"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="zlo-Ph-VhA">
-                                <rect key="frame" x="560" y="20" width="20" height="22"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" constant="20" id="9tx-a6-452"/>
-                                    <constraint firstAttribute="height" constant="22" id="zdw-03-aMI"/>
-                                </constraints>
-                                <state key="normal" image="xmark.circle.fill" catalog="system"/>
-                            </button>
-                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" fixedFrame="YES" editable="NO" usesAttributedText="YES" selectable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0pJ-ui-2WR">
-                                <rect key="frame" x="20" y="53" width="560" height="527"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" editable="NO" usesAttributedText="YES" selectable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0pJ-ui-2WR">
+                                <rect key="frame" x="20" y="20" width="794" height="1072"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                                 <attributedString key="attributedText">
                                     <fragment content="Welcome to Fontismo!">
@@ -519,7 +510,21 @@
                                             <paragraphStyle key="NSParagraphStyle" alignment="left" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0"/>
                                         </attributes>
                                     </fragment>
-                                    <fragment content="  Tap Help in the app for more.">
+                                    <fragment content="  Tap ">
+                                        <attributes>
+                                            <color key="NSColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                            <font key="NSFont" size="20" name="Avenir-Book"/>
+                                            <paragraphStyle key="NSParagraphStyle" alignment="left" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0"/>
+                                        </attributes>
+                                    </fragment>
+                                    <fragment content="Help">
+                                        <attributes>
+                                            <color key="NSColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                            <font key="NSFont" size="20" name="Avenir-Heavy"/>
+                                            <paragraphStyle key="NSParagraphStyle" alignment="left" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0"/>
+                                        </attributes>
+                                    </fragment>
+                                    <fragment content=" in the app for more.">
                                         <attributes>
                                             <color key="NSColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                             <font key="NSFont" size="20" name="Avenir-Book"/>
@@ -528,17 +533,31 @@
                                     </fragment>
                                 </attributedString>
                                 <textInputTraits key="textInputTraits" autocorrectionType="no"/>
+                                <dataDetectorType key="dataDetectorTypes" link="YES"/>
                             </textView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="zlo-Ph-VhA">
+                                <rect key="frame" x="794" y="20" width="20" height="22"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="20" id="9tx-a6-452"/>
+                                    <constraint firstAttribute="height" constant="22" id="zdw-03-aMI"/>
+                                </constraints>
+                                <state key="normal" image="xmark.circle.fill" catalog="system"/>
+                                <connections>
+                                    <action selector="doClose:" destination="T8d-7x-oHV" eventType="touchUpInside" id="6Tu-ml-jao"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                         <constraints>
+                            <constraint firstItem="0pJ-ui-2WR" firstAttribute="top" secondItem="zlo-Ph-VhA" secondAttribute="bottom" constant="-22" id="5Nr-1o-7LT"/>
                             <constraint firstItem="WZM-Tw-0xc" firstAttribute="trailing" secondItem="zlo-Ph-VhA" secondAttribute="trailing" constant="20" id="6R7-pW-pzU"/>
                             <constraint firstItem="zlo-Ph-VhA" firstAttribute="top" secondItem="WZM-Tw-0xc" secondAttribute="top" constant="20" id="Jdx-WZ-Ibd"/>
+                            <constraint firstItem="WZM-Tw-0xc" firstAttribute="trailing" secondItem="0pJ-ui-2WR" secondAttribute="trailing" constant="20" id="LZG-G0-QhC"/>
+                            <constraint firstItem="WZM-Tw-0xc" firstAttribute="bottom" secondItem="0pJ-ui-2WR" secondAttribute="bottom" constant="20" id="RJH-c8-Hcx"/>
+                            <constraint firstItem="0pJ-ui-2WR" firstAttribute="leading" secondItem="WZM-Tw-0xc" secondAttribute="leading" constant="20" id="bXa-W8-jZO"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="WZM-Tw-0xc"/>
                     </view>
-                    <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
-                    <size key="freeformSize" width="600" height="600"/>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="JHW-Yh-1yF" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
