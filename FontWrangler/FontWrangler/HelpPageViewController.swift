@@ -72,6 +72,13 @@ class HelpPageViewController: UIViewController, WKNavigationDelegate {
 
         // Emit the policy outcome
         decisionHandler(policy, preferences)
+
+        // Close the help box on link clicks
+        if policy == .cancel {
+            if let parent = self.parent {
+                parent.dismiss(animated: false, completion: nil)
+            }
+        }
     }
 
 

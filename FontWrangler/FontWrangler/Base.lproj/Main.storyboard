@@ -81,7 +81,7 @@
                                     <action selector="setFontSize:" destination="JEX-9P-axG" eventType="valueChanged" id="qfn-zc-iXq"/>
                                 </connections>
                             </slider>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Adjust the slider below to alter the preview size" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="rCs-GY-1Kq">
+                            <label opaque="NO" userInteractionEnabled="NO" alpha="0.29999999999999999" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Adjust the slider to alter the preview size" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="rCs-GY-1Kq">
                                 <rect key="frame" x="20" y="87" width="794" height="21"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="21" id="zUB-mm-cvp"/>

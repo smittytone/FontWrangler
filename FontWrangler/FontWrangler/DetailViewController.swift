@@ -69,6 +69,7 @@ class DetailViewController: UIViewController, UIPopoverPresentationControllerDel
         self.dynamicSampleTextView.alpha = 0.3
         
         // Block access to the user-entered sample
+        self.dynamicSampleParentView.alpha = 0.3
         self.userSampleTextView.isEditable = false
         self.userSampleTextView.alpha = 0.3
 
@@ -94,10 +95,12 @@ class DetailViewController: UIViewController, UIPopoverPresentationControllerDel
         // instantiated, if 'self.detailItem' is set before the view loads
         guard let statusLabel = self.fontStatusLabel else { return }
         guard let dynamicLabel = self.dynamicSampleTextView else { return }
+        guard let dynamicHead = self.dynamicSampleHeadLabel else { return }
         guard let sampleNote = self.userSampleTextView else { return }
         guard let sizeLabel = self.fontSizeLabel else { return }
         guard let sizeSlider = self.fontSizeSlider else { return }
-        
+        guard let parent = self.dynamicSampleParentView else { return }
+
         // Generic cases
         sizeSlider.isEnabled = false
         
@@ -106,18 +109,11 @@ class DetailViewController: UIViewController, UIPopoverPresentationControllerDel
             // it for this process only
             
             // Set the view title and show the detail
-            
-
             if self.mvc != nil {
                 if self.currentFamily != nil {
                     if detail.tag == "bungee" {
-                        // Set Quirk for Bungee, which has non-variant fonts under the same tag
-                        let name: NSString = detail.name as NSString
-                        let index = name.range(of: "-")
-                        let variantType = name.substring(from: index.location + 1)
-                        let range: NSRange = NSRange(location: 6, length: index.location - 6)
-                        let fontName = name.substring(with: range)
-                        self.title = "Bungee " + (fontName != "" ? fontName : variantType)
+                        // Use Bungee Quirk
+                        self.title = self.getBungeeTitle(detail.name)
                     } else {
                         self.title = self.currentFamily!.name + self.getVariantName(detail.name)
                     }
@@ -135,9 +131,11 @@ class DetailViewController: UIViewController, UIPopoverPresentationControllerDel
             if detail.isInstalled {
                 sampleNote.isEditable = true
                 sampleNote.alpha = 1.0
+                parent.alpha = 1.0
                 
                 // Set the samples' fonts
                 dynamicLabel.alpha = 1.0
+                dynamicHead.alpha = 1.0
                 if let font = UIFont.init(name: detail.name, size: CGFloat(self.fontSize)) {
                     dynamicLabel.font = font
                 }
@@ -152,15 +150,17 @@ class DetailViewController: UIViewController, UIPopoverPresentationControllerDel
             } else {
                 dynamicLabel.font = self.substituteFont
                 dynamicLabel.alpha = 0.3
+                dynamicHead.alpha = 0.3
                 
                 sampleNote.font = substituteFont
                 sampleNote.isEditable = false
                 sampleNote.alpha = 0.3
+                parent.alpha = 0.3
             }
             
             // Set the font status
-            labelText = "This is " + (ext == "otf" ? "an OpenType" : "a TrueType" ) + " font and is "
-            labelText += (detail.isInstalled ? "installed" : "not installed") + " on this iPad"
+            labelText = "This " + (ext == "otf" ? "OpenType" : "TrueType" ) + " font is "
+            labelText += (detail.isInstalled ? "installed" : "not installed")
             statusLabel.text = labelText
             
             // Enable or disable the Variants button according to whether there are any
@@ -179,6 +179,13 @@ class DetailViewController: UIViewController, UIPopoverPresentationControllerDel
             sizeSlider.value = Float(self.fontSize)
             self.variantsButton?.isEnabled = false
         }
+    }
+
+
+    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+
+        super.viewWillTransition(to: size, with: coordinator)
+        self.dynamicSampleParentView.setNeedsDisplay()
     }
 
     
@@ -266,6 +273,23 @@ class DetailViewController: UIViewController, UIPopoverPresentationControllerDel
         let index = name.range(of: "-")
         return index.location != NSNotFound ? (" " + name.substring(from: index.location + 1).capitalized) : " Regular"
     }
+
+
+    // MARK: - Font Quirks
+
+    func getBungeeTitle(_ fontName: String) -> String {
+
+        // Set Quirk for Bungee, which has non-variant fonts under the same tag
+
+        let name: NSString = fontName as NSString
+        let index = name.range(of: "-")
+        let variantType = name.substring(from: index.location + 1)
+        let range: NSRange = NSRange(location: 6, length: index.location - 6)
+        let bungeeName = name.substring(with: range)
+        return "Bungee " + (bungeeName != "" ? bungeeName : variantType)
+    }
+
+
 
 }
 
