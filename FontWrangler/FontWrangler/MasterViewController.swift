@@ -609,13 +609,13 @@ class MasterViewController: UITableViewController {
                 installedCount += (family.fontsAreInstalled ? 1 : 0)
 
                 #if DEBUG
-                    print("Family '\(family.name)': downloads: \(downloaded),  installs: \(installed) of \(fontIndexes.count)")
+                    print("Family '\(family.name)': downloads: \(downloaded), installs: \(installed) of \(fontIndexes.count)")
                 #endif
             }
         }
 
         // Set the font installed/not installed count
-        let fontString = installedCount == 1 ? "font" : "fonts"
+        let fontString = installedCount == 1 ? "typeface" : "typefaces"
         let headString = installedCount == 0 ? "No" : "\(installedCount)"
         self.titleView.infoLabel.text = "\(headString) \(fontString) installed (of \(self.families.count))"
     }

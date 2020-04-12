@@ -50,7 +50,7 @@ class DetailViewController: UIViewController, UIPopoverPresentationControllerDel
         
         super.viewDidLoad()
         
-        let rightButton = UIBarButtonItem(title: "Variants",
+        let rightButton = UIBarButtonItem(title: "Variations",
                                           style: .plain,
                                           target: self,
                                           action: #selector(self.showVariantsMenu))

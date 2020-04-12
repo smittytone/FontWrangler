@@ -300,7 +300,7 @@
                     <rect key="frame" x="0.0" y="0.0" width="240" height="128"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                     <subviews>
-                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="FONT FAMILY" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="xZh-cz-wog">
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="TYPEFACE" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="xZh-cz-wog">
                             <rect key="frame" x="16" y="8" width="208" height="15"/>
                             <constraints>
                                 <constraint firstAttribute="height" constant="15" id="mNb-2w-Hmv"/>
@@ -382,14 +382,14 @@
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                         <prototypes>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="variant.cell" id="s6R-e5-hht" customClass="FontVariantsTableViewCell" customModule="Fontismo" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="28" width="834" height="44"/>
+                                <rect key="frame" x="0.0" y="28" width="834" height="43.5"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="s6R-e5-hht" id="roM-ok-dfU">
-                                    <rect key="frame" x="0.0" y="0.0" width="834" height="44"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="834" height="43.5"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="uaK-Ee-cyN">
-                                            <rect key="frame" x="20" y="11" width="794" height="21.5"/>
+                                            <rect key="frame" x="20" y="11" width="794" height="21"/>
                                             <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="17"/>
                                             <nil key="textColor"/>
                                             <nil key="highlightedColor"/>
@@ -523,7 +523,8 @@
                                             <paragraphStyle key="NSParagraphStyle" alignment="left" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0"/>
                                         </attributes>
                                     </fragment>
-                                    <fragment content="Use Fontismo to install a selection of fonts onto your iPad.   Swipe right to left across a font then tap ">
+                                    <fragment>
+                                        <string key="content">Use Fontismo to install a selection of typefaces and their component fonts onto your iPad.   Swipe right to left across a font then tap </string>
                                         <attributes>
                                             <color key="NSColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                             <font key="NSFont" size="20" name="Avenir-Book"/>
@@ -538,7 +539,7 @@
                                             <paragraphStyle key="NSParagraphStyle" alignment="left" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0"/>
                                         </attributes>
                                     </fragment>
-                                    <fragment content=" to install that font — or tap ">
+                                    <fragment content=" to install that typeface — or tap ">
                                         <attributes>
                                             <color key="NSColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                             <font key="NSFont" size="20" name="Avenir-Book"/>
@@ -554,7 +555,7 @@
                                         </attributes>
                                     </fragment>
                                     <fragment>
-                                        <string key="content"> to install them all.  Tap installed fonts for a full preview. Installed fonts can be removed by swiping right to left then tapping </string>
+                                        <string key="content"> to install them all.  Tap installed typefaces for a full preview, in all their available styles and weights. Installed typefaces can be removed by swiping right to left then tapping </string>
                                         <attributes>
                                             <color key="NSColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                             <font key="NSFont" size="20" name="Avenir-Book"/>
@@ -569,7 +570,7 @@
                                             <paragraphStyle key="NSParagraphStyle" alignment="left" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0"/>
                                         </attributes>
                                     </fragment>
-                                    <fragment content=".  Installed fonts can be used in any app that supports iPadOS 13’s fonts functionality.">
+                                    <fragment content=".  Installed typefaces can be used in any app that supports iPadOS 13’s fonts functionality.">
                                         <attributes>
                                             <color key="NSColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                             <font key="NSFont" size="20" name="Avenir-Book"/>
