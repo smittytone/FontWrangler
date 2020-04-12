@@ -11,6 +11,7 @@ class MasterViewController: UITableViewController {
     // MARK: - UI properties
 
     @IBOutlet weak var titleView: MasterTitleView!
+    @IBOutlet weak var tableHead: UIView!
     
     // MARK:- Private Instance Properties
 
@@ -833,13 +834,19 @@ class MasterViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
 
         // NOTE Add one for the header cell
-        return self.families.count + 1
+        return self.families.count
+    }
+
+
+    override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+
+        return self.tableHead
     }
 
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        if indexPath.row == 0 {
+        if indexPath.row == 999 {
             // Show the header cell
             let cell: UITableViewCell = tableView.dequeueReusableCell(withIdentifier: "header.cell", for: indexPath)
             return cell
@@ -850,7 +857,7 @@ class MasterViewController: UITableViewController {
 
             // Get the referenced family and use its name
             // NOTE Name is already human-readable
-            let family = self.families[indexPath.row - 1]
+            let family = self.families[indexPath.row]
             cell.fontNameLabel!.text = family.name
 
             // Get all the fonts in the family
@@ -945,7 +952,7 @@ class MasterViewController: UITableViewController {
         var action: UIContextualAction
 
         // Get the referenced family
-        let family: FontFamily = self.families[indexPath.row - 1]
+        let family: FontFamily = self.families[indexPath.row]
 
         // Get the first font in the list, which should have the same
         // status as the others
@@ -1126,7 +1133,7 @@ class MasterViewController: UITableViewController {
         if segue.identifier == "show.detail" {
             if let indexPath = tableView.indexPathForSelectedRow {
                 // Get the referenced font family
-                let family: FontFamily = families[indexPath.row - 1]
+                let family: FontFamily = families[indexPath.row]
                 
                 // Get the first font on the list
                 var font: UserFont? = nil

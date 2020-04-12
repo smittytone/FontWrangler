@@ -291,10 +291,45 @@
                     </tableView>
                     <navigationItem key="navigationItem" title="Fonts" id="Zdf-7t-Un8"/>
                     <connections>
+                        <outlet property="tableHead" destination="pWt-n4-Npf" id="EHs-g9-bQh"/>
                         <outlet property="titleView" destination="HBc-1a-JKN" id="ItB-8F-JwG"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Rux-fX-hf1" sceneMemberID="firstResponder"/>
+                <view alpha="0.90000000000000002" contentMode="scaleToFill" id="pWt-n4-Npf">
+                    <rect key="frame" x="0.0" y="0.0" width="240" height="128"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                    <subviews>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="FONT FAMILY" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="xZh-cz-wog">
+                            <rect key="frame" x="16" y="8" width="208" height="15"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="15" id="mNb-2w-Hmv"/>
+                            </constraints>
+                            <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="12"/>
+                            <nil key="textColor"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="ADDED" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="aZ6-oH-5DB">
+                            <rect key="frame" x="16" y="8" width="208" height="15"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="15" id="y4m-ir-SGf"/>
+                            </constraints>
+                            <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="12"/>
+                            <nil key="textColor"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                    </subviews>
+                    <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                    <constraints>
+                        <constraint firstItem="aZ6-oH-5DB" firstAttribute="trailing" secondItem="iXs-QI-ekp" secondAttribute="trailing" constant="-16" id="0Dq-Zz-X34"/>
+                        <constraint firstItem="xZh-cz-wog" firstAttribute="leading" secondItem="iXs-QI-ekp" secondAttribute="leading" constant="16" id="91E-dR-XIK"/>
+                        <constraint firstItem="xZh-cz-wog" firstAttribute="trailing" secondItem="iXs-QI-ekp" secondAttribute="trailing" constant="-16" id="PPb-CW-bZd"/>
+                        <constraint firstItem="aZ6-oH-5DB" firstAttribute="top" secondItem="iXs-QI-ekp" secondAttribute="top" constant="8" id="R3F-0f-oLM"/>
+                        <constraint firstItem="aZ6-oH-5DB" firstAttribute="leading" secondItem="iXs-QI-ekp" secondAttribute="leading" constant="16" id="VVN-oY-AML"/>
+                        <constraint firstItem="xZh-cz-wog" firstAttribute="top" secondItem="iXs-QI-ekp" secondAttribute="top" constant="8" id="xhm-OE-fDY"/>
+                    </constraints>
+                    <viewLayoutGuide key="safeArea" id="iXs-QI-ekp"/>
+                </view>
                 <view contentMode="scaleToFill" id="HBc-1a-JKN" customClass="MasterTitleView" customModule="Fontismo" customModuleProvider="target">
                     <rect key="frame" x="0.0" y="0.0" width="240" height="128"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -347,14 +382,14 @@
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                         <prototypes>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="variant.cell" id="s6R-e5-hht" customClass="FontVariantsTableViewCell" customModule="Fontismo" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="28" width="834" height="43.5"/>
+                                <rect key="frame" x="0.0" y="28" width="834" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="s6R-e5-hht" id="roM-ok-dfU">
-                                    <rect key="frame" x="0.0" y="0.0" width="834" height="43.5"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="834" height="44"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="uaK-Ee-cyN">
-                                            <rect key="frame" x="20" y="11" width="794" height="21"/>
+                                            <rect key="frame" x="20" y="11" width="794" height="21.5"/>
                                             <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="17"/>
                                             <nil key="textColor"/>
                                             <nil key="highlightedColor"/>
@@ -555,7 +590,7 @@
                                             <paragraphStyle key="NSParagraphStyle" alignment="left" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0"/>
                                         </attributes>
                                     </fragment>
-                                    <fragment content=" in the app for more.">
+                                    <fragment content=" in the app for more information.">
                                         <attributes>
                                             <color key="NSColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                             <font key="NSFont" size="20" name="Avenir-Book"/>
