@@ -8,6 +8,10 @@ import UIKit
 
 class MasterViewController: UITableViewController {
 
+    // MARK: - UI properties
+
+    @IBOutlet weak var titleView: MasterTitleView!
+    
     // MARK:- Private Instance Properties
 
     private var detailViewController: DetailViewController? = nil
@@ -50,7 +54,9 @@ class MasterViewController: UITableViewController {
         // Retain button for future use (enable and disable)
         self.installButton = addAllButton
 
-        self.title = "Fontismo Fonts"
+        //self.title = "Fontismo Fonts"
+        navigationItem.titleView = self.titleView
+        self.titleView.infoLabel.text = "0 Fonts installed (of 0)"
 
         // Set up the split view controller
         if let split = splitViewController {
@@ -579,6 +585,7 @@ class MasterViewController: UITableViewController {
         #endif
         
         // Use the font data to set the familiies' status
+        var installedCount = 0
         for family: FontFamily in self.families {
             // Familities fonts have been downloaed - have they been installed?
             // The number of font installations should match the number of
@@ -596,12 +603,17 @@ class MasterViewController: UITableViewController {
                 // Families are only considered installed if all their members are
                 family.fontsAreInstalled = installed == fontIndexes.count
                 family.fontsAreDownloaded = downloaded == fontIndexes.count
-            
+
+                installedCount += (family.fontsAreInstalled ? 1 : 0)
+
                 #if DEBUG
                     print("Family '\(family.name)': downloads: \(downloaded),  installs: \(installed) of \(fontIndexes.count)")
                 #endif
             }
         }
+
+        let stringHead = installedCount == 1 ? "font" : "fonts"
+        self.titleView.infoLabel.text = "\(installedCount) \(stringHead) installed (of \(self.families.count))"
     }
     
     
@@ -1132,7 +1144,6 @@ class MasterViewController: UITableViewController {
 
                 // Keep a reference to the detail view controller
                 self.detailViewController = controller
-
             }
         }
     }
