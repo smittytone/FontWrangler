@@ -289,7 +289,5 @@ class DetailViewController: UIViewController, UIPopoverPresentationControllerDel
         return "Bungee " + (bungeeName != "" ? bungeeName : variantType)
     }
 
-
-
 }
 

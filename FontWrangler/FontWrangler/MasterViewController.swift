@@ -54,9 +54,10 @@ class MasterViewController: UITableViewController {
         // Retain button for future use (enable and disable)
         self.installButton = addAllButton
 
+        // Set the title view and its font count info
         //self.title = "Fontismo Fonts"
         navigationItem.titleView = self.titleView
-        self.titleView.infoLabel.text = "0 Fonts installed (of 0)"
+        self.titleView.infoLabel.text = "No fonts installed (of 0)"
 
         // Set up the split view controller
         if let split = splitViewController {
@@ -612,8 +613,10 @@ class MasterViewController: UITableViewController {
             }
         }
 
-        let stringHead = installedCount == 1 ? "font" : "fonts"
-        self.titleView.infoLabel.text = "\(installedCount) \(stringHead) installed (of \(self.families.count))"
+        // Set the font installed/not installed count
+        let fontString = installedCount == 1 ? "font" : "fonts"
+        let headString = installedCount == 0 ? "No" : "\(installedCount)"
+        self.titleView.infoLabel.text = "\(headString) \(fontString) installed (of \(self.families.count))"
     }
     
     
