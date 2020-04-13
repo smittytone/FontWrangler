@@ -136,11 +136,11 @@ class DetailViewController: UIViewController, UIPopoverPresentationControllerDel
                 // Set the samples' fonts
                 dynamicLabel.alpha = 1.0
                 dynamicHead.alpha = 1.0
-                if let font = UIFont.init(name: detail.name, size: CGFloat(self.fontSize)) {
+                if let font = UIFont.init(name: detail.psname, size: CGFloat(self.fontSize)) {
                     dynamicLabel.font = font
                 }
                 
-                if let font = UIFont.init(name: detail.name, size: KBaseUserSampleFontSize) {
+                if let font = UIFont.init(name: detail.psname, size: KBaseUserSampleFontSize) {
                     sampleNote.font = font
                 }
                 

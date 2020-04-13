@@ -144,7 +144,7 @@ class MasterViewController: UITableViewController {
             ivc.modalPresentationStyle = .formSheet
 
             // Present the view controller (in a popover).
-            self.present(ivc, animated: true, completion: nil)
+            self.splitViewController!.present(ivc, animated: true, completion: nil)
 
             // Write out to defaults so that the panel isn't shown again
             defaults.set(false, forKey: "com.bps.fontwrangler.app.show.intro")
@@ -178,6 +178,7 @@ class MasterViewController: UITableViewController {
                 let aFont = font as! [String:String]
                 let newFont = UserFont()
                 newFont.name = aFont["name"] ?? ""
+                newFont.psname = aFont["name"] ?? ""
                 newFont.path = aFont["path"] ?? ""
                 newFont.tag = aFont["tag"] ?? ""
                 self.fonts.append(newFont)
@@ -186,7 +187,7 @@ class MasterViewController: UITableViewController {
             // Sort the list
             self.sortFonts()
         } else {
-            self.showAlert("Can’t load defaults", "Sorry, Fontismo has become damaged. Please reinstall it.")
+            self.showAlert("Error", "Sorry, the default font list can’t be loaded — Fontismo has become damaged. Please reinstall the app.")
         }
     }
     
@@ -255,11 +256,12 @@ class MasterViewController: UITableViewController {
                     if loadedFonts.count != self.fonts.count {
                         // Copy the loaded status data to the new defaults
                         #if DEBUG
-                            print("New fonts listed: \(self.fonts.count - loadedFonts.count) added")
+                            print("\(self.fonts.count - loadedFonts.count) new fonts added to defaults")
                         #endif
                         
                         for font: UserFont in self.fonts {
                             for loadedFont: UserFont in loadedFonts {
+                                // Compare file names when looking for added fonts
                                 if loadedFont.name == font.name {
                                     font.isInstalled = loadedFont.isInstalled
                                     font.isDownloaded = loadedFont.isDownloaded
@@ -281,7 +283,7 @@ class MasterViewController: UITableViewController {
                 // TODO Should this be an error we expose to the user? If so, only only later calls
                 if self.fonts.count == 0 {
                     // Load in the defaults if there's no font list in place
-                    self.showAlert("Can’t load defaults", "Sorry, Fontismo has become damaged. Please reinstall it.")
+                    self.showAlert("Error", "Sorry, the default font list can’t be loaded — Fontismo may have become damaged. Please reinstall the app.")
                     return
                 }
 
@@ -417,7 +419,9 @@ class MasterViewController: UITableViewController {
                     if let fontIndexes: [Int] = family.fontIndices {
                         for fontIndex: Int in fontIndexes {
                             let font: UserFont = self.fonts[fontIndex]
-                            let fontDesc: UIFontDescriptor = UIFontDescriptor.init(name: font.name, size: 48.0)
+
+                            // Font Descriptors take POSTSCRIPT NAMES
+                            let fontDesc: UIFontDescriptor = UIFontDescriptor.init(name: font.psname, size: 48.0)
                             fontDescs.append(fontDesc)
                             
                             // Update the font's state information
@@ -437,7 +441,37 @@ class MasterViewController: UITableViewController {
         }
     }
     
-    
+
+    func removeOneFontFamily(_ family: FontFamily) {
+
+        // Remove a single font family
+
+        if let fontIndexes: [Int] = family.fontIndices {
+            // Iterate the family's fonts, clearing their flags and adding their
+            // FontDescriptors to the array we'll use to deregister them
+            var fontDescs = [UIFontDescriptor]()
+            family.fontsAreInstalled = false
+            family.fontsAreDownloaded = false
+
+            for fontIndex: Int in fontIndexes {
+                let font: UserFont = self.fonts[fontIndex]
+                font.isInstalled = false
+                font.isDownloaded = false
+
+                // Font Descriptors take the POSTSCRIPT NAME
+                let fontDesc: UIFontDescriptor = UIFontDescriptor.init(name: font.psname,
+                                                                       size: 48.0)
+                fontDescs.append(fontDesc)
+            }
+
+            // Deregister the fonts using the API
+            CTFontManagerUnregisterFontDescriptors(fontDescs as CFArray,
+                                                   .persistent,
+                                                   self.fontRegistrationHandler(errors:done:))
+        }
+    }
+
+
     func getOneFontFamily(_ family: FontFamily) {
 
         // Acquire a single font fsmily resource using on-demand
@@ -475,7 +509,7 @@ class MasterViewController: UITableViewController {
                 }
                 
                 #if DEBUG
-                    print("Family '\(family.name)' now downloaded")
+                    print("Family '\(family.name)' downloaded")
                 #endif
                 
                 // Keep the downloaded file around permanently, ie.
@@ -511,7 +545,7 @@ class MasterViewController: UITableViewController {
         // NOTE This displays the system's Install dialog
 
         if let fontIndexes: [Int] = family.fontIndices {
-            // Add the fonts' PostScript names to 'fontNames'
+            // Add the fonts' FILE NAMEs to 'fontNames'
             var fontNames = [String]()
             for fontIndex: Int in fontIndexes {
                 let font: UserFont = self.fonts[fontIndex]
@@ -523,7 +557,7 @@ class MasterViewController: UITableViewController {
             #endif
 
             // Register the family's fonts using the API
-            // NOTE outcome is operated asynchronously
+            // NOTE Outcome is operated asynchronously
             CTFontManagerRegisterFontsWithAssetNames(fontNames as CFArray,
                                                      nil,
                                                      .persistent,
@@ -645,17 +679,18 @@ class MasterViewController: UITableViewController {
                 if let fontName = CTFontDescriptorCopyAttribute(registeredDescriptor, kCTFontNameAttribute) as? String {
 
                     #if DEBUG
-                        print("CoreText Font Manager says '\(fontName)' is registered")
+                        print("CoreText Font Manager says '\(fontName)' is registered...")
                     #endif
 
                     for font: UserFont in self.fonts {
-                        if font.name == fontName {
+                        // Match against PostScript name
+                        if font.psname == fontName {
                             font.isInstalled = true
                             font.isDownloaded = true
                             font.updated = true
                             setCount += 1
                             #if DEBUG
-                                print("Font list name matched for '\(font.name)'")
+                                print("  ...and matched for '\(font.name)'")
                             #endif
 
                             break
@@ -675,16 +710,16 @@ class MasterViewController: UITableViewController {
                             if !font.updated {
                                 // Eg. 'TradeWinds' and 'TradeWinds-Regular'
                                 // TODO Needs some safety checking/more efficient
-                                if (font.name as NSString).contains(fontName) {
+                                if (font.psname as NSString).contains(fontName) {
                                     font.isInstalled = true
                                     font.isDownloaded = true
                                     font.updated = true
                                     
                                     #if DEBUG
-                                        print("Font list name changed from '\(font.name)' to '\(fontName)'")
+                                        print("Font PostScript name changed from '\(font.name)' to '\(fontName)'")
                                     #endif
                                     
-                                    font.name = fontName
+                                    font.psname = fontName
                                     break
                                 }
                             }
@@ -896,50 +931,19 @@ class MasterViewController: UITableViewController {
 
         // Get the referenced family
         let family: FontFamily = self.families[indexPath.row]
-
-        // Get the first font in the list, which should have the same
-        // status as the others
-        // TODO handle cases where it is not the same
-        //let font: UserFont = fonts[0]
-
         if family.fontsAreInstalled {
             // Configure a 'Remove' action -- only one item affected: the table view cell's family
             action = UIContextualAction.init(style: .destructive,
                                              title: "Remove") { (theAction, theView, handler) in
-                                                // We're removing all of the family's fonts, so get them
-                                                if let fontIndexes: [Int] = family.fontIndices {
-                                                    // Iterate the family's fonts, clearing their flags and adding their
-                                                    // FontDescriptors to the array we'll use to deregister them
-                                                    var fontDescs = [UIFontDescriptor]()
-                                                    family.fontsAreInstalled = false
-                                                    family.fontsAreDownloaded = false
-                                                    
-                                                    for fontIndex: Int in fontIndexes {
-                                                        let font: UserFont = self.fonts[fontIndex]
-                                                        font.isInstalled = false
-                                                        font.isDownloaded = false
-                                                        let fontDesc: UIFontDescriptor = UIFontDescriptor.init(name: font.name,
-                                                                                                               size: 48.0)
-                                                        fontDescs.append(fontDesc)
-                                                    }
-                                                        
-                                                    // Deregister the fonts using the API
-                                                    CTFontManagerUnregisterFontDescriptors(fontDescs as CFArray,
-                                                                                           .persistent,
-                                                                                           self.fontRegistrationHandler(errors:done:))
-                                                    handler(true)
-                                                } else {
-                                                    handler(false)
-                                                }
+                                                // Remove the single, row-referenced font
+                                                self.removeOneFontFamily(family)
+                                                handler(true)
             }
-
-            // Set the colour
-            // action.backgroundColor = UIColor.red
         } else {
             // Configure an 'Add' action -- only one item affected: the table view cell's
             action = UIContextualAction.init(style: .normal,
                                              title: "Add") { (theAction, theView, handler) in
-                                                // Iterate the fonts, adding them one by one
+                                                // Install the single, row-referenced font
                                                 self.getOneFontFamily(family)
                                                 handler(true)
             }

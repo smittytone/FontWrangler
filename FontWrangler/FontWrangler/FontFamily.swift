@@ -17,11 +17,11 @@ class FontFamily: NSObject {
     // MARK: - Object properties
     
     private var version: String = "1.0.0"       // Record version number - used to check for fields added later
-    var name: String = ""                       // Family name, taken from the User Font tag
-    var tag: String = ""                        // Family name, taken from the User Font tag
+    var tag: String = ""                        // The family's asset catalog tag
+    var name: String = ""                       // Family name, taken from the asset catalog tag
     var fontsAreDownloaded: Bool = false        // Are all the family's fonts downloaded?
     var fontsAreInstalled: Bool = false         // Are all the family's fonts installed?
     var fontIndices: [Int]? = nil               // Array of indices to fonts in primary array
-    var progress: Progress? = nil
+    var progress: Progress? = nil               // NSProgress instances used during font installation
     
 }
