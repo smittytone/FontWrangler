@@ -167,8 +167,8 @@ class MasterViewController: UITableViewController {
                 let fileData = try Data(contentsOf: URL.init(fileURLWithPath: defaultFontsPath))
                 fontDictionary = try JSONSerialization.jsonObject(with: fileData, options: []) as! [String: Any]
             } catch {
-                NSLog("[ERROR] can't load defaults: \(error.localizedDescription)")
-                self.showAlert("Can’t load defaults", "Sorry, Fontismo has become damaged. Please reinstall it.")
+                NSLog("[ERROR] can't load defaults: \(error.localizedDescription) - loadDefaults()")
+                self.showAlert("Error", "Sorry, the default font list can’t be loaded — Fontismo has become damaged. Please reinstall the app.")
                 return
             }
             
@@ -187,7 +187,8 @@ class MasterViewController: UITableViewController {
             // Sort the list
             self.sortFonts()
         } else {
-            self.showAlert("Error", "Sorry, the default font list can’t be loaded — Fontismo has become damaged. Please reinstall the app.")
+            NSLog("[ERROR] can't load defaults - loadDefaults()")
+            self.showAlert("Error", "Sorry, the default font list is missing — Fontismo has become damaged. Please reinstall the app.")
         }
     }
     
@@ -234,15 +235,14 @@ class MasterViewController: UITableViewController {
                     loadedFonts = try NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(data) as! [UserFont]
                 } catch {
                     // Font list is damaged in some way - remove it and warn the user
-                    NSLog("[ERROR] Could not font load list file: \(error.localizedDescription)")
+                    NSLog("[ERROR] Could not font load list file: \(error.localizedDescription) - loadFontList()")
 
                     do {
                         try FileManager.default.removeItem(atPath: loadPath)
                     } catch {
-                        NSLog("[ERROR] Could not delete damaged font list file: \(error.localizedDescription)")
+                        NSLog("[ERROR] Could not delete damaged font list file: \(error.localizedDescription) - loadFontList()")
                     }
 
-                    //self.showAlert("Sorry, your font database has become damaged", "Please re-install your fonts")
                     return
                 }
 
@@ -366,8 +366,8 @@ class MasterViewController: UITableViewController {
             #endif
 
         } catch {
-            NSLog("Can't write font state file: \(error.localizedDescription)")
-            self.showAlert("Error", "Sorry, Fontismo can’t access its Documents folder.")
+            NSLog("[ERROR] Can't write font file: \(error.localizedDescription) - saveFontList()")
+            self.showAlert("Error", "Sorry, Fontismo can’t access its Documents folder. It may have been damaged or mis-installed. Please re-installed from the App Store.")
         }
     }
     
@@ -871,7 +871,7 @@ class MasterViewController: UITableViewController {
                                             if self.anyFontsInstalled() {
                                                 // Remove the installed fonts
                                                 let alert = UIAlertController.init(title: "Are You Sure?",
-                                                                                   message: "Tap ‘OK‘ to uninstall all the typefaces, or ‘Cancel’ to quit. You can reinstall uninstalled typefaces at any time.",
+                                                                                   message: "Tap OK to uninstall all the typefaces, or Cancel to quit. You can reinstall uninstalled typefaces at any time.",
                                                                                    preferredStyle: .alert)
                                                 
                                                 alert.addAction(UIAlertAction(title: NSLocalizedString("Cancel", comment: "Default action"),
@@ -1065,9 +1065,6 @@ class MasterViewController: UITableViewController {
         // Use the popover presentation style for your view controller.
         hvc.modalPresentationStyle = .pageSheet
 
-        // Specify the anchor point for the popover.
-        //hvc.popoverPresentationController?.barButtonItem = navigationItem.rightBarButtonItem
-                   
         // Present the view controller (in a popover).
         self.present(hvc, animated: true, completion: nil)
     }
