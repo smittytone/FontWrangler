@@ -12,7 +12,9 @@ import UIKit
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
 
-
+    private let bundlePath = Bundle.main.bundlePath
+    
+    
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
 
         // Set data for app settings bundle
@@ -33,7 +35,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         if introKeyIsPresent == nil {
             defaults.set(true, forKey: "com.bps.fontwrangler.app.show.intro")
         }
-
+        
+        // Set the creators string for the Settings > Authors readout
+        let creators = self.gertCreators()
+        if creators != "" {
+            defaults.set(creators, forKey: "com.bps.fontwrangler.app.licence.authors")
+        }
+        
         return true
     }
 
@@ -53,6 +61,66 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // If any sessions were discarded while the application was not running, this will be called shortly after application:didFinishLaunchingWithOptions.
         // Use this method to release any resources that were specific to the discarded scenes, as they will not return.
     }
+    
+    
+    func gertCreators() -> String {
+        
+        // Load in the default list of available fonts and extract their creators
+        // and licence details into a string, which is returned.
+        // Returns an empty string on failure
 
+        let fm = FileManager.default
+        let defaultFontsPath = self.bundlePath + kDefaultsPath
+        var fontDictionary: [String: Any] = [:]
+        
+        if fm.fileExists(atPath: defaultFontsPath) {
+            do {
+                let fileData = try Data(contentsOf: URL.init(fileURLWithPath: defaultFontsPath))
+                fontDictionary = try JSONSerialization.jsonObject(with: fileData, options: []) as! [String: Any]
+            } catch {
+                NSLog("[ERROR] can't load defaults: \(error.localizedDescription) from App Delegate")
+                return ""
+            }
+            
+            // Extract the creator data into an a array of dictionaries, one
+            // dictionary per typeface
+            // NOTE There should be only one creator field PER TYPEFACE
+            var creators = [[String:String]]()
+            let fonts = fontDictionary["fonts"] as! [Any]
+            for font in fonts {
+                let aFont = font as! [String:String]
+                
+                var item = [String:String]()
+                item["c"] = aFont["creator"] ?? ""
+                item["l"] = aFont["licence"] ?? ""
+                item["t"] = aFont["tag"] ?? ""
+                
+                if item["c"] != "" {
+                    creators.append(item)
+                }
+            }
+            
+            // Sort the list alphabetically
+            creators.sort { (item_1, item_2) -> Bool in
+                return (item_1["t"]! < item_2["t"]!)
+            }
+            
+            // Assemble the string
+            // NOTE Use '\r\n' for newlines - required by iOS settings
+            var creatorString = ""
+            for item in creators {
+                creatorString += (item["t"]!.capitalized + " by " + item["c"]! + " " + (item["l"]! == "OFT" ? "*" : "†") + "\r\n")
+            }
+            
+            // Add the footnotes and return the completed string
+            creatorString += "\r\n* Open Font Licence\r\n† Apache Licence 2.0"
+            return creatorString
+        } else {
+            NSLog("[ERROR] can't find defaults from App Delegate")
+        }
+        
+        return ""
+    }
+    
 }
 
