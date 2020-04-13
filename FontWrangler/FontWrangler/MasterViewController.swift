@@ -519,7 +519,7 @@ class MasterViewController: UITableViewController {
             }
             
             #if DEBUG
-                print("Registering family \(family.name)")
+                print("Registering family '\(family.name)'...")
             #endif
 
             // Register the family's fonts using the API
