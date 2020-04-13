@@ -549,7 +549,7 @@ class MasterViewController: UITableViewController {
 
             // As recommended, return false on error to
             // halt further processing
-            return false
+            // return false
         }
 
         // System sets 'done' to true on the final call
@@ -701,70 +701,6 @@ class MasterViewController: UITableViewController {
     }
     
     
-    /* REDUNDANT -- REMOVE NEXT BUILD
-    func getOneFont(_ font: UserFont) {
-        
-        // Acquire a single font resource using on-demand
-
-        if !font.isDownloaded {
-            // The font has not been downloaded so get the font's asset catalog tag
-            // ('font.tag') and assemble an asset request
-            let tags: Set<String> = Set.init([font.tag])
-            let fontRequest = NSBundleResourceRequest.init(tags: tags)
-
-            // Store the progress recorder and update the UI on
-            // the main thread so the Activity Indicator is shown
-            //font.progress = fontRequest.progress
-            //DispatchQueue.main.async { self.tableView.reloadData() }
-
-            // Make the request
-            fontRequest.beginAccessingResources { (error) in
-                // THIS BLOCK IS A CLOSURE
-                // Check for a download error
-                if error != nil {
-                    // Handle errors
-                    // NOTE Item not downloaded if 'error' != nl
-                    NSLog("[ERROR] \(error!.localizedDescription)")
-                    return
-                }
-
-                // Keep the downloaded file around permanently, ie.
-                // until the app is deleted
-                Bundle.main.setPreservationPriority(1.0, forTags: tags)
-
-                // Update the font's state
-                font.isDownloaded = true
-
-                // Register the font with the OS
-                self.registerFont(font)
-
-                // Update the UI (on the main thread) to remove the
-                // Activity Indicator
-                //font.progress = nil
-                //DispatchQueue.main.async { self.tableView.reloadData() }
-            }
-        } else {
-            // Font is downloaded, so register it with the OS
-            self.registerFont(font)
-        }
-    }
-    
-    // REDUNDANT -- REMOVE NEXT BUILD
-    func registerFont(_ font: UserFont) {
-        
-        // Register a single font using the CoreText Font Manager
-        // NOTE This displays the system's Install dialog
-
-        // Register the font using the UI
-        // NOTE outcome is operated asynchronously
-        CTFontManagerRegisterFontsWithAssetNames([font.name] as CFArray,
-                                                 nil,
-                                                 .persistent,
-                                                 true,
-                                                 self.fontRegistrationHandler(errors:done:))
-    }
-    */
-    
     // REDUNDANT -- REMOVE NEXT BUILD
     func fontRegistrationHandler(errors: CFArray, done: Bool) -> Bool {
 
@@ -798,29 +734,6 @@ class MasterViewController: UITableViewController {
         return true
     }
 
-
-    // REDUNDANT -- REMOVE NEXT BUILD
-    func removeAllFonts() {
-
-        // Uninstall all available fonts
-
-        var fontDescs = [UIFontDescriptor]()
-        for font: UserFont in self.fonts {
-            // Create Font Descriptor for the unregister API
-            let fontDesc: UIFontDescriptor = UIFontDescriptor.init(name: font.name, size: 48.0)
-            fontDescs.append(fontDesc)
-
-            // Update our font record
-            font.isInstalled = false
-            font.isDownloaded = false
-        }
-
-        // Unregister the fonts via the API
-        CTFontManagerUnregisterFontDescriptors(fontDescs as CFArray,
-                                               .persistent,
-                                               self.fontRegistrationHandler(errors:done:))
-    }
-    
 
     // MARK: - Table View Data Source and Delegate Functions
 
