@@ -919,7 +919,30 @@ class MasterViewController: UITableViewController {
         var actions = [UIContextualAction]()
         var action: UIContextualAction = UIContextualAction.init(style: .destructive,
                                          title: "Remove All") { (theAction, theView, handler) in
-                                            self.removeAll()
+                                            // Check that there are fonts to be removed
+                                            if self.anyFontsInstalled() {
+                                                // Remove the installed fonts
+                                                let alert = UIAlertController.init(title: "Are You Sure?",
+                                                                                   message: "Tap ‘OK‘ to uninstall all the typefaces, or ‘Cancel’ to quit. You can reinstall uninstalled typefaces at any time.",
+                                                                                   preferredStyle: .alert)
+                                                
+                                                alert.addAction(UIAlertAction(title: NSLocalizedString("Cancel", comment: "Default action"),
+                                                                                style: .default,
+                                                                                handler: nil))
+                                                
+                                                alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "Default action"),
+                                                                              style: .default,
+                                                                              handler: { (action) in
+                                                    self.removeAll()
+                                                }))
+                                                
+                                                self.present(alert,
+                                                             animated: true,
+                                                             completion: nil)
+                                            } else {
+                                                self.showAlert("No Typefaces Installed", "You have not yet installed any of the available typefaces")
+                                            }
+                                            
                                             handler(true)
         }
         
@@ -928,7 +951,14 @@ class MasterViewController: UITableViewController {
         // Configure an 'Add All' action
         action = UIContextualAction.init(style: .normal,
                                          title: "Add All") { (theAction, theView, handler) in
-                                            self.installAll(self)
+                                            // Check that there are fonts to be installed
+                                            if self.allFontsInstalled() {
+                                                self.showAlert("All Typefaces Installed", "You have already installed all of the available typefaces")
+                                            } else {
+                                                // Install any remaining fonts
+                                                self.installAll(self)
+                                            }
+                                            
                                             handler(true)
         }
 
@@ -1124,6 +1154,30 @@ class MasterViewController: UITableViewController {
         // Present the view controller (in a popover).
         self.present(hvc, animated: true, completion: nil)
     }
+    
+    
+    func anyFontsInstalled() -> Bool {
+        
+        var installedCount: Int = 0
+        
+        for family: FontFamily in self.families {
+            installedCount += (family.fontsAreInstalled ? 1 : 0)
+        }
+        
+        return (installedCount != 0)
+    }
+    
+    
+    func allFontsInstalled() -> Bool {
+        
+        var installedCount: Int = 0
+        
+        for family: FontFamily in self.families {
+            installedCount += (family.fontsAreInstalled ? 1 : 0)
+        }
+        
+        return (installedCount == self.families.count)
+    }
 
 
     // MARK: - Segues
@@ -1157,6 +1211,7 @@ class MasterViewController: UITableViewController {
             }
         }
     }
+    
 }
 
 
