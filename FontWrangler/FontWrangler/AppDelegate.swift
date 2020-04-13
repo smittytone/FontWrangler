@@ -1,12 +1,10 @@
-//
-//  AppDelegate.swift
-//  FontWrangler
-//
+
 //  Created by Tony Smith on 27/03/2020.
 //  Copyright © 2020 Tony Smith. All rights reserved.
-//
+
 
 import UIKit
+
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
