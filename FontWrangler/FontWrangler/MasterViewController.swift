@@ -487,8 +487,12 @@ class MasterViewController: UITableViewController {
             let tags: Set<String> = Set.init([family.tag])
             let fontRequest = NSBundleResourceRequest.init(tags: tags)
 
-            // Store the progress recorder
+            // Store the progress recorder and update the UI on
+            // the main thread so the Activity Indicator is shown
             family.progress = fontRequest.progress
+            DispatchQueue.main.async {
+                self.tableView.reloadData()
+            }
 
             // Set a timeout timer on this family-specific request
             family.timer = Timer.scheduledTimer(withTimeInterval: kFontDownloadTimeout,
@@ -496,39 +500,41 @@ class MasterViewController: UITableViewController {
                                                 block: { (firedTimer) in
                 // Find the family associated with the fired timer
                 for family: FontFamily in self.families {
-                    if let familtyTimer = family.timer {
-                        if familtyTimer == firedTimer {
-                            if !family.fontsAreInstalled {
-                                family.progress = nil
-
-                                DispatchQueue.main.async {
-                                    self.tableView.reloadData()
-                                    self.showAlert("Sorry!", "Fontismo could not access the requested typeface because it could not connect to the App Store. Please check your Internet connection.")
-                                }
+                    if let familyTimer = family.timer {
+                        if familyTimer == firedTimer {
+                            if !family.fontsAreDownloaded {
+                                self.showAlert("Sorry!", "Fontismo could not access the requested typeface because it could not connect to the App Store. Please check your Internet connection.")
                             }
 
                             family.timer = nil
+                            family.progress = nil
+
+                            DispatchQueue.main.async {
+                                self.tableView.reloadData()
+                            }
+
                             break
                         }
                     }
                 }
             })
 
-            // update the UI on
-            // the main thread so the Activity Indicator is shown
-            DispatchQueue.main.async {
-                self.tableView.reloadData()
-            }
-
             fontRequest.beginAccessingResources { (error) in
                 // THIS BLOCK IS A CLOSURE
+
+                // Update the UI (on the main thread) to remove the
+                // Activity Indicator
+                family.progress = nil
+                DispatchQueue.main.async {
+                    self.tableView.reloadData()
+                }
+
                 // Check for a download error
                 if error != nil {
                     // Handle errors
                     // NOTE #1 Item not downloaded if 'error' != nl
                     // NOTE #2 Not sure if this ever gets called... app usually timeouts
                     NSLog("[ERROR] \(error!.localizedDescription)")
-                    family.progress = nil
 
                     // Zap the associated timer early
                     if family.timer != nil {
@@ -536,11 +542,8 @@ class MasterViewController: UITableViewController {
                         family.timer = nil
                     }
 
-                    // Update the UI and present a message to the user
-                    DispatchQueue.main.async {
-                        self.tableView.reloadData()
-                        self.showAlert("Sorry!", "Fontismo could not access the requested typeface because it was unable to connect to the App Store. Please check your Internet connection.")
-                    }
+                    self.showAlert("Sorry!", "Fontismo could not access the requested typeface because it was unable to connect to the App Store. Please check your Internet connection --> \(error!.localizedDescription)")
+
                     return
                 }
                 
@@ -557,13 +560,6 @@ class MasterViewController: UITableViewController {
 
                 // Register the font with the OS
                 self.registerFontFamily(family)
-
-                // Update the UI (on the main thread) to remove the
-                // Activity Indicator
-                family.progress = nil
-                DispatchQueue.main.async {
-                    self.tableView.reloadData()
-                }
             }
         } else {
             #if DEBUG
@@ -616,12 +612,7 @@ class MasterViewController: UITableViewController {
                 // TODO better error handling
                 let error: NSError = err as! NSError
                 NSLog("[ERROR] \(error.localizedDescription)")
-
-                self.showAlert("Sorry!", "Fontismo could not access the requested typeface because it could not connect to the App Store. Please check your Internet connection -> \(error.localizedDescription)")
-
-                if (error.domain as NSString).contains("CTFontManagerErrorDomain") {
-
-                }
+                self.showAlert("Sorry!", "Fontismo had a problem registering a typeface -> \(error.localizedDescription)")
             }
 
             // As recommended, return false on error to
@@ -688,6 +679,18 @@ class MasterViewController: UITableViewController {
                 #if DEBUG
                     print("Family '\(family.name)': downloads: \(downloaded), installs: \(installed) of \(fontIndexes.count)")
                 #endif
+
+                // Turn of progress and/or timers if they're still active
+                if fontIndexes.count == installed {
+                    if family.progress != nil {
+                        family.progress = nil
+                    }
+
+                    if family.timer != nil {
+                        family.timer!.invalidate()
+                        family.timer = nil
+                    }
+                }
             }
         }
 
