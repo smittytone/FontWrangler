@@ -168,7 +168,7 @@ class MasterViewController: UITableViewController {
                 fontDictionary = try JSONSerialization.jsonObject(with: fileData, options: []) as! [String: Any]
             } catch {
                 NSLog("[ERROR] can't load defaults: \(error.localizedDescription) - loadDefaults()")
-                self.showAlert("Error", "Sorry, the default font list can’t be loaded — Fontismo has become damaged. Please reinstall the app.")
+                self.showAlert("Sorry!", "Fontismo’s default font list can’t be loaded — it has become damaged. Please reinstall the app.")
                 return
             }
             
@@ -283,7 +283,7 @@ class MasterViewController: UITableViewController {
                 // TODO Should this be an error we expose to the user? If so, only only later calls
                 if self.fonts.count == 0 {
                     // Load in the defaults if there's no font list in place
-                    self.showAlert("Error", "Sorry, the default font list can’t be loaded — Fontismo may have become damaged. Please reinstall the app.")
+                    self.showAlert("Sorry!", "Fontismo’s default font list can’t be loaded — the app may have become damaged. Please reinstall it.")
                     return
                 }
 
@@ -391,7 +391,7 @@ class MasterViewController: UITableViewController {
         
         if self.families.count > 0 {
             for family: FontFamily in self.families {
-                if !family.fontsAreInstalled {
+                if !family.fontsAreInstalled && family.progress == nil {
                     // If the family is not marked as installed,
                     // assume it is not downloaded (it might be
                     // present) and attempt to get it
@@ -487,9 +487,35 @@ class MasterViewController: UITableViewController {
             let tags: Set<String> = Set.init([family.tag])
             let fontRequest = NSBundleResourceRequest.init(tags: tags)
 
-            // Store the progress recorder and update the UI on
-            // the main thread so the Activity Indicator is shown
+            // Store the progress recorder
             family.progress = fontRequest.progress
+
+            // Set a timeout timer on this family-specific request
+            family.timer = Timer.scheduledTimer(withTimeInterval: kFontDownloadTimeout,
+                                                repeats: false,
+                                                block: { (firedTimer) in
+                // Find the family associated with the fired timer
+                for family: FontFamily in self.families {
+                    if let familtyTimer = family.timer {
+                        if familtyTimer == firedTimer {
+                            if !family.fontsAreInstalled {
+                                family.progress = nil
+
+                                DispatchQueue.main.async {
+                                    self.tableView.reloadData()
+                                    self.showAlert("Sorry!", "Fontismo could not access the requested typeface because it could not connect to the App Store. Please check your Internet connection.")
+                                }
+                            }
+
+                            family.timer = nil
+                            break
+                        }
+                    }
+                }
+            })
+
+            // update the UI on
+            // the main thread so the Activity Indicator is shown
             DispatchQueue.main.async {
                 self.tableView.reloadData()
             }
@@ -499,11 +525,21 @@ class MasterViewController: UITableViewController {
                 // Check for a download error
                 if error != nil {
                     // Handle errors
-                    // NOTE Item not downloaded if 'error' != nl
+                    // NOTE #1 Item not downloaded if 'error' != nl
+                    // NOTE #2 Not sure if this ever gets called... app usually timeouts
                     NSLog("[ERROR] \(error!.localizedDescription)")
                     family.progress = nil
+
+                    // Zap the associated timer early
+                    if family.timer != nil {
+                        family.timer!.invalidate()
+                        family.timer = nil
+                    }
+
+                    // Update the UI and present a message to the user
                     DispatchQueue.main.async {
                         self.tableView.reloadData()
+                        self.showAlert("Sorry!", "Fontismo could not access the requested typeface because it was unable to connect to the App Store. Please check your Internet connection.")
                     }
                     return
                 }
@@ -578,7 +614,14 @@ class MasterViewController: UITableViewController {
             for err in errs {
                 // For now, just print the error
                 // TODO better error handling
-                NSLog("[ERROR] \(err)")
+                let error: NSError = err as! NSError
+                NSLog("[ERROR] \(error.localizedDescription)")
+
+                self.showAlert("Sorry!", "Fontismo could not access the requested typeface because it could not connect to the App Store. Please check your Internet connection -> \(error.localizedDescription)")
+
+                if (error.domain as NSString).contains("CTFontManagerErrorDomain") {
+
+                }
             }
 
             // As recommended, return false on error to
@@ -931,29 +974,34 @@ class MasterViewController: UITableViewController {
 
         // Get the referenced family
         let family: FontFamily = self.families[indexPath.row]
-        if family.fontsAreInstalled {
-            // Configure a 'Remove' action -- only one item affected: the table view cell's family
-            action = UIContextualAction.init(style: .destructive,
-                                             title: "Remove") { (theAction, theView, handler) in
-                                                // Remove the single, row-referenced font
-                                                self.removeOneFontFamily(family)
-                                                handler(true)
-            }
-        } else {
-            // Configure an 'Add' action -- only one item affected: the table view cell's
-            action = UIContextualAction.init(style: .normal,
-                                             title: "Add") { (theAction, theView, handler) in
-                                                // Install the single, row-referenced font
-                                                self.getOneFontFamily(family)
-                                                handler(true)
+
+        // Show the controls only if we're not already downloading
+        if family.progress == nil {
+            if family.fontsAreInstalled {
+                // Configure a 'Remove' action -- only one item affected: the table view cell's family
+                action = UIContextualAction.init(style: .destructive,
+                                                 title: "Remove") { (theAction, theView, handler) in
+                                                    // Remove the single, row-referenced font
+                                                    self.removeOneFontFamily(family)
+                                                    handler(true)
+                }
+            } else {
+                // Configure an 'Add' action -- only one item affected: the table view cell's
+                action = UIContextualAction.init(style: .normal,
+                                                 title: "Add") { (theAction, theView, handler) in
+                                                    // Install the single, row-referenced font
+                                                    self.getOneFontFamily(family)
+                                                    handler(true)
+                }
+
+                // Set the colour to blue
+                action.backgroundColor = UIColor.systemBlue
             }
 
-            // Set the colour to blue
-            action.backgroundColor = UIColor.systemBlue
+            // Create the config to be returned, making sure a full swipe DOESN'T auto-trigger
+            config = UISwipeActionsConfiguration.init(actions: [action])
         }
 
-        // Create the config to be returned, making sure a full swipe DOESN'T auto-trigger
-        config = UISwipeActionsConfiguration.init(actions: [action])
         config?.performsFirstActionWithFullSwipe = false
         return config
     }

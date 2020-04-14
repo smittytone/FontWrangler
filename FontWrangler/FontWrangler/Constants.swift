@@ -24,3 +24,5 @@ let kFontSampleText_1_Limit             = 48.0
 let kDefaultsPath                       = "/defaults.json"
 
 let kHelpPageCount                      = 3
+
+let kFontDownloadTimeout                = 30.0
