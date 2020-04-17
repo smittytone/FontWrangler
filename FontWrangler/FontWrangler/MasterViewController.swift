@@ -503,7 +503,7 @@ class MasterViewController: UITableViewController {
                     if let familyTimer = family.timer {
                         if familyTimer == firedTimer {
                             if !family.fontsAreDownloaded {
-                                self.showAlert("Sorry!", "Fontismo could not access the requested typeface because it could not connect to the App Store. Please check your Internet connection.")
+                                self.showAlert("Sorry!", "Fontismo could not access the requested typeface because it could not connect to the App Store. Please check your Internet connection and try again.")
                             }
 
                             family.timer = nil
@@ -542,8 +542,7 @@ class MasterViewController: UITableViewController {
                         family.timer = nil
                     }
 
-                    self.showAlert("Sorry!", "Fontismo could not access the requested typeface because it was unable to connect to the App Store. Please check your Internet connection --> \(error!.localizedDescription)")
-
+                    self.showAlert("Sorry!", "Fontismo could not access the requested typeface because it was unable to connect to the App Store. Please check your Internet connection and try again.\n(\(error!.localizedDescription))")
                     return
                 }
                 
@@ -612,7 +611,7 @@ class MasterViewController: UITableViewController {
                 // TODO better error handling
                 let error: NSError = err as! NSError
                 NSLog("[ERROR] \(error.localizedDescription)")
-                self.showAlert("Sorry!", "Fontismo had a problem registering a typeface -> \(error.localizedDescription)")
+                self.showAlert("Sorry!", "Fontismo had a problem registering a typeface.\n(\(error.localizedDescription))")
             }
 
             // As recommended, return false on error to
