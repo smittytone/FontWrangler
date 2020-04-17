@@ -367,7 +367,7 @@ class MasterViewController: UITableViewController {
 
         } catch {
             NSLog("[ERROR] Can't write font file: \(error.localizedDescription) - saveFontList()")
-            self.showAlert("Error", "Sorry, Fontismo can’t access its Documents folder. It may have been damaged or mis-installed. Please re-installed from the App Store.")
+            self.showAlert("Error", "Sorry, Fontismo can’t access internal storage. It may have been damaged or mis-installed. Please re-installed from the App Store.")
         }
     }
     
