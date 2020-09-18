@@ -185,7 +185,12 @@ class DetailViewController: UIViewController, UIPopoverPresentationControllerDel
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
 
         super.viewWillTransition(to: size, with: coordinator)
-        self.dynamicSampleParentView.setNeedsDisplay()
+
+        // FROM 1.1.0
+        // Don’t update parent on iPhone
+        if UIDevice.current.userInterfaceIdiom == .pad {
+            self.dynamicSampleParentView.setNeedsDisplay()
+        }
     }
 
     
