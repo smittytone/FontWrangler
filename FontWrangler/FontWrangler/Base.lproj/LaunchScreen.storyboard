@@ -2,6 +2,7 @@
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="17156" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" launchScreen="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="01J-lp-oVM">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
+        <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17125"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
@@ -16,29 +17,29 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="slider_max" translatesAutoresizingMaskIntoConstraints="NO" id="lhp-yB-FbO">
-                                <rect key="frame" x="191" y="432" width="32" height="32"/>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="logo" translatesAutoresizingMaskIntoConstraints="NO" id="lhp-yB-FbO">
+                                <rect key="frame" x="20" y="417.5" width="374" height="61"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="32" id="qra-Gw-tNz"/>
-                                    <constraint firstAttribute="width" constant="32" id="rPk-5F-6Ay"/>
+                                    <constraint firstAttribute="width" secondItem="lhp-yB-FbO" secondAttribute="height" multiplier="374:61" id="Oto-Gd-O9o"/>
                                 </constraints>
                             </imageView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
-                            <constraint firstItem="lhp-yB-FbO" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="Rex-iT-vWj"/>
-                            <constraint firstItem="lhp-yB-FbO" firstAttribute="centerY" secondItem="Ze5-6b-2t3" secondAttribute="centerY" id="yag-Sn-5Jn"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="lhp-yB-FbO" secondAttribute="trailing" constant="20" id="Xun-d5-4z0"/>
+                            <constraint firstItem="lhp-yB-FbO" firstAttribute="centerY" secondItem="Ze5-6b-2t3" secondAttribute="centerY" id="rva-5O-0RH"/>
+                            <constraint firstItem="lhp-yB-FbO" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="20" id="tpZ-mN-gh8"/>
                         </constraints>
                     </view>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="iYj-Kq-Ea1" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="53" y="375"/>
+            <point key="canvasLocation" x="52.173913043478265" y="375"/>
         </scene>
     </scenes>
     <resources>
-        <image name="slider_max" width="32" height="32"/>
+        <image name="logo" width="400" height="61"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>

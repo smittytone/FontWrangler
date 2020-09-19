@@ -6,7 +6,9 @@
 import UIKit
 
 
-class DetailViewController: UIViewController, UIPopoverPresentationControllerDelegate {
+class DetailViewController: UIViewController,
+                            UIPopoverPresentationControllerDelegate,
+                            UITextViewDelegate {
 
     // MARK: - UI properties
     
@@ -14,10 +16,10 @@ class DetailViewController: UIViewController, UIPopoverPresentationControllerDel
     
     @IBOutlet weak var dynamicSampleHeadLabel: UILabel!
     @IBOutlet weak var dynamicSampleTextView: UITextView!
-    @IBOutlet weak var dynamicSampleParentView: UserTestSampleView!
+    //@IBOutlet weak var dynamicSampleParentView: UserTestSampleView!
     
-    @IBOutlet weak var userSampleHeadLabel: UILabel!
-    @IBOutlet weak var userSampleTextView: UITextView!
+    //@IBOutlet weak var userSampleHeadLabel: UILabel!
+    //@IBOutlet weak var userSampleTextView: UITextView!
     
     @IBOutlet weak var fontSizeLabel: UILabel!
     @IBOutlet weak var fontSizeSlider: UISlider!
@@ -75,13 +77,13 @@ class DetailViewController: UIViewController, UIPopoverPresentationControllerDel
         
         // Set the font sample text
         self.dynamicSampleTextView.text = kFontSampleText_1
-        self.dynamicSampleTextView.isEditable = false
+        self.dynamicSampleTextView.isEditable = true
         self.dynamicSampleTextView.alpha = 0.3
         
         // Block access to the user-entered sample
-        self.dynamicSampleParentView.alpha = 0.3
-        self.userSampleTextView.isEditable = false
-        self.userSampleTextView.alpha = 0.3
+        //self.dynamicSampleParentView.alpha = 0.3
+        //self.userSampleTextView.isEditable = false
+        //self.userSampleTextView.alpha = 0.3
 
         // Check for on-screen taps to end user sample editing
         let gr: UITapGestureRecognizer = UITapGestureRecognizer.init(target: self,
@@ -107,12 +109,10 @@ class DetailViewController: UIViewController, UIPopoverPresentationControllerDel
         guard let statusLabel = self.fontStatusLabel else { return }
         guard let dynamicLabel = self.dynamicSampleTextView else { return }
         guard let dynamicHead = self.dynamicSampleHeadLabel else { return }
-        guard let sampleNote = self.userSampleTextView else { return }
+        //guard let sampleNote = self.userSampleTextView else { return }
         guard let sizeLabel = self.fontSizeLabel else { return }
         guard let sizeSlider = self.fontSizeSlider else { return }
-        guard let parent = self.dynamicSampleParentView else { return }
-
-        let isPad = (UIDevice.current.userInterfaceIdiom == .pad)
+        //guard let parent = self.dynamicSampleParentView else { return }
 
         // Generic cases
         sizeSlider.isEnabled = false
@@ -142,9 +142,9 @@ class DetailViewController: UIViewController, UIPopoverPresentationControllerDel
             var labelText: String
 
             if detail.isInstalled {
-                sampleNote.isEditable = true
-                sampleNote.alpha = 1.0
-                parent.alpha = 1.0
+                //sampleNote.isEditable = true
+                //sampleNote.alpha = 1.0
+                //parent.alpha = 1.0
                 
                 // Set the samples' fonts
                 dynamicLabel.alpha = 1.0
@@ -153,9 +153,9 @@ class DetailViewController: UIViewController, UIPopoverPresentationControllerDel
                     dynamicLabel.font = font
                 }
                 
-                if let font = UIFont.init(name: detail.psname, size: KBaseUserSampleFontSize) {
+                /*if let font = UIFont.init(name: detail.psname, size: KBaseUserSampleFontSize) {
                     sampleNote.font = font
-                }
+                }*/
                 
                 // Set the font size slider control and label
                 sizeSlider.isEnabled = true
@@ -165,10 +165,10 @@ class DetailViewController: UIViewController, UIPopoverPresentationControllerDel
                 dynamicLabel.alpha = 0.3
                 dynamicHead.alpha = 0.3
                 
-                sampleNote.font = substituteFont
-                sampleNote.isEditable = false
-                sampleNote.alpha = 0.3
-                parent.alpha = 0.3
+                //sampleNote.font = substituteFont
+                //sampleNote.isEditable = false
+                //sampleNote.alpha = 0.3
+                //parent.alpha = 0.3
             }
             
             // Set the font status
@@ -184,6 +184,32 @@ class DetailViewController: UIViewController, UIPopoverPresentationControllerDel
                 }
             }
             self.variantsButton?.isEnabled = count > 1 ? true : false
+
+            if !detail.isInstalled {
+                if let cf = self.currentFamily {
+                    let alert = UIAlertController.init(title: "\(cf.name)",
+                                                       message: "This font family is not installed. Would you like to install it now?",
+                                                       preferredStyle: .alert)
+
+                    var alertButton = UIAlertAction.init(title: "Yes",
+                                                         style: .default) { (action) in
+                        // Install the font
+                        self.mvc!.getOneFontFamily(cf)
+                    }
+
+                    alert.addAction(alertButton)
+
+                    alertButton = UIAlertAction.init(title: "No",
+                                                     style: .cancel,
+                                                     handler: nil)
+
+                    alert.addAction(alertButton)
+
+                    self.present(alert,
+                                 animated: true,
+                                 completion: nil)
+                }
+            }
         } else {
             // Hide the labels; disable the slider
             self.title = "Font Info"
@@ -193,11 +219,7 @@ class DetailViewController: UIViewController, UIPopoverPresentationControllerDel
             self.variantsButton?.isEnabled = false
         }
 
-        if !isPad {
-            //parent.removeFromSuperview()
-            //self.view.setNeedsLayout()
-            //self.view.setNeedsDisplay()
-        }
+
     }
 
 
@@ -205,11 +227,11 @@ class DetailViewController: UIViewController, UIPopoverPresentationControllerDel
 
         super.viewWillTransition(to: size, with: coordinator)
 
-        // FROM 1.1.0
+        /* FROM 1.1.0
         // Make sure dynamicSampleParentView not nil
         if let pv = self.dynamicSampleParentView {
             pv.setNeedsDisplay()
-        }
+        }*/
     }
 
     
@@ -259,7 +281,7 @@ class DetailViewController: UIViewController, UIPopoverPresentationControllerDel
 
         // End editing of the user sample text view on a tap
 
-        if let stv = self.userSampleTextView {
+        if let stv = self.dynamicSampleTextView {
             stv.endEditing(true)
         }
     }

@@ -43,19 +43,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         return true
     }
 
-
+/*
     func application(_ application: UIApplication,
                      supportedInterfaceOrientationsFor window: UIWindow?) -> UIInterfaceOrientationMask {
 
         // FROM 1.1.0
         // Allow iPads to rotate, but not iPhones
         if UIDevice.current.userInterfaceIdiom != .pad {
-            return .portrait
+            return .allButUpsideDown
         } else {
             return .all
         }
     }
-
+*/
 
     // MARK: UISceneSession Lifecycle
 
@@ -65,6 +65,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Use this method to select a configuration to create the new scene with.
         return UISceneConfiguration(name: "Default Configuration", sessionRole: connectingSceneSession.role)
     }
+
 
     func application(_ application: UIApplication, didDiscardSceneSessions sceneSessions: Set<UISceneSession>) {
 
