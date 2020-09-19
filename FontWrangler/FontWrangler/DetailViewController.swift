@@ -42,7 +42,17 @@ class DetailViewController: UIViewController, UIPopoverPresentationControllerDel
             self.configureView()
         }
     }
-    
+
+    // FROM 1.1.0
+    // Set the supported orientations
+    override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
+
+        if UIDevice.current.userInterfaceIdiom != .pad {
+            return .portrait
+        } else {
+            return .all
+        }
+    }
     
     // MARK: - Lifecycle Functions
     
@@ -74,7 +84,8 @@ class DetailViewController: UIViewController, UIPopoverPresentationControllerDel
         self.userSampleTextView.alpha = 0.3
 
         // Check for on-screen taps to end user sample editing
-        let gr: UITapGestureRecognizer = UITapGestureRecognizer.init(target: self, action: #selector(self.doTap))
+        let gr: UITapGestureRecognizer = UITapGestureRecognizer.init(target: self,
+                                                                     action: #selector(self.doTap))
         self.view?.addGestureRecognizer(gr)
         
         // Configure the detail view
@@ -100,6 +111,8 @@ class DetailViewController: UIViewController, UIPopoverPresentationControllerDel
         guard let sizeLabel = self.fontSizeLabel else { return }
         guard let sizeSlider = self.fontSizeSlider else { return }
         guard let parent = self.dynamicSampleParentView else { return }
+
+        let isPad = (UIDevice.current.userInterfaceIdiom == .pad)
 
         // Generic cases
         sizeSlider.isEnabled = false
@@ -127,7 +140,7 @@ class DetailViewController: UIViewController, UIPopoverPresentationControllerDel
             // Prepare the status label
             let ext = (detail.path as NSString).pathExtension.lowercased()
             var labelText: String
-            
+
             if detail.isInstalled {
                 sampleNote.isEditable = true
                 sampleNote.alpha = 1.0
@@ -179,6 +192,12 @@ class DetailViewController: UIViewController, UIPopoverPresentationControllerDel
             sizeSlider.value = Float(self.fontSize)
             self.variantsButton?.isEnabled = false
         }
+
+        if !isPad {
+            //parent.removeFromSuperview()
+            //self.view.setNeedsLayout()
+            //self.view.setNeedsDisplay()
+        }
     }
 
 
@@ -187,9 +206,9 @@ class DetailViewController: UIViewController, UIPopoverPresentationControllerDel
         super.viewWillTransition(to: size, with: coordinator)
 
         // FROM 1.1.0
-        // Don’t update parent on iPhone
-        if UIDevice.current.userInterfaceIdiom == .pad {
-            self.dynamicSampleParentView.setNeedsDisplay()
+        // Make sure dynamicSampleParentView not nil
+        if let pv = self.dynamicSampleParentView {
+            pv.setNeedsDisplay()
         }
     }
 
@@ -240,7 +259,9 @@ class DetailViewController: UIViewController, UIPopoverPresentationControllerDel
 
         // End editing of the user sample text view on a tap
 
-        self.userSampleTextView.endEditing(true)
+        if let stv = self.userSampleTextView {
+            stv.endEditing(true)
+        }
     }
 
 

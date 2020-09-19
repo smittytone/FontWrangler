@@ -19,7 +19,17 @@ class FontVariantsTableViewController: UITableViewController {
     var fontIndices: [Int]? = nil
     var currentFont: Int = -1
     var dvc: DetailViewController? = nil
-    
+
+    // FROM 1.1.0
+    // Set the supported orientations
+    override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
+
+        if UIDevice.current.userInterfaceIdiom != .pad {
+            return .portrait
+        } else {
+            return .all
+        }
+    }
     
     // MARK: - Lifecycle Methods
     

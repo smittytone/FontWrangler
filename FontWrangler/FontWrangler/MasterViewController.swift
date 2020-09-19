@@ -24,6 +24,17 @@ class MasterViewController: UITableViewController {
     // MARK:- Public Instance Properties
     
     var fonts = [UserFont]()
+
+    // FROM 1.1.0
+    // Set the supported orientations
+    override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
+
+        if UIDevice.current.userInterfaceIdiom != .pad {
+            return .portrait
+        } else {
+            return .all
+        }
+    }
     
     // MARK:- Private Instance Constants
 
@@ -532,7 +543,7 @@ class MasterViewController: UITableViewController {
                 // Check for a download error
                 if error != nil {
                     // Handle errors
-                    // NOTE #1 Item not downloaded if 'error' != nl
+                    // NOTE #1 Item not downloaded if 'error' != nil
                     // NOTE #2 Not sure if this ever gets called... app usually timeouts
                     NSLog("[ERROR] \(error!.localizedDescription)")
 
@@ -561,6 +572,7 @@ class MasterViewController: UITableViewController {
                 self.registerFontFamily(family)
             }
         } else {
+            // Font family should already be downloaded
             #if DEBUG
                 print("Family '\(family.name)' already downloaded")
             #endif
@@ -603,6 +615,13 @@ class MasterViewController: UITableViewController {
         // A callback triggered in response to system-level font registration
         // and re-registrations - see 'installFonts()' and 'uninstallFonts()'
 
+        /*
+         An empty array indicates no errors. Each error reference will contain a CFArray of font asset names corresponding to kCTFontManagerErrorFontAssetNameKey. These represent the font asset names that were not successfully registered. Note, the handler may be called multiple times during the registration process. The done parameter will be set to true when the registration process has completed. The handler should return false if the operation is to be stopped. This may be desirable after receiving an error.
+         */
+
+        // Set the return value
+        let returnValue: Bool = true
+
         // Process any errors passed in
         let errs = errors as NSArray
         if errs.count > 0 {
@@ -611,12 +630,13 @@ class MasterViewController: UITableViewController {
                 // TODO better error handling
                 let error: NSError = err as! NSError
                 NSLog("[ERROR] \(error.localizedDescription)")
-                self.showAlert("Sorry!", "Fontismo had a problem registering a typeface.\n(\(error.localizedDescription))")
+                let errFont = error.userInfo[kCTFontManagerErrorFontAssetNameKey as String] ?? "unknown"
+                self.showAlert("Sorry!", "Fontismo had a problem registering typeface \(errFont).\n(\(error.localizedDescription))")
             }
 
             // As recommended, return false on error to
             // halt further processing
-            // return false
+            // returnValue = false
         }
 
         // System sets 'done' to true on the final call
@@ -636,8 +656,8 @@ class MasterViewController: UITableViewController {
             }
         }
 
-        // Signal OK
-        return true
+        // Signal state of operation
+        return returnValue
     }
     
     

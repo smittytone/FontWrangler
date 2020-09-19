@@ -35,12 +35,25 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
         
         // Set the creators string for the Settings > Authors readout
-        let creators = self.gertCreators()
+        let creators = self.getCreators()
         if creators != "" {
             defaults.set(creators, forKey: "com.bps.fontwrangler.app.licence.authors")
         }
         
         return true
+    }
+
+
+    func application(_ application: UIApplication,
+                     supportedInterfaceOrientationsFor window: UIWindow?) -> UIInterfaceOrientationMask {
+
+        // FROM 1.1.0
+        // Allow iPads to rotate, but not iPhones
+        if UIDevice.current.userInterfaceIdiom != .pad {
+            return .portrait
+        } else {
+            return .all
+        }
     }
 
 
@@ -61,7 +74,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     
-    func gertCreators() -> String {
+    func getCreators() -> String {
         
         // Load in the default list of available fonts and extract their creators
         // and licence details into a string, which is returned.
