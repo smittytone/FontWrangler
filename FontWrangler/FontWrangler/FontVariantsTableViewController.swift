@@ -20,16 +20,6 @@ class FontVariantsTableViewController: UITableViewController {
     var currentFont: Int = -1
     var dvc: DetailViewController? = nil
 
-    // FROM 1.1.0
-    // Set the supported orientations
-    override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
-
-        if UIDevice.current.userInterfaceIdiom != .pad {
-            return .portrait
-        } else {
-            return .all
-        }
-    }
     
     // MARK: - Lifecycle Methods
     
@@ -96,6 +86,7 @@ class FontVariantsTableViewController: UITableViewController {
                     advc.detailItem = font
                     advc.currentFontIndex = indexPath.row
                     self.currentFont = indexPath.row
+                    //advc.configureView()
                     
                     #if DEBUG
                         print("Font selected '\(font.name)' at row \(indexPath.row)")

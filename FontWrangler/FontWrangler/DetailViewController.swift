@@ -32,6 +32,7 @@ class DetailViewController: UIViewController,
     private var fontSize: CGFloat = kBaseDynamicSampleFontSize
     private var hasFlipped: Bool = false
     private var dynamicFlipBoundary: CGFloat = 0.0
+    private var storeSliderValue: Float = Float(kBaseDynamicSampleFontSize)
 
     var mvc: MasterViewController? = nil
     var currentFamily: FontFamily? = nil
@@ -89,6 +90,11 @@ class DetailViewController: UIViewController,
         let gr: UITapGestureRecognizer = UITapGestureRecognizer.init(target: self,
                                                                      action: #selector(self.doTap))
         self.view?.addGestureRecognizer(gr)
+
+        let dr: UIPinchGestureRecognizer = UIPinchGestureRecognizer.init(target: self,
+                                                                         action: #selector(self.doSwipe))
+
+        self.view?.addGestureRecognizer(dr)
         
         // Configure the detail view
         self.configureView()
@@ -185,30 +191,10 @@ class DetailViewController: UIViewController,
             }
             self.variantsButton?.isEnabled = count > 1 ? true : false
 
+            // FROM 1.1.0
+            // Font not installed, so offer to install it
             if !detail.isInstalled {
-                if let cf = self.currentFamily {
-                    let alert = UIAlertController.init(title: "\(cf.name)",
-                                                       message: "This font family is not installed. Would you like to install it now?",
-                                                       preferredStyle: .alert)
-
-                    var alertButton = UIAlertAction.init(title: "Yes",
-                                                         style: .default) { (action) in
-                        // Install the font
-                        self.mvc!.getOneFontFamily(cf)
-                    }
-
-                    alert.addAction(alertButton)
-
-                    alertButton = UIAlertAction.init(title: "No",
-                                                     style: .cancel,
-                                                     handler: nil)
-
-                    alert.addAction(alertButton)
-
-                    self.present(alert,
-                                 animated: true,
-                                 completion: nil)
-                }
+                doInstall()
             }
         } else {
             // Hide the labels; disable the slider
@@ -218,8 +204,36 @@ class DetailViewController: UIViewController,
             sizeSlider.value = Float(self.fontSize)
             self.variantsButton?.isEnabled = false
         }
+    }
 
 
+    func doInstall() {
+
+        // FROM 1.1.0
+        // Offer to install the font if it has not yet been installed
+        if let cf = self.currentFamily {
+            let alert = UIAlertController.init(title: "\(cf.name)",
+                                               message: "This font family is not installed. Would you like to install it now?",
+                                               preferredStyle: .alert)
+
+            var alertButton = UIAlertAction.init(title: "Yes",
+                                                 style: .default) { (action) in
+                // Install the font
+                self.mvc!.getOneFontFamily(cf)
+            }
+
+            alert.addAction(alertButton)
+
+            alertButton = UIAlertAction.init(title: "No",
+                                             style: .cancel,
+                                             handler: nil)
+
+            alert.addAction(alertButton)
+
+            self.present(alert,
+                         animated: true,
+                         completion: nil)
+        }
     }
 
 
@@ -283,6 +297,26 @@ class DetailViewController: UIViewController,
 
         if let stv = self.dynamicSampleTextView {
             stv.endEditing(true)
+        }
+    }
+
+
+    @objc func doSwipe(_ pgr: UIPinchGestureRecognizer) {
+
+        // FROM 1.1.0
+        // Triggered by the pinch gesture on the main view
+        guard pgr.view != nil else { return }
+
+        // Store the current size: we will scale from this value
+        if pgr.state == .began {
+            storeSliderValue = self.fontSizeSlider.value
+        }
+
+        // Apply the scale if the pinch distance changes
+        if pgr.state == .began || pgr.state == .changed {
+            // Set the slider and then trigger the action function
+            self.fontSizeSlider.value = storeSliderValue * Float(pgr.scale)
+            setFontSize(self)
         }
     }
 
