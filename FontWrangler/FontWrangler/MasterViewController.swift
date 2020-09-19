@@ -25,17 +25,6 @@ class MasterViewController: UITableViewController {
     
     var fonts = [UserFont]()
 
-    // FROM 1.1.0
-    // Set the supported orientations
-    override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
-
-        if UIDevice.current.userInterfaceIdiom != .pad {
-            return .portrait
-        } else {
-            return .all
-        }
-    }
-    
     // MARK:- Private Instance Constants
 
     private let docsPath = NSSearchPathForDirectoriesInDomains(FileManager.SearchPathDirectory.documentDirectory, FileManager.SearchPathDomainMask.userDomainMask, true)[0]
@@ -1195,7 +1184,6 @@ class MasterViewController: UITableViewController {
             }
         }
     }
-    
 }
 
 

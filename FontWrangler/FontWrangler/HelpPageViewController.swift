@@ -54,7 +54,11 @@ class HelpPageViewController: UIViewController, WKNavigationDelegate {
         if navigationAction.navigationType == .linkActivated {
             // The user clicked on a link
             if let linkURL = navigationAction.request.url {
+
+                #if DEBUG
                 print(linkURL.absoluteString)
+                #endif
+
                 if linkURL.absoluteString == "https://settings/" {
                     if let settingsURL = URL(string: UIApplication.openSettingsURLString) {
                         self.openURL(settingsURL)

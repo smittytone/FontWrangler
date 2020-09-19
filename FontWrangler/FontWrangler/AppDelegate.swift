@@ -43,19 +43,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         return true
     }
 
-/*
-    func application(_ application: UIApplication,
-                     supportedInterfaceOrientationsFor window: UIWindow?) -> UIInterfaceOrientationMask {
-
-        // FROM 1.1.0
-        // Allow iPads to rotate, but not iPhones
-        if UIDevice.current.userInterfaceIdiom != .pad {
-            return .allButUpsideDown
-        } else {
-            return .all
-        }
-    }
-*/
 
     // MARK: UISceneSession Lifecycle
 

@@ -16,14 +16,15 @@ class DetailViewController: UIViewController,
     
     @IBOutlet weak var dynamicSampleHeadLabel: UILabel!
     @IBOutlet weak var dynamicSampleTextView: UITextView!
-    //@IBOutlet weak var dynamicSampleParentView: UserTestSampleView!
-    
-    //@IBOutlet weak var userSampleHeadLabel: UILabel!
-    //@IBOutlet weak var userSampleTextView: UITextView!
-    
+
     @IBOutlet weak var fontSizeLabel: UILabel!
     @IBOutlet weak var fontSizeSlider: UISlider!
-    
+
+    // REMOVED IN 1.1.0
+    //@IBOutlet weak var dynamicSampleParentView: UserTestSampleView!
+    //@IBOutlet weak var userSampleHeadLabel: UILabel!
+    //@IBOutlet weak var userSampleTextView: UITextView!
+
 
     // MARK: - Object properties
     
@@ -46,17 +47,7 @@ class DetailViewController: UIViewController,
         }
     }
 
-    // FROM 1.1.0
-    // Set the supported orientations
-    override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
 
-        if UIDevice.current.userInterfaceIdiom != .pad {
-            return .portrait
-        } else {
-            return .all
-        }
-    }
-    
     // MARK: - Lifecycle Functions
     
     override func viewDidLoad() {
@@ -81,20 +72,22 @@ class DetailViewController: UIViewController,
         self.dynamicSampleTextView.isEditable = true
         self.dynamicSampleTextView.alpha = 0.3
         
+        // REMOVED IN 1.1.0
         // Block access to the user-entered sample
         //self.dynamicSampleParentView.alpha = 0.3
         //self.userSampleTextView.isEditable = false
         //self.userSampleTextView.alpha = 0.3
 
         // Check for on-screen taps to end user sample editing
-        let gr: UITapGestureRecognizer = UITapGestureRecognizer.init(target: self,
-                                                                     action: #selector(self.doTap))
-        self.view?.addGestureRecognizer(gr)
+        let tapRec: UITapGestureRecognizer = UITapGestureRecognizer.init(target: self,
+                                                                         action: #selector(self.doTap))
+        self.view?.addGestureRecognizer(tapRec)
 
-        let dr: UIPinchGestureRecognizer = UIPinchGestureRecognizer.init(target: self,
-                                                                         action: #selector(self.doSwipe))
-
-        self.view?.addGestureRecognizer(dr)
+        // FROM 1.1.0
+        // Add pinch-to-zoom for font scaling
+        let pinchRec: UIPinchGestureRecognizer = UIPinchGestureRecognizer.init(target: self,
+                                                                               action: #selector(self.doSwipe))
+        self.view?.addGestureRecognizer(pinchRec)
         
         // Configure the detail view
         self.configureView()
@@ -115,9 +108,11 @@ class DetailViewController: UIViewController,
         guard let statusLabel = self.fontStatusLabel else { return }
         guard let dynamicLabel = self.dynamicSampleTextView else { return }
         guard let dynamicHead = self.dynamicSampleHeadLabel else { return }
-        //guard let sampleNote = self.userSampleTextView else { return }
         guard let sizeLabel = self.fontSizeLabel else { return }
         guard let sizeSlider = self.fontSizeSlider else { return }
+
+        // REMOVED IN 1.1.0
+        //guard let sampleNote = self.userSampleTextView else { return }
         //guard let parent = self.dynamicSampleParentView else { return }
 
         // Generic cases
@@ -148,6 +143,7 @@ class DetailViewController: UIViewController,
             var labelText: String
 
             if detail.isInstalled {
+                // REMOVED IN 1.1.0
                 //sampleNote.isEditable = true
                 //sampleNote.alpha = 1.0
                 //parent.alpha = 1.0
@@ -171,6 +167,7 @@ class DetailViewController: UIViewController,
                 dynamicLabel.alpha = 0.3
                 dynamicHead.alpha = 0.3
                 
+                // REMOVED IN 1.1.0
                 //sampleNote.font = substituteFont
                 //sampleNote.isEditable = false
                 //sampleNote.alpha = 0.3
@@ -189,6 +186,7 @@ class DetailViewController: UIViewController,
                     count = familyFonts.count
                 }
             }
+
             self.variantsButton?.isEnabled = count > 1 ? true : false
 
             // FROM 1.1.0
@@ -211,6 +209,8 @@ class DetailViewController: UIViewController,
 
         // FROM 1.1.0
         // Offer to install the font if it has not yet been installed
+
+        // Create and present an alert with two buttons
         if let cf = self.currentFamily {
             let alert = UIAlertController.init(title: "\(cf.name)",
                                                message: "This font family is not installed. Would you like to install it now?",
@@ -236,17 +236,18 @@ class DetailViewController: UIViewController,
         }
     }
 
-
+    // REMOVED IN 1.1.0
+    /*
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
 
         super.viewWillTransition(to: size, with: coordinator)
 
-        /* FROM 1.1.0
         // Make sure dynamicSampleParentView not nil
         if let pv = self.dynamicSampleParentView {
             pv.setNeedsDisplay()
-        }*/
+        }
     }
+    */
 
     
     // MARK: - Action Functions
