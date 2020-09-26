@@ -4,7 +4,7 @@
 
 ## Usage ##
 
-Please see [this page](https://smittytone.github.io/fontismo/index.html).
+Please see [this page](https://smittytone.net/fontismo/index.html).
 
 **Note** If you remove *Fontismo* from your iPad, all of the fonts installed by it will be removed by iOS.
 
