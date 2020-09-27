@@ -1,4 +1,4 @@
-# Fontismo for iOS 1.1.0 #
+# Fontismo for iOS 1.1.1 #
 
 *Fontismo* provides a means to install a selection of OpenType (`.otf`) and TrueType (`.ttf`) files on an iPad or iPhone. It requires iOS 13.0 or above.
 
@@ -10,12 +10,14 @@ Please see [this page](https://smittytone.net/fontismo/index.html).
 
 ## Release Notes ##
 
-- 1.1.0
+- 1.1.1 *Unreleased*
+    - Add occasional App Store review prompts.
+- 1.1.0 *25 September 2020*
     - iPhone support added.
     - New font preview UI: scalable sample is editable.
     - Use pinch-to-zoom to scale the sample text.
     - Bug fixes.
-- 1.0.0
+- 1.0.0 *May 2020*
     - Initial public release.
 
 ## Copyright ##
