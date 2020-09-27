@@ -26,3 +26,12 @@ let kDefaultsPath                       = "/defaults.json"
 let kHelpPageCount                      = 3
 
 let kFontDownloadTimeout                = 30.0
+
+let kAppStoreURL                       = "https://apps.apple.com/app/id1505396103"
+
+let kFontInstallCountBeforeReviewRequest = 20
+
+enum kDefaultsKeys {
+    static let fontInstallCount = "com.bps.fontismo.font.installs"
+    static let lastReviewVersion = "com.bps.fontismo.review.version"
+}

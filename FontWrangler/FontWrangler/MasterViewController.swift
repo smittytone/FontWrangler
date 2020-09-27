@@ -4,6 +4,7 @@
 
 
 import UIKit
+import StoreKit
 
 
 class MasterViewController: UITableViewController {
@@ -29,6 +30,7 @@ class MasterViewController: UITableViewController {
 
     private let docsPath = NSSearchPathForDirectoriesInDomains(FileManager.SearchPathDirectory.documentDirectory, FileManager.SearchPathDomainMask.userDomainMask, true)[0]
     private let bundlePath = Bundle.main.bundlePath
+    private var installCount: Int = -1
 
     
     // MARK:- Lifecycle Functions
@@ -84,8 +86,19 @@ class MasterViewController: UITableViewController {
                        name: kCTFontManagerRegisteredFontsChangedNotification as NSNotification.Name,
                        object: nil)
 
+        // FROM 1.1.1
+        // Ask for a review on a long press
+        let pressRec: UILongPressGestureRecognizer = UILongPressGestureRecognizer.init(target: self,
+                                                                                       action: #selector(self.doRequestReview))
+        self.view?.addGestureRecognizer(pressRec)
+
         // Load up the default list
         self.loadDefaults()
+
+        // FROM 1.1.1
+        // Get the font install count
+        self.installCount = UserDefaults.standard.integer(forKey: kDefaultsKeys.fontInstallCount)
+        UserDefaults.standard.set(self.installCount, forKey: kDefaultsKeys.fontInstallCount)
     }
 
     
@@ -106,6 +119,7 @@ class MasterViewController: UITableViewController {
         // Save the list
         // NOTE This is probably unnecessary now
         self.saveFontList()
+        UserDefaults.standard.set(self.installCount, forKey: kDefaultsKeys.fontInstallCount)
     }
 
 
@@ -438,6 +452,10 @@ class MasterViewController: UITableViewController {
                                                        .persistent,
                                                        self.familyRegistrationHandler(errors:done:))
             }
+
+            // FROM 1.1.1
+            // Add the number of fonts removed to the current total
+            self.installCount += fontDescs.count
         }
     }
     
@@ -469,6 +487,10 @@ class MasterViewController: UITableViewController {
                                                    .persistent,
                                                    self.fontRegistrationHandler(errors:done:))
         }
+
+        // FROM 1.1.1
+        // Add the number of fonts removed to the current total
+        self.installCount += 1
     }
 
 
@@ -590,6 +612,7 @@ class MasterViewController: UITableViewController {
 
             // Register the family's fonts using the API
             // NOTE Outcome is operated asynchronously
+            self.installCount += 1
             CTFontManagerRegisterFontsWithAssetNames(fontNames as CFArray,
                                                      nil,
                                                      .persistent,
@@ -642,6 +665,14 @@ class MasterViewController: UITableViewController {
                 self.updateFamilyStatus()
                 self.setInstallButtonState()
                 self.tableView.reloadData()
+
+                // FROM 1.1.1
+                // Check if we need to run a review prompt
+                if self.installCount > kFontInstallCountBeforeReviewRequest {
+                    self.installCount = 0
+                    UserDefaults.standard.set(self.installCount, forKey: kDefaultsKeys.fontInstallCount)
+                    self.requestReview()
+                }
             }
         }
 
@@ -1153,6 +1184,79 @@ class MasterViewController: UITableViewController {
     }
 
 
+    // MARK: - StoreKit Functions
+
+    func requestReview() {
+
+        // FROM 1.1.1
+        // Show the 'please review' dialog if the user is on a new version
+        // and has installed 20 fonts
+        let infoDictionaryKey = kCFBundleVersionKey as String
+        guard let currentVersion = Bundle.main.object(forInfoDictionaryKey: infoDictionaryKey) as? String
+            else { fatalError("Expected to find a bundle version in the info dictionary") }
+
+        print(currentVersion)
+        if let lastVersionChecked = UserDefaults.standard.string(forKey: kDefaultsKeys.lastReviewVersion) {
+            // Make sure the user has not already been prompted for this version
+            if currentVersion != lastVersionChecked {
+                makeRequest(currentVersion)
+            }
+        } else {
+            // Just in case...
+            UserDefaults.standard.set("1.0.0", forKey: kDefaultsKeys.lastReviewVersion)
+            makeRequest(currentVersion)
+        }
+    }
+
+
+    func makeRequest(_ currentVersion: String) {
+
+        // FROM 1.1.1
+        // Configure the rating dialog to appear in two seconds' time
+        let twoSecondsFromNow = DispatchTime.now() + 2.0
+        DispatchQueue.main.asyncAfter(deadline: twoSecondsFromNow) { [navigationController] in
+            if navigationController?.topViewController is MasterViewController {
+                // Show the rating request dialog if 'self' is present
+                SKStoreReviewController.requestReview()
+                UserDefaults.standard.set(currentVersion, forKey: kDefaultsKeys.lastReviewVersion)
+            }
+        }
+    }
+
+
+    @objc func doRequestReview() {
+
+        // FROM 1.1.1
+        // Display an option to review the app on a long press of the master view
+        DispatchQueue.main.async {
+            let alert = UIAlertController.init(title: "Would you like to rate or review this app?",
+                                               message: "If you have found Fontismo useful, please consider writing a short App Store review.",
+                                               preferredStyle: .alert)
+
+            alert.addAction(UIAlertAction(title: NSLocalizedString("Not Now",
+                                                                   comment: "Default action"),
+                                          style: .default,
+                                          handler: nil))
+
+            alert.addAction(UIAlertAction(title: NSLocalizedString("Yes Please",
+                                                                   comment: "Default action"),
+                                          style: .default,
+                                          handler: { (action) in
+                                            guard let writeReviewURL = URL(string: kAppStoreURL + "?action=write-review")
+                                                    else { fatalError("Expected a valid URL") }
+                                                print(writeReviewURL)
+                                                UIApplication.shared.open(writeReviewURL,
+                                                                          options: [:],
+                                                                          completionHandler: nil)
+                                          }))
+
+            self.present(alert,
+                         animated: true,
+                         completion: nil)
+        }
+    }
+
+    
     // MARK: - Segues
 
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
