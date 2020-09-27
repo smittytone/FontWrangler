@@ -1238,7 +1238,7 @@ class MasterViewController: UITableViewController {
                                           style: .default,
                                           handler: nil))
 
-            alert.addAction(UIAlertAction(title: NSLocalizedString("Yes Please",
+            alert.addAction(UIAlertAction(title: NSLocalizedString("Yes, Please",
                                                                    comment: "Default action"),
                                           style: .default,
                                           handler: { (action) in
