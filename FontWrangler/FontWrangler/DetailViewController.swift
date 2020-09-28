@@ -38,7 +38,8 @@ class DetailViewController: UIViewController,
     var mvc: MasterViewController? = nil
     var currentFamily: FontFamily? = nil
     var currentFontIndex: Int = 0
-    
+    var hasCustomText: Bool = false
+
     var detailItem: UserFont? {
         
         didSet {
@@ -260,30 +261,35 @@ class DetailViewController: UIViewController,
         self.fontSize = CGFloat(Int(self.fontSizeSlider.value))
         //self.fontSizeLabel.text = "\(Int(self.fontSize))pt"
 
-        // Check whether we need to flip between the pre-broken line and unbroken line
-        // text strings applied to the view
-        if !self.hasFlipped {
-            // Not yet flipped, so check for flip condition, ie. number of lines is greater than expected
-            // Get the number of displayed lines
-            let numLines = Int(self.dynamicSampleTextView.contentSize.height / self.dynamicSampleTextView.font!.lineHeight)
+        // FROM 1.1.1
+        // Wrap the following section in a check for custom text, so that we do not
+        // change the displayed string back to the alphabet list
+        if !self.hasCustomText {
+            // Check whether we need to flip between the pre-broken line and unbroken line
+            // text strings applied to the view
+            if !self.hasFlipped {
+                // Not yet flipped, so check for flip condition, ie. number of lines is greater than expected
+                // Get the number of displayed lines
+                let numLines = Int(self.dynamicSampleTextView.contentSize.height / self.dynamicSampleTextView.font!.lineHeight)
 
-            if numLines > kFontSampleText_1_Lines && self.fontSize > CGFloat(kFontSampleText_1_Limit) {
-                // At least one line has wrapped, so trigger a flip:
-                // Use the un-broken text so it wraps right: no orphans
-                self.dynamicSampleTextView.text = kFontSampleText_2
-                self.hasFlipped = true
+                if numLines > kFontSampleText_1_Lines && self.fontSize > CGFloat(kFontSampleText_1_Limit) {
+                    // At least one line has wrapped, so trigger a flip:
+                    // Use the un-broken text so it wraps right: no orphans
+                    self.dynamicSampleTextView.text = kFontSampleText_2
+                    self.hasFlipped = true
 
-                // First time, record the font size at which the flip occurred
-                if self.dynamicFlipBoundary == 0.0 {
-                    self.dynamicFlipBoundary = self.fontSize
+                    // First time, record the font size at which the flip occurred
+                    if self.dynamicFlipBoundary == 0.0 {
+                        self.dynamicFlipBoundary = self.fontSize
+                    }
                 }
-            }
-        } else {
-            // We are flipped - do we need to flip back? Only if the displayed
-            // font size is less than the size at which we flipped
-            if self.fontSize < self.dynamicFlipBoundary {
-                self.dynamicSampleTextView.text = kFontSampleText_1
-                self.hasFlipped = false
+            } else {
+                // We are flipped - do we need to flip back? Only if the displayed
+                // font size is less than the size at which we flipped
+                if self.fontSize < self.dynamicFlipBoundary {
+                    self.dynamicSampleTextView.text = kFontSampleText_1
+                    self.hasFlipped = false
+                }
             }
         }
 
@@ -372,5 +378,37 @@ class DetailViewController: UIViewController,
         return "Bungee " + (bungeeName != "" ? bungeeName : variantType)
     }
 
+
+    // MARK: - UITextViewDelegate Functions
+
+    func textViewDidChange(_ textView: UITextView) {
+
+        // FROM 1.1.1
+        // If the sample text has changed, record the fact
+        self.hasCustomText = true
+    }
+
+
+    func geWidth(_ height: CGFloat) -> CGFloat {
+
+        let rect: CGRect = CGRect.init(x: 0, y: 0, width: 800, height: height)
+        let uitf: UITextField = UITextField.init(frame: rect)
+        uitf.ce
+
+        /*
+
+
+         NSTextField *nstf = [[NSTextField alloc] initWithFrame:NSMakeRect(0, 0, width, 800)];
+         nstf.cell.wraps = YES;
+         //nstf.cell.bordered = NO;
+         //nstf.cell.bezeled = NO;
+         //nstf.allowsEditingTextAttributes = NO;
+         nstf.cell.lineBreakMode = NSLineBreakByWordWrapping; //NSLineBreakByCharWrapping;
+         NSFont *font = [NSFont systemFontOfSize:12];
+         NSDictionary *attributes = [NSDictionary dictionaryWithObjectsAndKeys:font, NSFontAttributeName, nil];
+         nstf.attributedStringValue = [[NSAttributedString alloc] initWithString:string attributes:attributes];
+         return [nstf.cell cellSizeForBounds:nstf.bounds].height;
+        */
+    }
 }
 

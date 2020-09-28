@@ -1278,6 +1278,7 @@ class MasterViewController: UITableViewController {
                 controller.detailItem = font
                 controller.mvc = self
                 controller.currentFontIndex = 0
+                controller.hasCustomText = false
 
                 // Set a back button to show the master view
                 controller.navigationItem.leftBarButtonItem = splitViewController?.displayModeButtonItem
@@ -1296,6 +1297,8 @@ extension UISplitViewController {
     func toggleMasterView() {
         
         let barButtonItem = self.displayModeButtonItem
-        let _ = UIApplication.shared.sendAction(barButtonItem.action!, to: barButtonItem.target, from: nil, for: nil)
+        let _ = UIApplication.shared.sendAction(barButtonItem.action!,
+                                                to: barButtonItem.target,
+                                                from: nil, for: nil)
     }
 }
