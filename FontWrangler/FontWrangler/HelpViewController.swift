@@ -63,6 +63,14 @@ class HelpViewController: UIViewController, UIPageViewControllerDelegate, UIPage
             
         // Close the Help panel
 
+        // FROM 1.1.1
+        // Halt the web pages if open
+        for pvc in self.pageViewControllers {
+            if let wv = pvc.pageWebView {
+                wv.stopLoading()
+            }
+        }
+
         self.dismiss(animated: true, completion: nil)
     }
     

@@ -20,6 +20,8 @@ class DetailViewController: UIViewController,
     @IBOutlet weak var fontSizeLabel: UILabel!
     @IBOutlet weak var fontSizeSlider: UISlider!
 
+    @IBOutlet weak var downloadProgress: UIActivityIndicatorView!
+
     // REMOVED IN 1.1.0
     //@IBOutlet weak var dynamicSampleParentView: UserTestSampleView!
     //@IBOutlet weak var userSampleHeadLabel: UILabel!
@@ -43,6 +45,11 @@ class DetailViewController: UIViewController,
     var detailItem: UserFont? {
         
         didSet {
+            // FROM 1.1.1
+            // Turn of the indicator and hide
+            guard let dp = self.downloadProgress else { return }
+            dp.stopAnimating()
+
             // When set, display immediately
             self.configureView()
         }
@@ -220,6 +227,8 @@ class DetailViewController: UIViewController,
             var alertButton = UIAlertAction.init(title: "Yes",
                                                  style: .default) { (action) in
                 // Install the font
+                self.downloadProgress.isHidden = false
+                self.downloadProgress.startAnimating()
                 self.mvc!.getOneFontFamily(cf)
             }
 
