@@ -388,27 +388,5 @@ class DetailViewController: UIViewController,
         self.hasCustomText = true
     }
 
-
-    func geWidth(_ height: CGFloat) -> CGFloat {
-
-        let rect: CGRect = CGRect.init(x: 0, y: 0, width: 800, height: height)
-        let uitf: UITextField = UITextField.init(frame: rect)
-        uitf.ce
-
-        /*
-
-
-         NSTextField *nstf = [[NSTextField alloc] initWithFrame:NSMakeRect(0, 0, width, 800)];
-         nstf.cell.wraps = YES;
-         //nstf.cell.bordered = NO;
-         //nstf.cell.bezeled = NO;
-         //nstf.allowsEditingTextAttributes = NO;
-         nstf.cell.lineBreakMode = NSLineBreakByWordWrapping; //NSLineBreakByCharWrapping;
-         NSFont *font = [NSFont systemFontOfSize:12];
-         NSDictionary *attributes = [NSDictionary dictionaryWithObjectsAndKeys:font, NSFontAttributeName, nil];
-         nstf.attributedStringValue = [[NSAttributedString alloc] initWithString:string attributes:attributes];
-         return [nstf.cell cellSizeForBounds:nstf.bounds].height;
-        */
-    }
 }
 
