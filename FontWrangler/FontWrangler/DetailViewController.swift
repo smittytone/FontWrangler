@@ -36,7 +36,7 @@ class DetailViewController: UIViewController,
     private var hasFlipped: Bool = false
     private var dynamicFlipBoundary: CGFloat = 0.0
     private var storeSliderValue: Float = Float(kBaseDynamicSampleFontSize)
-
+    
     var mvc: MasterViewController? = nil
     var currentFamily: FontFamily? = nil
     var currentFontIndex: Int = 0
@@ -114,17 +114,17 @@ class DetailViewController: UIViewController,
         // Make sure we can access the UI items -- they may not have been
         // instantiated, if 'self.detailItem' is set before the view loads
         guard let statusLabel = self.fontStatusLabel else { return }
-        guard let dynamicLabel = self.dynamicSampleTextView else { return }
-        guard let dynamicHead = self.dynamicSampleHeadLabel else { return }
+        guard let sampleText = self.dynamicSampleTextView else { return }
+        guard let sampleHead = self.dynamicSampleHeadLabel else { return }
         guard let sizeLabel = self.fontSizeLabel else { return }
         guard let sizeSlider = self.fontSizeSlider else { return }
 
         // REMOVED IN 1.1.0
-        //guard let sampleNote = self.userSampleTextView else { return }
-        //guard let parent = self.dynamicSampleParentView else { return }
+        // guard let sampleNote = self.userSampleTextView else { return }
+        // guard let parent = self.dynamicSampleParentView else { return }
 
         // Generic cases
-        sizeSlider.isEnabled = false
+        //sizeSlider.isEnabled = false
         
         if let detail = self.detailItem {
             // We have an item to display, so load the font and register
@@ -146,34 +146,28 @@ class DetailViewController: UIViewController,
                 self.title = detail.name
             }
 
-            // Prepare the status label
-            let ext = (detail.path as NSString).pathExtension.lowercased()
-            var labelText: String
-
             if detail.isInstalled {
-                // REMOVED IN 1.1.0
-                //sampleNote.isEditable = true
-                //sampleNote.alpha = 1.0
-                //parent.alpha = 1.0
-                
                 // Set the samples' fonts
-                dynamicLabel.alpha = 1.0
-                dynamicHead.alpha = 1.0
-                if let font = UIFont.init(name: detail.psname, size: CGFloat(self.fontSize)) {
-                    dynamicLabel.font = font
+                sampleText.alpha = 1.0
+                sampleHead.alpha = 1.0
+                if let font = UIFont.init(name: detail.psname, size: self.fontSize) {
+                    sampleText.font = font
                 }
-                
-                /*if let font = UIFont.init(name: detail.psname, size: KBaseUserSampleFontSize) {
-                    sampleNote.font = font
-                }*/
                 
                 // Set the font size slider control and label
                 sizeSlider.isEnabled = true
                 sizeLabel.text = "\(Int(self.fontSize))pt"
+
+                // REMOVED IN 1.1.0
+                //sampleNote.isEditable = true
+                //sampleNote.alpha = 1.0
+                //parent.alpha = 1.0
+                // if let font = UIFont.init(name: detail.psname, size: KBaseUserSampleFontSize) { sampleNote.font = font }
             } else {
-                dynamicLabel.font = self.substituteFont
-                dynamicLabel.alpha = 0.3
-                dynamicHead.alpha = 0.3
+                sampleText.font = self.substituteFont
+                sampleText.alpha = 0.3
+                sampleHead.alpha = 0.3
+                sizeSlider.isEnabled = false
                 
                 // REMOVED IN 1.1.0
                 //sampleNote.font = substituteFont
@@ -182,8 +176,9 @@ class DetailViewController: UIViewController,
                 //parent.alpha = 0.3
             }
             
-            // Set the font status
-            labelText = "This " + (ext == "otf" ? "OpenType" : "TrueType" ) + " font is "
+            // Set the font status label
+            let ext = (detail.path as NSString).pathExtension.lowercased()
+            var labelText = "This " + (ext == "otf" ? "OpenType" : "TrueType" ) + " font is "
             labelText += (detail.isInstalled ? "installed" : "not installed")
             statusLabel.text = labelText
             
@@ -208,6 +203,7 @@ class DetailViewController: UIViewController,
             statusLabel.text = "No font selected"
             sizeLabel.text = ""
             sizeSlider.value = Float(self.fontSize)
+            sizeSlider.isEnabled = false
             self.variantsButton?.isEnabled = false
         }
     }
@@ -268,7 +264,10 @@ class DetailViewController: UIViewController,
 
         // Update the current font size based on the slider value and update the UI
         self.fontSize = CGFloat(Int(self.fontSizeSlider.value))
-        //self.fontSizeLabel.text = "\(Int(self.fontSize))pt"
+
+        // FROM 1.1.1
+        // End editing on scale
+        self.dynamicSampleTextView.endEditing(true)
 
         // FROM 1.1.1
         // Wrap the following section in a check for custom text, so that we do not
@@ -279,7 +278,8 @@ class DetailViewController: UIViewController,
             if !self.hasFlipped {
                 // Not yet flipped, so check for flip condition, ie. number of lines is greater than expected
                 // Get the number of displayed lines
-                let numLines = Int(self.dynamicSampleTextView.contentSize.height / self.dynamicSampleTextView.font!.lineHeight)
+                //let numLines = Int(self.dynamicSampleTextView.contentSize.height / self.dynamicSampleTextView.font!.lineHeight)
+                let numLines = self.dynamicSampleTextView.layoutManager.lines
 
                 if numLines > kFontSampleText_1_Lines && self.fontSize > CGFloat(kFontSampleText_1_Limit) {
                     // At least one line has wrapped, so trigger a flip:
@@ -303,7 +303,11 @@ class DetailViewController: UIViewController,
         }
 
         // Update the view
-        self.configureView()
+        //self.configureView()
+        self.fontSizeLabel.text = "\(Int(self.fontSize))pt"
+        if let font = UIFont.init(name: self.detailItem!.psname, size: self.fontSize) {
+            self.dynamicSampleTextView.font = font
+        }
     }
     
 
@@ -399,3 +403,20 @@ class DetailViewController: UIViewController,
 
 }
 
+
+// FROM 1.1.1
+// Add alternative (and better) sample text line counter
+// Adapted from https://stackoverflow.com/a/49528540
+extension NSLayoutManager {
+    var lines: Int {
+        guard let _ = textStorage else { return 0 }
+
+        var lineCount = 0
+        let range = NSMakeRange(0, numberOfGlyphs)
+        enumerateLineFragments(forGlyphRange: range) { _, _, _, _, _ in
+            lineCount += 1
+        }
+
+        return lineCount
+    }
+}
