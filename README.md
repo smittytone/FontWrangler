@@ -12,6 +12,7 @@ Please see [this page](https://smittytone.net/fontismo/index.html).
 
 - 1.1.1 *Unreleased*
     - Prevent scaling down of custom preview text from reverting to the alphabet.
+    - Add further usage advice to main window.
     - Add occasional App Store review prompts.
 - 1.1.0 *25 September 2020*
     - iPhone support added.
