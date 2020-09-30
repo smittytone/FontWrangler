@@ -45,12 +45,7 @@ class DetailViewController: UIViewController,
     var detailItem: UserFont? {
         
         didSet {
-            // FROM 1.1.1
-            // Turn of the indicator and hide
-            guard let dp = self.downloadProgress else { return }
-            dp.stopAnimating()
-
-            // When set, display immediately
+            // When set, update the view immediately
             self.configureView()
         }
     }
@@ -125,6 +120,12 @@ class DetailViewController: UIViewController,
 
         // Generic cases
         //sizeSlider.isEnabled = false
+
+        // FROM 1.1.1
+        // Turn of the indicator and hide
+        if let dp = self.downloadProgress {
+            dp.stopAnimating()
+        }
         
         if let detail = self.detailItem {
             // We have an item to display, so load the font and register
@@ -150,14 +151,15 @@ class DetailViewController: UIViewController,
                 // Set the samples' fonts
                 sampleText.alpha = 1.0
                 sampleHead.alpha = 1.0
+
                 if let font = UIFont.init(name: detail.psname, size: self.fontSize) {
                     sampleText.font = font
                 }
                 
                 // Set the font size slider control and label
-                sizeSlider.isEnabled = true
                 sizeLabel.text = "\(Int(self.fontSize))pt"
-
+                sizeSlider.isEnabled = true
+                
                 // REMOVED IN 1.1.0
                 //sampleNote.isEditable = true
                 //sampleNote.alpha = 1.0
@@ -167,6 +169,7 @@ class DetailViewController: UIViewController,
                 sampleText.font = self.substituteFont
                 sampleText.alpha = 0.3
                 sampleHead.alpha = 0.3
+                sizeLabel.text = ""
                 sizeSlider.isEnabled = false
                 
                 // REMOVED IN 1.1.0
@@ -303,7 +306,7 @@ class DetailViewController: UIViewController,
         }
 
         // Update the view
-        //self.configureView()
+        // self.configureView()
         self.fontSizeLabel.text = "\(Int(self.fontSize))pt"
         if let font = UIFont.init(name: self.detailItem!.psname, size: self.fontSize) {
             self.dynamicSampleTextView.font = font

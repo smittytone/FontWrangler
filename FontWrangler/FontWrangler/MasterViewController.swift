@@ -1275,10 +1275,12 @@ class MasterViewController: UITableViewController {
                 // Get the detail controller and set key properties
                 let controller = (segue.destination as! UINavigationController).topViewController as! DetailViewController
                 controller.currentFamily = family
-                controller.detailItem = font
                 controller.mvc = self
                 controller.currentFontIndex = 0
                 controller.hasCustomText = false
+
+                // This line updates the detail view, so keep it LAST
+                controller.detailItem = font
 
                 // Set a back button to show the master view
                 controller.navigationItem.leftBarButtonItem = splitViewController?.displayModeButtonItem
