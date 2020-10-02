@@ -3,6 +3,7 @@
 *Fontismo* provides a means to install a selection of OpenType (`.otf`) and TrueType (`.ttf`) files on an iPad or iPhone. It requires iOS 13.0 or above.
 
 ![Fontismo App Store QR Code](qr-code.jpg)
+
 ## Usage ##
 
 Please see [this page](https://smittytone.net/fontismo/index.html).
