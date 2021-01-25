@@ -11,32 +11,35 @@ import Foundation
 import UIKit
 
 
-class FeedbackViewController: UIViewController, URLSessionDelegate, URLSessionDataDelegate {
+class FeedbackViewController: UIViewController, URLSessionDelegate, URLSessionDataDelegate, UITextViewDelegate {
 
     // MARK: - UI Outlets
 
     @IBOutlet var feedbackText: UITextView!
     @IBOutlet var connectionProgress: UIActivityIndicatorView!
+    @IBOutlet var textLengthLabel: UILabel!
 
 
     // MARK: - Class Properties
 
     private var feedbackTask: URLSessionTask? = nil
+    var myself: FeedbackViewController? = nil
 
 
     // MARK: - Lifecycle Functions
-
-    override func viewDidLoad() {
-
-    }
-
 
     override func viewWillAppear(_ animated: Bool) {
 
         // Reset the UI
         self.connectionProgress.isHidden = true
         self.connectionProgress.stopAnimating()
+        
+        self.feedbackText.delegate = self
         self.feedbackText.text = ""
+        self.feedbackText.textColor = UIColor.black
+        self.feedbackText.backgroundColor = UIColor.init(red: 0.9, green: 0.9, blue: 0.9, alpha: 1.0)
+        
+        self.textLengthLabel.text = "0/512"
     }
 
     
@@ -62,21 +65,8 @@ class FeedbackViewController: UIViewController, URLSessionDelegate, URLSessionDa
             self.connectionProgress.startAnimating()
 
             // Send the string etc.
-            let sysVer: OperatingSystemVersion = ProcessInfo.processInfo.operatingSystemVersion
-            let bundle: Bundle = Bundle.main
-            let app: String = bundle.object(forInfoDictionaryKey: "CFBundleExecutable") as! String
-            let version: String = bundle.object(forInfoDictionaryKey: "CFBundleShortVersionString") as! String
-            let build: String = bundle.object(forInfoDictionaryKey: "CFBundleVersion") as! String
-            let userAgent: String = "\(app) \(version) (build \(build)) (macOS \(sysVer.majorVersion).\(sysVer.minorVersion).\(sysVer.patchVersion))"
-
-            let date: Date = Date()
-            var dateString = "Unknown"
-
-            let def: DateFormatter = DateFormatter()
-            def.locale = Locale(identifier: "en_US_POSIX")
-            def.dateFormat = "yyyy-MM-dd'T'HH:mm:ssZZZZZ"
-            def.timeZone = TimeZone(secondsFromGMT: 0)
-            dateString = def.string(from: date)
+            let userAgent: String = getUserAgent()
+            let dateString = getDateString()
 
             let dict: NSMutableDictionary = NSMutableDictionary()
             dict.setObject("*FEEDBACK REPORT*\n*DATE* \(dateString))\n*USER AGENT* \(userAgent)\n*FEEDBACK* \(feedback)",
@@ -127,20 +117,24 @@ class FeedbackViewController: UIViewController, URLSessionDelegate, URLSessionDa
             // An error took place - report it
             sendFeedbackError()
         } else {
-            // The comment was submitted successfully
+            // The comment was submitted successfully, so thank the user
+            self.connectionProgress.stopAnimating()
+
             DispatchQueue.main.async {
                 let alert = UIAlertController.init(title: "Thanks For Your Feedback!",
-                                                   message: "Your comments have been received and we’ll take a look at them shortly.",
-                                                   preferredStyle: .alert)
+                                               message: "Your comments have been received and we’ll take a look at them shortly.",
+                                               preferredStyle: .alert)
                 alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "Default action"),
                                               style: .default,
-                                              handler: nil))
-                self.present(alert,
-                             animated: true,
-                             completion: nil)
+                                              handler: { (action) in
+                    
+                    // Dismiss the FeedbackViewController now we're done
+                    self.dismiss(animated: true, completion: nil)
+                }))
+                
+                // Present the thanks
+                self.present(alert, animated: true, completion: nil)
             }
-
-            self.dismiss(animated: true, completion: nil)
         }
     }
 
@@ -164,6 +158,61 @@ class FeedbackViewController: UIViewController, URLSessionDelegate, URLSessionDa
                          animated: true,
                          completion: nil)
         }
+    }
+    
+    
+    func getUserAgent() -> String {
+        
+        // Return the user-agent string
+        
+        let sysVer: OperatingSystemVersion = ProcessInfo.processInfo.operatingSystemVersion
+        let bundle: Bundle = Bundle.main
+        let app: String = bundle.object(forInfoDictionaryKey: "CFBundleExecutable") as! String
+        let version: String = bundle.object(forInfoDictionaryKey: "CFBundleShortVersionString") as! String
+        let build: String = bundle.object(forInfoDictionaryKey: "CFBundleVersion") as! String
+        return "\(app) \(version) (build \(build)) (iOS \(sysVer.majorVersion).\(sysVer.minorVersion).\(sysVer.patchVersion))"
+    }
+    
+    
+    func getDateString() -> String {
+        
+        // Return the current date as formatted string
+        
+        let date: Date = Date()
+        let def: DateFormatter = DateFormatter()
+        def.locale = Locale(identifier: "en_US_POSIX")
+        def.dateFormat = "yyyy-MM-dd'T'HH:mm:ssZZZZZ"
+        def.timeZone = TimeZone(secondsFromGMT: 0)
+        return def.string(from: date)
+    }
+    
+    
+    // MARK: - UITextViewDelegate Functions
+    
+    func textViewDidChange(_ textView: UITextView) {
+        
+        // Trap text changes so that no more than
+        
+        // The maximum we are allowing is 512 chars
+        if self.feedbackText.text.count > 512 {
+            // Prune the feedback to 512 chars
+            let edit: Substring = self.feedbackText.text.prefix(512)
+            self.feedbackText.text = String(edit)
+            
+            // Tell the user about the limit
+            DispatchQueue.main.async {
+                let alert = UIAlertController.init(title: "512 characters max.",
+                                               message: "Please ensure your comment is no more than 512 characters in length.",
+                                               preferredStyle: .alert)
+                alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "Default action"),
+                                              style: .default,
+                                              handler: nil))
+                self.present(alert, animated: true, completion: nil)
+            }
+        }
+        
+        // Set the text length label
+        self.textLengthLabel.text = "\(self.feedbackText.text.count)/512"
     }
 
 }
