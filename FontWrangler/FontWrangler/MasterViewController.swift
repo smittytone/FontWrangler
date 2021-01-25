@@ -1,6 +1,8 @@
-
+//  MasterViewController.swift
+//  Fontismo
+//
 //  Created by Tony Smith on 27/03/2020.
-//  Copyright © 2020 Tony Smith. All rights reserved.
+//  Copyright © 2021 Tony Smith. All rights reserved.
 
 
 import UIKit
@@ -44,8 +46,15 @@ class MasterViewController: UITableViewController {
         let helpButton = UIBarButtonItem(title: "Help",
                                           style: .plain,
                                           target: self,
-                                          action: #selector(self.showHelp(_:)))
-        navigationItem.leftBarButtonItem = helpButton
+                                          action: #selector(self.doShowHelpSheet(_:)))
+
+        // FROM 1.1.2
+        // Add menu icon
+        let menuButton = UIBarButtonItem(image: UIImage.init(systemName: "ellipsis.circle"),
+                                         style: .plain,
+                                         target: self,
+                                         action: #selector(self.doShowMenu(_:)))
+        navigationItem.leftBarButtonItem = menuButton
 
         // Set up the 'Install' button on the right
         let addAllButton = UIBarButtonItem(title: "Add All",
@@ -1049,25 +1058,86 @@ class MasterViewController: UITableViewController {
     }
 
     
-    // MARK: - UI Utility Functions
-    
-    func updateUIonMain() {
+    // MARK: - UI Action Functions
 
-        // Update the UI on the main thread
-        // (This function usually called from callbacks)
+    @objc func doShowMenu(_ sender: Any) {
 
-        DispatchQueue.main.async {
-            if let dvc = self.detailViewController {
-                dvc.configureView()
-            }
+        // FROM 1.1.2
+        // Remove the 'Help' menu and replace it with an action menu,
+        // which includes a Help option
 
-            // Set the 'Add All' button state and update the table
-            self.setInstallButtonState()
-            self.tableView.reloadData()
-        }
+        let actionMenu = UIAlertController.init(title: "Fontismo",
+                                                message: nil,
+                                                preferredStyle: UIAlertController.Style.actionSheet)
+
+        // Allow the user to view the Help screen
+        var action: UIAlertAction!
+        action = UIAlertAction.init(title: "Show Help...",
+                                    style: .default,
+                                    handler: { (anAction) in
+                                        self.doShowHelpSheet(self)
+                                    })
+
+        actionMenu.addAction(action)
+
+        // Allow the user to report a bug
+        action = UIAlertAction.init(title: "Report a Bug...",
+                                    style: .default,
+                                    handler: { (anAction) in
+                                        self.doShowFeedbackSheet(self)
+                                    })
+
+        actionMenu.addAction(action)
+
+        // Allow the user to review the app
+        action = UIAlertAction.init(title: "Review Fontismo...",
+                                    style: .default,
+                                    handler: { (anAction) in
+                                        self.doReview()
+                                    })
+
+        actionMenu.addAction(action)
+
+        // Show the menu
+        self.present(actionMenu,
+                     animated: true,
+                     completion: nil)
     }
-    
-    
+
+
+    @objc func doShowHelpSheet(_ sender: Any) {
+
+        // Display the Help panel
+
+        // Load and configure the menu view controller.
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        let hvc: HelpViewController = storyboard.instantiateViewController(withIdentifier: "help.view.controller") as! HelpViewController
+
+        // Use the popover presentation style for your view controller.
+        hvc.modalPresentationStyle = .pageSheet
+
+        // Present the view controller (in a popover).
+        self.present(hvc, animated: true, completion: nil)
+    }
+
+
+    @objc func doShowFeedbackSheet(_ sender: Any) {
+
+        // FROM 1.1.2
+        // Display the Feedback panel
+
+        // Load and configure the menu view controller.
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        let fvc: FeedbackViewController = storyboard.instantiateViewController(withIdentifier: "feedback.view.controller") as! FeedbackViewController
+
+        // Use the popover presentation style for your view controller.
+        fvc.modalPresentationStyle = .pageSheet
+
+        // Present the view controller (in a popover).
+        self.present(fvc, animated: true, completion: nil)
+    }
+
+
     func showAlert(_ title: String, _ message: String) {
         
         // Generic alert display function
@@ -1082,6 +1152,25 @@ class MasterViewController: UITableViewController {
             self.present(alert,
                          animated: true,
                          completion: nil)
+        }
+    }
+
+
+    // MARK: - Utility Functions
+
+    func updateUIonMain() {
+
+        // Update the UI on the main thread
+        // (This function usually called from callbacks)
+
+        DispatchQueue.main.async {
+            if let dvc = self.detailViewController {
+                dvc.configureView()
+            }
+
+            // Set the 'Add All' button state and update the table
+            self.setInstallButtonState()
+            self.tableView.reloadData()
         }
     }
 
@@ -1144,22 +1233,6 @@ class MasterViewController: UITableViewController {
     }
 
 
-    @objc func showHelp(_ sender: Any) {
-
-        // Display the Help panel
-        
-        // Load and configure the menu view controller.
-        let storyboard = UIStoryboard(name: "Main", bundle: nil)
-        let hvc: HelpViewController = storyboard.instantiateViewController(withIdentifier: "help.view.controller") as! HelpViewController
-        
-        // Use the popover presentation style for your view controller.
-        hvc.modalPresentationStyle = .pageSheet
-
-        // Present the view controller (in a popover).
-        self.present(hvc, animated: true, completion: nil)
-    }
-    
-    
     func anyFontsInstalled() -> Bool {
         
         var installedCount: Int = 0
@@ -1195,7 +1268,6 @@ class MasterViewController: UITableViewController {
         guard let currentVersion = Bundle.main.object(forInfoDictionaryKey: infoDictionaryKey) as? String
             else { fatalError("Expected to find a bundle version in the info dictionary") }
 
-        print(currentVersion)
         if let lastVersionChecked = UserDefaults.standard.string(forKey: kDefaultsKeys.lastReviewVersion) {
             // Make sure the user has not already been prompted for this version
             if currentVersion != lastVersionChecked {
@@ -1242,17 +1314,36 @@ class MasterViewController: UITableViewController {
                                                                    comment: "Default action"),
                                           style: .default,
                                           handler: { (action) in
-                                            guard let writeReviewURL = URL(string: kAppStoreURL + "?action=write-review")
-                                                    else { fatalError("Expected a valid URL") }
-                                                print(writeReviewURL)
-                                                UIApplication.shared.open(writeReviewURL,
-                                                                          options: [:],
-                                                                          completionHandler: nil)
+                                            self.doReview()
                                           }))
 
             self.present(alert,
                          animated: true,
                          completion: nil)
+        }
+    }
+
+
+    func doReview() {
+
+        // FROM 1.1.2
+        // Refactor this action into a separate function
+
+        guard let writeReviewURL = URL(string: kAppStoreURL + "?action=write-review")
+                else { fatalError("Expected a valid URL") }
+
+        UIApplication.shared.open(writeReviewURL, options: [:]) { (returnValue) in
+
+            let infoDictionaryKey = kCFBundleVersionKey as String
+            guard let currentVersion = Bundle.main.object(forInfoDictionaryKey: infoDictionaryKey) as? String
+                else { fatalError("Expected to find a bundle version in the info dictionary") }
+
+            if let lastVersionChecked = UserDefaults.standard.string(forKey: kDefaultsKeys.lastReviewVersion) {
+                // Make sure the user has not already been prompted for this version
+                if currentVersion != lastVersionChecked {
+                    UserDefaults.standard.set(currentVersion, forKey: kDefaultsKeys.lastReviewVersion)
+                }
+            }
         }
     }
 

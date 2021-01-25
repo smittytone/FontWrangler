@@ -25,6 +25,8 @@
 		3B9C64A32432887B0057B8ED /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3B9C64A22432887B0057B8ED /* Assets.xcassets */; };
 		3BA9276824360F9200B4BA99 /* HelpViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BA9276724360F9200B4BA99 /* HelpViewController.swift */; };
 		3BA9277424361D3600B4BA99 /* HelpPageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BA9277324361D3600B4BA99 /* HelpPageViewController.swift */; };
+		3BCA6E3925BECD0D00B797DC /* FeedbackViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BCA6E3825BECD0D00B797DC /* FeedbackViewController.swift */; };
+		3BCE077725BEC49F006AB656 /* Secrets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BCE077625BEC49F006AB656 /* Secrets.swift */; };
 		3BD0DF4A24332B7F002878F7 /* FontWranglerFontListTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BD0DF4924332B7F002878F7 /* FontWranglerFontListTableViewCell.swift */; };
 		3BD7E1892431FD2600FD8941 /* Fonts.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3BD7E1882431FD2600FD8941 /* Fonts.xcassets */; };
 		3BD7E18B243212E200FD8941 /* defaults.json in Resources */ = {isa = PBXBuildFile; fileRef = 3BD7E18A243212E100FD8941 /* defaults.json */; };
@@ -54,6 +56,8 @@
 		3B9C64A22432887B0057B8ED /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Assets.xcassets; path = /Users/smitty/OneDrive/Programming/FontWrangler/Assets.xcassets; sourceTree = "<absolute>"; };
 		3BA9276724360F9200B4BA99 /* HelpViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HelpViewController.swift; sourceTree = "<group>"; };
 		3BA9277324361D3600B4BA99 /* HelpPageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HelpPageViewController.swift; sourceTree = "<group>"; };
+		3BCA6E3825BECD0D00B797DC /* FeedbackViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedbackViewController.swift; sourceTree = "<group>"; };
+		3BCE077625BEC49F006AB656 /* Secrets.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Secrets.swift; path = /Users/smitty/OneDrive/Programming/mnu/Secrets.swift; sourceTree = "<absolute>"; };
 		3BD0DF4924332B7F002878F7 /* FontWranglerFontListTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FontWranglerFontListTableViewCell.swift; sourceTree = "<group>"; };
 		3BD7E1882431FD2600FD8941 /* Fonts.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Fonts.xcassets; path = /Users/smitty/OneDrive/Programming/FontWrangler/Fonts.xcassets; sourceTree = "<absolute>"; };
 		3BD7E18A243212E100FD8941 /* defaults.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = defaults.json; path = /Users/smitty/OneDrive/Programming/FontWrangler/defaults.json; sourceTree = "<absolute>"; };
@@ -93,6 +97,7 @@
 		3B879A2A242E00B400BE47DC /* FontWrangler */ = {
 			isa = PBXGroup;
 			children = (
+				3BCE077625BEC49F006AB656 /* Secrets.swift */,
 				3B6E85E32430AB8500C6549A /* Constants.swift */,
 				3B879A2B242E00B400BE47DC /* AppDelegate.swift */,
 				3B879A2D242E00B400BE47DC /* SceneDelegate.swift */,
@@ -106,6 +111,7 @@
 				3BA9276724360F9200B4BA99 /* HelpViewController.swift */,
 				3BA9277324361D3600B4BA99 /* HelpPageViewController.swift */,
 				3B0DF57B2440C8F50037BEDE /* IntroViewController.swift */,
+				3BCA6E3825BECD0D00B797DC /* FeedbackViewController.swift */,
 				3B879A42242E1C0100BE47DC /* UserFont.swift */,
 				3BE5B2AA2434AD6B00A0C33A /* FontFamily.swift */,
 				3B879A33242E00B400BE47DC /* Main.storyboard */,
@@ -257,6 +263,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				3BA9277424361D3600B4BA99 /* HelpPageViewController.swift in Sources */,
+				3BCE077725BEC49F006AB656 /* Secrets.swift in Sources */,
+				3BCA6E3925BECD0D00B797DC /* FeedbackViewController.swift in Sources */,
 				3BA9276824360F9200B4BA99 /* HelpViewController.swift in Sources */,
 				3B4C6D9A2434E90900C1C5CB /* FontVariantsTableViewCell.swift in Sources */,
 				3B879A2C242E00B400BE47DC /* AppDelegate.swift in Sources */,
@@ -425,7 +433,7 @@
 				CODE_SIGN_ENTITLEMENTS = FontWrangler/FontWrangler.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 26;
+				CURRENT_PROJECT_VERSION = 27;
 				DEVELOPMENT_TEAM = Y5J3K52DNA;
 				INFOPLIST_FILE = FontWrangler/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
@@ -433,7 +441,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.1.1;
+				MARKETING_VERSION = 1.1.2;
 				"OTHER_SWIFT_FLAGS[arch=*]" = "-DDEBUG";
 				PRODUCT_BUNDLE_IDENTIFIER = com.bps.fontwrangler;
 				PRODUCT_NAME = Fontismo;
@@ -450,7 +458,7 @@
 				CODE_SIGN_ENTITLEMENTS = FontWrangler/FontWrangler.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 26;
+				CURRENT_PROJECT_VERSION = 27;
 				DEVELOPMENT_TEAM = Y5J3K52DNA;
 				INFOPLIST_FILE = FontWrangler/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
@@ -458,7 +466,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.1.1;
+				MARKETING_VERSION = 1.1.2;
 				"OTHER_SWIFT_FLAGS[arch=*]" = "-DRELEASE";
 				PRODUCT_BUNDLE_IDENTIFIER = com.bps.fontwrangler;
 				PRODUCT_NAME = Fontismo;
