@@ -37,3 +37,5 @@ enum kDefaultsKeys {
     static let fontInstallCount = "com.bps.fontismo.font.installs"
     static let lastReviewVersion = "com.bps.fontismo.review.version"
 }
+
+let kMaxFeedbackCharacters              = 512
