@@ -13,7 +13,8 @@ Please see [this page](https://smittytone.net/fontismo/index.html).
 ## Release Notes ##
 
 - 1.1.2 *Unreleased*
-    - Minor changes, none user facing.
+    - Replace **Help** button with a menu to support addition of future features.
+    - Make **Settings** text elements more stylistically consistent.
 - 1.1.1 *2 October 2020*
     - Prevent scaling down of custom preview text from reverting to the alphabet and improve scaling code.
     - Add further usage advice to main window.
