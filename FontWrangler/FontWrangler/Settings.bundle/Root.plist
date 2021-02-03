@@ -10,7 +10,7 @@
 			<key>Type</key>
 			<string>PSToggleSwitchSpecifier</string>
 			<key>Title</key>
-			<string>Show introductory guidance</string>
+			<string>Show Introductory Guidance</string>
 			<key>Key</key>
 			<string>com.bps.fontwrangler.app.show.intro</string>
 			<key>DefaultValue</key>
@@ -50,7 +50,7 @@
 			<key>Title</key>
 			<string>Creators</string>
 			<key>FooterText</key>
-			<string>The fonts provided are copyright their various owners. Tap ‘Typeface Designers’ to view a list of the creators behind the fonts accessed via this app.</string>
+			<string>The fonts provided are copyright their various owners. Please see ‘Typeface Designers’, above, to view a list of the creators behind the fonts accessed via this app.</string>
 		</dict>
 		<dict>
 			<key>Type</key>
@@ -66,7 +66,7 @@
 			<key>Title</key>
 			<string>Licences</string>
 			<key>FooterText</key>
-			<string>The fonts provided through this app are licensed under either the Open Font Licence or the Apache Licence — please see ‘Open Font Licence’ and ‘Apache Licence’, above, for the terms of these licences.</string>
+			<string>The fonts provided through this app are licensed under either the Open Font Licence or the Apache Licence. Please see ‘Open Font Licence’ and ‘Apache Licence’, above, for the terms of these licences.</string>
 		</dict>
 		<dict>
 			<key>Type</key>
