@@ -30,6 +30,7 @@ let kHelpPageCount                      = 3
 let kFontDownloadTimeout                = 30.0
 
 let kAppStoreURL                       = "https://apps.apple.com/app/id1505396103"
+let kWebsiteURL                        = "https://smittytone.net/fontismo/index.html"
 
 let kFontInstallCountBeforeReviewRequest = 20
 

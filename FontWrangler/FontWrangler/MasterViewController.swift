@@ -1,3 +1,4 @@
+
 //  MasterViewController.swift
 //  Fontismo
 //
@@ -9,7 +10,9 @@ import UIKit
 import StoreKit
 
 
-class MasterViewController: UITableViewController, URLSessionDelegate, URLSessionDataDelegate, UITextViewDelegate, UIPopoverPresentationControllerDelegate {
+class MasterViewController: UITableViewController,
+                            UIPopoverPresentationControllerDelegate,
+                            UIViewControllerTransitioningDelegate {
 
     // MARK: - UI properties
 
@@ -35,12 +38,8 @@ class MasterViewController: UITableViewController, URLSessionDelegate, URLSessio
     private var installCount: Int = -1
     
     // FROM 1.1.2
-    private var feedbackTextView: UITextView? = nil
-    private let ALERT_KEY_PATH: String = "bounds"
-    private var feedbackTask: URLSessionTask? = nil
-    private var doShowThanks: Bool = false
     private var menuButton: UIBarButtonItem? = nil
-    private var alertController: UIAlertController? = nil
+    
     
     // MARK:- Lifecycle Functions
 
@@ -57,7 +56,8 @@ class MasterViewController: UITableViewController, URLSessionDelegate, URLSessio
         */
         
         // FROM 1.1.2
-        // Add menu icon
+        // Add a standard iOS menu icon in place of the 'Help' menu
+        // Users can get help via the menu
         let menuButton = UIBarButtonItem(image: UIImage.init(systemName: "ellipsis.circle"),
                                          style: .plain,
                                          target: self,
@@ -1072,8 +1072,8 @@ class MasterViewController: UITableViewController, URLSessionDelegate, URLSessio
     @objc func doShowMenu(_ sender: Any) {
 
         // FROM 1.1.2
-        // Remove the 'Help' menu and replace it with an action menu,
-        // which includes a Help option
+        // We've removed the 'Help' menu and replace it with an action menu,
+        // which includes a Help option and space for other things
         
         let actionMenu: UIAlertController = UIAlertController.init(title: nil,
                                                                     message: nil,
@@ -1081,7 +1081,7 @@ class MasterViewController: UITableViewController, URLSessionDelegate, URLSessio
         
         // Allow the user to view the Help screen
         var action: UIAlertAction!
-        action = UIAlertAction.init(title: "Show Help...",
+        action = UIAlertAction.init(title: "Show Help",
                                     style: .default,
                                     handler: { (anAction) in
                                         self.doShowHelpSheet(self)
@@ -1089,31 +1089,51 @@ class MasterViewController: UITableViewController, URLSessionDelegate, URLSessio
 
         actionMenu.addAction(action)
 
+        // Allow the user to view the app's settings
+        action = UIAlertAction.init(title: "Fontismo Settings",
+                                    style: .default,
+                                    handler: { (anAction) in
+                                        UIApplication.shared.open(URL(string: UIApplication.openSettingsURLString)!)
+                                    })
+
+        actionMenu.addAction(action)
+        
         // Allow the user to report a bug
-        action = UIAlertAction.init(title: "Report a Bug...",
+        action = UIAlertAction.init(title: "Report a Bug",
                                     style: .default,
                                     handler: { (anAction) in
                                         self.doShowFeedbackSheet(self)
                                     })
 
         actionMenu.addAction(action)
-
+        
         // Allow the user to review the app
-        action = UIAlertAction.init(title: "Review Fontismo...",
+        action = UIAlertAction.init(title: "Review Fontismo",
                                     style: .default,
                                     handler: { (anAction) in
                                         self.doReview()
                                     })
+        
+        actionMenu.addAction(action)
+        
+        // Allow the user to go to the website
+        action = UIAlertAction.init(title: "Visit the Fontismo Website",
+                                    style: .default,
+                                    handler: { (anAction) in
+                                        self.doShowWebsite(self)
+                                    })
 
         actionMenu.addAction(action)
-
+        
         // If we're on an iPad we need to do a little extra setup
-        // before presenting it
+        // before presenting it, in order to set the menu below the
+        // menu button which triggers it
         if UIDevice.current.userInterfaceIdiom == .pad {
             actionMenu.popoverPresentationController?.barButtonItem = self.menuButton;
             actionMenu.popoverPresentationController?.sourceView = self.view;
         } else {
-            // Allow the user to review the app
+            // Allow the user to cancel the menu on an iPhone,
+            // which treats the menu modally
             action = UIAlertAction.init(title: "Cancel",
                                         style: .cancel,
                                         handler: nil)
@@ -1147,126 +1167,31 @@ class MasterViewController: UITableViewController, URLSessionDelegate, URLSessio
 
         // FROM 1.1.2
         // Display the Feedback alert
-            
-        // Instantiate the UITextView we'll add to the Alert
-        self.feedbackTextView = UITextView(frame: CGRect.zero)
         
-        // Set up the alert controller
-        // NOTE The carriage returns are required to make space for 'feedbackTextView'
-        self.alertController = UIAlertController(title: "Enter Your Feedback\n\n\n\n\n\n\n",
-                                                message: "",
-                                                preferredStyle: .alert)
+        // Load and configure the menu view controller
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        let fvc: FeedbackViewController = storyboard.instantiateViewController(withIdentifier: "feedback.view.controller") as! FeedbackViewController
         
-        // Set up the Cancel button and add it to the alert
-        let cancelAction = UIAlertAction(title: "Cancel", style: .default) { (action) in
-            // Stop observing
-            self.alertController!.view.removeObserver(self, forKeyPath: self.ALERT_KEY_PATH)
-        }
+        // Select the type of presentation according to the device
+        // we're operating on:
+        // - iPads will have a custom view to better adjust it to the size of the display
+        // - iPhones will present a standard page sheet
+        fvc.modalPresentationStyle = UIDevice.current.userInterfaceIdiom == .pad ? .custom : .pageSheet
+        fvc.transitioningDelegate = self
         
-        // Set up the Send button and add it to the alert
-        let sendAction = UIAlertAction(title: "Send", style: .default) { (action) in
-            // Stop observing
-            self.alertController!.view.removeObserver(self, forKeyPath: self.ALERT_KEY_PATH)
-            
-            // Get the feedback text from the view and send it
-            self.sendFeedbackText(self.feedbackTextView!.text)
-        }
-        
-        // Set the alert to watch for the named key -- this will
-        // trigger the insertion of 'feedbackTextView'
-        self.alertController!.addAction(cancelAction)
-        self.alertController!.addAction(sendAction)
-        self.alertController!.view.addObserver(self, forKeyPath: self.ALERT_KEY_PATH,
-                                         options: .new,
-                                         context: nil)
-        
-        let tap: UITapGestureRecognizer = UITapGestureRecognizer.init(target: self, action: #selector(didAlertTap))
-        tap.cancelsTouchesInView = false
-        
-        
-        // Configure 'feedbackTextView'...
-        self.feedbackTextView!.backgroundColor = UIColor.systemBackground
-        self.feedbackTextView!.layer.borderColor = UIColor.lightGray.cgColor;
-        self.feedbackTextView!.layer.borderWidth = 1.0;
-        self.feedbackTextView!.layer.cornerRadius = 5.0;
-        self.feedbackTextView!.textContainerInset = UIEdgeInsets.init(top: 8, left: 5, bottom: 8, right: 5)
-        self.feedbackTextView!.delegate = self
-        self.feedbackTextView!.enablesReturnKeyAutomatically = true
-        
-        // ...and add it to the alert
-        self.alertController!.view.addSubview(self.feedbackTextView!)
-        
-        // Finally, show the alert
-
-        
-        self.present(self.alertController!, animated: true) {
-             self.alertController!.view.superview?.subviews.first?.isUserInteractionEnabled = true
-            self.alertController!.view.superview?.subviews.first?.addGestureRecognizer(tap)
-         }
+        // Show the feedback view controller
+        self.present(fvc, animated: true, completion: nil)
     }
 
     
-    func sendFeedbackText(_ feedback: String) {
-
+    func doShowWebsite(_ sender: Any) {
+        
         // FROM 1.1.2
-        // User clicked 'Send' in the Feeback alert, so send the message,
-        // if there is one
-
-        if feedback.count > 0 {
-            // Get the transmitted string's other elements
-            let userAgent: String = getUserAgent()
-            let dateString = getDateString()
-            
-            // Assemble the data we'll send
-            let dict: NSMutableDictionary = NSMutableDictionary()
-            dict.setObject("*FEEDBACK REPORT*\n*DATE* \(dateString))\n*USER AGENT* \(userAgent)\n*FEEDBACK* \(feedback)",
-                            forKey: NSString.init(string: "text"))
-            dict.setObject(true, forKey: NSString.init(string: "mrkdown"))
-
-            // Set up the connection to send the feedback data
-            if let url: URL = URL.init(string: MNU_SECRETS.ADDRESS.A + MNU_SECRETS.ADDRESS.B) {
-                var request: URLRequest = URLRequest.init(url: url)
-                request.httpMethod = "POST"
-                
-                do {
-                    request.httpBody = try JSONSerialization.data(withJSONObject: dict,
-                                                                  options:JSONSerialization.WritingOptions.init(rawValue: 0))
-
-                    request.addValue(userAgent, forHTTPHeaderField: "User-Agent")
-                    request.addValue("application/json", forHTTPHeaderField: "Content-type")
-
-                    let config: URLSessionConfiguration = .ephemeral
-                    let session: URLSession = URLSession.init(configuration: config,
-                                                              delegate: self,
-                                                              delegateQueue: OperationQueue.main)
-                    self.feedbackTask = session.dataTask(with: request)
-                    self.feedbackTask?.resume()
-                } catch {
-                    // Whoops!
-                    sendFeedbackError()
-                }
-            }
-        }
-    }
-    
-    
-    func sendFeedbackError() {
-
-        // Present an error message specific to sending feedback
-        // This is called from multiple locations: if the initial request can't be created,
-        // there was a send failure, or a server error
-
-        DispatchQueue.main.async {
-            let alert = UIAlertController.init(title: "Feedback Could Not Be Sent",
-                                               message: "Unfortunately, your comments could not be send at this time. Please try again later.",
-                                               preferredStyle: .alert)
-            alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "Default action"),
-                                          style: .default,
-                                          handler: nil))
-            self.present(alert,
-                         animated: true,
-                         completion: nil)
-        }
+        // Open the website in Safari
+        
+        UIApplication.shared.open(URL.init(string: kWebsiteURL)!,
+                                  options: [:],
+                                  completionHandler: nil)
     }
     
     
@@ -1389,50 +1314,6 @@ class MasterViewController: UITableViewController, URLSessionDelegate, URLSessio
     }
 
     
-    func getUserAgent() -> String {
-        
-        // Return the user-agent string
-        
-        let sysVer: OperatingSystemVersion = ProcessInfo.processInfo.operatingSystemVersion
-        let bundle: Bundle = Bundle.main
-        let app: String = bundle.object(forInfoDictionaryKey: "CFBundleExecutable") as! String
-        let version: String = bundle.object(forInfoDictionaryKey: "CFBundleShortVersionString") as! String
-        let build: String = bundle.object(forInfoDictionaryKey: "CFBundleVersion") as! String
-        return "\(app) \(version) (build \(build)) (iOS \(sysVer.majorVersion).\(sysVer.minorVersion).\(sysVer.patchVersion))"
-    }
-    
-    
-    func getDateString() -> String {
-        
-        // Return the current date as formatted string
-        
-        let date: Date = Date()
-        let def: DateFormatter = DateFormatter()
-        def.locale = Locale(identifier: "en_US_POSIX")
-        def.dateFormat = "yyyy-MM-dd'T'HH:mm:ssZZZZZ"
-        def.timeZone = TimeZone(secondsFromGMT: 0)
-        return def.string(from: date)
-    }
-    
-    
-    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
-        
-        // Observe keys' value changes, but we're only interested in one, 'bounds'
-        if keyPath == self.ALERT_KEY_PATH {
-            // Get the sender's bounds
-            if let rect = (change?[NSKeyValueChangeKey.newKey] as? NSValue)?.cgRectValue {
-                // Set the frame size we'll use for the UITextView
-                let x = rect.origin.x + 8.0
-                let y = rect.origin.y + 54
-                let width = rect.width - 16.0
-                let height: CGFloat = 120
-                
-                // Set 'feedbackTextView's frame derived from the space in the Alert
-                self.feedbackTextView!.frame = CGRect.init(x: x, y: y, width: width, height: height)
-            }
-        }
-    }
-    
     
     // MARK: - StoreKit Functions
 
@@ -1441,6 +1322,7 @@ class MasterViewController: UITableViewController, URLSessionDelegate, URLSessio
         // FROM 1.1.1
         // Show the 'please review' dialog if the user is on a new version
         // and has installed 20 fonts
+        
         let infoDictionaryKey = kCFBundleVersionKey as String
         guard let currentVersion = Bundle.main.object(forInfoDictionaryKey: infoDictionaryKey) as? String
             else { fatalError("Expected to find a bundle version in the info dictionary") }
@@ -1462,6 +1344,7 @@ class MasterViewController: UITableViewController, URLSessionDelegate, URLSessio
 
         // FROM 1.1.1
         // Configure the rating dialog to appear in two seconds' time
+        
         let twoSecondsFromNow = DispatchTime.now() + 2.0
         DispatchQueue.main.asyncAfter(deadline: twoSecondsFromNow) { [navigationController] in
             if navigationController?.topViewController is MasterViewController {
@@ -1477,6 +1360,7 @@ class MasterViewController: UITableViewController, URLSessionDelegate, URLSessio
 
         // FROM 1.1.1
         // Display an option to review the app on a long press of the master view
+        
         DispatchQueue.main.async {
             let alert = UIAlertController.init(title: "Would you like to rate or review this app?",
                                                message: "If you have found Fontismo useful, please consider writing a short App Store review.",
@@ -1561,115 +1445,15 @@ class MasterViewController: UITableViewController, URLSessionDelegate, URLSessio
     }
     
 
-    @objc func didAlertTap() {
+
+    
+
+
+
+    func presentationController(forPresented presented: UIViewController, presenting: UIViewController?, source: UIViewController) -> UIPresentationController? {
         
-        if let fbv = self.feedbackTextView {
-            if fbv.isFirstResponder {
-               fbv.endEditing(true)
-            }
-        }
-    }
-
-    
-
-
-
-    // MARK: - URLSession Delegate Functions
-
-    func urlSession(_ session: URLSession, didBecomeInvalidWithError error: Error?) {
-        
-        // FROM 1.1.2
-        // Some sort of connection error - report it
-
-        sendFeedbackError()
-    }
-
-
-    func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
-
-        // FROM 1.1.2
-        // The operation to send the feedback completed
-
-        if let _ = error {
-            // An error took place - report it
-            sendFeedbackError()
-        } else {
-            DispatchQueue.main.async {
-                let alert = UIAlertController.init(title: "Thanks For Your Feedback!",
-                                               message: "Your comments have been received and we’ll take a look at them shortly.",
-                                               preferredStyle: .alert)
-                
-                alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "Default action"),
-                                              style: .default,
-                                              handler: nil))
-                
-                self.present(alert,
-                             animated: true,
-                             completion: nil)
-            }
-        }
-    }
-    
-    
-    // MARK: - UITextViewDelegate Functions
-    
-    func textViewDidChange(_ textView: UITextView) {
-        
-        // FROM 1.1.2
-        // Trap text changes so that no more than
-        
-        if textView == self.feedbackTextView {
-            if textView.text.count > kMaxFeedbackCharacters {
-                // Prune the feedback to 512 chars
-                let edit: Substring = textView.text.prefix(kMaxFeedbackCharacters)
-                textView.text = String(edit)
-                
-                // Tell the user about the limit
-                textView.layer.borderColor = UIColor.red.cgColor
-                
-                // Switch the border back in half a second
-                _ = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: false, block: { (timer) in
-                    self.feedbackTextView!.layer.borderColor = UIColor.lightGray.cgColor
-                })
-            }
-            
-            // Display the character count
-            self.alertController?.message = "Character count: \(textView.text.count )/\(kMaxFeedbackCharacters)"
-        }
-    }
-    
-    
-    func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
-            if text == "\n" {
-                textView.resignFirstResponder()
-                return false
-            }
-            return true
-        }
-    
-    
-    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
-
-        for item in self.view.subviews {
-            let view = item as UIView
-            if view.isKind(of: UITextView.self) {
-                view.endEditing(true)
-            }
-        }
-        
-        super.touchesEnded(touches, with: event)
-    }
-    
-    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        
-        for item in self.view.subviews {
-            let view = item as UIView
-            if view.isKind(of: UITextView.self) {
-                view.endEditing(true)
-            }
-        }
-        
-        super.touchesBegan(touches, with: event)
+        let fpc: FeedbackPresentationController = FeedbackPresentationController.init(presentedViewController: presented, presenting: source)
+        return fpc
     }
 
 }
@@ -1685,21 +1469,5 @@ extension UISplitViewController {
         let _ = UIApplication.shared.sendAction(barButtonItem.action!,
                                                 to: barButtonItem.target,
                                                 from: nil, for: nil)
-    }
-}
-
-
-extension UIAlertController {
-    
-    func setupToHideKeyboardOnTapOnView() {
-        let tap: UITapGestureRecognizer = UITapGestureRecognizer(
-            target: self,
-            action: #selector(UIAlertController.dismissKeyboard))
-        tap.cancelsTouchesInView = false
-        view.addGestureRecognizer(tap)
-    }
-
-    @objc func dismissKeyboard() {
-        view.endEditing(true)
     }
 }

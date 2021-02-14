@@ -1,45 +1,58 @@
-//
+
 //  FeedbackViewController.swift
 //  Fontismo
 //
 //  Created by Tony Smith on 25/01/2021.
 //  Copyright © 2021 Tony Smith. All rights reserved.
-//
 
 
 import Foundation
 import UIKit
 
 
-class FeedbackViewController: UIViewController, URLSessionDelegate, URLSessionDataDelegate, UITextViewDelegate {
+class FeedbackViewController: UIViewController,
+                              URLSessionDelegate,
+                              URLSessionDataDelegate,
+                              UITextViewDelegate {
 
     // MARK: - UI Outlets
 
     @IBOutlet var feedbackText: UITextView!
     @IBOutlet var connectionProgress: UIActivityIndicatorView!
     @IBOutlet var textLengthLabel: UILabel!
-
-
+    
+    
     // MARK: - Class Properties
 
     private var feedbackTask: URLSessionTask? = nil
-    var myself: FeedbackViewController? = nil
+    private var tapGestureRecognizer: UITapGestureRecognizer = UITapGestureRecognizer()
 
 
     // MARK: - Lifecycle Functions
 
     override func viewWillAppear(_ animated: Bool) {
 
-        // Reset the UI
+        // Reset the UI: hide the progress indicator...
         self.connectionProgress.isHidden = true
         self.connectionProgress.stopAnimating()
         
+        // ...and clear the feeback text entry field...
         self.feedbackText.delegate = self
         self.feedbackText.text = ""
-        self.feedbackText.textColor = UIColor.black
-        self.feedbackText.backgroundColor = UIColor.init(red: 0.9, green: 0.9, blue: 0.9, alpha: 1.0)
+        self.feedbackText.backgroundColor = UIColor.systemBackground
+        self.feedbackText.textColor = UIColor.label
+        self.feedbackText.layer.borderColor = UIColor.gray.cgColor;
+        self.feedbackText.layer.borderWidth = 2.0;
+        self.feedbackText.layer.cornerRadius = 8.0;
+        self.feedbackText.textContainerInset = UIEdgeInsets.init(top: 8, left: 5, bottom: 8, right: 5)
+                
+        // ...and set the text counter
+        self.textLengthLabel.text = "0/\(kMaxFeedbackCharacters)"
         
-        self.textLengthLabel.text = "0/512"
+        // Set the tap recognizer
+        self.tapGestureRecognizer = UITapGestureRecognizer(target: self,
+                                                           action: #selector(self.dismissKeyboard))
+        self.view.addGestureRecognizer(self.tapGestureRecognizer)
     }
 
     
@@ -48,7 +61,8 @@ class FeedbackViewController: UIViewController, URLSessionDelegate, URLSessionDa
     @IBAction @objc func doCancel(sender: Any?) {
 
         // User has clicked 'Cancel', so just close the sheet
-
+        
+        self.feedbackText.resignFirstResponder()
         self.dismiss(animated: true, completion: nil)
     }
 
@@ -56,7 +70,8 @@ class FeedbackViewController: UIViewController, URLSessionDelegate, URLSessionDa
     @IBAction @objc func doSend(sender: Any?) {
 
         // User clicked 'Send' so get the message (if there is one) from the text field and send it
-
+        
+        self.feedbackText.resignFirstResponder()
         let feedback: String = self.feedbackText.text
 
         if feedback.count > 0 {
@@ -98,7 +113,15 @@ class FeedbackViewController: UIViewController, URLSessionDelegate, URLSessionDa
         }
     }
 
-
+    
+    @objc func dismissKeyboard() {
+        
+        // Tell the TextView to end editing
+        
+        self.feedbackText.resignFirstResponder()
+    }
+    
+    
     // MARK: - URLSession Delegate Functions
 
     func urlSession(_ session: URLSession, didBecomeInvalidWithError error: Error?) {
@@ -191,28 +214,26 @@ class FeedbackViewController: UIViewController, URLSessionDelegate, URLSessionDa
     
     func textViewDidChange(_ textView: UITextView) {
         
-        // Trap text changes so that no more than
+        // Trap text changes so that no more than kMaxFeedbackCharacters
+        // can be entered into the UITextView
         
-        // The maximum we are allowing is 512 chars
-        if self.feedbackText.text.count > 512 {
-            // Prune the feedback to 512 chars
-            let edit: Substring = self.feedbackText.text.prefix(512)
-            self.feedbackText.text = String(edit)
+        if self.feedbackText.text.count > kMaxFeedbackCharacters {
+            // Prune the feedback to kMaxFeedbackCharacters chars
+            let edit: Substring = self.feedbackText.text.prefix(kMaxFeedbackCharacters)
+            textView.text = String(edit)
             
-            // Tell the user about the limit
-            DispatchQueue.main.async {
-                let alert = UIAlertController.init(title: "512 characters max.",
-                                               message: "Please ensure your comment is no more than 512 characters in length.",
-                                               preferredStyle: .alert)
-                alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "Default action"),
-                                              style: .default,
-                                              handler: nil))
-                self.present(alert, animated: true, completion: nil)
-            }
+            // Tell the user about the limit by flashing the
+            // border colour red
+            textView.layer.borderColor = UIColor.red.cgColor
+            
+            // Switch the border back to grey in half a second
+            _ = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: false, block: { (timer) in
+                self.feedbackText.layer.borderColor = UIColor.gray.cgColor;
+            })
         }
         
         // Set the text length label
-        self.textLengthLabel.text = "\(self.feedbackText.text.count)/512"
+        self.textLengthLabel.text = "\(self.feedbackText.text.count)/\(kMaxFeedbackCharacters)"
     }
 
 }
