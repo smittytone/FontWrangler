@@ -14,6 +14,7 @@ Please see [this page](https://smittytone.net/fontismo/index.html).
 
 - 1.1.2 *Unreleased*
     - Replace **Help** button with a menu to support addition of future features.
+    - Allow the user to submit bug reports and feedback.
     - Make **Settings** text elements more stylistically consistent.
 - 1.1.1 *2 October 2020*
     - Prevent scaling down of custom preview text from reverting to the alphabet and improve scaling code.
