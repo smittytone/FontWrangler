@@ -140,6 +140,8 @@ class DetailViewController: UIViewController,
                     if detail.tag == "bungee" {
                         // Use Bungee Quirk
                         self.title = self.getBungeeTitle(detail.name)
+                    } else if detail.tag == "hanalei" {
+                        self.title = self.getHanaleiTitle(detail.name)
                     } else {
                         self.title = self.currentFamily!.name + self.getVariantName(detail.name)
                     }
@@ -395,6 +397,20 @@ class DetailViewController: UIViewController,
         let range: NSRange = NSRange(location: 6, length: index.location - 6)
         let bungeeName = name.substring(with: range)
         return "Bungee " + (bungeeName != "" ? bungeeName : variantType)
+    }
+    
+    
+    func getHanaleiTitle(_ fontName: String) -> String {
+
+        // FROM 1.1.2
+        // Set Quirk for Hanalei, which has non-variant fonts under the same tag
+        
+        var hanaleiName: String = " ";
+        if (fontName as NSString).contains("Fill") {
+            hanaleiName = " Fill"
+        }
+        
+        return "Hanalei" + hanaleiName + " Regular"
     }
 
 

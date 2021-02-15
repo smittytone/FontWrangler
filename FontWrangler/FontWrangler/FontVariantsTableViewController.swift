@@ -58,6 +58,9 @@ class FontVariantsTableViewController: UITableViewController {
             if font.tag == "bungee" {
                 // Set Quirk for Bungee, which has non-variant fonts under the same tag
                 cell = self.doBungee(cell, font)
+            } else if font.tag == "hanalei" {
+                // Set Quirk for Hanalei, which has non-variant fonts under the same tag
+                cell = self.doHanalei(cell, font)
             } else {
                 // Display the font variant type, extracted from the name:
                 // eg. 'Audio-Regular' -> 'Regular'
@@ -112,6 +115,20 @@ class FontVariantsTableViewController: UITableViewController {
         let range: NSRange = NSRange(location: 6, length: index.location - 6)
         let fontName = name.substring(with: range)
         cell.name.text = (fontName != "" ? fontName : variantType)
+        return cell
+    }
+    
+    
+    func doHanalei(_ cell: FontVariantsTableViewCell, _ font: UserFont) -> FontVariantsTableViewCell {
+
+        // FROM 1.1.2
+        
+        var hanaleiName: String = "";
+        if (font.name as NSString).contains("Fill") {
+            hanaleiName = "Fill "
+        }
+        
+        cell.name.text = hanaleiName + "Regular"
         return cell
     }
 }

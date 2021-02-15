@@ -166,6 +166,8 @@
 			attributes = {
 				KnownAssetTags = (
 					abel,
+					alfa_slab_one,
+					allan,
 					audiowide,
 					bangers,
 					baumans,
@@ -188,8 +190,10 @@
 					girassol,
 					gruppo,
 					gugi,
+					hanalei,
 					holtwood_one,
 					knewave,
+					limelight,
 					lobster,
 					luckiest_guy,
 					megrim,
@@ -200,12 +204,16 @@
 					odibee_sans,
 					oswald,
 					pacifico,
+					pirata_one,
 					plaster,
+					playball,
 					poiret_one,
 					radley,
 					righteous,
+					risque,
 					roboto,
 					rokkitt,
+					sancreek,
 					shojumaru,
 					shrikhand,
 					smythe,
@@ -215,6 +223,7 @@
 					trade_winds,
 					uncial_antiqua,
 					unica_one,
+					unifraktur_maguntia,
 				);
 				LastSwiftUpdateCheck = 1130;
 				LastUpgradeCheck = 1200;
@@ -437,7 +446,7 @@
 				CODE_SIGN_ENTITLEMENTS = FontWrangler/FontWrangler.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 35;
+				CURRENT_PROJECT_VERSION = 36;
 				DEVELOPMENT_TEAM = Y5J3K52DNA;
 				INFOPLIST_FILE = FontWrangler/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
@@ -462,7 +471,7 @@
 				CODE_SIGN_ENTITLEMENTS = FontWrangler/FontWrangler.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 35;
+				CURRENT_PROJECT_VERSION = 36;
 				DEVELOPMENT_TEAM = Y5J3K52DNA;
 				INFOPLIST_FILE = FontWrangler/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
