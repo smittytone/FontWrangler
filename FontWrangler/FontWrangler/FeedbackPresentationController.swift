@@ -83,29 +83,45 @@ class FeedbackPresentationController: UIPresentationController {
     
     override func presentationTransitionWillBegin() {
         
-        self.blurEffectView.alpha = 0
+        // The Presentation Controller is about to show the FeedbackViewController
+        
+        // Add and configure the background blue
+        self.blurEffectView.alpha = 0.0
         self.containerView?.addSubview(blurEffectView)
-        self.presentedViewController.transitionCoordinator?.animate(alongsideTransition: { (UIViewControllerTransitionCoordinatorContext) in
-            self.blurEffectView.alpha = 0.7
-        }, completion: { (UIViewControllerTransitionCoordinatorContext) in
-            // NOP
-        })
+        
+        // Trigger the view display animation
+        self.presentedViewController.transitionCoordinator?.animate(alongsideTransition: {
+            (UIViewControllerTransitionCoordinatorContext) in
+                // Turn off the background blur
+                self.blurEffectView.alpha = 0.7
+            }, completion: nil)
     }
     
     
     override func dismissalTransitionWillBegin() {
         
-        self.presentedViewController.transitionCoordinator?.animate(alongsideTransition: { (UIViewControllerTransitionCoordinatorContext) in
-            self.blurEffectView.alpha = 0
-        }, completion: { (UIViewControllerTransitionCoordinatorContext) in
-            self.blurEffectView.removeFromSuperview()
-        })
+        // The Presentation Controller is about to remove the FeedbackViewController
+        
+        self.presentedViewController.transitionCoordinator?.animate(alongsideTransition: {
+            (UIViewControllerTransitionCoordinatorContext) in
+                // Turn off the background blur
+                self.blurEffectView.alpha = 0.0
+            }, completion: { (UIViewControllerTransitionCoordinatorContext) in
+                // When the animation's done, remove the background blur
+                self.blurEffectView.removeFromSuperview()
+            })
     }
     
     
     override func containerViewWillLayoutSubviews() {
         
+        // The presented view is about to be laid out,
+        // so configure the layout
+        
+        // Make sure we call the parent class' function
         super.containerViewWillLayoutSubviews()
+        
+        // Set the layout mask info
         presentedView!.layer.masksToBounds = true
         presentedView!.layer.cornerRadius = 20
     }
@@ -113,7 +129,13 @@ class FeedbackPresentationController: UIPresentationController {
     
     override func containerViewDidLayoutSubviews() {
         
+        // The presented view was laid out, so now set up the frame
+        // and the extent of the background blur
+        
+        // Make sure we call the parent class' function
         super.containerViewDidLayoutSubviews()
+        
+        // Set the view frames
         self.presentedView?.frame = frameOfPresentedViewInContainerView
         blurEffectView.frame = containerView!.bounds
     }

@@ -1,17 +1,20 @@
-//
+
 //  SceneDelegate.swift
 //  Fontismo
 //
 //  Created by Tony Smith on 27/03/2020.
 //  Copyright © 2021 Tony Smith. All rights reserved.
-//
+
 
 import UIKit
 
-class SceneDelegate: UIResponder, UIWindowSceneDelegate, UISplitViewControllerDelegate {
 
+class SceneDelegate: UIResponder,
+                     UIWindowSceneDelegate,
+                     UISplitViewControllerDelegate {
+
+    
     var window: UIWindow?
-
 
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         // Use this method to optionally configure and attach the UIWindow `window` to the provided UIWindowScene `scene`.

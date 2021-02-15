@@ -1,3 +1,4 @@
+
 //  AppDelegate.swift
 //  Fontismo
 //
@@ -9,7 +10,8 @@ import UIKit
 
 
 @UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate {
+class AppDelegate: UIResponder,
+                   UIApplicationDelegate {
 
 
     private let bundlePath = Bundle.main.bundlePath

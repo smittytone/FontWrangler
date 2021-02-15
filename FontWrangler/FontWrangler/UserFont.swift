@@ -1,3 +1,4 @@
+
 //  UserFont.swift
 //  Fontismo
 //
@@ -8,7 +9,9 @@
 import UIKit
 
 
-class UserFont: NSObject, NSCoding, NSSecureCoding {
+class UserFont: NSObject,
+                NSCoding,
+                NSSecureCoding {
 
     // Instances of this class preserve metadata about a font
     // stored in the app's bundle (in '/fonts')

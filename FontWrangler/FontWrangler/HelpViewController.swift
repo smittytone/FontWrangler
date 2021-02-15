@@ -1,3 +1,4 @@
+
 //  HelpViewController.swift
 //  Fontismo
 //
@@ -8,7 +9,9 @@
 import UIKit
 
 
-class HelpViewController: UIViewController, UIPageViewControllerDelegate, UIPageViewControllerDataSource {
+class HelpViewController: UIViewController,
+                          UIPageViewControllerDelegate,
+                          UIPageViewControllerDataSource {
     
     
     // MARK: - Object properties

@@ -1,6 +1,7 @@
+
 //  UserTestSampleView.swift
 //  Fontismo
-///
+//
 //  Created by Tony Smith on 10/04/2020.
 //  Copyright © 2020 Tony Smith. All rights reserved.
 
@@ -13,8 +14,8 @@ class UserTestSampleView: UIView {
     override func draw(_ rect: CGRect) {
 
         // Get the current graphics context to set the stroke colour
-        if let c = UIGraphicsGetCurrentContext() {
-            c.setStrokeColor(UIColor.label.cgColor)
+        if let context = UIGraphicsGetCurrentContext() {
+            context.setStrokeColor(UIColor.label.cgColor)
         }
 
         // Inset the view rect by two pixels - the path's width - and

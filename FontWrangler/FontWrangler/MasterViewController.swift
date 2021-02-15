@@ -14,6 +14,7 @@ class MasterViewController: UITableViewController,
                             UIPopoverPresentationControllerDelegate,
                             UIViewControllerTransitioningDelegate {
 
+    
     // MARK: - UI properties
 
     @IBOutlet weak var titleView: MasterTitleView!
@@ -26,6 +27,9 @@ class MasterViewController: UITableViewController,
     private var families = [FontFamily]()
     private var isFontListLoaded: Bool = false
     private var gotFontFamilies: Bool = false
+    private var installCount: Int = -1
+    // FROM 1.1.2
+    private var menuButton: UIBarButtonItem? = nil
     
     // MARK:- Public Instance Properties
     
@@ -33,12 +37,9 @@ class MasterViewController: UITableViewController,
     
     // MARK:- Private Instance Constants
 
-    private let docsPath = NSSearchPathForDirectoriesInDomains(FileManager.SearchPathDirectory.documentDirectory, FileManager.SearchPathDomainMask.userDomainMask, true)[0]
-    private let bundlePath = Bundle.main.bundlePath
-    private var installCount: Int = -1
+    private let DOCS_PATH = NSSearchPathForDirectoriesInDomains(FileManager.SearchPathDirectory.documentDirectory, FileManager.SearchPathDomainMask.userDomainMask, true)[0]
+    private let BUNDLE_PATH = Bundle.main.bundlePath
     
-    // FROM 1.1.2
-    private var menuButton: UIBarButtonItem? = nil
     
     
     // MARK:- Lifecycle Functions
@@ -76,7 +77,6 @@ class MasterViewController: UITableViewController,
         self.menuButton = menuButton
 
         // Set the title view and its font count info
-        //self.title = "Fontismo Fonts"
         navigationItem.titleView = self.titleView
         self.titleView.infoLabel.text = "No fonts installed (of 0)"
 
@@ -189,9 +189,10 @@ class MasterViewController: UITableViewController,
     func loadDefaults() {
         
         // Load in the default list of available fonts and then sort it A-Z
+        // This is stored in the main bundle
 
         let fm = FileManager.default
-        let defaultFontsPath = self.bundlePath + kDefaultsPath
+        let defaultFontsPath = self.BUNDLE_PATH + kDefaultsPath
         var fontDictionary: [String: Any] = [:]
         
         if fm.fileExists(atPath: defaultFontsPath) {
@@ -255,7 +256,7 @@ class MasterViewController: UITableViewController,
         
         if !self.isFontListLoaded {
             // Get the path to the list file
-            let loadPath = self.docsPath + kFontListFileSubPath
+            let loadPath = self.DOCS_PATH + kFontListFileSubPath
             
             if FileManager.default.fileExists(atPath: loadPath) {
                 // Create an array of UserFont instances to hold the loaded data
@@ -385,7 +386,7 @@ class MasterViewController: UITableViewController,
         // Persist the app's font database
 
         // The app is going into the background or closing, so save the list of devices
-        let savePath = self.docsPath + kFontListFileSubPath
+        let savePath = self.DOCS_PATH + kFontListFileSubPath
 
         do {
             // Try to encode the object to data and then try to write out the data
@@ -839,7 +840,6 @@ class MasterViewController: UITableViewController,
     }
     
     
-    // REDUNDANT -- REMOVE NEXT BUILD
     func fontRegistrationHandler(errors: CFArray, done: Bool) -> Bool {
 
         // A callback triggered in response to system-level font registration
@@ -878,6 +878,7 @@ class MasterViewController: UITableViewController,
     override func numberOfSections(in tableView: UITableView) -> Int {
         
         // Just return 1
+        
         return 1
     }
 
@@ -885,17 +886,22 @@ class MasterViewController: UITableViewController,
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
 
         // NOTE Add one for the header cell
+        
         return self.families.count
     }
 
 
     override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
 
+        // Return the custom table header row
+        
         return self.tableHead
     }
 
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        
+        // Return the requested table cell
         
         if indexPath.row == 999 {
             // Show the header cell
@@ -1176,6 +1182,8 @@ class MasterViewController: UITableViewController,
         // we're operating on:
         // - iPads will have a custom view to better adjust it to the size of the display
         // - iPhones will present a standard page sheet
+        // By setting iPads to .custom, we ensure the UIViewControllerTransitioningDelegate
+        // is called, and it's there that we set up and use our UIPresentationController
         fvc.modalPresentationStyle = UIDevice.current.userInterfaceIdiom == .pad ? .custom : .pageSheet
         fvc.transitioningDelegate = self
         
@@ -1187,9 +1195,11 @@ class MasterViewController: UITableViewController,
     func doShowWebsite(_ sender: Any) {
         
         // FROM 1.1.2
-        // Open the website in Safari
+        // Open the Fontismo web page in Safari
         
-        UIApplication.shared.open(URL.init(string: kWebsiteURL)!,
+        guard let webURL = URL(string: kWebsiteURL) else { fatalError("Expected a valid Fontismo website URL") }
+        
+        UIApplication.shared.open(webURL,
                                   options: [:],
                                   completionHandler: nil)
     }
@@ -1197,7 +1207,8 @@ class MasterViewController: UITableViewController,
     
     func showAlert(_ title: String, _ message: String) {
         
-        // Generic alert display function
+        // Generic alert display function which ensures
+        // the alert is actioned on the main thread
 
         DispatchQueue.main.async {
             let alert = UIAlertController.init(title: title,
@@ -1321,7 +1332,7 @@ class MasterViewController: UITableViewController,
 
         // FROM 1.1.1
         // Show the 'please review' dialog if the user is on a new version
-        // and has installed 20 fonts
+        // and has installed at least 20 fonts
         
         let infoDictionaryKey = kCFBundleVersionKey as String
         guard let currentVersion = Bundle.main.object(forInfoDictionaryKey: infoDictionaryKey) as? String
@@ -1390,8 +1401,7 @@ class MasterViewController: UITableViewController,
         // FROM 1.1.2
         // Refactor this action into a separate function
 
-        guard let writeReviewURL = URL(string: kAppStoreURL + "?action=write-review")
-                else { fatalError("Expected a valid URL") }
+        guard let writeReviewURL = URL(string: kAppStoreURL + "?action=write-review") else { fatalError("Expected a valid Fontismo review URL") }
 
         UIApplication.shared.open(writeReviewURL, options: [:]) { (returnValue) in
 
@@ -1445,15 +1455,16 @@ class MasterViewController: UITableViewController,
     }
     
 
-
-    
-
-
+    // MARK: - UIViewControllerTransitioningDelegate Functions
 
     func presentationController(forPresented presented: UIViewController, presenting: UIViewController?, source: UIViewController) -> UIPresentationController? {
         
-        let fpc: FeedbackPresentationController = FeedbackPresentationController.init(presentedViewController: presented, presenting: source)
-        return fpc
+        // Instantiate and return the Presentation Controller
+        // NOTE This delegate method should only be called on an iPad
+        //      (see 'doShowFeedbackSheet()')
+        
+        return FeedbackPresentationController.init(presentedViewController: presented,
+                                                   presenting: source)
     }
 
 }

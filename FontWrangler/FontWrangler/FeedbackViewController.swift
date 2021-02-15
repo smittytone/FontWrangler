@@ -21,38 +21,52 @@ class FeedbackViewController: UIViewController,
     @IBOutlet var connectionProgress: UIActivityIndicatorView!
     @IBOutlet var textLengthLabel: UILabel!
     
-    
-    // MARK: - Class Properties
+    // MARK: - Private Properties
 
     private var feedbackTask: URLSessionTask? = nil
     private var tapGestureRecognizer: UITapGestureRecognizer = UITapGestureRecognizer()
 
 
+    
     // MARK: - Lifecycle Functions
 
-    override func viewWillAppear(_ animated: Bool) {
-
-        // Reset the UI: hide the progress indicator...
-        self.connectionProgress.isHidden = true
-        self.connectionProgress.stopAnimating()
+    override func viewDidLoad() {
         
-        // ...and clear the feeback text entry field...
-        self.feedbackText.delegate = self
-        self.feedbackText.text = ""
+        // Call the parent class' function
+        super.viewDidLoad()
+            
+        // Set up the UITextView
         self.feedbackText.backgroundColor = UIColor.systemBackground
         self.feedbackText.textColor = UIColor.label
         self.feedbackText.layer.borderColor = UIColor.gray.cgColor;
         self.feedbackText.layer.borderWidth = 2.0;
         self.feedbackText.layer.cornerRadius = 8.0;
         self.feedbackText.textContainerInset = UIEdgeInsets.init(top: 8, left: 5, bottom: 8, right: 5)
-                
-        // ...and set the text counter
-        self.textLengthLabel.text = "0/\(kMaxFeedbackCharacters)"
         
-        // Set the tap recognizer
+        // Set the View Controller as the UITextView's delegate
+        self.feedbackText.delegate = self
+        
+        // Set the tap recognizer that'll hide the keyboard
         self.tapGestureRecognizer = UITapGestureRecognizer(target: self,
                                                            action: #selector(self.dismissKeyboard))
         self.view.addGestureRecognizer(self.tapGestureRecognizer)
+    }
+    
+    
+    override func viewWillAppear(_ animated: Bool) {
+
+        // Call the parent class' function
+        super.viewWillAppear(animated)
+        
+        // Reset the UI: hide the progress indicator...
+        self.connectionProgress.isHidden = true
+        self.connectionProgress.stopAnimating()
+        
+        // ...and clear the feeback text entry field...
+        self.feedbackText.text = ""
+                
+        // ...and set the text counter
+        self.textLengthLabel.text = "0/\(kMaxFeedbackCharacters)"
     }
 
     
@@ -61,8 +75,9 @@ class FeedbackViewController: UIViewController,
     @IBAction @objc func doCancel(sender: Any?) {
 
         // User has clicked 'Cancel', so just close the sheet
+        // 'Cancel' is the X button in the top right
         
-        self.feedbackText.resignFirstResponder()
+        dismissKeyboard()
         self.dismiss(animated: true, completion: nil)
     }
 
@@ -116,7 +131,7 @@ class FeedbackViewController: UIViewController,
     
     @objc func dismissKeyboard() {
         
-        // Tell the TextView to end editing
+        // Tell the UITextView to end editing -- which will remove the keyboard
         
         self.feedbackText.resignFirstResponder()
     }
