@@ -198,6 +198,7 @@
 					luckiest_guy,
 					megrim,
 					michroma,
+					mirza,
 					monofett,
 					monoton,
 					nova_cut,
