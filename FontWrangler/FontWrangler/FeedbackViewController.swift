@@ -99,9 +99,9 @@ class FeedbackViewController: UIViewController,
             let dateString = getDateString()
 
             let dict: NSMutableDictionary = NSMutableDictionary()
-            dict.setObject("*FEEDBACK REPORT*\n*DATE* \(dateString))\n*USER AGENT* \(userAgent)\n*FEEDBACK* \(feedback)",
+            dict.setObject("## Feedback Report ##\n**Date** \(dateString)\n**User Agent** \(userAgent)\n**FEEDBACK**\n\(feedback)",
                             forKey: NSString.init(string: "text"))
-            dict.setObject(true, forKey: NSString.init(string: "mrkdown"))
+            dict.setObject(true, forKey: NSString.init(string: "mrkdwn"))
 
             if let url: URL = URL.init(string: MNU_SECRETS.ADDRESS.A + MNU_SECRETS.ADDRESS.B) {
                 var request: URLRequest = URLRequest.init(url: url)
