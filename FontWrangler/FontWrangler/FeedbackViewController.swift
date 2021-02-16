@@ -97,11 +97,21 @@ class FeedbackViewController: UIViewController,
             // Send the string etc.
             let userAgent: String = getUserAgent()
             let dateString = getDateString()
+            
+            // Assemble the message string
+            let dataString: String = """
+             *FEEDBACK REPORT*
+             *Date:* \(dateString)
+             *User Agent:* \(userAgent)
+             *FEEDBACK:*
+             \(feedback)
+             """
 
             let dict: NSMutableDictionary = NSMutableDictionary()
-            dict.setObject("*FEEDBACK REPORT*\n*Date* \(dateString)\n*User Agent* \(userAgent)\n*FEEDBACK*\n\(feedback)",
-                            forKey: NSString.init(string: "text"))
-            dict.setObject(true, forKey: NSString.init(string: "mrkdwn"))
+            dict.setObject(dataString,
+                           forKey: NSString.init(string: "text"))
+            dict.setObject(true,
+                           forKey: NSString.init(string: "mrkdwn"))
 
             if let url: URL = URL.init(string: MNU_SECRETS.ADDRESS.A + MNU_SECRETS.ADDRESS.B) {
                 var request: URLRequest = URLRequest.init(url: url)
