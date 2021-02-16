@@ -13,6 +13,7 @@ Please see [this page](https://smittytone.net/fontismo/index.html).
 ## Release Notes ##
 
 - 1.1.2 *Unreleased*
+    - Added Ten bonus fonts.
     - Replace **Help** button with a menu to support addition of future features.
     - Allow the user to submit bug reports and feedback.
     - Make **Settings** text elements more stylistically consistent.
