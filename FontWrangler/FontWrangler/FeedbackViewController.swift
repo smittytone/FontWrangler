@@ -99,7 +99,7 @@ class FeedbackViewController: UIViewController,
             let dateString = getDateString()
 
             let dict: NSMutableDictionary = NSMutableDictionary()
-            dict.setObject("## Feedback Report ##\n**Date** \(dateString)\n**User Agent** \(userAgent)\n**FEEDBACK**\n\(feedback)",
+            dict.setObject("*Feedback Report*\n*Date* \(dateString)\n*User Agent* \(userAgent)\n*FEEDBACK*\n\(feedback)",
                             forKey: NSString.init(string: "text"))
             dict.setObject(true, forKey: NSString.init(string: "mrkdwn"))
 
