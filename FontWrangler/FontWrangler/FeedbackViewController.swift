@@ -99,7 +99,7 @@ class FeedbackViewController: UIViewController,
             let dateString = getDateString()
 
             let dict: NSMutableDictionary = NSMutableDictionary()
-            dict.setObject("*Feedback Report*\n*Date* \(dateString)\n*User Agent* \(userAgent)\n*FEEDBACK*\n\(feedback)",
+            dict.setObject("*FEEDBACK REPORT*\n*Date* \(dateString)\n*User Agent* \(userAgent)\n*FEEDBACK*\n\(feedback)",
                             forKey: NSString.init(string: "text"))
             dict.setObject(true, forKey: NSString.init(string: "mrkdwn"))
 
@@ -208,7 +208,29 @@ class FeedbackViewController: UIViewController,
         let app: String = bundle.object(forInfoDictionaryKey: "CFBundleExecutable") as! String
         let version: String = bundle.object(forInfoDictionaryKey: "CFBundleShortVersionString") as! String
         let build: String = bundle.object(forInfoDictionaryKey: "CFBundleVersion") as! String
-        return "\(app) \(version) (build \(build)) (iOS \(sysVer.majorVersion).\(sysVer.minorVersion).\(sysVer.patchVersion))"
+        return "\(app)/\(version).\(build) (\(getDeviceType()) iOS \(sysVer.majorVersion).\(sysVer.minorVersion).\(sysVer.patchVersion))"
+    }
+    
+    
+    func getDeviceType() -> String {
+        
+        // FROM 1.1.2
+        // Return a device-type string
+        
+        switch  UIDevice.current.userInterfaceIdiom {
+            case .phone:
+                    return "iPhone"
+            case .pad:
+                return "iPad"
+            case .tv:
+                return "ATV"
+            case .carPlay:
+                return "CarPlay Device"
+            case .mac:
+                return "Mac"
+            default:
+                return "Unknown"
+        }
     }
     
     
