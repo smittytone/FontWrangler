@@ -29,6 +29,14 @@ class HelpPageViewController: UIViewController, WKNavigationDelegate {
         // Load in page content using WKWebView
         self.pageWebView.navigationDelegate = self
         self.pageWebView.isHidden = true
+        
+        // FROM 1.1.2
+        // Switch the WKWebView to a non-persistent (RAM only)
+        // website data store
+        let wc: WKWebViewConfiguration = self.pageWebView.configuration
+        wc.websiteDataStore = WKWebsiteDataStore.nonPersistent()
+        
+        // Load up the page data
         let url = Bundle.main.url(forResource: "page\(self.index)", withExtension: "html", subdirectory: "help")!
         self.pageWebView.loadFileURL(url, allowingReadAccessTo: url)
         let request = URLRequest(url: url)
