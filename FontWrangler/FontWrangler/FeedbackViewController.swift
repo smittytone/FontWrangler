@@ -134,7 +134,8 @@ class FeedbackViewController: UIViewController,
                 }
             }
         } else {
-            self.dismiss(animated: true, completion: nil)
+            // Flash the border if there is no text
+            flashBorder()
         }
     }
 
@@ -270,17 +271,24 @@ class FeedbackViewController: UIViewController,
             textView.text = String(edit)
             
             // Tell the user about the limit by flashing the
-            // border colour red
-            textView.layer.borderColor = UIColor.red.cgColor
-            
-            // Switch the border back to grey in half a second
-            _ = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: false, block: { (timer) in
-                self.feedbackText.layer.borderColor = UIColor.gray.cgColor;
-            })
+            // border colour red and back
+            flashBorder()
         }
         
         // Set the text length label
         self.textLengthLabel.text = "\(self.feedbackText.text.count)/\(kMaxFeedbackCharacters)"
+    }
+    
+    
+    func flashBorder() {
+        
+        // Set the UITextView border colour red
+        self.feedbackText.layer.borderColor = UIColor.red.cgColor
+        
+        // Switch the border back to grey in half a second
+        _ = Timer.scheduledTimer(withTimeInterval: kFlashBorderTime, repeats: false, block: { (timer) in
+            self.feedbackText.layer.borderColor = UIColor.gray.cgColor;
+        })
     }
 
 }
