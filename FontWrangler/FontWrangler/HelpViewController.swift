@@ -31,7 +31,7 @@ class HelpViewController: UIViewController,
         self.pageIndex = 0
 
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
-        for i in 0..<3 {
+        for i in 0..<kHelpPageCount {
             let hpvc: HelpPageViewController = storyboard.instantiateViewController(withIdentifier: "help.page.view") as! HelpPageViewController
             hpvc.index = i
             pageViewControllers.append(hpvc)
@@ -100,7 +100,7 @@ class HelpViewController: UIViewController,
         
         let hpvc: HelpPageViewController = viewController as! HelpPageViewController
         
-        if hpvc.index == 2 {
+        if hpvc.index == kHelpPageCount - 1 {
             // Return nil to indicate we can't go any further
             return nil
         }
