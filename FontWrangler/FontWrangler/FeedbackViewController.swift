@@ -20,6 +20,7 @@ class FeedbackViewController: UIViewController,
     @IBOutlet var feedbackText: UITextView!
     @IBOutlet var connectionProgress: UIActivityIndicatorView!
     @IBOutlet var textLengthLabel: UILabel!
+    @IBOutlet var sendButton: UIButton!
     
     // MARK: - Private Properties
 
@@ -65,8 +66,11 @@ class FeedbackViewController: UIViewController,
         // ...and clear the feeback text entry field...
         self.feedbackText.text = ""
                 
-        // ...and set the text counter
+        // ...and set the text counter...
         self.textLengthLabel.text = "0/\(kMaxFeedbackCharacters)"
+        
+        // ..and the 'Send' button
+        self.sendButton.setTitle("Cancel", for: .normal)
     }
 
     
@@ -134,8 +138,8 @@ class FeedbackViewController: UIViewController,
                 }
             }
         } else {
-            // Flash the border if there is no text
-            flashBorder()
+            // Cancel the sheet
+            doCancel(sender: nil);
         }
     }
 
@@ -274,6 +278,10 @@ class FeedbackViewController: UIViewController,
             // border colour red and back
             flashBorder()
         }
+        
+        // Set the button title according to the amount of feedback text
+        self.sendButton.setTitle(self.feedbackText.text.count > 0 ? "Send" : "Cancel",
+                                 for: .normal)
         
         // Set the text length label
         self.textLengthLabel.text = "\(self.feedbackText.text.count)/\(kMaxFeedbackCharacters)"

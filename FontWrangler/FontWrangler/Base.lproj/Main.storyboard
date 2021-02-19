@@ -374,14 +374,14 @@
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <prototypes>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="variant.cell" id="s6R-e5-hht" customClass="FontVariantsTableViewCell" customModule="Fontismo" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="28" width="414" height="44"/>
+                                <rect key="frame" x="0.0" y="28" width="414" height="43.5"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="s6R-e5-hht" id="roM-ok-dfU">
-                                    <rect key="frame" x="0.0" y="0.0" width="414" height="44"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="414" height="43.5"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="uaK-Ee-cyN">
-                                            <rect key="frame" x="20" y="11" width="374" height="21.5"/>
+                                            <rect key="frame" x="20" y="11" width="374" height="21"/>
                                             <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="17"/>
                                             <nil key="textColor"/>
                                             <nil key="highlightedColor"/>
@@ -694,18 +694,6 @@
                                 </constraints>
                                 <color key="color" systemColor="systemGrayColor"/>
                             </activityIndicatorView>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="0y9-3Q-jgX">
-                                <rect key="frame" x="180" y="821" width="54" height="41"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="54" id="aiS-Ez-IVf"/>
-                                    <constraint firstAttribute="height" constant="41" id="foY-Tu-bdD"/>
-                                </constraints>
-                                <fontDescription key="fontDescription" type="system" pointSize="24"/>
-                                <state key="normal" title="Send"/>
-                                <connections>
-                                    <action selector="doSendWithSender:" destination="94C-gt-vLW" eventType="touchUpInside" id="JSV-jw-P6s"/>
-                                </connections>
-                            </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="XZl-ha-tFb">
                                 <rect key="frame" x="384" y="52" width="20" height="22"/>
                                 <constraints>
@@ -731,19 +719,30 @@
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="0y9-3Q-jgX">
+                                <rect key="frame" x="147" y="821" width="120" height="41"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="120" id="xcg-tI-OKo"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="24"/>
+                                <state key="normal" title="Send"/>
+                                <connections>
+                                    <action selector="doSendWithSender:" destination="94C-gt-vLW" eventType="touchUpInside" id="JSV-jw-P6s"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
                             <constraint firstItem="XZl-ha-tFb" firstAttribute="top" secondItem="rYC-FW-LnO" secondAttribute="bottom" constant="8" symbolic="YES" id="0cb-0h-T9Q"/>
                             <constraint firstItem="dlq-xQ-O6q" firstAttribute="centerX" secondItem="PI4-Qk-frU" secondAttribute="centerX" id="5BX-S1-OCy"/>
-                            <constraint firstItem="WBg-Eb-qpC" firstAttribute="top" secondItem="0y9-3Q-jgX" secondAttribute="bottom" id="67f-Gk-bao"/>
+                            <constraint firstItem="0y9-3Q-jgX" firstAttribute="bottom" secondItem="WBg-Eb-qpC" secondAttribute="top" id="6VT-Hv-C7d"/>
                             <constraint firstItem="NMo-D1-Har" firstAttribute="leading" secondItem="PI4-Qk-frU" secondAttribute="leadingMargin" id="8dO-Ds-keh"/>
                             <constraint firstItem="1GJ-oB-dAh" firstAttribute="leading" secondItem="PI4-Qk-frU" secondAttribute="leadingMargin" id="AnU-nB-ffd"/>
+                            <constraint firstItem="0y9-3Q-jgX" firstAttribute="centerX" secondItem="5qD-7Z-0Md" secondAttribute="centerX" id="CN4-2q-9ep"/>
                             <constraint firstItem="XZl-ha-tFb" firstAttribute="leading" secondItem="NMo-D1-Har" secondAttribute="trailing" constant="18" id="E1C-fb-CCI"/>
                             <constraint firstItem="XZl-ha-tFb" firstAttribute="trailing" secondItem="PI4-Qk-frU" secondAttribute="trailingMargin" constant="10" id="F7i-W4-18r"/>
-                            <constraint firstItem="0y9-3Q-jgX" firstAttribute="centerX" secondItem="PI4-Qk-frU" secondAttribute="centerX" id="Pgf-hH-S0d"/>
+                            <constraint firstItem="0y9-3Q-jgX" firstAttribute="top" secondItem="5qD-7Z-0Md" secondAttribute="bottom" constant="8" symbolic="YES" id="J6k-pk-yxn"/>
                             <constraint firstItem="5qD-7Z-0Md" firstAttribute="top" secondItem="1GJ-oB-dAh" secondAttribute="bottom" constant="8" symbolic="YES" id="S9L-j5-bPp"/>
-                            <constraint firstItem="0y9-3Q-jgX" firstAttribute="top" secondItem="5qD-7Z-0Md" secondAttribute="bottom" constant="8" symbolic="YES" id="TkI-LJ-NFR"/>
                             <constraint firstItem="dlq-xQ-O6q" firstAttribute="centerY" secondItem="PI4-Qk-frU" secondAttribute="centerY" id="a1z-WF-DBP"/>
                             <constraint firstItem="1GJ-oB-dAh" firstAttribute="top" secondItem="NMo-D1-Har" secondAttribute="bottom" constant="8" symbolic="YES" id="c6R-PN-yZe"/>
                             <constraint firstItem="5qD-7Z-0Md" firstAttribute="trailing" secondItem="PI4-Qk-frU" secondAttribute="trailingMargin" id="hUA-rw-bJu"/>
@@ -755,6 +754,7 @@
                     <connections>
                         <outlet property="connectionProgress" destination="dlq-xQ-O6q" id="fa1-LH-7Wb"/>
                         <outlet property="feedbackText" destination="1GJ-oB-dAh" id="FnF-bt-1og"/>
+                        <outlet property="sendButton" destination="0y9-3Q-jgX" id="Sd8-7h-3uj"/>
                         <outlet property="textLengthLabel" destination="5qD-7Z-0Md" id="xtz-fc-9Aj"/>
                     </connections>
                 </viewController>
