@@ -63,7 +63,7 @@ class HelpViewController: UIViewController,
         proxy.currentPageIndicatorTintColor = UIColor.label
     }
     
-
+    
     @IBAction func doClose(_ sender: Any) {
             
         // Close the Help panel
@@ -123,4 +123,5 @@ class HelpViewController: UIViewController,
         return self.pageIndex
     }
 
+    
 }

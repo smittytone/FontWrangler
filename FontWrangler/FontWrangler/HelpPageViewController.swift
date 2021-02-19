@@ -10,7 +10,8 @@ import UIKit
 import WebKit
 
 
-class HelpPageViewController: UIViewController, WKNavigationDelegate {
+class HelpPageViewController: UIViewController,
+                              WKNavigationDelegate {
 
 
     // MARK: - UI properties
@@ -22,12 +23,21 @@ class HelpPageViewController: UIViewController, WKNavigationDelegate {
     var index: Int = 0
 
     
+    // MARK: - Lifecycle Functions
+    
     override func viewDidLoad() {
         
         super.viewDidLoad()
 
         // Load in page content using WKWebView
         self.pageWebView.isHidden = true
+        self.pageWebView.navigationDelegate = self
+    }
+    
+    
+    override func viewWillAppear(_ animated: Bool) {
+        
+        super.viewWillAppear(animated)
         
         // FROM 1.1.2
         // Switch the WKWebView to a non-persistent (RAM only)
@@ -36,22 +46,24 @@ class HelpPageViewController: UIViewController, WKNavigationDelegate {
         wc.websiteDataStore = WKWebsiteDataStore.nonPersistent()
         
         // Load up the page data
-        let url = Bundle.main.url(forResource: "page\(self.index)", withExtension: "html", subdirectory: "help")!
-        self.pageWebView.loadFileURL(url, allowingReadAccessTo: url)
-        let request = URLRequest(url: url)
-        self.pageWebView.load(request)
+        let page_url = Bundle.main.url(forResource: "page\(self.index)",
+                                  withExtension: "html",
+                                  subdirectory: "help")!
+        let dir_url = Bundle.main.bundleURL.appendingPathComponent("help")
+        self.pageWebView.loadFileURL(page_url,
+                                     allowingReadAccessTo: dir_url)
+        //let request = URLRequest(url: page_url)
+        //self.pageWebView.load(request)
         
-        self.pageWebView.navigationDelegate = self
-    }
-    
-    
-    override func viewWillAppear(_ animated: Bool) {
+        self.pageWebView.evaluateJavaScript("window.scrollTo(0,0)",
+                                            completionHandler: nil)
         
-        super.viewWillAppear(animated)
         self.pageWebView.isHidden = false
     }
-
-
+    
+    
+    // MARK: - WKWebView Navigation Functions
+    
     func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
 
     }
@@ -97,7 +109,9 @@ class HelpPageViewController: UIViewController, WKNavigationDelegate {
         }
     }
 
-
+    
+    // MARK: - Action Functions
+    
     func openURL(_ url: URL) {
 
         // Just open the external URL specified
