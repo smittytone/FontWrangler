@@ -374,14 +374,14 @@
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <prototypes>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="variant.cell" id="s6R-e5-hht" customClass="FontVariantsTableViewCell" customModule="Fontismo" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="28" width="414" height="44"/>
+                                <rect key="frame" x="0.0" y="28" width="414" height="43.5"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="s6R-e5-hht" id="roM-ok-dfU">
-                                    <rect key="frame" x="0.0" y="0.0" width="414" height="44"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="414" height="43.5"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="uaK-Ee-cyN">
-                                            <rect key="frame" x="20" y="11" width="374" height="21.5"/>
+                                            <rect key="frame" x="20" y="11" width="374" height="21"/>
                                             <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="17"/>
                                             <nil key="textColor"/>
                                             <nil key="highlightedColor"/>
@@ -507,7 +507,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" editable="NO" usesAttributedText="YES" selectable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0pJ-ui-2WR">
-                                <rect key="frame" x="20" y="64" width="374" height="778"/>
+                                <rect key="frame" x="20" y="64" width="374" height="798"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <attributedString key="attributedText">
                                     <fragment content="Welcome to Fontismo!">
@@ -572,7 +572,7 @@
                                         </attributes>
                                     </fragment>
                                     <fragment>
-                                        <string key="content"> at the top to install them all.  Tap installed typefaces for a full preview, in all their available styles and weights. Installed typefaces can be removed by swiping right to left then tapping </string>
+                                        <string key="content"> to install them all.  Tap installed typefaces for a full preview, in all their available styles and weights. Installed typefaces can be removed by swiping right to left on the list then tapping </string>
                                         <attributes>
                                             <color key="NSColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                             <font key="NSFont" size="20" name="Avenir-Book"/>
@@ -588,7 +588,7 @@
                                         </attributes>
                                     </fragment>
                                     <fragment>
-                                        <string key="content">.  Installed typefaces can be used in any app that supports iOS’ fonts functionality.  Tap the app’s menu for more options, including help.  If you like </string>
+                                        <string key="content">.  Installed typefaces can be used in any app that supports iOS’ fonts functionality.  Tap the app’s menu for more options, including help and submitting feedback.  If you like </string>
                                         <attributes>
                                             <color key="NSColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                             <font key="NSFont" size="20" name="Avenir-Book"/>
@@ -598,12 +598,11 @@
                                     <fragment content="Fontismo">
                                         <attributes>
                                             <color key="NSColor" name="textColor" catalog="System" colorSpace="catalog"/>
-                                            <font key="NSFont" size="20" name="Avenir-Heavy"/>
-                                            <font key="NSOriginalFont" size="20" name="Avenir-Heavy"/>
+                                            <font key="NSFont" size="20" name="Avenir-Medium"/>
                                             <paragraphStyle key="NSParagraphStyle" alignment="left" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0"/>
                                         </attributes>
                                     </fragment>
-                                    <fragment content=", please write an App Store review or submit feedback — you can take either of these actions from the menu.">
+                                    <fragment content=", please rate it in the App Store.">
                                         <attributes>
                                             <color key="NSColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                             <font key="NSFont" size="20" name="Avenir-Book"/>
@@ -632,7 +631,7 @@
                             <constraint firstAttribute="trailing" secondItem="zlo-Ph-VhA" secondAttribute="trailing" constant="20" id="6R7-pW-pzU"/>
                             <constraint firstItem="zlo-Ph-VhA" firstAttribute="top" secondItem="ncu-tA-5vg" secondAttribute="bottom" constant="20" id="Jdx-WZ-Ibd"/>
                             <constraint firstAttribute="trailing" secondItem="0pJ-ui-2WR" secondAttribute="trailing" constant="20" id="LZG-G0-QhC"/>
-                            <constraint firstItem="2DK-S3-fq3" firstAttribute="top" secondItem="0pJ-ui-2WR" secondAttribute="bottom" constant="20" id="RJH-c8-Hcx"/>
+                            <constraint firstItem="2DK-S3-fq3" firstAttribute="top" secondItem="0pJ-ui-2WR" secondAttribute="bottom" id="RJH-c8-Hcx"/>
                             <constraint firstItem="0pJ-ui-2WR" firstAttribute="leading" secondItem="4xe-y5-s98" secondAttribute="leading" constant="20" id="bXa-W8-jZO"/>
                         </constraints>
                     </view>
@@ -642,7 +641,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="JHW-Yh-1yF" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-1923.0215827338131" y="280.57553956834533"/>
+            <point key="canvasLocation" x="-1923.1884057971015" y="279.91071428571428"/>
         </scene>
         <!--Feedback View Controller-->
         <scene sceneID="ZcS-pa-h7g">
