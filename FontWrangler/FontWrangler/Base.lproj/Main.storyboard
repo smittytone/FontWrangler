@@ -421,10 +421,10 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <wkWebView contentMode="scaleToFill" allowsLinkPreview="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ezY-cM-xVa">
+                            <wkWebView contentMode="TopLeft" semanticContentAttribute="forceLeftToRight" allowsLinkPreview="NO" customUserAgent="Fontismo 1.1.2 (iOS)" translatesAutoresizingMaskIntoConstraints="NO" id="ezY-cM-xVa">
                                 <rect key="frame" x="20" y="44" width="374" height="798"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
-                                <wkWebViewConfiguration key="configuration" allowsAirPlayForMediaPlayback="NO" allowsPictureInPictureMediaPlayback="NO" suppressesIncrementalRendering="YES">
+                                <wkWebViewConfiguration key="configuration" allowsAirPlayForMediaPlayback="NO" allowsPictureInPictureMediaPlayback="NO" applicationNameForUserAgent="Fontismo">
                                     <dataDetectorTypes key="dataDetectorTypes" link="YES"/>
                                     <audiovisualMediaTypes key="mediaTypesRequiringUserActionForPlayback" none="YES"/>
                                     <wkPreferences key="preferences" javaScriptEnabled="NO"/>
@@ -587,21 +587,8 @@
                                             <paragraphStyle key="NSParagraphStyle" alignment="left" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0"/>
                                         </attributes>
                                     </fragment>
-                                    <fragment content=".  Installed typefaces can be used in any app that supports iOS’ fonts functionality.  Tap ">
-                                        <attributes>
-                                            <color key="NSColor" name="textColor" catalog="System" colorSpace="catalog"/>
-                                            <font key="NSFont" size="20" name="Avenir-Book"/>
-                                            <paragraphStyle key="NSParagraphStyle" alignment="left" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0"/>
-                                        </attributes>
-                                    </fragment>
-                                    <fragment content="Help">
-                                        <attributes>
-                                            <color key="NSColor" name="textColor" catalog="System" colorSpace="catalog"/>
-                                            <font key="NSFont" size="20" name="Avenir-Heavy"/>
-                                            <paragraphStyle key="NSParagraphStyle" alignment="left" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0"/>
-                                        </attributes>
-                                    </fragment>
-                                    <fragment content=" in the app for more information.  If you find ">
+                                    <fragment>
+                                        <string key="content">.  Installed typefaces can be used in any app that supports iOS’ fonts functionality.  Tap the app’s menu for more options, including help.  If you like </string>
                                         <attributes>
                                             <color key="NSColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                             <font key="NSFont" size="20" name="Avenir-Book"/>
@@ -616,7 +603,7 @@
                                             <paragraphStyle key="NSParagraphStyle" alignment="left" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0"/>
                                         </attributes>
                                     </fragment>
-                                    <fragment content=" useful, please write an App Store review — you can do this from the menu. You can also submit feedback.">
+                                    <fragment content=", please write an App Store review or submit feedback — you can take either of these actions from the menu.">
                                         <attributes>
                                             <color key="NSColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                             <font key="NSFont" size="20" name="Avenir-Book"/>

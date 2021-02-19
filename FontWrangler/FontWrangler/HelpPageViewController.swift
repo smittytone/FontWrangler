@@ -27,7 +27,6 @@ class HelpPageViewController: UIViewController, WKNavigationDelegate {
         super.viewDidLoad()
 
         // Load in page content using WKWebView
-        self.pageWebView.navigationDelegate = self
         self.pageWebView.isHidden = true
         
         // FROM 1.1.2
@@ -41,6 +40,8 @@ class HelpPageViewController: UIViewController, WKNavigationDelegate {
         self.pageWebView.loadFileURL(url, allowingReadAccessTo: url)
         let request = URLRequest(url: url)
         self.pageWebView.load(request)
+        
+        self.pageWebView.navigationDelegate = self
     }
     
     
