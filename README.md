@@ -12,7 +12,7 @@ Please see [this page](https://smittytone.net/fontismo/index.html).
 
 ## Release Notes ##
 
-- 1.1.2 *Unreleased*
+- 1.1.2 *21 February 2021*
     - Added Ten bonus fonts.
     - Replace **Help** button with a menu to support addition of future features.
     - Allow the user to submit bug reports and feedback.
