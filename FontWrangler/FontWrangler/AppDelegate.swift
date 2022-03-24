@@ -24,30 +24,30 @@ class AppDelegate: UIResponder,
 
         // The app version
         defaults.set(Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as! String,
-                     forKey: "com.bps.fontwrangler.app.version")
+                     forKey: kDefaultsKeys.appVersion)
 
         // The app build
         defaults.set(Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as! String,
-                     forKey: "com.bps.fontwrangler.app.build")
+                     forKey: kDefaultsKeys.appBuild)
 
         // Whether the app should show first-run guidance
         // NOTE Check for key presence before writing a default value, otherwise
         //      the panel is always shown when the app launches
-        let introKeyIsPresent = defaults.object(forKey: "com.bps.fontwrangler.app.show.intro")
+        let introKeyIsPresent = defaults.object(forKey: kDefaultsKeys.shouldShowIntro)
         if introKeyIsPresent == nil {
-            defaults.set(true, forKey: "com.bps.fontwrangler.app.show.intro")
+            defaults.set(true, forKey: kDefaultsKeys.shouldShowIntro)
         }
         
         // Set the creators string for the Settings > Authors readout
         let creators = self.getCreators()
         if creators != "" {
-            defaults.set(creators, forKey: "com.bps.fontwrangler.app.licence.authors")
+            defaults.set(creators, forKey: kDefaultsKeys.authors)
         }
         
         // FROM 1.2.0
-        let newKeyIsPresent = defaults.object(forKey: "com.bps.fontismo.show.new")
+        let newKeyIsPresent = defaults.object(forKey: kDefaultsKeys.shouldShowNewFonts)
         if newKeyIsPresent == nil {
-            defaults.set(true, forKey: "com.bps.fontismo.show.new")
+            defaults.set(true, forKey: kDefaultsKeys.shouldShowNewFonts)
         }
         
         return true

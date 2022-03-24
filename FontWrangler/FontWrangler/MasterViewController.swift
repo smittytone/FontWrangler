@@ -170,7 +170,7 @@ class MasterViewController: UITableViewController,
 
         // Get the default to see if we go ahead and display the intro panel
         let defaults: UserDefaults = UserDefaults.standard
-        let showIntro = defaults.bool(forKey: "com.bps.fontwrangler.app.show.intro")
+        let showIntro = defaults.bool(forKey: kDefaultsKeys.shouldShowIntro)
 
         if showIntro {
             // Load and configure the menu view controller.
@@ -184,7 +184,7 @@ class MasterViewController: UITableViewController,
             self.splitViewController!.present(ivc, animated: true, completion: nil)
 
             // Write out to defaults so that the panel isn't shown again
-            defaults.set(false, forKey: "com.bps.fontwrangler.app.show.intro")
+            defaults.set(false, forKey: kDefaultsKeys.shouldShowIntro)
         }
     }
     

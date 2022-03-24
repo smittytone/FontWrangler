@@ -33,6 +33,10 @@ let kAppStoreURL                       = "https://apps.apple.com/app/id150539610
 let kWebsiteURL                        = "https://smittytone.net/fontismo/index.html"
 
 enum kDefaultsKeys {
+    static let appVersion              = "com.bps.fontwrangler.app.version"
+    static let appBuild                = "com.bps.fontwrangler.app.build"
+    static let shouldShowIntro         = "com.bps.fontwrangler.app.show.intro"
+    static let authors                 = "com.bps.fontwrangler.app.licence.authors"
     static let fontInstallCount        = "com.bps.fontismo.font.installs"
     static let lastReviewVersion       = "com.bps.fontismo.review.version"
     static let shouldShowNewFonts      = "com.bps.fontismo.show.new"
