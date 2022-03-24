@@ -44,6 +44,12 @@ class AppDelegate: UIResponder,
             defaults.set(creators, forKey: "com.bps.fontwrangler.app.licence.authors")
         }
         
+        // FROM 1.2.0
+        let newKeyIsPresent = defaults.object(forKey: "com.bps.fontismo.show.new")
+        if newKeyIsPresent == nil {
+            defaults.set(true, forKey: "com.bps.fontismo.show.new")
+        }
+        
         return true
     }
 

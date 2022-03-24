@@ -30,6 +30,8 @@ class MasterViewController: UITableViewController,
     private var installCount: Int = -1
     // FROM 1.1.2
     private var menuButton: UIBarButtonItem? = nil
+    // FROM 1.2.0
+    private var doShowNew: Bool = true
     
     // MARK:- Public Instance Properties
     
@@ -148,6 +150,9 @@ class MasterViewController: UITableViewController,
 
         // Update the UI
         self.setInstallButtonState()
+        
+        // FROM 1.2.0
+        self.doShowNew = UserDefaults.standard.bool(forKey: kDefaultsKeys.shouldShowNewFonts)
 
         // Show the intro panel
         // NOTE 'showIntroPanel()' checks whether the panel should
@@ -214,6 +219,9 @@ class MasterViewController: UITableViewController,
                 newFont.psname = aFont["name"] ?? ""
                 newFont.path = aFont["path"] ?? ""
                 newFont.tag = aFont["tag"] ?? ""
+                
+                let flag: String = aFont["new"] ?? ""
+                newFont.isNew = (flag == "true")
                 self.fonts.append(newFont)
             }
             
@@ -292,23 +300,27 @@ class MasterViewController: UITableViewController,
                             print("\(self.fonts.count - loadedFonts.count) new fonts added to defaults")
                         #endif
                         
-                        for font: UserFont in self.fonts {
-                            for loadedFont: UserFont in loadedFonts {
-                                // Compare file names when looking for added fonts
-                                if loadedFont.name == font.name {
-                                    font.isInstalled = loadedFont.isInstalled
-                                    font.isDownloaded = loadedFont.isDownloaded
-                                    break
-                                }
+                    }
+                    
+                    for font: UserFont in self.fonts {
+                        for loadedFont: UserFont in loadedFonts {
+                            // Compare file names when looking for added fonts
+                            if loadedFont.name == font.name {
+                                font.isInstalled = loadedFont.isInstalled
+                                font.isDownloaded = loadedFont.isDownloaded
+                                break
                             }
                         }
-                        
-                        // Store it
-                        self.saveFontList()
+                    }
+                    
+                    // Store it
+                    self.saveFontList()
+                    
+                    /*
                     } else {
                         self.fonts = loadedFonts
                     }
-                    
+                    */
                     self.isFontListLoaded = true
                 }
             } else {
@@ -349,6 +361,7 @@ class MasterViewController: UITableViewController,
                     let newFamily: FontFamily = FontFamily()
                     newFamily.tag = font.tag
                     newFamily.name = self.getPrinteableName(font.tag)
+                    newFamily.isNew = font.isNew
                     self.families.append(newFamily)
                 }
             }
@@ -915,7 +928,20 @@ class MasterViewController: UITableViewController,
             // Get the referenced family and use its name
             // NOTE Name is already human-readable
             let family = self.families[indexPath.row]
-            cell.fontNameLabel!.text = family.name
+            
+            // FROM 1.2.0
+            // Highlight new fonts
+            if family.isNew && self.doShowNew {
+                let imageAttachment: NSTextAttachment = NSTextAttachment.init()
+                imageAttachment.image = UIImage.init(systemName: "checkmark.seal.fill")
+                imageAttachment.image = imageAttachment.image!.withTintColor(UIColor.systemBlue)
+                let imageString = NSAttributedString(attachment: imageAttachment)
+                let labelString = NSMutableAttributedString(string: family.name + " ")
+                labelString.append(imageString)
+                cell.fontNameLabel!.attributedText = labelString
+            } else {
+                cell.fontNameLabel!.text = family.name
+            }
 
             // Get all the fonts in the family
             if let fontIndexes: [Int] = family.fontIndices {

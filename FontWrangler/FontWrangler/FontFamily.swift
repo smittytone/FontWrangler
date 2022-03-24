@@ -26,5 +26,8 @@ class FontFamily: NSObject {
     var fontsAreInstalled: Bool = false         // Are all the family's fonts installed?
     var fontIndices: [Int]? = nil               // Array of indices to fonts in primary array
     var progress: Progress? = nil               // NSProgress instances used during font installation
-    var timer: Timer? = nil                     // Timer instance used to timeout installation 
+    var timer: Timer? = nil                     // Timer instance used to timeout installation
+    
+    // FROM 1.2.0
+    var isNew: Bool = false
 }

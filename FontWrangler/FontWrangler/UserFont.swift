@@ -33,7 +33,10 @@ class UserFont: NSObject,
     var isInstalled: Bool = false           // Is the font installed on the iPad?
     var isDownloaded: Bool = false          // Is the font newly extracted from the app's Documents folder?
     var updated: Bool = false               // Temporary use flag
-
+    
+    // FROM 1.2.0
+    var isNew: Bool = false                 // Is the font a new addition?
+    
     
     // MARK: - Initialization Methods
 
@@ -46,6 +49,7 @@ class UserFont: NSObject,
         self.tag = ""
         self.isInstalled = false
         self.isDownloaded = false
+        self.isNew = false
     }
     
     
@@ -60,6 +64,7 @@ class UserFont: NSObject,
         self.tag = ""
         self.isInstalled = false
         self.isDownloaded = false
+        self.isNew = false
        
         // Support iOS 12+ secure method for decoding objects
         self.version = decoder.decodeObject(of: NSString.self, forKey: "font.version") as String? ?? ""
@@ -69,6 +74,11 @@ class UserFont: NSObject,
         self.tag = decoder.decodeObject(of: NSString.self, forKey: "font.tag") as String? ?? ""
         self.isInstalled = decoder.decodeObject(of: NSNumber.self, forKey: "font.installed") as! Bool
         self.isDownloaded = decoder.decodeObject(of: NSNumber.self, forKey: "font.downloaded") as! Bool
+        
+        // FROM 1.2.0
+        // Catch old versions that may not include this key
+        let result: NSNumber = decoder.decodeObject(of: NSNumber.self, forKey: "font.new") ?? 0
+        self.isNew = result as! Bool
     }
 
     
@@ -82,5 +92,6 @@ class UserFont: NSObject,
         encoder.encode(self.tag as NSString, forKey: "font.tag")
         encoder.encode(NSNumber(value: self.isInstalled), forKey: "font.installed")
         encoder.encode(NSNumber(value: self.isDownloaded), forKey: "font.downloaded")
+        encoder.encode(NSNumber(value: self.isNew), forKey: "font.new")
     }
 }
