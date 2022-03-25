@@ -932,12 +932,13 @@ class MasterViewController: UITableViewController,
             // FROM 1.2.0
             // Highlight new fonts
             if family.isNew && self.doShowNew {
-                let imageAttachment: NSTextAttachment = NSTextAttachment.init()
-                imageAttachment.image = UIImage.init(systemName: "checkmark.seal.fill")
-                imageAttachment.image = imageAttachment.image!.withTintColor(UIColor.systemBlue)
-                let imageString = NSAttributedString(attachment: imageAttachment)
                 let labelString = NSMutableAttributedString(string: family.name + " ")
-                labelString.append(imageString)
+                let imageAttachment: NSTextAttachment = NSTextAttachment.init()
+                if let sealImage = UIImage.init(systemName: "checkmark.seal.fill") {
+                    imageAttachment.image = sealImage.withTintColor(UIColor.systemBlue)
+                    let imageString = NSAttributedString(attachment: imageAttachment)
+                    labelString.append(imageString)
+                }
                 cell.fontNameLabel!.attributedText = labelString
             } else {
                 cell.fontNameLabel!.text = family.name
@@ -1297,6 +1298,12 @@ class MasterViewController: UITableViewController,
         
         // Get the family human-readable name from the tag,
         // eg. convert 'my_font_one' to 'My Font One'
+        
+        // FROM 1.2.0
+        // Hack for Amatic Sc -> Amatic Small Caps
+        if name == "amatic_sc" {
+            return "Amatic Small Caps"
+        }
         
         var printeableName: String = ""
         let parts = (name as NSString).components(separatedBy: separator)
