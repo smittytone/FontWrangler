@@ -15,6 +15,7 @@ Please see [this page](https://smittytone.net/fontismo/index.html).
 - 1.2.0 *Unreleased*
     - Added ten new fonts.
     - Optionally highlight the app’s new fonts. Default: true.
+    - Separate help for iPhone and iPad versions.
 - 1.1.2 *21 February 2021*
     - Added ten new fonts.
     - Replace **Help** button with a menu to support addition of future features.
