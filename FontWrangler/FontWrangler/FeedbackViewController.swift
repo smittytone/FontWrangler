@@ -232,9 +232,9 @@ class FeedbackViewController: UIViewController,
         // FROM 1.1.2
         // Return a device-type string
         
-        switch  UIDevice.current.userInterfaceIdiom {
+        switch UIDevice.current.userInterfaceIdiom {
             case .phone:
-                    return "iPhone"
+                return "iPhone"
             case .pad:
                 return "iPad"
             case .tv:

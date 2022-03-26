@@ -54,7 +54,7 @@ class FeedbackPresentationController: UIPresentationController {
     
     override init(presentedViewController: UIViewController, presenting presentingViewController: UIViewController?) {
         
-        // Set up the backgrojnd blur
+        // Set up the background blur
         let blurEffect = UIBlurEffect(style: .systemThinMaterial)
         self.blurEffectView = UIVisualEffectView(effect: blurEffect)
         self.blurEffectView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
