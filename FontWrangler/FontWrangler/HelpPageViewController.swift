@@ -45,10 +45,14 @@ class HelpPageViewController: UIViewController,
         let wc: WKWebViewConfiguration = self.pageWebView.configuration
         wc.websiteDataStore = WKWebsiteDataStore.nonPersistent()
         
-        // Load up the page data
-        let page_url = Bundle.main.url(forResource: "page\(self.index)",
+        // FROM 1.2.0
+        // Add separate CSS, HTML for iPhone and iPad versions
+        let pagePrefix = UIDevice.current.userInterfaceIdiom == .phone ? "phone" : "pad"
+        let page_url = Bundle.main.url(forResource: "\(pagePrefix)_page\(self.index)",
                                   withExtension: "html",
                                   subdirectory: "help")!
+        
+        // Load up the page data
         let dir_url = Bundle.main.bundleURL.appendingPathComponent("help")
         self.pageWebView.loadFileURL(page_url,
                                      allowingReadAccessTo: dir_url)
