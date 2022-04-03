@@ -29,18 +29,35 @@ let kHelpPageCount                      = 4
 
 let kFontInstallCountBeforeReviewRequest = 20
 
-let kAppStoreURL                       = "https://apps.apple.com/app/id1505396103"
-let kWebsiteURL                        = "https://smittytone.net/fontismo/index.html"
+let kAppStoreURL                        = "https://apps.apple.com/app/id1505396103"
+let kWebsiteURL                         = "https://smittytone.net/fontismo/index.html"
 
 enum kDefaultsKeys {
-    static let appVersion              = "com.bps.fontwrangler.app.version"
-    static let appBuild                = "com.bps.fontwrangler.app.build"
-    static let shouldShowIntro         = "com.bps.fontwrangler.app.show.intro"
-    static let authors                 = "com.bps.fontwrangler.app.licence.authors"
-    static let fontInstallCount        = "com.bps.fontismo.font.installs"
-    static let lastReviewVersion       = "com.bps.fontismo.review.version"
-    static let shouldShowNewFonts      = "com.bps.fontismo.show.new"
+    static let appVersion               = "com.bps.fontwrangler.app.version"
+    static let appBuild                 = "com.bps.fontwrangler.app.build"
+    static let shouldShowIntro          = "com.bps.fontwrangler.app.show.intro"
+    static let authors                  = "com.bps.fontwrangler.app.licence.authors"
+    static let fontInstallCount         = "com.bps.fontismo.font.installs"
+    static let lastReviewVersion        = "com.bps.fontismo.review.version"
+    static let shouldShowNewFonts       = "com.bps.fontismo.show.new"
 }
 
 let kMaxFeedbackCharacters              = 512
 let kFlashBorderTime                    = 0.2
+
+// FROM 1.2.0
+
+enum kTipTypes {
+    static let huge                     = "com.bps.fontismo.tip.huge"
+    static let large                    = "com.bps.fontismo.tip.large"
+    static let medium                   = "com.bps.fontismo.tip.medium"
+    static let small                    = "com.bps.fontismo.tip.small"
+    static let tiny                     = "com.bps.fontismo.tip.tiny"
+}
+
+enum kPaymentNotifications {
+    static let tip                      = "com.bps.fontismo.notification.tip.received"
+    static let restored                 = "com.bps.fontismo.notification.purchases.restored"
+    static let updated                  = "com.bps.fontismo.notification.products.updated"
+    static let failed                   = "com.bps.fontismo.notification.purchase.failed"
+}

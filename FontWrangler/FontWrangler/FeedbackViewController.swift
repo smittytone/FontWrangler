@@ -223,11 +223,11 @@ class FeedbackViewController: UIViewController,
         let app: String = bundle.object(forInfoDictionaryKey: "CFBundleExecutable") as! String
         let version: String = bundle.object(forInfoDictionaryKey: "CFBundleShortVersionString") as! String
         let build: String = bundle.object(forInfoDictionaryKey: "CFBundleVersion") as! String
-        return "\(app)/\(version).\(build) (\(getDeviceType()) iOS \(sysVer.majorVersion).\(sysVer.minorVersion).\(sysVer.patchVersion))"
+        return "\(app)/\(version).\(build) (\(FeedbackViewController.getDeviceType()) iOS \(sysVer.majorVersion).\(sysVer.minorVersion).\(sysVer.patchVersion))"
     }
     
     
-    func getDeviceType() -> String {
+    static func getDeviceType() -> String {
         
         // FROM 1.1.2
         // Return a device-type string

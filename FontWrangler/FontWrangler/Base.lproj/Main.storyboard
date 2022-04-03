@@ -381,7 +381,7 @@
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="uaK-Ee-cyN">
-                                            <rect key="frame" x="20" y="11" width="374" height="21"/>
+                                            <rect key="frame" x="20" y="11" width="374" height="21.5"/>
                                             <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="17"/>
                                             <nil key="textColor"/>
                                             <nil key="highlightedColor"/>
@@ -643,6 +643,116 @@
             </objects>
             <point key="canvasLocation" x="-1923.1884057971015" y="279.91071428571428"/>
         </scene>
+        <!--Tip View Controller-->
+        <scene sceneID="sOf-J9-Gj8">
+            <objects>
+                <viewController storyboardIdentifier="tip.view.controller" useStoryboardIdentifierAsRestorationIdentifier="YES" id="n1C-uQ-Ts9" customClass="TipViewController" customModule="Fontismo" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="Ooi-yj-tBI"/>
+                        <viewControllerLayoutGuide type="bottom" id="JT2-oy-OeJ"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="KM8-cH-gsU">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ziN-cz-Uoo">
+                                <rect key="frame" x="20" y="823" width="374" height="31"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="31" id="fTc-hr-aVA"/>
+                                </constraints>
+                                <color key="tintColor" systemColor="systemBlueColor"/>
+                                <state key="normal" title="Button"/>
+                                <buttonConfiguration key="configuration" style="plain" title="Send your tip">
+                                    <fontDescription key="titleFontDescription" type="system" weight="medium" pointSize="24"/>
+                                </buttonConfiguration>
+                            </button>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="icon-tips" translatesAutoresizingMaskIntoConstraints="NO" id="5Zd-EA-8Uo">
+                                <rect key="frame" x="175" y="52" width="64" height="64"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="64" id="906-vP-BTw"/>
+                                    <constraint firstAttribute="height" constant="64" id="k4d-wW-ZSb"/>
+                                </constraints>
+                            </imageView>
+                            <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="large" translatesAutoresizingMaskIntoConstraints="NO" id="eWd-vT-6KD">
+                                <rect key="frame" x="197" y="438" width="20" height="20"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="20" id="Rxh-0q-VOm"/>
+                                    <constraint firstAttribute="width" constant="20" id="ZJf-qp-R6k"/>
+                                </constraints>
+                                <color key="color" systemColor="labelColor"/>
+                            </activityIndicatorView>
+                            <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Sorry, you haven’t enabled App Store payments" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="8" adjustsLetterSpacingToFitWidth="YES" translatesAutoresizingMaskIntoConstraints="NO" id="DHE-OJ-CDH">
+                                <rect key="frame" x="20" y="409" width="374" height="21"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="21" id="4FR-3V-btb"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Thank you!" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="c2V-W8-Xkh">
+                                <rect key="frame" x="20" y="466" width="374" height="58"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="58" id="DzP-WK-Ekl"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="48"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="YXY-y9-je5">
+                                <rect key="frame" x="335" y="52" width="59" height="31"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="59" id="TaH-rd-igv"/>
+                                    <constraint firstAttribute="height" constant="31" id="q4U-2S-7DR"/>
+                                </constraints>
+                                <state key="normal" title="Button"/>
+                                <buttonConfiguration key="configuration" style="plain" title="Done"/>
+                                <connections>
+                                    <action selector="doDone:" destination="n1C-uQ-Ts9" eventType="touchUpInside" id="tFW-2K-Z51"/>
+                                </connections>
+                            </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Please put a penny in the old man’s hat. It supports the ongoing development of this app and the hosting of its website." lineBreakMode="tailTruncation" numberOfLines="8" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="VwY-5A-oV9">
+                                <rect key="frame" x="20" y="124" width="374" height="277"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="VwY-5A-oV9" firstAttribute="trailing" secondItem="KM8-cH-gsU" secondAttribute="trailingMargin" id="5nK-4n-uuC"/>
+                            <constraint firstItem="VwY-5A-oV9" firstAttribute="leading" secondItem="KM8-cH-gsU" secondAttribute="leadingMargin" id="6h5-cz-oUs"/>
+                            <constraint firstItem="DHE-OJ-CDH" firstAttribute="leading" secondItem="KM8-cH-gsU" secondAttribute="leadingMargin" id="7Xn-Id-Xad"/>
+                            <constraint firstItem="YXY-y9-je5" firstAttribute="trailing" secondItem="KM8-cH-gsU" secondAttribute="trailingMargin" id="7iP-6d-7Hb"/>
+                            <constraint firstItem="YXY-y9-je5" firstAttribute="top" secondItem="Ooi-yj-tBI" secondAttribute="bottom" constant="8" symbolic="YES" id="ABD-cg-4Vg"/>
+                            <constraint firstItem="5Zd-EA-8Uo" firstAttribute="centerX" secondItem="KM8-cH-gsU" secondAttribute="centerX" id="Axf-Hi-VMI"/>
+                            <constraint firstItem="ziN-cz-Uoo" firstAttribute="leading" secondItem="KM8-cH-gsU" secondAttribute="leadingMargin" id="DPZ-hX-AR7"/>
+                            <constraint firstItem="JT2-oy-OeJ" firstAttribute="top" secondItem="ziN-cz-Uoo" secondAttribute="bottom" constant="8" symbolic="YES" id="Ll8-E9-TuJ"/>
+                            <constraint firstItem="eWd-vT-6KD" firstAttribute="centerY" secondItem="KM8-cH-gsU" secondAttribute="centerY" id="MkT-Vc-CMx"/>
+                            <constraint firstItem="eWd-vT-6KD" firstAttribute="top" secondItem="DHE-OJ-CDH" secondAttribute="bottom" constant="8" symbolic="YES" id="OkK-0k-VPh"/>
+                            <constraint firstItem="VwY-5A-oV9" firstAttribute="top" secondItem="5Zd-EA-8Uo" secondAttribute="bottom" constant="8" symbolic="YES" id="ZyT-wJ-rcO"/>
+                            <constraint firstItem="c2V-W8-Xkh" firstAttribute="trailing" secondItem="KM8-cH-gsU" secondAttribute="trailingMargin" id="e75-NB-lVu"/>
+                            <constraint firstItem="c2V-W8-Xkh" firstAttribute="top" secondItem="eWd-vT-6KD" secondAttribute="bottom" constant="8" symbolic="YES" id="ix3-Bc-X5w"/>
+                            <constraint firstItem="YXY-y9-je5" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="5Zd-EA-8Uo" secondAttribute="trailing" constant="8" symbolic="YES" id="mzp-eq-gHU"/>
+                            <constraint firstItem="c2V-W8-Xkh" firstAttribute="leading" secondItem="KM8-cH-gsU" secondAttribute="leadingMargin" id="oua-SI-AGU"/>
+                            <constraint firstItem="DHE-OJ-CDH" firstAttribute="top" secondItem="VwY-5A-oV9" secondAttribute="bottom" constant="8" symbolic="YES" id="ra1-F1-SoS"/>
+                            <constraint firstItem="5Zd-EA-8Uo" firstAttribute="top" secondItem="Ooi-yj-tBI" secondAttribute="bottom" constant="8" symbolic="YES" id="ro2-wL-veg"/>
+                            <constraint firstItem="DHE-OJ-CDH" firstAttribute="trailing" secondItem="KM8-cH-gsU" secondAttribute="trailingMargin" id="sJs-cR-2V7"/>
+                            <constraint firstItem="ziN-cz-Uoo" firstAttribute="trailing" secondItem="KM8-cH-gsU" secondAttribute="trailingMargin" id="teI-ym-lvw"/>
+                            <constraint firstItem="eWd-vT-6KD" firstAttribute="centerX" secondItem="KM8-cH-gsU" secondAttribute="centerX" id="vLA-Kb-Vhj"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="cantMakePaymentsLabel" destination="DHE-OJ-CDH" id="MwP-hs-1Nc"/>
+                        <outlet property="makePaymentButton" destination="ziN-cz-Uoo" id="YVL-qx-xeg"/>
+                        <outlet property="storeProgress" destination="eWd-vT-6KD" id="twp-Gc-Qha"/>
+                        <outlet property="thankYouLabel" destination="c2V-W8-Xkh" id="nvK-rH-jCP"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="dzj-jH-ODd" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-1062.3188405797102" y="-1203.3482142857142"/>
+        </scene>
         <!--Feedback View Controller-->
         <scene sceneID="ZcS-pa-h7g">
             <objects>
@@ -753,6 +863,7 @@
         <segue reference="P8n-YU-qfu"/>
     </inferredMetricsTieBreakers>
     <resources>
+        <image name="icon-tips" width="64" height="64"/>
         <image name="slider_max" width="32" height="32"/>
         <image name="slider_min" width="32" height="32"/>
         <image name="xmark.circle.fill" catalog="system" width="128" height="121"/>

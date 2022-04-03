@@ -1158,6 +1158,16 @@ class MasterViewController: UITableViewController,
 
         actionMenu.addAction(action)
         
+        // FROM 1.2.0
+        // Allow the user to report a bug
+        action = UIAlertAction.init(title: "Tip the Developer",
+                                    style: .default,
+                                    handler: { (anAction) in
+                                        self.doShowTipSheet(self)
+                                    })
+
+        actionMenu.addAction(action)
+        
         // If we're on an iPad we need to do a little extra setup
         // before presenting it, in order to set the menu below the
         // menu button which triggers it
@@ -1217,7 +1227,19 @@ class MasterViewController: UITableViewController,
         // Show the feedback view controller
         self.present(fvc, animated: true, completion: nil)
     }
-
+    
+    
+    @objc func doShowTipSheet(_ sender: Any) {
+        
+        // FROM 1.2.0
+        
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        let tvc: TipViewController = storyboard.instantiateViewController(withIdentifier: "tip.view.controller") as! TipViewController
+        tvc.modalPresentationStyle = UIDevice.current.userInterfaceIdiom == .pad ? .custom : .pageSheet
+        tvc.transitioningDelegate = self
+        self.present(tvc, animated: true, completion: nil)
+    }
+    
     
     func doShowWebsite(_ sender: Any) {
         
