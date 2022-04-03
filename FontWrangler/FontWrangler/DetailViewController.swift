@@ -101,8 +101,8 @@ class DetailViewController: UIViewController,
         // Show the master view
         self.splitViewController?.toggleMasterView()
     }
-
-
+    
+    
     // MARK: - Presentation Functions
     
     func configureView() {
@@ -164,6 +164,7 @@ class DetailViewController: UIViewController,
                 // Set the font size slider control and label
                 sizeLabel.text = "\(Int(self.fontSize))pt"
                 sizeSlider.isEnabled = true
+                sizeSlider.setValue(Float(self.fontSize), animated: true);
                 
                 // REMOVED IN 1.1.0
                 //sampleNote.isEditable = true
