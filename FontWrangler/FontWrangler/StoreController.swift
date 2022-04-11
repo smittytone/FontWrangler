@@ -20,7 +20,6 @@ class StoreController: NSObject,
     // MARK: Private Properties
     
     private var productIdentifiers: [String] = []
-    private var availableProducts: NSMutableArray = NSMutableArray.init()
     private var productRequest: SKProductsRequest? = nil
     private var paymentQueue: SKPaymentQueue? = nil
     private var nc: NotificationCenter = NotificationCenter.default
@@ -30,6 +29,8 @@ class StoreController: NSObject,
     var canMakePayments: Bool {
         return SKPaymentQueue.canMakePayments()
     }
+
+    var availableProducts: NSMutableArray = NSMutableArray.init()
     
     
     // MARK: - Initialization Methods

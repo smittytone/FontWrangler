@@ -27,6 +27,8 @@
 		3B9C64A32432887B0057B8ED /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3B9C64A22432887B0057B8ED /* Assets.xcassets */; };
 		3BA9276824360F9200B4BA99 /* HelpViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BA9276724360F9200B4BA99 /* HelpViewController.swift */; };
 		3BA9277424361D3600B4BA99 /* HelpPageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BA9277324361D3600B4BA99 /* HelpPageViewController.swift */; };
+		3BB361AD2804823100B1F861 /* TipViewCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BB361AC2804823100B1F861 /* TipViewCollectionViewCell.swift */; };
+		3BB361AF28048D8B00B1F861 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3BB361AE28048D8B00B1F861 /* StoreKit.framework */; };
 		3BBD150025CF17A7008CB0E2 /* FeedbackViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BBD14FF25CF17A7008CB0E2 /* FeedbackViewController.swift */; };
 		3BBD150325CF191F008CB0E2 /* FeedbackPresentationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BBD150225CF191F008CB0E2 /* FeedbackPresentationController.swift */; };
 		3BCE077725BEC49F006AB656 /* Secrets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BCE077625BEC49F006AB656 /* Secrets.swift */; };
@@ -61,6 +63,8 @@
 		3B9C64A22432887B0057B8ED /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Assets.xcassets; path = "/Users/smitty/Library/CloudStorage/OneDrive-Personal/Programming/FontWrangler/Assets.xcassets"; sourceTree = "<absolute>"; };
 		3BA9276724360F9200B4BA99 /* HelpViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HelpViewController.swift; sourceTree = "<group>"; };
 		3BA9277324361D3600B4BA99 /* HelpPageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HelpPageViewController.swift; sourceTree = "<group>"; };
+		3BB361AC2804823100B1F861 /* TipViewCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TipViewCollectionViewCell.swift; sourceTree = "<group>"; };
+		3BB361AE28048D8B00B1F861 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		3BBD14FF25CF17A7008CB0E2 /* FeedbackViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedbackViewController.swift; sourceTree = "<group>"; };
 		3BBD150225CF191F008CB0E2 /* FeedbackPresentationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedbackPresentationController.swift; sourceTree = "<group>"; };
 		3BCE077625BEC49F006AB656 /* Secrets.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Secrets.swift; path = "/Users/smitty/Library/CloudStorage/OneDrive-Personal/Programming/mnu/Secrets.swift"; sourceTree = "<absolute>"; };
@@ -77,6 +81,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				3BFF9F8924373134008B1EA9 /* WebKit.framework in Frameworks */,
+				3BB361AF28048D8B00B1F861 /* StoreKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -111,9 +116,10 @@
 				3B2011DB24433F0800441739 /* MasterTitleView.swift */,
 				3B879A31242E00B400BE47DC /* DetailViewController.swift */,
 				3BBD14FF25CF17A7008CB0E2 /* FeedbackViewController.swift */,
-				3B35362327F9D18A00F11FDF /* TipViewController.swift */,
-				3B35362527F9D76A00F11FDF /* StoreController.swift */,
 				3BBD150225CF191F008CB0E2 /* FeedbackPresentationController.swift */,
+				3B35362327F9D18A00F11FDF /* TipViewController.swift */,
+				3BB361AC2804823100B1F861 /* TipViewCollectionViewCell.swift */,
+				3B35362527F9D76A00F11FDF /* StoreController.swift */,
 				3B25B94124407C0A0078B869 /* UserTestSampleView.swift */,
 				3BD0DF4924332B7F002878F7 /* FontWranglerFontListTableViewCell.swift */,
 				3B4C6D972434E88A00C1C5CB /* FontVariantsTableViewController.swift */,
@@ -139,6 +145,7 @@
 		3BFF9F8724373134008B1EA9 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				3BB361AE28048D8B00B1F861 /* StoreKit.framework */,
 				3BFF9F8824373134008B1EA9 /* WebKit.framework */,
 			);
 			name = Frameworks;
@@ -298,6 +305,7 @@
 				3B4C6D9A2434E90900C1C5CB /* FontVariantsTableViewCell.swift in Sources */,
 				3B879A2C242E00B400BE47DC /* AppDelegate.swift in Sources */,
 				3BBD150325CF191F008CB0E2 /* FeedbackPresentationController.swift in Sources */,
+				3BB361AD2804823100B1F861 /* TipViewCollectionViewCell.swift in Sources */,
 				3B879A2E242E00B400BE47DC /* SceneDelegate.swift in Sources */,
 				3B4C6D982434E88A00C1C5CB /* FontVariantsTableViewController.swift in Sources */,
 				3B35362627F9D76A00F11FDF /* StoreController.swift in Sources */,

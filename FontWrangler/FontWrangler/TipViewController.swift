@@ -10,8 +10,9 @@ import UIKit
 import StoreKit
 
 
-class TipViewController: UIViewController {
-    
+class TipViewController: UIViewController,
+                         UICollectionViewDelegate,
+                         UICollectionViewDataSource {
     // MARK: - UI Outlets
 
     @IBOutlet weak var cantMakePaymentsLabel: UILabel!
@@ -23,8 +24,7 @@ class TipViewController: UIViewController {
     // MARK: Private Properties
     
     private var storeController: StoreController? = nil
-    private var availableProducts: [SKProduct] = []
-    private var productEmojis: [String] = ["👍", "👏", "🙌", "❤️", "😍"]
+    private var productEmojis: [String] = ["👍", "👏", "🙌", "❤️", "😍", "?"]
     
     
     // MARK: - Initialisation Functions
@@ -44,6 +44,9 @@ class TipViewController: UIViewController {
                                                           target: self,
                                                           action: #selector(self.doDone))
         navigationItem.rightBarButtonItem = doneButton
+
+        self.priceCollectionView.delegate = self
+        self.priceCollectionView.dataSource = self
     }
     
     
@@ -53,6 +56,7 @@ class TipViewController: UIViewController {
         self.makePaymentButton.isEnabled = false
         self.thankYouLabel.isHidden = true
         self.cantMakePaymentsLabel.isHidden = true
+        self.priceCollectionView.isHidden = false
         
         // Check payments can be made etc.
         initStore()
@@ -75,13 +79,21 @@ class TipViewController: UIViewController {
         
         // We're good to go, so prep the notifications
         let nc: NotificationCenter = .default
+        nc.addObserver(self,
+                       selector: #selector(productListReceived),
+                       name: NSNotification.Name.init(rawValue: kPaymentNotifications.updated),
+                       object: nil)
+
+
         nc.addObserver(self, selector: #selector(showThankYou), name: NSNotification.Name.init(rawValue: kPaymentNotifications.tip), object: nil)
-        nc.addObserver(self, selector: #selector(showThankYou), name: NSNotification.Name.init(rawValue: kPaymentNotifications.restored), object: nil)
-        nc.addObserver(self, selector: #selector(productListReceived), name: NSNotification.Name.init(rawValue: kPaymentNotifications.updated), object: nil)
         nc.addObserver(self, selector: #selector(storeFailure), name: NSNotification.Name.init(rawValue: kPaymentNotifications.failed), object: nil)
+        nc.addObserver(self, selector: #selector(showThankYou), name: NSNotification.Name.init(rawValue: kPaymentNotifications.restored), object: nil)
+
         
         // Check available products
         self.storeController!.validateProductIdentifiers()
+
+        showPurchaseUI()
     }
     
     
@@ -89,6 +101,15 @@ class TipViewController: UIViewController {
         
         // The user can't make payments, so hide the UI
         self.makePaymentButton.isEnabled = false
+        // self.priceCollectionView.isHidden = true
+    }
+
+
+    private func showPurchaseUI() {
+
+        self.makePaymentButton.isEnabled = true
+        self.priceCollectionView.reloadData()
+        self.priceCollectionView.isHidden = false
     }
 
     /*
@@ -112,7 +133,7 @@ class TipViewController: UIViewController {
     }
     
     
-    @objc func showThankYou(_ sender: Any) {
+    @objc func showThankYou(_ note: Notification) {
         
         DispatchQueue.main.async {
             self.thankYouLabel.isHidden = false
@@ -120,21 +141,69 @@ class TipViewController: UIViewController {
         }
     }
     
-    @objc func productListReceived(_ sender: Any) {
+    @objc func productListReceived(_ note: Notification) {
         
+        DispatchQueue.main.async {
+            self.storeProgress.stopAnimating()
+            self.showPurchaseUI()
+        }
+    }
+    
+    @objc func storeFailure(_ note: Notification) {
+
+        return
         DispatchQueue.main.async {
             self.cantMakePaymentsLabel.isHidden = false
             self.storeProgress.stopAnimating()
             self.hidePurchaseUI()
         }
     }
-    
-    @objc func storeFailure(_ sender: Any) {
-        
-        DispatchQueue.main.async {
-            self.cantMakePaymentsLabel.isHidden = false
-            self.storeProgress.stopAnimating()
-            self.hidePurchaseUI()
+
+
+    // MARK: - NSCollectionViewDelegate Functions
+
+    func numberOfSections(in collectionView: UICollectionView) -> Int {
+
+        // Only one section in this collection
+        return 1
+    }
+
+
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+
+        // Just return the number of products we have
+        if let sc: StoreController = self.storeController {
+            return sc.availableProducts.count
         }
+
+        return 0
+    }
+
+
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+
+        // Create (or retrieve) aCollectionViewItem instance and configure it
+
+        let item: UICollectionViewCell = collectionView.dequeueReusableCell(withReuseIdentifier: "com.bps.tip.view.cvi", for: indexPath)
+        guard let tcvc: TipViewCollectionViewCell = item as? TipViewCollectionViewCell else { return item }
+
+        let index: Int = indexPath.row
+        if let sc: StoreController = self.storeController {
+            tcvc.iconLabel.text = self.productEmojis[index]
+            tcvc.priceLabel.text = "\((sc.availableProducts[index] as! SKProduct).price)"
+        } else {
+            tcvc.iconLabel.text = "?"
+            tcvc.priceLabel.text = "0.00"
+        }
+
+        return tcvc
+    }
+    
+
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+
+        let tcvc: TipViewCollectionViewCell = collectionView.cellForItem(at: indexPath) as! TipViewCollectionViewCell
+        tcvc.isSelected = true
+        tcvc.setNeedsDisplay()
     }
 }
