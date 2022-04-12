@@ -47,14 +47,6 @@ let kFlashBorderTime                    = 0.2
 
 // FROM 1.2.0
 
-enum kTipTypes {
-    static let huge                     = "com.bps.fontismo.tip.huge"
-    static let large                    = "com.bps.fontismo.tip.large"
-    static let medium                   = "com.bps.fontismo.tip.medium"
-    static let small                    = "com.bps.fontismo.tip.small"
-    static let tiny                     = "com.bps.fontismo.tip.tiny"
-}
-
 enum kPaymentNotifications {
     static let tip                      = "com.bps.fontismo.notification.tip.received"
     static let restored                 = "com.bps.fontismo.notification.purchases.restored"
