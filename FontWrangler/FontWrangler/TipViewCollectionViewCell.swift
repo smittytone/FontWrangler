@@ -6,6 +6,7 @@
 
 
 import UIKit
+import StoreKit
 
 
 class TipViewCollectionViewCell: UICollectionViewCell {
@@ -14,6 +15,8 @@ class TipViewCollectionViewCell: UICollectionViewCell {
     
     @IBOutlet weak var iconLabel: UILabel!
     @IBOutlet weak var priceLabel: UILabel!
+    
+    var product: SKProduct? = nil
 
 
     // MARK: - Graphics Functions
@@ -25,7 +28,7 @@ class TipViewCollectionViewCell: UICollectionViewCell {
         // Set the colours we'll be using - just use fill so we
         // get colour coming through the image
         if self.isSelected {
-            UIColor.red.setFill()
+            UIColor.init(red: 0.8, green: 0.8, blue: 0.8, alpha: 1.0).setFill()
         } else {
             UIColor.clear.setFill()
         }

@@ -21,7 +21,6 @@ class StoreController: NSObject,
     
     private var productIdentifiers: [String] = []
     private var productRequest: SKProductsRequest? = nil
-    private var paymentQueue: SKPaymentQueue? = nil
     private var nc: NotificationCenter = NotificationCenter.default
     
     
@@ -31,7 +30,8 @@ class StoreController: NSObject,
         return SKPaymentQueue.canMakePayments()
     }
 
-    var availableProducts: NSMutableArray = NSMutableArray.init()
+    var availableProducts: [SKProduct] = []
+    var paymentQueue: SKPaymentQueue? = nil
     
     
     // MARK: - Initialization Methods
@@ -67,18 +67,18 @@ class StoreController: NSObject,
     
     func productsRequest(_ request: SKProductsRequest, didReceive response: SKProductsResponse) {
         
-        self.availableProducts = NSMutableArray.init(array: response.products)
-
+        self.availableProducts = !response.products.isEmpty ? response.products : []
+        
         #if DEBUG
         // List invalid Product IDs for debugging
-        if response.invalidProductIdentifiers.count > 0 {
+        if !response.invalidProductIdentifiers.isEmpty {
             print("Invalid Store Product IDs:")
             for invalidIdentifier in response.invalidProductIdentifiers {
                 print("  \(invalidIdentifier)")
             }
         }
         
-        if response.products.count > 0 {
+        if !response.products.isEmpty {
             print("Valid Store Product IDs:")
             for product in response.products {
                 print("  \(product.productIdentifier)")
@@ -109,12 +109,12 @@ class StoreController: NSObject,
         var state: String = ""
         var doFinishTransaction: Bool = false
         
-        for i: Int in 0..<transactions.count {
-            let transaction: SKPaymentTransaction = transactions[i]
-            
+        for transaction in transactions {
             switch transaction.transactionState {
                 case .purchasing:
                     state = "purchase in flight"
+                case .deferred:
+                    state = "purchase deferred"
                 case .purchased:
                     doFinishTransaction = true
                     state = "purchase succeeded"
@@ -123,15 +123,19 @@ class StoreController: NSObject,
                     doFinishTransaction = true
                     state = "purchases restored"
                     self.notifyParent(kPaymentNotifications.restored)
-                case .deferred:
-                    state = "purchase deferred"
-                default:
+                case .failed:
+                    fallthrough
+                @unknown default:
                     doFinishTransaction = true
                     state = "purchase failed"
                     if let err = transaction.error {
                         state += " \(err.localizedDescription)"
                     } else {
                         state += " (reason unknown)"
+                    }
+                    
+                    if (transaction.error as? SKError)?.code != .paymentCancelled {
+                        self.notifyParent(kPaymentNotifications.failed)
                     }
             }
             
@@ -152,5 +156,15 @@ class StoreController: NSObject,
     private func notifyParent(_ rawName: String) {
         // Tell the View Controller
         self.nc.post(name: NSNotification.Name.init(rawValue: rawName), object: self)
+    }
+}
+
+
+extension SKProduct {
+    var localPrice: String? {
+        let priceFormatter: NumberFormatter = NumberFormatter()
+        priceFormatter.numberStyle = .currency
+        priceFormatter.locale = self.priceLocale
+        return priceFormatter.string(from: self.price)
     }
 }

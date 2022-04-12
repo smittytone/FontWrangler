@@ -20,7 +20,6 @@ class TipViewController: UIViewController,
     @IBOutlet weak var thankYouLabel: UILabel!
     @IBOutlet weak var storeProgress: UIActivityIndicatorView!
     @IBOutlet weak var priceCollectionView: UICollectionView!
-    @IBOutlet weak var makePaymentButton: UIButton!
     
     // MARK: Private Properties
     
@@ -113,7 +112,6 @@ class TipViewController: UIViewController,
         
         // The user can't make payments, so hide the UI
         
-        self.makePaymentButton.isEnabled = false
         self.priceCollectionView.isHidden = true
     }
 
@@ -122,7 +120,6 @@ class TipViewController: UIViewController,
         
         // Present the products UI
         
-        self.makePaymentButton.isEnabled = true
         self.priceCollectionView.reloadData()
         self.priceCollectionView.isHidden = false
     }
@@ -199,15 +196,10 @@ class TipViewController: UIViewController,
 
         let index: Int = indexPath.row
         if index < self.productEmojis.count && self.storeController != nil {
-            let product: SKProduct = self.storeController!.availableProducts[index] as! SKProduct
-            
-            let numberFormatter: NumberFormatter = NumberFormatter()
-            numberFormatter.numberStyle = .currency
-            numberFormatter.locale = product.priceLocale
-            let currencyString: String? = numberFormatter.string(from: product.price)
-            
+            let product: SKProduct = self.storeController!.availableProducts[index]
             tcvc.iconLabel.text = self.productEmojis[index]
-            tcvc.priceLabel.text = "\(currencyString ?? "0.00")"
+            tcvc.priceLabel.text = "\(product.localPrice ?? "0.00")"
+            tcvc.product = product
             return tcvc
         }
                 
@@ -221,8 +213,25 @@ class TipViewController: UIViewController,
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
 
         let tcvc: TipViewCollectionViewCell = collectionView.cellForItem(at: indexPath) as! TipViewCollectionViewCell
-        tcvc.isSelected = true
-        tcvc.setNeedsDisplay()
+        
+        if self.storeController != nil {
+            tcvc.isSelected = true
+            tcvc.setNeedsDisplay()
+            
+            if let product: SKProduct = tcvc.product {
+                let payment: SKMutablePayment = SKMutablePayment(product: product)
+                payment.quantity = 1
+                
+                if self.storeController != nil && self.storeController!.paymentQueue != nil {
+                    self.storeController!.paymentQueue!.add(payment)
+                    
+                    // NOTE Outcomes handled asynchronously from this point
+                }
+            }
+            
+            tcvc.isSelected = false
+            tcvc.setNeedsDisplay()
+        }
     }
     
     
