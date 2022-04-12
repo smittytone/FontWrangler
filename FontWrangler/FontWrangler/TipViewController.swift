@@ -13,6 +13,7 @@ import StoreKit
 class TipViewController: UIViewController,
                          UICollectionViewDelegate,
                          UICollectionViewDataSource {
+    
     // MARK: - UI Outlets
 
     @IBOutlet weak var cantMakePaymentsLabel: UILabel!
@@ -24,7 +25,7 @@ class TipViewController: UIViewController,
     // MARK: Private Properties
     
     private var storeController: StoreController? = nil
-    private var productEmojis: [String] = ["👍", "👏", "🙌", "❤️", "😍", "?"]
+    private var productEmojis: [String] = ["🪙", "☕️", "🍩", "🍕", "🍱"]
     
     
     // MARK: - Initialisation Functions
@@ -33,18 +34,21 @@ class TipViewController: UIViewController,
         
         super.viewDidLoad()
 
+        // Set up the App Store mediatator
         self.storeController = StoreController.init()
         if self.storeController != nil {
             self.storeController!.initPaymentQueue()
         }
         
+        // Set up the window and the `Done` button
         self.title = "Make a Donation"
         let doneButton: UIBarButtonItem = UIBarButtonItem(title: "Done",
                                                           style: .done,
                                                           target: self,
                                                           action: #selector(self.doDone))
         navigationItem.rightBarButtonItem = doneButton
-
+        
+        // Wire it all up
         self.priceCollectionView.delegate = self
         self.priceCollectionView.dataSource = self
     }
@@ -52,13 +56,13 @@ class TipViewController: UIViewController,
     
     override func viewWillAppear(_ animated: Bool) {
         
-        // Prep for a new appearance
-        self.makePaymentButton.isEnabled = false
+        // Prepare for a new appearance
         self.thankYouLabel.isHidden = true
         self.cantMakePaymentsLabel.isHidden = true
-        self.priceCollectionView.isHidden = false
+        hidePurchaseUI()
         
-        // Check payments can be made etc.
+        // Check payments can be made, etc.
+        // NOTE Here in case ability is lost between appearances
         initStore()
         
         // Handle super class stuff
@@ -67,13 +71,14 @@ class TipViewController: UIViewController,
     
     
     private func initStore() {
+        
+        // Start the loading animation
         self.storeProgress.startAnimating()
         
         // Check for the ability to purchase
         guard self.storeController!.canMakePayments else {
             self.storeProgress.stopAnimating()
             self.cantMakePaymentsLabel.isHidden = false
-            hidePurchaseUI()
             return
         }
         
@@ -84,44 +89,44 @@ class TipViewController: UIViewController,
                        name: NSNotification.Name.init(rawValue: kPaymentNotifications.updated),
                        object: nil)
 
-
-        nc.addObserver(self, selector: #selector(showThankYou), name: NSNotification.Name.init(rawValue: kPaymentNotifications.tip), object: nil)
-        nc.addObserver(self, selector: #selector(storeFailure), name: NSNotification.Name.init(rawValue: kPaymentNotifications.failed), object: nil)
-        nc.addObserver(self, selector: #selector(showThankYou), name: NSNotification.Name.init(rawValue: kPaymentNotifications.restored), object: nil)
-
+        nc.addObserver(self,
+                       selector: #selector(showThankYou),
+                       name: NSNotification.Name.init(rawValue: kPaymentNotifications.tip),
+                       object: nil)
+        
+        nc.addObserver(self,
+                       selector: #selector(storeFailure),
+                       name: NSNotification.Name.init(rawValue: kPaymentNotifications.failed),
+                       object: nil)
+        
+        nc.addObserver(self,
+                       selector: #selector(showThankYou),
+                       name: NSNotification.Name.init(rawValue: kPaymentNotifications.restored),
+                       object: nil)
         
         // Check available products
         self.storeController!.validateProductIdentifiers()
-
-        showPurchaseUI()
     }
     
     
     private func hidePurchaseUI() {
         
         // The user can't make payments, so hide the UI
+        
         self.makePaymentButton.isEnabled = false
-        // self.priceCollectionView.isHidden = true
+        self.priceCollectionView.isHidden = true
     }
 
 
     private func showPurchaseUI() {
-
+        
+        // Present the products UI
+        
         self.makePaymentButton.isEnabled = true
         self.priceCollectionView.reloadData()
         self.priceCollectionView.isHidden = false
     }
 
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
-    }
-    */
-    
     
     // MARK: - Action Functions
     
@@ -136,10 +141,11 @@ class TipViewController: UIViewController,
     @objc func showThankYou(_ note: Notification) {
         
         DispatchQueue.main.async {
-            self.thankYouLabel.isHidden = false
             self.hidePurchaseUI()
+            self.thankYouLabel.isHidden = false
         }
     }
+    
     
     @objc func productListReceived(_ note: Notification) {
         
@@ -151,10 +157,9 @@ class TipViewController: UIViewController,
     
     @objc func storeFailure(_ note: Notification) {
 
-        return
         DispatchQueue.main.async {
-            self.cantMakePaymentsLabel.isHidden = false
             self.storeProgress.stopAnimating()
+            self.cantMakePaymentsLabel.isHidden = false
             self.hidePurchaseUI()
         }
     }
@@ -174,28 +179,41 @@ class TipViewController: UIViewController,
         // Just return the number of products we have
         if let sc: StoreController = self.storeController {
             return sc.availableProducts.count
+        } else {
+            return 0
         }
-
-        return 0
     }
 
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
 
-        // Create (or retrieve) aCollectionViewItem instance and configure it
-
+        // Create (or retrieve) a CollectionViewItem instance and configure it
+        
+        // Dequeue a generic UICollectionViewCell...
         let item: UICollectionViewCell = collectionView.dequeueReusableCell(withReuseIdentifier: "com.bps.tip.view.cvi", for: indexPath)
-        guard let tcvc: TipViewCollectionViewCell = item as? TipViewCollectionViewCell else { return item }
-
-        let index: Int = indexPath.row
-        if let sc: StoreController = self.storeController {
-            tcvc.iconLabel.text = self.productEmojis[index]
-            tcvc.priceLabel.text = "\((sc.availableProducts[index] as! SKProduct).price)"
-        } else {
-            tcvc.iconLabel.text = "?"
-            tcvc.priceLabel.text = "0.00"
+        
+        // ...and make sure we actually have a TipViewCollectionViewCell
+        guard let tcvc: TipViewCollectionViewCell = item as? TipViewCollectionViewCell else {
+            return item
         }
 
+        let index: Int = indexPath.row
+        if index < self.productEmojis.count && self.storeController != nil {
+            let product: SKProduct = self.storeController!.availableProducts[index] as! SKProduct
+            
+            let numberFormatter: NumberFormatter = NumberFormatter()
+            numberFormatter.numberStyle = .currency
+            numberFormatter.locale = product.priceLocale
+            let currencyString: String? = numberFormatter.string(from: product.price)
+            
+            tcvc.iconLabel.text = self.productEmojis[index]
+            tcvc.priceLabel.text = "\(currencyString ?? "0.00")"
+            return tcvc
+        }
+                
+        // Make the item generic on error
+        tcvc.iconLabel.text = "?"
+        tcvc.priceLabel.text = "0.00"
         return tcvc
     }
     
@@ -206,4 +224,18 @@ class TipViewController: UIViewController,
         tcvc.isSelected = true
         tcvc.setNeedsDisplay()
     }
+    
+    
+    /*
+    // MARK: - Navigation
+
+    // In a storyboard-based application, you will often want to do a little preparation before navigation
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        // Get the new view controller using segue.destination.
+        // Pass the selected object to the new view controller.
+    }
+    */
+    
+    
+    
 }

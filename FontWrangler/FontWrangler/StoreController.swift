@@ -24,6 +24,7 @@ class StoreController: NSObject,
     private var paymentQueue: SKPaymentQueue? = nil
     private var nc: NotificationCenter = NotificationCenter.default
     
+    
     // MARK: Public Properties
     
     var canMakePayments: Bool {
@@ -36,11 +37,11 @@ class StoreController: NSObject,
     // MARK: - Initialization Methods
     
     override init() {
-        self.productIdentifiers = [kTipTypes.huge,
-                                   kTipTypes.large,
-                                   kTipTypes.medium,
+        self.productIdentifiers = [kTipTypes.tiny,
                                    kTipTypes.small,
-                                   kTipTypes.tiny]
+                                   kTipTypes.medium,
+                                   kTipTypes.large,
+                                   kTipTypes.huge                                   ]
         self.paymentQueue = SKPaymentQueue.default()
     }
     
@@ -55,6 +56,7 @@ class StoreController: NSObject,
     
     func validateProductIdentifiers() {
         
+        // Get a list of available products
         self.productRequest = SKProductsRequest.init(productIdentifiers: Set(self.productIdentifiers))
         if let pr: SKProductsRequest = self.productRequest {
             pr.delegate = self
@@ -70,8 +72,16 @@ class StoreController: NSObject,
         #if DEBUG
         // List invalid Product IDs for debugging
         if response.invalidProductIdentifiers.count > 0 {
+            print("Invalid Store Product IDs:")
             for invalidIdentifier in response.invalidProductIdentifiers {
-                print("Invalid ID: \(invalidIdentifier)")
+                print("  \(invalidIdentifier)")
+            }
+        }
+        
+        if response.products.count > 0 {
+            print("Valid Store Product IDs:")
+            for product in response.products {
+                print("  \(product.productIdentifier)")
             }
         }
         #endif

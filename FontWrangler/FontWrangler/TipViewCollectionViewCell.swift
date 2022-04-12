@@ -9,7 +9,9 @@ import UIKit
 
 
 class TipViewCollectionViewCell: UICollectionViewCell {
-
+    
+    // MARK: - UI Outlets
+    
     @IBOutlet weak var iconLabel: UILabel!
     @IBOutlet weak var priceLabel: UILabel!
 
@@ -28,7 +30,7 @@ class TipViewCollectionViewCell: UICollectionViewCell {
             UIColor.clear.setFill()
         }
 
-        // Make the circle
+        // Highlight the cell
         let highlightCircle: UIBezierPath = UIBezierPath.init(roundedRect: dirtyRect, cornerRadius: 8.0)
         highlightCircle.lineWidth = 2.0
         highlightCircle.fill()
