@@ -12,7 +12,8 @@ import StoreKit
 
 class TipViewController: UIViewController,
                          UICollectionViewDelegate,
-                         UICollectionViewDataSource {
+                         UICollectionViewDataSource,
+                         UICollectionViewDelegateFlowLayout {
     
     // MARK: - UI Outlets
 
@@ -115,12 +116,23 @@ class TipViewController: UIViewController,
         self.priceCollectionView.isHidden = true
     }
 
-
+    
+    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        super.viewWillTransition(to: size, with: coordinator)
+        coordinator.animate { [weak self] _  in
+            self?.updateCollectionViewSize()
+            self?.priceCollectionView.layoutIfNeeded()
+            self?.priceCollectionView.collectionViewLayout.invalidateLayout()
+        }
+    }
+    
+    
     private func showPurchaseUI() {
         
         // Present the products UI
         
         self.priceCollectionView.reloadData()
+        updateCollectionViewSize()
         self.priceCollectionView.isHidden = false
     }
 
@@ -235,6 +247,31 @@ class TipViewController: UIViewController,
     }
     
     
+    func updateCollectionViewSize() {
+        if let sc: StoreController = self.storeController {
+            if let flowLayout: UICollectionViewFlowLayout = priceCollectionView.collectionViewLayout as? UICollectionViewFlowLayout {
+                flowLayout.itemSize = CGSize(width: self.priceCollectionView.frame.size.width / CGFloat(sc.availableProducts.count + 1), height: self.priceCollectionView.frame.size.height)
+                flowLayout.minimumLineSpacing = 0.0
+                flowLayout.minimumInteritemSpacing = 0.2
+            }
+        }
+    }
+    
+    
+    /*
+    func collectionView(_ collectionView: UICollectionView,
+                        layout collectionViewLayout: UICollectionViewLayout,
+                        sizeForItemAt indexPath: IndexPath) -> CGSize {
+        guard (self.storeController != nil && !self.storeController!.availableProducts.isEmpty) else {
+            return .zero
+        }
+
+        let numberOfPoducts = CGFloat(self.storeController!.availableProducts.count)
+        return CGSize(width: self.priceCollectionView.frame.size.width / numberOfPoducts,
+                      height: self.priceCollectionView.frame.size.height)
+    }
+    */
+    
     /*
     // MARK: - Navigation
 
@@ -244,7 +281,5 @@ class TipViewController: UIViewController,
         // Pass the selected object to the new view controller.
     }
     */
-    
-    
     
 }

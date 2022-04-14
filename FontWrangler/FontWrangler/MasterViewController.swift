@@ -348,8 +348,9 @@ class MasterViewController: UITableViewController,
             
             // Run through the font list to extract family names via tags
             // NOTE This may change
+            var got: Bool = false
             for font: UserFont in self.fonts {
-                var got = false
+                got = false
                 for family: FontFamily in self.families {
                     if family.tag == font.tag {
                         got = true

@@ -41,7 +41,7 @@ class StoreController: NSObject,
                                    kTipTypes.small,
                                    kTipTypes.medium,
                                    kTipTypes.large,
-                                   kTipTypes.huge                                   ]
+                                   kTipTypes.huge]
         self.paymentQueue = SKPaymentQueue.default()
     }
     
@@ -67,8 +67,17 @@ class StoreController: NSObject,
     
     func productsRequest(_ request: SKProductsRequest, didReceive response: SKProductsResponse) {
         
-        self.availableProducts = !response.products.isEmpty ? response.products : []
+        self.availableProducts = []
         
+        for item: String in self.productIdentifiers {
+            for nitem: SKProduct in response.products {
+                if nitem.productIdentifier == item {
+                    self.availableProducts.append(nitem)
+                    break
+                }
+            }
+        }
+ 
         #if DEBUG
         // List invalid Product IDs for debugging
         if !response.invalidProductIdentifiers.isEmpty {
