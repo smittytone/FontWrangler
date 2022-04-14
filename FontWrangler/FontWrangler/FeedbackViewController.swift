@@ -37,8 +37,7 @@ class FeedbackViewController: UIViewController,
         super.viewDidLoad()
             
         // Set up the UITextView
-        self.feedbackText.backgroundColor = UIColor.systemBackground
-        self.feedbackText.textColor = UIColor.label
+        self.feedbackText.backgroundColor = .systemBackground
         self.feedbackText.layer.borderColor = UIColor.gray.cgColor;
         self.feedbackText.layer.borderWidth = 2.0;
         self.feedbackText.layer.cornerRadius = 8.0;
@@ -46,7 +45,7 @@ class FeedbackViewController: UIViewController,
         
         // Set the View Controller as the UITextView's delegate
         self.feedbackText.delegate = self
-        
+
         // Set the tap recognizer that'll hide the keyboard
         self.tapGestureRecognizer = UITapGestureRecognizer(target: self,
                                                            action: #selector(self.dismissKeyboard))
@@ -63,9 +62,13 @@ class FeedbackViewController: UIViewController,
         self.connectionProgress.isHidden = true
         self.connectionProgress.stopAnimating()
         
-        // ...and clear the feeback text entry field...
-        self.feedbackText.text = ""
-                
+        // FROM 1.2.0
+        // Set fake placeholder text: enter the text and colour it light grey.
+        // As soon as the user enters their own text, the delegate method `didBeginEditing()`
+        // is called and this removes the placeholder and sets the colour to `.label`
+        self.feedbackText.text = "Please note that we can’t respond to support requests if you don’t include an email address. If you provide an email address, it will not be retained or recorded, and used only to contact you for support reasons."
+        self.feedbackText.textColor = .lightGray
+
         // ...and set the text counter...
         self.textLengthLabel.text = "0/\(kMaxFeedbackCharacters)"
         
@@ -93,7 +96,7 @@ class FeedbackViewController: UIViewController,
         self.feedbackText.resignFirstResponder()
         let feedback: String = self.feedbackText.text
 
-        if feedback.count > 0 {
+        if self.feedbackText.textColor != .lightGray && feedback.count > 0 {
             // Start the connection indicator if it's not already visible
             self.connectionProgress.isHidden = false
             self.connectionProgress.startAnimating()
@@ -268,7 +271,7 @@ class FeedbackViewController: UIViewController,
         
         // Trap text changes so that no more than kMaxFeedbackCharacters
         // can be entered into the UITextView
-        
+
         if self.feedbackText.text.count > kMaxFeedbackCharacters {
             // Prune the feedback to kMaxFeedbackCharacters chars
             let edit: Substring = self.feedbackText.text.prefix(kMaxFeedbackCharacters)
@@ -285,6 +288,18 @@ class FeedbackViewController: UIViewController,
         
         // Set the text length label
         self.textLengthLabel.text = "\(self.feedbackText.text.count)/\(kMaxFeedbackCharacters)"
+    }
+
+
+    func textViewDidBeginEditing(_ textView: UITextView) {
+
+        // FROM 1.2.0
+        // When the user starts enterting text, remove the placeholder text
+        // and set the correct text colour
+        if textView.textColor == .lightGray {
+            textView.text = nil
+            textView.textColor = .label
+        }
     }
     
     
