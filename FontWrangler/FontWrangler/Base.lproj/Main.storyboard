@@ -673,7 +673,7 @@
                             </imageView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" textAlignment="center" lineBreakMode="wordWrap" numberOfLines="4" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="VwY-5A-oV9">
                                 <rect key="frame" x="20" y="163" width="374" height="76.5"/>
-                                <string key="text">Enjoyed using Fontismo? Found it useful? If so, please consider expressing your thanks with a small gratuity. All tips go to maintaining the development of this app.</string>
+                                <string key="text">Enjoyed using Fontismo? Found it useful? If so, please consider expressing your thanks with a small gratuity. All tips go toward maintaining the development of this app.</string>
                                 <fontDescription key="fontDescription" type="system" pointSize="16"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
