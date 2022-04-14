@@ -29,6 +29,7 @@
 		3BA9277424361D3600B4BA99 /* HelpPageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BA9277324361D3600B4BA99 /* HelpPageViewController.swift */; };
 		3BB361AD2804823100B1F861 /* TipViewCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BB361AC2804823100B1F861 /* TipViewCollectionViewCell.swift */; };
 		3BB361AF28048D8B00B1F861 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3BB361AE28048D8B00B1F861 /* StoreKit.framework */; };
+		3BB91E5E28084E940041FFF3 /* StoreKitTestCertificate.cer in Resources */ = {isa = PBXBuildFile; fileRef = 3BB91E5D28084E940041FFF3 /* StoreKitTestCertificate.cer */; };
 		3BBD150025CF17A7008CB0E2 /* FeedbackViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BBD14FF25CF17A7008CB0E2 /* FeedbackViewController.swift */; };
 		3BBD150325CF191F008CB0E2 /* FeedbackPresentationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BBD150225CF191F008CB0E2 /* FeedbackPresentationController.swift */; };
 		3BCE077725BEC49F006AB656 /* Secrets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BCE077625BEC49F006AB656 /* Secrets.swift */; };
@@ -65,6 +66,8 @@
 		3BA9277324361D3600B4BA99 /* HelpPageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HelpPageViewController.swift; sourceTree = "<group>"; };
 		3BB361AC2804823100B1F861 /* TipViewCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TipViewCollectionViewCell.swift; sourceTree = "<group>"; };
 		3BB361AE28048D8B00B1F861 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
+		3BB91E5C28084DDF0041FFF3 /* Configuration.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; name = Configuration.storekit; path = "../../../../Library/CloudStorage/OneDrive-Personal/Programming/FontWrangler/Configuration.storekit"; sourceTree = "<group>"; };
+		3BB91E5D28084E940041FFF3 /* StoreKitTestCertificate.cer */ = {isa = PBXFileReference; lastKnownFileType = file; name = StoreKitTestCertificate.cer; path = "../../../../Library/CloudStorage/OneDrive-Personal/Programming/FontWrangler/StoreKitTestCertificate.cer"; sourceTree = "<group>"; };
 		3BBD14FF25CF17A7008CB0E2 /* FeedbackViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedbackViewController.swift; sourceTree = "<group>"; };
 		3BBD150225CF191F008CB0E2 /* FeedbackPresentationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedbackPresentationController.swift; sourceTree = "<group>"; };
 		3BCE077625BEC49F006AB656 /* Secrets.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Secrets.swift; path = "/Users/smitty/Library/CloudStorage/OneDrive-Personal/Programming/mnu/Secrets.swift"; sourceTree = "<absolute>"; };
@@ -130,6 +133,8 @@
 				3B879A42242E1C0100BE47DC /* UserFont.swift */,
 				3BE5B2AA2434AD6B00A0C33A /* FontFamily.swift */,
 				3B879A33242E00B400BE47DC /* Main.storyboard */,
+				3BB91E5C28084DDF0041FFF3 /* Configuration.storekit */,
+				3BB91E5D28084E940041FFF3 /* StoreKitTestCertificate.cer */,
 				3B45C23424371D1E000782AE /* help */,
 				3B9C64A22432887B0057B8ED /* Assets.xcassets */,
 				3BD7E1882431FD2600FD8941 /* Fonts.xcassets */,
@@ -284,6 +289,7 @@
 				3B879A35242E00B400BE47DC /* Main.storyboard in Resources */,
 				3B879A3A242E00B600BE47DC /* LaunchScreen.storyboard in Resources */,
 				3BD7E18B243212E200FD8941 /* defaults.json in Resources */,
+				3BB91E5E28084E940041FFF3 /* StoreKitTestCertificate.cer in Resources */,
 				3BD7E1892431FD2600FD8941 /* Fonts.xcassets in Resources */,
 				3B45C23524371D1E000782AE /* help in Resources */,
 				3B42C8452433668400AF2B13 /* Settings.bundle in Resources */,

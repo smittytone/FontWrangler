@@ -143,7 +143,9 @@ class StoreController: NSObject,
                         state += " (reason unknown)"
                     }
                     
-                    if (transaction.error as? SKError)?.code != .paymentCancelled {
+                    if (transaction.error as? SKError)?.code == .paymentCancelled {
+                        self.notifyParent(kPaymentNotifications.cancelled)
+                    } else {
                         self.notifyParent(kPaymentNotifications.failed)
                     }
             }

@@ -25,8 +25,9 @@ class TipViewController: UIViewController,
     // MARK: Private Properties
     
     private var storeController: StoreController? = nil
-    private var productEmojis: [String] = ["🪙", "☕️", "🍩", "🍕", "🍱"]
     
+    private var productEmojis: [String] = ["🍬", "☕️", "🍩", "🥧", "🍱"]
+    private var clickedCell: TipViewCollectionViewCell? = nil
     
     // MARK: - Initialisation Functions
     
@@ -104,6 +105,11 @@ class TipViewController: UIViewController,
                        name: NSNotification.Name.init(rawValue: kPaymentNotifications.restored),
                        object: nil)
         
+        nc.addObserver(self,
+                       selector: #selector(storeCancel),
+                       name: NSNotification.Name.init(rawValue: kPaymentNotifications.cancelled),
+                       object: nil)
+        
         // Check available products
         self.storeController!.validateProductIdentifiers()
     }
@@ -172,6 +178,30 @@ class TipViewController: UIViewController,
             self.hidePurchaseUI()
         }
     }
+    
+    
+    @objc func storeCancel(_ note: Notification) {
+        
+        DispatchQueue.main.async {
+            self.storeProgress.stopAnimating()
+            self.showPurchaseUI()
+            
+            print(self.priceCollectionView.visibleCells.count)
+            if !self.priceCollectionView.visibleCells.isEmpty {
+                for cell: UICollectionViewCell in self.priceCollectionView.visibleCells {
+                    let visibleCell: TipViewCollectionViewCell = cell as! TipViewCollectionViewCell
+                    visibleCell.isClicked = false
+                    visibleCell.setNeedsDisplay()
+                }
+            }
+            
+            if let tvcv: TipViewCollectionViewCell = self.clickedCell {
+                tvcv.isClicked = false
+                tvcv.setNeedsDisplay()
+                self.clickedCell = nil
+            }
+        }
+    }
 
 
     // MARK: - NSCollectionViewDelegate Functions
@@ -227,22 +257,20 @@ class TipViewController: UIViewController,
         let tcvc: TipViewCollectionViewCell = collectionView.cellForItem(at: indexPath) as! TipViewCollectionViewCell
         
         if self.storeController != nil {
-            tcvc.isSelected = true
-            tcvc.setNeedsDisplay()
-            
+
             if let product: SKProduct = tcvc.product {
                 let payment: SKMutablePayment = SKMutablePayment(product: product)
                 payment.quantity = 1
                 
                 if self.storeController != nil && self.storeController!.paymentQueue != nil {
                     self.storeController!.paymentQueue!.add(payment)
+                    tcvc.isClicked = true
+                    tcvc.setNeedsDisplay()
+                    clickedCell = tcvc
                     
                     // NOTE Outcomes handled asynchronously from this point
                 }
             }
-            
-            tcvc.isSelected = false
-            tcvc.setNeedsDisplay()
         }
     }
     

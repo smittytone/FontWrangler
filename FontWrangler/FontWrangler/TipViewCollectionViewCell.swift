@@ -17,6 +17,7 @@ class TipViewCollectionViewCell: UICollectionViewCell {
     @IBOutlet weak var priceLabel: UILabel!
     
     var product: SKProduct? = nil
+    var isClicked: Bool = false
 
 
     // MARK: - Graphics Functions
@@ -27,16 +28,15 @@ class TipViewCollectionViewCell: UICollectionViewCell {
 
         // Set the colours we'll be using - just use fill so we
         // get colour coming through the image
-        if self.isSelected {
-            UIColor.init(red: 0.8, green: 0.8, blue: 0.8, alpha: 1.0).setFill()
+        if self.isClicked {
+            UIColor.label.withAlphaComponent(0.5).setFill()
         } else {
             UIColor.clear.setFill()
         }
-
+        
         // Highlight the cell
-        let highlightCircle: UIBezierPath = UIBezierPath.init(roundedRect: dirtyRect, cornerRadius: 8.0)
-        highlightCircle.lineWidth = 2.0
+        let highlightCircle: UIBezierPath = UIBezierPath.init(roundedRect: dirtyRect,
+                                                              cornerRadius: 8.0)
         highlightCircle.fill()
-
     }
 }
