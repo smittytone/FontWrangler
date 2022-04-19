@@ -53,4 +53,5 @@ enum kPaymentNotifications {
     static let updated                  = "com.bps.fontismo.notification.products.updated"
     static let failed                   = "com.bps.fontismo.notification.purchase.failed"
     static let cancelled                = "com.bps.fontismo.notification.purchase.cancelled"
+    static let inflight                 = "com.bps.fontismo.notification.purchase.inflight"
 }

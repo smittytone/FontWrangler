@@ -110,6 +110,11 @@ class TipViewController: UIViewController,
                        selector: #selector(storeCancel),
                        name: NSNotification.Name.init(rawValue: kPaymentNotifications.cancelled),
                        object: nil)
+
+        nc.addObserver(self,
+                       selector: #selector(clearHighlight),
+                       name: NSNotification.Name.init(rawValue: kPaymentNotifications.inflight),
+                       object: nil)
         
         // Get available products
         self.storeController!.validateProductIdentifiers()
@@ -206,6 +211,17 @@ class TipViewController: UIViewController,
     }
 
 
+    @objc func clearHighlight(_ note: Notification) {
+
+        // Async notification received if the user cancelled the purchase:
+        // Just clear the selection
+
+        DispatchQueue.main.async {
+            self.clearCellHighlight()
+        }
+    }
+
+
     @objc func showThankYou(_ note: Notification) {
 
         // Async notification received if the user successfully made a purchase:
@@ -214,7 +230,8 @@ class TipViewController: UIViewController,
         DispatchQueue.main.async {
             self.onAsyncReturn()
             self.hideProductList()
-            self.thankYouLabel.isHidden = false
+            //self.thankYouLabel.isHidden = false
+            self.showThanks()
         }
     }
 
@@ -349,7 +366,13 @@ class TipViewController: UIViewController,
     }
 
 
-    private func showAlert(_ title: String, _ message: String) {
+    private func showThanks() {
+
+        self.showAlert("Thank You!", "Your donation is very gratefully received", true)
+    }
+
+
+    private func showAlert(_ title: String, _ message: String, _ doExit: Bool = false) {
 
         // Generic alert display function which ensures
         // the alert is actioned on the main thread
@@ -358,9 +381,15 @@ class TipViewController: UIViewController,
             let alert = UIAlertController.init(title: title,
                                                message: message,
                                                preferredStyle: .alert)
+
+            // Set the exit closure: it just closes the view controller
+            let outHandler: ((UIAlertAction) -> Void) = { action in
+                self.doDone(self)
+            }
+
             alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "Default action"),
                                           style: .default,
-                                          handler: nil))
+                                          handler: (!doExit ? nil : outHandler)))
             self.present(alert,
                          animated: true,
                          completion: nil)

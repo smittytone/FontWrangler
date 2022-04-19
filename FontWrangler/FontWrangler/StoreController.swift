@@ -136,8 +136,10 @@ final class StoreController: NSObject,
             switch transaction.transactionState {
                 case .purchasing:
                     purchaseState = "purchase in flight"
+                    //self.notifyParent(kPaymentNotifications.inflight)
                 case .deferred:
                     purchaseState = "purchase deferred"
+                    self.notifyParent(kPaymentNotifications.inflight)
                 case .purchased:
                     doFinishTransaction = true
                     purchaseState = "purchase succeeded"
