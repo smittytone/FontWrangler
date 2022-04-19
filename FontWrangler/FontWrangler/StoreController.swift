@@ -10,9 +10,9 @@ import UIKit
 import StoreKit
 
 
-class StoreController: NSObject,
-                       SKProductsRequestDelegate,
-                       SKPaymentTransactionObserver {
+final class StoreController: NSObject,
+                             SKProductsRequestDelegate,
+                             SKPaymentTransactionObserver {
     
     // This class manages the App Store connection for taking tips
     
@@ -21,7 +21,6 @@ class StoreController: NSObject,
     
     private var productIdentifiers: [String] = []
     private var productRequest: SKProductsRequest? = nil
-    private var nc: NotificationCenter = NotificationCenter.default
     
     
     // MARK: Public Properties
@@ -37,17 +36,20 @@ class StoreController: NSObject,
     // MARK: - Initialization Methods
     
     override init() {
+
+        self.paymentQueue = SKPaymentQueue.default()
         self.productIdentifiers = [kTipTypes.tiny,
                                    kTipTypes.small,
                                    kTipTypes.medium,
                                    kTipTypes.large,
                                    kTipTypes.huge]
-        self.paymentQueue = SKPaymentQueue.default()
     }
     
     
     func initPaymentQueue() {
-        
+
+        // If we have an initialised payment queue, set
+        // `self` as its payment transaction observer
         if self.paymentQueue != nil {
             self.paymentQueue!.add(self)
         }
@@ -56,19 +58,30 @@ class StoreController: NSObject,
     
     func validateProductIdentifiers() {
         
-        // Get a list of available products
+        // Request a list of available products
+        // NOTE List is set in ASC and defined by our
+        //      Product ID array, `productIdentifiers`
+
         self.productRequest = SKProductsRequest.init(productIdentifiers: Set(self.productIdentifiers))
         if let pr: SKProductsRequest = self.productRequest {
+            // Set the instance as the request delegate, and start a request for products
             pr.delegate = self
             pr.start()
+
+            // This yields an async result: see `productsRequest(request, response)`
+        } else {
+            // Could not establish the request, so treat this as a failure
+            // and notify the host view controller
+            self.notifyParent(kPaymentNotifications.failed)
         }
     }
 
     
     func productsRequest(_ request: SKProductsRequest, didReceive response: SKProductsResponse) {
-        
-        self.availableProducts = []
-        
+
+        // Async handler for Product list request
+
+        self.availableProducts.removeAll()
         for item: String in self.productIdentifiers {
             for nitem: SKProduct in response.products {
                 if nitem.productIdentifier == item {
@@ -79,7 +92,7 @@ class StoreController: NSObject,
         }
  
         #if DEBUG
-        // List invalid Product IDs for debugging
+        // List valid and invalid Product IDs for debugging
         if !response.invalidProductIdentifiers.isEmpty {
             print("Invalid Store Product IDs:")
             for invalidIdentifier in response.invalidProductIdentifiers {
@@ -95,8 +108,7 @@ class StoreController: NSObject,
         }
         #endif
         
-        // Tell the parent TipViewController the product list
-        // has been updated
+        // Tell the host view controller the Product list has been updated
         notifyParent(kPaymentNotifications.updated)
     }
     
@@ -105,47 +117,55 @@ class StoreController: NSObject,
         
         // Restore past purchases.
         // NOTE Tips don't really need this, so may remove
+
         self.paymentQueue!.restoreCompletedTransactions()
     }
     
     
-    // MARK: - Payment Processing
+    // MARK: - Payment Processing Handler
     
     func paymentQueue(_ queue: SKPaymentQueue, updatedTransactions transactions: [SKPaymentTransaction]) {
         
         // This is called asynchronously (often not on the main thread) in response
-        // to incoming messages from the App Store
-        var state: String = ""
+        // to incoming messages from the App Store during purchases
+
+        var purchaseState: String = ""
         var doFinishTransaction: Bool = false
         
         for transaction in transactions {
             switch transaction.transactionState {
                 case .purchasing:
-                    state = "purchase in flight"
+                    purchaseState = "purchase in flight"
                 case .deferred:
-                    state = "purchase deferred"
+                    purchaseState = "purchase deferred"
                 case .purchased:
                     doFinishTransaction = true
-                    state = "purchase succeeded"
+                    purchaseState = "purchase succeeded"
                     self.notifyParent(kPaymentNotifications.tip)
                 case .restored:
                     doFinishTransaction = true
-                    state = "purchases restored"
+                    purchaseState = "purchases restored"
                     self.notifyParent(kPaymentNotifications.restored)
                 case .failed:
                     fallthrough
                 @unknown default:
                     doFinishTransaction = true
-                    state = "purchase failed"
-                    if let err = transaction.error {
-                        state += " \(err.localizedDescription)"
-                    } else {
-                        state += " (reason unknown)"
-                    }
-                    
+
+
+                    // Trap cancelled purchases so we send the correct
+                    // notification to the host view controller
                     if (transaction.error as? SKError)?.code == .paymentCancelled {
+                        purchaseState = "purchase cancelled"
                         self.notifyParent(kPaymentNotifications.cancelled)
                     } else {
+                        purchaseState = "purchase failed"
+
+                        if let err = transaction.error {
+                            purchaseState += " \(err.localizedDescription)"
+                        } else {
+                            purchaseState += " (reason unknown)"
+                        }
+
                         self.notifyParent(kPaymentNotifications.failed)
                     }
             }
@@ -156,7 +176,7 @@ class StoreController: NSObject,
             }
             
             #if DEBUG
-            print("Event: purchase \(state)")
+            print("Event: purchase \(purchaseState)")
             #endif
         }
     }
@@ -165,13 +185,21 @@ class StoreController: NSObject,
     // MARK: - Payment Event Handlers
     
     private func notifyParent(_ rawName: String) {
-        // Tell the View Controller
-        self.nc.post(name: NSNotification.Name.init(rawValue: rawName), object: self)
+
+        // Generic notification issuer. Receiver is the host view controller
+
+        NotificationCenter.default.post(name: NSNotification.Name.init(rawValue: rawName),
+                                        object: self)
     }
 }
 
 
+// MARK: - SK Product Extensions
+
 extension SKProduct {
+
+    // Add a `localPrice` property which provides the local price with
+    // an appropriate currency label attached
     var localPrice: String? {
         let priceFormatter: NumberFormatter = NumberFormatter()
         priceFormatter.numberStyle = .currency

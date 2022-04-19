@@ -15,7 +15,9 @@ class TipViewCollectionViewCell: UICollectionViewCell {
     
     @IBOutlet weak var iconLabel: UILabel!
     @IBOutlet weak var priceLabel: UILabel!
-    
+
+    // MARK: Public Properties
+
     var product: SKProduct? = nil
     var isClicked: Bool = false
 

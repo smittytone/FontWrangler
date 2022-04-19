@@ -25,10 +25,10 @@ class TipViewController: UIViewController,
     // MARK: Private Properties
     
     private var storeController: StoreController? = nil
-    
-    private var productEmojis: [String] = ["🍬", "☕️", "🍩", "🥧", "🍱"]
     private var clickedCell: TipViewCollectionViewCell? = nil
-    
+    private var productIcons: [String] = ["🍬", "☕️", "🍩", "🥧", "🍱"]
+
+
     // MARK: - Initialisation Functions
     
     override func viewDidLoad() {
@@ -60,7 +60,7 @@ class TipViewController: UIViewController,
         // Prepare for a new appearance
         self.thankYouLabel.isHidden = true
         self.cantMakePaymentsLabel.isHidden = true
-        hidePurchaseUI()
+        hideProductList()
         
         // Check payments can be made, etc.
         // NOTE Here in case ability is lost between appearances
@@ -79,11 +79,12 @@ class TipViewController: UIViewController,
         // Check for the ability to purchase
         guard self.storeController!.canMakePayments else {
             self.storeProgress.stopAnimating()
-            self.cantMakePaymentsLabel.isHidden = false
+            //self.cantMakePaymentsLabel.isHidden = false
+            self.showWarning()
             return
         }
         
-        // We're good to go, so prep the notifications
+        // We're good to go, so prep the store-related notifications
         let nc: NotificationCenter = .default
         nc.addObserver(self,
                        selector: #selector(productListReceived),
@@ -110,20 +111,15 @@ class TipViewController: UIViewController,
                        name: NSNotification.Name.init(rawValue: kPaymentNotifications.cancelled),
                        object: nil)
         
-        // Check available products
+        // Get available products
         self.storeController!.validateProductIdentifiers()
     }
     
     
-    private func hidePurchaseUI() {
-        
-        // The user can't make payments, so hide the UI
-        
-        self.priceCollectionView.isHidden = true
-    }
-
-    
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+
+        // Update the collection view on rotation
+
         super.viewWillTransition(to: size, with: coordinator)
         coordinator.animate { [weak self] _  in
             self?.updateCollectionViewSize()
@@ -133,9 +129,17 @@ class TipViewController: UIViewController,
     }
     
     
-    private func showPurchaseUI() {
+    private func hideProductList() {
+
+        // Hide the Products collection view
+
+        self.priceCollectionView.isHidden = true
+    }
+
+
+    private func showProductList() {
         
-        // Present the products UI
+        // Reload and preseent the Products collection view
         
         self.priceCollectionView.reloadData()
         updateCollectionViewSize()
@@ -153,53 +157,86 @@ class TipViewController: UIViewController,
     }
     
     
-    @objc func showThankYou(_ note: Notification) {
-        
-        DispatchQueue.main.async {
-            self.hidePurchaseUI()
-            self.thankYouLabel.isHidden = false
-        }
-    }
-    
-    
     @objc func productListReceived(_ note: Notification) {
         
-        DispatchQueue.main.async {
-            self.storeProgress.stopAnimating()
-            self.showPurchaseUI()
-        }
-    }
-    
-    @objc func storeFailure(_ note: Notification) {
+        // Async notification received when we get a list of products from the store:
+        // Show the Products
 
         DispatchQueue.main.async {
-            self.storeProgress.stopAnimating()
-            self.cantMakePaymentsLabel.isHidden = false
-            self.hidePurchaseUI()
+            self.onAsyncReturn()
+
+            if let sc = self.storeController {
+                if !sc.availableProducts.isEmpty {
+                    self.showProductList()
+                    return
+                }
+            }
+
+            // Fall through to error: hide the Product list
+            // and show a warning
+            self.hideProductList()
+            //self.cantMakePaymentsLabel.isHidden = false
+            self.showWarning()
+        }
+    }
+
+
+    @objc func storeFailure(_ note: Notification) {
+
+        // Async notification received if something went wrong with the purchase:
+        // Clear the selection and post the warnning text
+
+        DispatchQueue.main.async {
+            self.onAsyncReturn()
+            self.hideProductList()
+            //self.cantMakePaymentsLabel.isHidden = false
+            self.self.showWarning()
         }
     }
     
     
     @objc func storeCancel(_ note: Notification) {
-        
+
+        // Async notification received if the user cancelled the purchase:
+        // Just clear the selection
+
         DispatchQueue.main.async {
-            self.storeProgress.stopAnimating()
-            self.showPurchaseUI()
-            
-            print(self.priceCollectionView.visibleCells.count)
-            if !self.priceCollectionView.visibleCells.isEmpty {
-                for cell: UICollectionViewCell in self.priceCollectionView.visibleCells {
-                    let visibleCell: TipViewCollectionViewCell = cell as! TipViewCollectionViewCell
-                    visibleCell.isClicked = false
-                    visibleCell.setNeedsDisplay()
-                }
-            }
-            
-            if let tvcv: TipViewCollectionViewCell = self.clickedCell {
-                tvcv.isClicked = false
-                tvcv.setNeedsDisplay()
-                self.clickedCell = nil
-            }
+            self.onAsyncReturn()
+        }
+    }
+
+
+    @objc func showThankYou(_ note: Notification) {
+
+        // Async notification received if the user successfully made a purchase:
+        // Clear the selection, hide the products, and post the thanks text
+
+        DispatchQueue.main.async {
+            self.onAsyncReturn()
+            self.hideProductList()
+            self.thankYouLabel.isHidden = false
+        }
+    }
+
+
+    func onAsyncReturn() {
+
+        // Generic operations to be perfomed on async return from store operations
+
+        self.storeProgress.stopAnimating()
+        self.clearCellHighlight()
+    }
+
+
+    func clearCellHighlight() {
+
+        // If there's a reference to a cell, set when it's selected,
+        // then clear the highlight and the stored reference
+
+        if let tvcv: TipViewCollectionViewCell = self.clickedCell {
+            tvcv.isClicked = false
+            tvcv.setNeedsDisplay()
+            self.clickedCell = nil
         }
     }
 
@@ -209,18 +246,16 @@ class TipViewController: UIViewController,
     func numberOfSections(in collectionView: UICollectionView) -> Int {
 
         // Only one section in this collection
+
         return 1
     }
 
 
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
 
-        // Just return the number of products we have
-        if let sc: StoreController = self.storeController {
-            return sc.availableProducts.count
-        } else {
-            return 0
-        }
+        // Just return the number of products we have, or zero
+
+        return self.storeController != nil ? self.storeController!.availableProducts.count : 0
     }
 
 
@@ -237,9 +272,9 @@ class TipViewController: UIViewController,
         }
 
         let index: Int = indexPath.row
-        if index < self.productEmojis.count && self.storeController != nil {
+        if index < self.productIcons.count && self.storeController != nil {
             let product: SKProduct = self.storeController!.availableProducts[index]
-            tcvc.iconLabel.text = self.productEmojis[index]
+            tcvc.iconLabel.text = self.productIcons[index]
             tcvc.priceLabel.text = "\(product.localPrice ?? "0.00")"
             tcvc.product = product
             return tcvc
@@ -254,28 +289,35 @@ class TipViewController: UIViewController,
 
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
 
-        let tcvc: TipViewCollectionViewCell = collectionView.cellForItem(at: indexPath) as! TipViewCollectionViewCell
-        
-        if self.storeController != nil {
+        // A Product has been tapped, so highlight its cell and save a reference
 
-            if let product: SKProduct = tcvc.product {
+        let tcvc: TipViewCollectionViewCell = collectionView.cellForItem(at: indexPath) as! TipViewCollectionViewCell
+        if let product: SKProduct = tcvc.product {
+            if self.storeController != nil && self.storeController!.paymentQueue != nil {
+                // Fire off the payment request
                 let payment: SKMutablePayment = SKMutablePayment(product: product)
                 payment.quantity = 1
-                
-                if self.storeController != nil && self.storeController!.paymentQueue != nil {
-                    self.storeController!.paymentQueue!.add(payment)
-                    tcvc.isClicked = true
-                    tcvc.setNeedsDisplay()
-                    clickedCell = tcvc
-                    
-                    // NOTE Outcomes handled asynchronously from this point
-                }
+                self.storeController!.paymentQueue!.add(payment)
+
+                // Mark the cell as selected
+                tcvc.isClicked = true
+                tcvc.setNeedsDisplay()
+                clickedCell = tcvc
+
+                // NOTE Outcomes handled asynchronously from this point
+                return
             }
         }
+
+        // Fall through to error: hide the Products and show the warning
+        self.hideProductList()
+        //self.cantMakePaymentsLabel.isHidden = false
+        self.showWarning()
     }
     
     
     func updateCollectionViewSize() {
+
         if let sc: StoreController = self.storeController {
             if let flowLayout: UICollectionViewFlowLayout = priceCollectionView.collectionViewLayout as? UICollectionViewFlowLayout {
                 flowLayout.itemSize = CGSize(width: self.priceCollectionView.frame.size.width / CGFloat(sc.availableProducts.count + 1), height: self.priceCollectionView.frame.size.height)
@@ -299,7 +341,33 @@ class TipViewController: UIViewController,
                       height: self.priceCollectionView.frame.size.height)
     }
     */
-    
+
+
+    private func showWarning() {
+
+        self.showAlert("Sorry", "You can’t make purchases at this time. Please try again later")
+    }
+
+
+    private func showAlert(_ title: String, _ message: String) {
+
+        // Generic alert display function which ensures
+        // the alert is actioned on the main thread
+
+        DispatchQueue.main.async {
+            let alert = UIAlertController.init(title: title,
+                                               message: message,
+                                               preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "Default action"),
+                                          style: .default,
+                                          handler: nil))
+            self.present(alert,
+                         animated: true,
+                         completion: nil)
+        }
+    }
+
+
     /*
     // MARK: - Navigation
 
@@ -309,5 +377,7 @@ class TipViewController: UIViewController,
         // Pass the selected object to the new view controller.
     }
     */
+
+
     
 }
