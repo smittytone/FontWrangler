@@ -307,29 +307,31 @@ class TipViewController: UIViewController,
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
 
         // A Product has been tapped, so highlight its cell and save a reference
+        
+        if self.clickedCell == nil {
+            let tcvc: TipViewCollectionViewCell = collectionView.cellForItem(at: indexPath) as! TipViewCollectionViewCell
+            if let product: SKProduct = tcvc.product {
+                if self.storeController != nil && self.storeController!.paymentQueue != nil {
+                    // Fire off the payment request
+                    let payment: SKMutablePayment = SKMutablePayment(product: product)
+                    payment.quantity = 1
+                    self.storeController!.paymentQueue!.add(payment)
 
-        let tcvc: TipViewCollectionViewCell = collectionView.cellForItem(at: indexPath) as! TipViewCollectionViewCell
-        if let product: SKProduct = tcvc.product {
-            if self.storeController != nil && self.storeController!.paymentQueue != nil {
-                // Fire off the payment request
-                let payment: SKMutablePayment = SKMutablePayment(product: product)
-                payment.quantity = 1
-                self.storeController!.paymentQueue!.add(payment)
+                    // Mark the cell as selected
+                    tcvc.isClicked = true
+                    tcvc.setNeedsDisplay()
+                    self.clickedCell = tcvc
 
-                // Mark the cell as selected
-                tcvc.isClicked = true
-                tcvc.setNeedsDisplay()
-                clickedCell = tcvc
-
-                // NOTE Outcomes handled asynchronously from this point
-                return
+                    // NOTE Outcomes handled asynchronously from this point
+                    return
+                }
             }
-        }
 
-        // Fall through to error: hide the Products and show the warning
-        self.hideProductList()
-        //self.cantMakePaymentsLabel.isHidden = false
-        self.showWarning()
+            // Fall through to error: hide the Products and show the warning
+            self.hideProductList()
+            //self.cantMakePaymentsLabel.isHidden = false
+            self.showWarning()
+        }
     }
     
     

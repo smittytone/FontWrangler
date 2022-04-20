@@ -141,13 +141,13 @@ final class StoreController: NSObject,
                     purchaseState = "purchase deferred"
                     self.notifyParent(kPaymentNotifications.inflight)
                 case .purchased:
+                    self.notifyParent(kPaymentNotifications.tip)
                     doFinishTransaction = true
                     purchaseState = "purchase succeeded"
-                    self.notifyParent(kPaymentNotifications.tip)
                 case .restored:
+                    self.notifyParent(kPaymentNotifications.restored)
                     doFinishTransaction = true
                     purchaseState = "purchases restored"
-                    self.notifyParent(kPaymentNotifications.restored)
                 case .failed:
                     fallthrough
                 @unknown default:
@@ -157,9 +157,10 @@ final class StoreController: NSObject,
                     // Trap cancelled purchases so we send the correct
                     // notification to the host view controller
                     if (transaction.error as? SKError)?.code == .paymentCancelled {
-                        purchaseState = "purchase cancelled"
                         self.notifyParent(kPaymentNotifications.cancelled)
+                        purchaseState = "purchase cancelled"
                     } else {
+                        self.notifyParent(kPaymentNotifications.failed)
                         purchaseState = "purchase failed"
 
                         if let err = transaction.error {
@@ -167,8 +168,6 @@ final class StoreController: NSObject,
                         } else {
                             purchaseState += " (reason unknown)"
                         }
-
-                        self.notifyParent(kPaymentNotifications.failed)
                     }
             }
             

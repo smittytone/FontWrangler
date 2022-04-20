@@ -486,7 +486,7 @@
 				CODE_SIGN_ENTITLEMENTS = FontWrangler/FontWrangler.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 48;
+				CURRENT_PROJECT_VERSION = 49;
 				DEVELOPMENT_TEAM = Y5J3K52DNA;
 				INFOPLIST_FILE = FontWrangler/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
@@ -511,7 +511,7 @@
 				CODE_SIGN_ENTITLEMENTS = FontWrangler/FontWrangler.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 48;
+				CURRENT_PROJECT_VERSION = 49;
 				DEVELOPMENT_TEAM = Y5J3K52DNA;
 				INFOPLIST_FILE = FontWrangler/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
