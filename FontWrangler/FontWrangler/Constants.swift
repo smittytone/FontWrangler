@@ -55,3 +55,7 @@ enum kPaymentNotifications {
     static let cancelled                = "com.bps.fontismo.notification.purchase.cancelled"
     static let inflight                 = "com.bps.fontismo.notification.purchase.inflight"
 }
+
+let kStandardSeparation                 = 8.0
+let kLogoLandscapeSeparation            = -16.0
+let kTextLandscapeSeparation            = 0.0

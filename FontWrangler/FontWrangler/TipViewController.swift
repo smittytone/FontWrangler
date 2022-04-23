@@ -21,13 +21,15 @@ class TipViewController: UIViewController,
     @IBOutlet weak var thankYouLabel: UILabel!
     @IBOutlet weak var storeProgress: UIActivityIndicatorView!
     @IBOutlet weak var priceCollectionView: UICollectionView!
+    @IBOutlet weak var upperLogoConstraint: NSLayoutConstraint!
+    @IBOutlet weak var upperTextConstraint: NSLayoutConstraint!
     
     // MARK: Private Properties
     
     private var storeController: StoreController? = nil
     private var clickedCell: TipViewCollectionViewCell? = nil
     private var productIcons: [String] = ["🍬", "☕️", "🍩", "🥧", "🍱"]
-
+    
 
     // MARK: - Initialisation Functions
     
@@ -65,6 +67,9 @@ class TipViewController: UIViewController,
         // Check payments can be made, etc.
         // NOTE Here in case ability is lost between appearances
         initStore()
+        
+        // Adjust the logo and text height constraints
+        setKeyConstraints(self.view.frame.size)
         
         // Handle super class stuff
         super.viewWillAppear(animated)
@@ -126,6 +131,11 @@ class TipViewController: UIViewController,
         // Update the collection view on rotation
 
         super.viewWillTransition(to: size, with: coordinator)
+        
+        // Adjust the logo and text height constraints
+        setKeyConstraints(size)
+        
+        // Update the Product list sizing
         coordinator.animate { [weak self] _  in
             self?.updateCollectionViewSize()
             self?.priceCollectionView.layoutIfNeeded()
@@ -133,6 +143,24 @@ class TipViewController: UIViewController,
         }
     }
     
+    
+    private func setKeyConstraints(_ size: CGSize) {
+        
+        // Set key constraints based on the screen orientation.
+        // NOTE When called ahead of a rotation, the value of `size`
+        //      is what the frame will **become** -- otherwise it's what
+        //      the frame **is**
+        
+        let isPortrait: Bool = size.height > size.width
+        if !isPortrait {
+            upperLogoConstraint.constant = kLogoLandscapeSeparation
+            upperTextConstraint.constant = kTextLandscapeSeparation
+        } else {
+            upperLogoConstraint.constant = kStandardSeparation
+            upperTextConstraint.constant = kStandardSeparation
+        }
+    }
+
     
     private func hideProductList() {
 
@@ -150,7 +178,7 @@ class TipViewController: UIViewController,
         updateCollectionViewSize()
         self.priceCollectionView.isHidden = false
     }
-
+    
     
     // MARK: - Action Functions
     
