@@ -565,6 +565,15 @@ class MasterViewController: UITableViewController,
                             family.progress = nil
 
                             DispatchQueue.main.async {
+                                // FROM 1.2.0
+                                // Turn off the detail view controller's progress indicator
+                                if let dvc: DetailViewController = self.detailViewController {
+                                    if !dvc.downloadProgress.isHidden {
+                                        dvc.downloadProgress.stopAnimating()
+                                    }
+                                }
+                                
+                                // Update the typeface table
                                 self.tableView.reloadData()
                             }
 
@@ -589,6 +598,7 @@ class MasterViewController: UITableViewController,
                     // Handle errors
                     // NOTE #1 Item not downloaded if 'error' != nil
                     // NOTE #2 Not sure if this ever gets called... app usually timeouts
+                    //         It does get called if we download in Airplane Mode.
                     NSLog("[ERROR] \(error!.localizedDescription)")
 
                     // Zap the associated timer early
@@ -598,6 +608,17 @@ class MasterViewController: UITableViewController,
                     }
 
                     self.showAlert("Sorry!", "Fontismo could not access the requested typeface because it was unable to connect to the App Store. Please check your Internet connection and try again.\n(\(error!.localizedDescription))")
+                    
+                    // FROM 1.2.0
+                    // Turn off the detail view controller's progress indicator
+                    DispatchQueue.main.async {
+                        if let dvc: DetailViewController = self.detailViewController {
+                            if !dvc.downloadProgress.isHidden {
+                                dvc.downloadProgress.stopAnimating()
+                            }
+                        }
+                    }
+                    
                     return
                 }
                 
