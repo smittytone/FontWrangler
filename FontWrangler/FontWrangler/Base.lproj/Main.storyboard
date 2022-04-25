@@ -375,14 +375,14 @@
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <prototypes>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="variant.cell" id="s6R-e5-hht" customClass="FontVariantsTableViewCell" customModule="Fontismo" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="44.5" width="414" height="44"/>
+                                <rect key="frame" x="0.0" y="44.5" width="414" height="43.5"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="s6R-e5-hht" id="roM-ok-dfU">
-                                    <rect key="frame" x="0.0" y="0.0" width="414" height="44"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="414" height="43.5"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="uaK-Ee-cyN">
-                                            <rect key="frame" x="20" y="11" width="374" height="21.5"/>
+                                            <rect key="frame" x="20" y="11" width="374" height="21"/>
                                             <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="17"/>
                                             <nil key="textColor"/>
                                             <nil key="highlightedColor"/>
@@ -751,40 +751,18 @@
                                     <outlet property="delegate" destination="n1C-uQ-Ts9" id="fUq-xR-oKP"/>
                                 </connections>
                             </collectionView>
-                            <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Sorry, you can’t make purchases at this time" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="8" adjustsLetterSpacingToFitWidth="YES" translatesAutoresizingMaskIntoConstraints="NO" id="DHE-OJ-CDH">
-                                <rect key="frame" x="20" y="833" width="374" height="21"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="21" id="DWD-NM-YNf"/>
-                                </constraints>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <nil key="textColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                            <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Thank you for your donation!" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" minimumFontSize="24" adjustsLetterSpacingToFitWidth="YES" translatesAutoresizingMaskIntoConstraints="NO" id="c2V-W8-Xkh">
-                                <rect key="frame" x="20" y="52" width="374" height="810"/>
-                                <fontDescription key="fontDescription" name="SnellRoundhand" family="Snell Roundhand" pointSize="59"/>
-                                <nil key="textColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
                             <constraint firstItem="VwY-5A-oV9" firstAttribute="top" secondItem="5Zd-EA-8Uo" secondAttribute="bottom" constant="8" symbolic="YES" id="5bZ-mC-5BT"/>
                             <constraint firstItem="VwY-5A-oV9" firstAttribute="leading" secondItem="KM8-cH-gsU" secondAttribute="leadingMargin" id="5tV-5v-Phb"/>
-                            <constraint firstItem="JT2-oy-OeJ" firstAttribute="top" secondItem="DHE-OJ-CDH" secondAttribute="bottom" constant="8" symbolic="YES" id="6q4-SK-rw1"/>
-                            <constraint firstItem="c2V-W8-Xkh" firstAttribute="trailing" secondItem="KM8-cH-gsU" secondAttribute="trailingMargin" id="87o-eq-F4a"/>
                             <constraint firstItem="5Zd-EA-8Uo" firstAttribute="top" secondItem="YXY-y9-je5" secondAttribute="bottom" constant="8" symbolic="YES" id="FTD-JI-tNQ"/>
                             <constraint firstItem="YXY-y9-je5" firstAttribute="top" secondItem="Ooi-yj-tBI" secondAttribute="bottom" constant="8" symbolic="YES" id="LGk-iX-gl8"/>
                             <constraint firstItem="eWd-vT-6KD" firstAttribute="centerY" secondItem="KM8-cH-gsU" secondAttribute="centerY" id="MkT-Vc-CMx"/>
-                            <constraint firstItem="c2V-W8-Xkh" firstAttribute="leading" secondItem="KM8-cH-gsU" secondAttribute="leadingMargin" id="Njy-pc-kpf"/>
                             <constraint firstItem="1wv-Uo-P9G" firstAttribute="trailing" secondItem="KM8-cH-gsU" secondAttribute="trailingMargin" id="Pgl-kg-L5z"/>
                             <constraint firstItem="5Zd-EA-8Uo" firstAttribute="centerX" secondItem="KM8-cH-gsU" secondAttribute="centerX" id="RIR-Sh-Qya"/>
-                            <constraint firstItem="c2V-W8-Xkh" firstAttribute="top" secondItem="Ooi-yj-tBI" secondAttribute="bottom" constant="8" symbolic="YES" id="Rs3-Uh-20f"/>
                             <constraint firstItem="YXY-y9-je5" firstAttribute="trailing" secondItem="VwY-5A-oV9" secondAttribute="trailing" constant="15" id="SLS-3g-HAK"/>
-                            <constraint firstItem="DHE-OJ-CDH" firstAttribute="trailing" secondItem="KM8-cH-gsU" secondAttribute="trailingMargin" id="Vi2-Ze-KQd"/>
-                            <constraint firstItem="JT2-oy-OeJ" firstAttribute="top" secondItem="c2V-W8-Xkh" secondAttribute="bottom" id="W12-kG-bhy"/>
                             <constraint firstItem="VwY-5A-oV9" firstAttribute="trailing" secondItem="KM8-cH-gsU" secondAttribute="trailingMargin" id="Xgl-LE-blx"/>
-                            <constraint firstItem="DHE-OJ-CDH" firstAttribute="leading" secondItem="KM8-cH-gsU" secondAttribute="leadingMargin" id="aIb-7x-17i"/>
                             <constraint firstItem="1wv-Uo-P9G" firstAttribute="centerX" secondItem="KM8-cH-gsU" secondAttribute="centerX" id="oh6-6G-Bxq"/>
                             <constraint firstItem="1wv-Uo-P9G" firstAttribute="centerY" secondItem="KM8-cH-gsU" secondAttribute="centerY" id="qbN-7F-Jet"/>
                             <constraint firstItem="1wv-Uo-P9G" firstAttribute="leading" secondItem="KM8-cH-gsU" secondAttribute="leadingMargin" id="rsG-1f-iSs"/>
@@ -793,10 +771,8 @@
                         </constraints>
                     </view>
                     <connections>
-                        <outlet property="cantMakePaymentsLabel" destination="DHE-OJ-CDH" id="MwP-hs-1Nc"/>
                         <outlet property="priceCollectionView" destination="1wv-Uo-P9G" id="aeC-3q-1AC"/>
                         <outlet property="storeProgress" destination="eWd-vT-6KD" id="twp-Gc-Qha"/>
-                        <outlet property="thankYouLabel" destination="c2V-W8-Xkh" id="nvK-rH-jCP"/>
                         <outlet property="upperLogoConstraint" destination="FTD-JI-tNQ" id="5Ut-vv-gmY"/>
                         <outlet property="upperTextConstraint" destination="5bZ-mC-5BT" id="EeM-Ue-eQ4"/>
                     </connections>

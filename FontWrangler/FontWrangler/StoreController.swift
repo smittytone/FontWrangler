@@ -132,35 +132,32 @@ final class StoreController: NSObject,
         var purchaseState: String = ""
         var doFinishTransaction: Bool = false
         
-        for transaction in transactions {
+        for transaction: SKPaymentTransaction in transactions {
+            let userInfo: [AnyHashable: Any] = ["pid": transaction.payment.productIdentifier]
             switch transaction.transactionState {
                 case .purchasing:
                     purchaseState = "purchase in flight"
-                    //self.notifyParent(kPaymentNotifications.inflight)
                 case .deferred:
+                    self.notifyParent(kPaymentNotifications.inflight, userInfo)
                     purchaseState = "purchase deferred"
-                    self.notifyParent(kPaymentNotifications.inflight)
                 case .purchased:
-                    self.notifyParent(kPaymentNotifications.tip)
-                    doFinishTransaction = true
+                    self.notifyParent(kPaymentNotifications.tip, userInfo)
                     purchaseState = "purchase succeeded"
+                    doFinishTransaction = true
                 case .restored:
                     self.notifyParent(kPaymentNotifications.restored)
-                    doFinishTransaction = true
                     purchaseState = "purchases restored"
+                    doFinishTransaction = true
                 case .failed:
                     fallthrough
                 @unknown default:
-                    doFinishTransaction = true
-
-
                     // Trap cancelled purchases so we send the correct
                     // notification to the host view controller
                     if (transaction.error as? SKError)?.code == .paymentCancelled {
-                        self.notifyParent(kPaymentNotifications.cancelled)
+                        self.notifyParent(kPaymentNotifications.cancelled, userInfo)
                         purchaseState = "purchase cancelled"
                     } else {
-                        self.notifyParent(kPaymentNotifications.failed)
+                        self.notifyParent(kPaymentNotifications.failed, userInfo)
                         purchaseState = "purchase failed"
 
                         if let err = transaction.error {
@@ -169,6 +166,8 @@ final class StoreController: NSObject,
                             purchaseState += " (reason unknown)"
                         }
                     }
+                    
+                    doFinishTransaction = true
             }
             
             if doFinishTransaction {
@@ -185,12 +184,13 @@ final class StoreController: NSObject,
     
     // MARK: - Payment Event Handlers
     
-    private func notifyParent(_ rawName: String) {
+    private func notifyParent(_ rawName: String, _ userInfo: [AnyHashable: Any]? = nil) {
 
         // Generic notification issuer. Receiver is the host view controller
 
         NotificationCenter.default.post(name: NSNotification.Name.init(rawValue: rawName),
-                                        object: self)
+                                        object: self,
+                                        userInfo: userInfo)
     }
 }
 

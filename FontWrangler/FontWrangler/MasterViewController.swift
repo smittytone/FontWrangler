@@ -32,6 +32,7 @@ class MasterViewController: UITableViewController,
     private var menuButton: UIBarButtonItem? = nil
     // FROM 1.2.0
     private var doShowNew: Bool = true
+    private var tvc: TipViewController? = nil
     
     // MARK:- Public Instance Properties
     
@@ -1255,11 +1256,14 @@ class MasterViewController: UITableViewController,
         
         // FROM 1.2.0
         
-        let storyboard = UIStoryboard(name: "Main", bundle: nil)
-        let tvc: TipViewController = storyboard.instantiateViewController(withIdentifier: "tip.view.controller") as! TipViewController
-        tvc.modalPresentationStyle = UIDevice.current.userInterfaceIdiom == .pad ? .custom : .pageSheet
-        tvc.transitioningDelegate = self
-        self.present(tvc, animated: true, completion: nil)
+        if self.tvc == nil {
+            let storyboard = UIStoryboard(name: "Main", bundle: nil)
+            tvc = storyboard.instantiateViewController(withIdentifier: "tip.view.controller") as? TipViewController
+            tvc!.modalPresentationStyle = UIDevice.current.userInterfaceIdiom == .pad ? .custom : .pageSheet
+            tvc!.transitioningDelegate = self
+        }
+        
+        self.present(tvc!, animated: true, completion: nil)
     }
     
     

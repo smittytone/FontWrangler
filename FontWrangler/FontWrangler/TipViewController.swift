@@ -17,8 +17,6 @@ class TipViewController: UIViewController,
     
     // MARK: - UI Outlets
 
-    @IBOutlet weak var cantMakePaymentsLabel: UILabel!
-    @IBOutlet weak var thankYouLabel: UILabel!
     @IBOutlet weak var storeProgress: UIActivityIndicatorView!
     @IBOutlet weak var priceCollectionView: UICollectionView!
     @IBOutlet weak var upperLogoConstraint: NSLayoutConstraint!
@@ -28,6 +26,8 @@ class TipViewController: UIViewController,
     
     private var storeController: StoreController? = nil
     private var clickedCell: TipViewCollectionViewCell? = nil
+    private var deferred: String? = nil
+    private var deferTime: Date = Date.init(timeIntervalSinceNow: 0.0)
     private var productIcons: [String] = ["🍬", "☕️", "🍩", "🥧", "🍱"]
     
 
@@ -60,16 +60,14 @@ class TipViewController: UIViewController,
     override func viewWillAppear(_ animated: Bool) {
         
         // Prepare for a new appearance
-        self.thankYouLabel.isHidden = true
-        self.cantMakePaymentsLabel.isHidden = true
-        hideProductList()
+        self.priceCollectionView.isHidden = true
+        
+        // Adjust the logo and text height constraints
+        setKeyConstraints(self.view.frame.size)
         
         // Check payments can be made, etc.
         // NOTE Here in case ability is lost between appearances
         initStore()
-        
-        // Adjust the logo and text height constraints
-        setKeyConstraints(self.view.frame.size)
         
         // Handle super class stuff
         super.viewWillAppear(animated)
@@ -84,8 +82,7 @@ class TipViewController: UIViewController,
         // Check for the ability to purchase
         guard self.storeController!.canMakePayments else {
             self.storeProgress.stopAnimating()
-            //self.cantMakePaymentsLabel.isHidden = false
-            self.showWarning()
+            self.showWarning("Fontismo can’t access the payment system right now. Please try again later.")
             return
         }
         
@@ -117,7 +114,7 @@ class TipViewController: UIViewController,
                        object: nil)
 
         nc.addObserver(self,
-                       selector: #selector(clearHighlight),
+                       selector: #selector(purchaseDeferred),
                        name: NSNotification.Name.init(rawValue: kPaymentNotifications.inflight),
                        object: nil)
         
@@ -166,7 +163,8 @@ class TipViewController: UIViewController,
 
         // Hide the Products collection view
 
-        self.priceCollectionView.isHidden = true
+        self.priceCollectionView.isUserInteractionEnabled = false
+        self.priceCollectionView.alpha = 0.5
     }
 
 
@@ -176,6 +174,15 @@ class TipViewController: UIViewController,
         
         self.priceCollectionView.reloadData()
         updateCollectionViewSize()
+        
+        if self.deferred == nil || (Date.init(timeIntervalSinceNow: 0.0) > Date.init(timeInterval: 86400, since: self.deferTime)) {
+            self.deferred = nil
+            self.priceCollectionView.isUserInteractionEnabled = true
+            self.priceCollectionView.alpha = 1.0
+        } else {
+            hideProductList()
+        }
+        
         self.priceCollectionView.isHidden = false
     }
     
@@ -208,8 +215,7 @@ class TipViewController: UIViewController,
             // Fall through to error: hide the Product list
             // and show a warning
             self.hideProductList()
-            //self.cantMakePaymentsLabel.isHidden = false
-            self.showWarning()
+            self.showWarning("Fontismo can’t retrieve tip options right now. Please try again later.")
         }
     }
 
@@ -218,12 +224,12 @@ class TipViewController: UIViewController,
 
         // Async notification received if something went wrong with the purchase:
         // Clear the selection and post the warnning text
-
+        
         DispatchQueue.main.async {
             self.onAsyncReturn()
+            self.processDeferred(note)
             self.hideProductList()
-            //self.cantMakePaymentsLabel.isHidden = false
-            self.self.showWarning()
+            self.showWarning("You weren’t able to give a tip at this time. Please try to donate again later.")
         }
     }
     
@@ -235,17 +241,27 @@ class TipViewController: UIViewController,
 
         DispatchQueue.main.async {
             self.onAsyncReturn()
+            self.processDeferred(note)
         }
     }
 
 
-    @objc func clearHighlight(_ note: Notification) {
+    @objc func purchaseDeferred(_ note: Notification) {
 
-        // Async notification received if the user cancelled the purchase:
-        // Just clear the selection
-
+        // Async notification received if payment has been deferred --
+        // usually when a minor requests payment auth from a parent
+        
+        // Record the payment ID...
+        if let userInfo: [AnyHashable: Any] = note.userInfo {
+            self.deferred = userInfo["pid"] as? String
+            self.deferTime = Date.init(timeIntervalSinceNow: 0.0)
+        }
+        
+        // ...and then deactivate the Product List
         DispatchQueue.main.async {
             self.clearCellHighlight()
+            self.hideProductList()
+            self.showAlert("Thank You!", "Fontismo will wait for the payment to be authorised.")
         }
     }
 
@@ -254,17 +270,30 @@ class TipViewController: UIViewController,
 
         // Async notification received if the user successfully made a purchase:
         // Clear the selection, hide the products, and post the thanks text
-
+        
         DispatchQueue.main.async {
+            self.processDeferred(note)
             self.onAsyncReturn()
             self.hideProductList()
-            //self.thankYouLabel.isHidden = false
             self.showThanks()
         }
     }
 
-
-    func onAsyncReturn() {
+    
+    private func processDeferred(_ note: Notification) {
+        
+        if let pid: String = self.deferred {
+            if let userInfo: [AnyHashable: Any] = note.userInfo {
+                if pid == userInfo["pid"] as! String {
+                    self.deferred = nil
+                    self.deferTime = Date.init(timeIntervalSinceNow: 0.0)
+                }
+            }
+        }
+    }
+    
+    
+    private func onAsyncReturn() {
 
         // Generic operations to be perfomed on async return from store operations
 
@@ -357,8 +386,7 @@ class TipViewController: UIViewController,
 
             // Fall through to error: hide the Products and show the warning
             self.hideProductList()
-            //self.cantMakePaymentsLabel.isHidden = false
-            self.showWarning()
+            self.showWarning("Fontismo can’t find the options. Please go back to the font list and try again.")
         }
     }
     
@@ -375,30 +403,24 @@ class TipViewController: UIViewController,
     }
     
     
-    /*
-    func collectionView(_ collectionView: UICollectionView,
-                        layout collectionViewLayout: UICollectionViewLayout,
-                        sizeForItemAt indexPath: IndexPath) -> CGSize {
-        guard (self.storeController != nil && !self.storeController!.availableProducts.isEmpty) else {
-            return .zero
+    private func showWarning(_ note: String? = nil) {
+        
+        // Pop up a general warning alert
+        
+        var message: String = "You can’t give a tip at this time. Please try again later."
+        if note != nil {
+            message = note!
         }
-
-        let numberOfPoducts = CGFloat(self.storeController!.availableProducts.count)
-        return CGSize(width: self.priceCollectionView.frame.size.width / numberOfPoducts,
-                      height: self.priceCollectionView.frame.size.height)
-    }
-    */
-
-
-    private func showWarning() {
-
-        self.showAlert("Sorry", "You can’t make purchases at this time. Please try again later")
+        
+        self.showAlert("Sorry!", message)
     }
 
 
     private func showThanks() {
-
-        self.showAlert("Thank You!", "Your donation is very gratefully received", true)
+        
+        // Pop up a 'thanks for your purchase' alert
+        
+        self.showAlert("Thank You!", "Your donation is very gratefully received and will fuel further Fontismo development.", true)
     }
 
 
@@ -420,23 +442,15 @@ class TipViewController: UIViewController,
             alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "Default action"),
                                           style: .default,
                                           handler: (!doExit ? nil : outHandler)))
-            self.present(alert,
-                         animated: true,
-                         completion: nil)
+            
+            // In case this is called while the view
+            // has no preseting parent
+            if self.view.superview != nil {
+                self.present(alert,
+                             animated: true,
+                             completion: nil)
+            }
         }
     }
 
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
-    }
-    */
-
-
-    
 }
