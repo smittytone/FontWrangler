@@ -54,39 +54,8 @@ class TipViewController: UIViewController,
         // Wire it all up
         self.priceCollectionView.delegate = self
         self.priceCollectionView.dataSource = self
-    }
-    
-    
-    override func viewWillAppear(_ animated: Bool) {
         
-        // Prepare for a new appearance
-        self.priceCollectionView.isHidden = true
-        
-        // Adjust the logo and text height constraints
-        setKeyConstraints(self.view.frame.size)
-        
-        // Check payments can be made, etc.
-        // NOTE Here in case ability is lost between appearances
-        initStore()
-        
-        // Handle super class stuff
-        super.viewWillAppear(animated)
-    }
-    
-    
-    private func initStore() {
-        
-        // Start the loading animation
-        self.storeProgress.startAnimating()
-        
-        // Check for the ability to purchase
-        guard self.storeController!.canMakePayments else {
-            self.storeProgress.stopAnimating()
-            self.showWarning("Fontismo can’t access the payment system right now. Please try again later.")
-            return
-        }
-        
-        // We're good to go, so prep the store-related notifications
+        // Prep the store-related notifications
         let nc: NotificationCenter = .default
         nc.addObserver(self,
                        selector: #selector(productListReceived),
@@ -117,6 +86,37 @@ class TipViewController: UIViewController,
                        selector: #selector(purchaseDeferred),
                        name: NSNotification.Name.init(rawValue: kPaymentNotifications.inflight),
                        object: nil)
+    }
+    
+    
+    override func viewWillAppear(_ animated: Bool) {
+        
+        // Prepare for a new appearance
+        self.priceCollectionView.isHidden = true
+        
+        // Adjust the logo and text height constraints
+        setKeyConstraints(self.view.frame.size)
+        
+        // Check payments can be made, etc.
+        // NOTE Here in case ability is lost between appearances
+        initStore()
+        
+        // Handle super class stuff
+        super.viewWillAppear(animated)
+    }
+    
+    
+    private func initStore() {
+        
+        // Start the loading animation
+        self.storeProgress.startAnimating()
+        
+        // Check for the ability to purchase
+        guard self.storeController!.canMakePayments else {
+            self.storeProgress.stopAnimating()
+            self.showWarning("Fontismo can’t access the Apple payment system right now. Please try again later.")
+            return
+        }
         
         // Get available products
         self.storeController!.validateProductIdentifiers()
@@ -176,10 +176,12 @@ class TipViewController: UIViewController,
         updateCollectionViewSize()
         
         if self.deferred == nil || (Date.init(timeIntervalSinceNow: 0.0) > Date.init(timeInterval: 86400, since: self.deferTime)) {
+            // Always clear the deferred flag if it's clear anyway, or the defer period is up (24 hours)
             self.deferred = nil
             self.priceCollectionView.isUserInteractionEnabled = true
             self.priceCollectionView.alpha = 1.0
         } else {
+            // Still awaiting a deferred purchase so hide the Products
             hideProductList()
         }
         
@@ -281,6 +283,10 @@ class TipViewController: UIViewController,
 
     
     private func processDeferred(_ note: Notification) {
+        
+        // Check if we have a deferred purchase (`self.deferred` != nil)
+        // Look for a matching product ID and clear the deferred flag
+        // if they match
         
         if let pid: String = self.deferred {
             if let userInfo: [AnyHashable: Any] = note.userInfo {
