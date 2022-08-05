@@ -12,7 +12,7 @@ Please see [this page](https://smittytone.net/fontismo/index.html).
 
 ## Release Notes ##
 
-- 1.2.0 *Unreleased*
+- 1.2.0 *10 May 2022*
     - Added ten new fonts.
     - Optionally highlight the app’s new fonts. Default: true.
     - Separate help for iPhone and iPad versions.
