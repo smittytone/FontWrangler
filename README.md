@@ -1,4 +1,4 @@
-# Fontismo for iOS 1.2.0 #
+# Fontismo for iOS 1.2.1 #
 
 *Fontismo* provides a means to install a selection of OpenType (`.otf`) and TrueType (`.ttf`) files on an iPad or iPhone. It requires iOS 13.0 or above.
 
@@ -12,6 +12,8 @@ Please see [this page](https://smittytone.net/fontismo/index.html).
 
 ## Release Notes ##
 
+- 1.2.1 *Unreleased*
+    - Update copyright date.
 - 1.2.0 *10 May 2022*
     - Added ten new fonts.
     - Optionally highlight the app’s new fonts. Default: true.
@@ -36,4 +38,4 @@ Please see [this page](https://smittytone.net/fontismo/index.html).
 
 ## Copyright ##
 
-*Fontismo* is copyright &copy; 2022, Tony Smith.<br />The source code is available under the [MIT licence](LICENSE.md).
+*Fontismo* is copyright &copy; 2023, Tony Smith.<br />The source code is available under the [MIT licence](LICENSE.md).
