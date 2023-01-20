@@ -12,7 +12,7 @@ Please see [this page](https://smittytone.net/fontismo/index.html).
 
 ## Release Notes ##
 
-- 1.2.1 *Unreleased*
+- 1.2.1 *20 January 2023*
     - Update copyright date.
 - 1.2.0 *10 May 2022*
     - Added ten new fonts.
