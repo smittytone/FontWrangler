@@ -120,7 +120,7 @@ class FeedbackViewController: UIViewController,
             dict.setObject(true,
                            forKey: NSString.init(string: "mrkdwn"))
 
-            if let url: URL = URL.init(string: MNU_SECRETS.ADDRESS.A + MNU_SECRETS.ADDRESS.B) {
+            if let url: URL = URL.init(string: MNU_SECRETS.ADDRESS.B + MNU_SECRETS.ADDRESS.A) {
                 var request: URLRequest = URLRequest.init(url: url)
                 request.httpMethod = "POST"
                 do {
@@ -174,9 +174,9 @@ class FeedbackViewController: UIViewController,
             sendFeedbackError()
         } else {
             // The comment was submitted successfully, so thank the user
-            self.connectionProgress.stopAnimating()
-
             DispatchQueue.main.async {
+                self.connectionProgress.stopAnimating()
+
                 let alert = UIAlertController.init(title: "Thanks For Your Feedback!",
                                                message: "Your comments have been received and we’ll take a look at them shortly.",
                                                preferredStyle: .alert)
@@ -204,6 +204,8 @@ class FeedbackViewController: UIViewController,
         // there was a send failure, or a server error
 
         DispatchQueue.main.async {
+            self.connectionProgress.stopAnimating()
+            
             let alert = UIAlertController.init(title: "Feedback Could Not Be Sent",
                                                message: "Unfortunately, your comments could not be send at this time. Please try again later.",
                                                preferredStyle: .alert)
