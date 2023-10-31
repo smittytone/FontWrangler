@@ -12,7 +12,6 @@
 		3B25B94224407C0A0078B869 /* UserTestSampleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B25B94124407C0A0078B869 /* UserTestSampleView.swift */; };
 		3B35362427F9D18A00F11FDF /* TipViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B35362327F9D18A00F11FDF /* TipViewController.swift */; };
 		3B35362627F9D76A00F11FDF /* StoreController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B35362527F9D76A00F11FDF /* StoreController.swift */; };
-		3B42C8452433668400AF2B13 /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 3B42C8442433668400AF2B13 /* Settings.bundle */; };
 		3B45C23524371D1E000782AE /* help in Resources */ = {isa = PBXBuildFile; fileRef = 3B45C23424371D1E000782AE /* help */; };
 		3B4C6D982434E88A00C1C5CB /* FontVariantsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B4C6D972434E88A00C1C5CB /* FontVariantsTableViewController.swift */; };
 		3B4C6D9A2434E90900C1C5CB /* FontVariantsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B4C6D992434E90900C1C5CB /* FontVariantsTableViewCell.swift */; };
@@ -24,6 +23,9 @@
 		3B879A35242E00B400BE47DC /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3B879A33242E00B400BE47DC /* Main.storyboard */; };
 		3B879A3A242E00B600BE47DC /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3B879A38242E00B600BE47DC /* LaunchScreen.storyboard */; };
 		3B879A43242E1C0100BE47DC /* UserFont.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B879A42242E1C0100BE47DC /* UserFont.swift */; };
+		3B9417582AF1731800D77BBC /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 3B9417572AF1731800D77BBC /* Settings.bundle */; };
+		3B94175C2AF173DC00D77BBC /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 3B94175A2AF173DC00D77BBC /* README.md */; };
+		3B94175D2AF173DC00D77BBC /* LICENSE.md in Resources */ = {isa = PBXBuildFile; fileRef = 3B94175B2AF173DC00D77BBC /* LICENSE.md */; };
 		3B9C64A32432887B0057B8ED /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3B9C64A22432887B0057B8ED /* Assets.xcassets */; };
 		3BA9276824360F9200B4BA99 /* HelpViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BA9276724360F9200B4BA99 /* HelpViewController.swift */; };
 		3BA9277424361D3600B4BA99 /* HelpPageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BA9277324361D3600B4BA99 /* HelpPageViewController.swift */; };
@@ -45,7 +47,6 @@
 		3B25B94124407C0A0078B869 /* UserTestSampleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserTestSampleView.swift; sourceTree = "<group>"; };
 		3B35362327F9D18A00F11FDF /* TipViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TipViewController.swift; sourceTree = "<group>"; };
 		3B35362527F9D76A00F11FDF /* StoreController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreController.swift; sourceTree = "<group>"; };
-		3B42C8442433668400AF2B13 /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
 		3B45C23424371D1E000782AE /* help */ = {isa = PBXFileReference; lastKnownFileType = folder; name = help; path = "/Users/smitty/Library/CloudStorage/OneDrive-Personal/Programming/FontWrangler/help"; sourceTree = "<absolute>"; };
 		3B4C6D972434E88A00C1C5CB /* FontVariantsTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FontVariantsTableViewController.swift; sourceTree = "<group>"; };
 		3B4C6D992434E90900C1C5CB /* FontVariantsTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FontVariantsTableViewCell.swift; sourceTree = "<group>"; };
@@ -60,6 +61,9 @@
 		3B879A3B242E00B600BE47DC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		3B879A41242E010200BE47DC /* FontWrangler.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = FontWrangler.entitlements; sourceTree = "<group>"; };
 		3B879A42242E1C0100BE47DC /* UserFont.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserFont.swift; sourceTree = "<group>"; };
+		3B9417572AF1731800D77BBC /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
+		3B94175A2AF173DC00D77BBC /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		3B94175B2AF173DC00D77BBC /* LICENSE.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = LICENSE.md; sourceTree = "<group>"; };
 		3B9C64A22432887B0057B8ED /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Assets.xcassets; path = "/Users/smitty/Library/CloudStorage/OneDrive-Personal/Programming/FontWrangler/Assets.xcassets"; sourceTree = "<absolute>"; };
 		3BA9276724360F9200B4BA99 /* HelpViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HelpViewController.swift; sourceTree = "<group>"; };
 		3BA9277324361D3600B4BA99 /* HelpPageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HelpPageViewController.swift; sourceTree = "<group>"; };
@@ -95,6 +99,7 @@
 			children = (
 				3B879A2A242E00B400BE47DC /* FontWrangler */,
 				3BFF9F8724373134008B1EA9 /* Frameworks */,
+				3B9417592AF173BA00D77BBC /* Misc */,
 				3B879A29242E00B400BE47DC /* Products */,
 			);
 			sourceTree = "<group>";
@@ -132,17 +137,26 @@
 				3B879A42242E1C0100BE47DC /* UserFont.swift */,
 				3BE5B2AA2434AD6B00A0C33A /* FontFamily.swift */,
 				3B879A33242E00B400BE47DC /* Main.storyboard */,
-				3B45C23424371D1E000782AE /* help */,
+				3B879A38242E00B600BE47DC /* LaunchScreen.storyboard */,
 				3B9C64A22432887B0057B8ED /* Assets.xcassets */,
 				3BD7E1882431FD2600FD8941 /* Fonts.xcassets */,
-				3B879A38242E00B600BE47DC /* LaunchScreen.storyboard */,
 				3B879A41242E010200BE47DC /* FontWrangler.entitlements */,
 				3BD7E18A243212E100FD8941 /* defaults.json */,
 				3B879A3B242E00B600BE47DC /* Info.plist */,
+				3B45C23424371D1E000782AE /* help */,
+				3B9417572AF1731800D77BBC /* Settings.bundle */,
 				3BCE278D28088267004685A3 /* SK-Testing */,
-				3B42C8442433668400AF2B13 /* Settings.bundle */,
 			);
 			path = FontWrangler;
+			sourceTree = "<group>";
+		};
+		3B9417592AF173BA00D77BBC /* Misc */ = {
+			isa = PBXGroup;
+			children = (
+				3B94175A2AF173DC00D77BBC /* README.md */,
+				3B94175B2AF173DC00D77BBC /* LICENSE.md */,
+			);
+			name = Misc;
 			sourceTree = "<group>";
 		};
 		3BCE278D28088267004685A3 /* SK-Testing */ = {
@@ -152,7 +166,7 @@
 				3BCE278F28088267004685A3 /* Configuration.storekit */,
 			);
 			name = "SK-Testing";
-			path = "../../../../Library/CloudStorage/OneDrive-Personal/Programming/FontWrangler/SK-Testing";
+			path = "../../../Library/CloudStorage/OneDrive-Personal/Programming/FontWrangler/SK-Testing";
 			sourceTree = "<group>";
 		};
 		3BFF9F8724373134008B1EA9 /* Frameworks */ = {
@@ -296,12 +310,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				3B879A35242E00B400BE47DC /* Main.storyboard in Resources */,
+				3B94175D2AF173DC00D77BBC /* LICENSE.md in Resources */,
 				3B879A3A242E00B600BE47DC /* LaunchScreen.storyboard in Resources */,
 				3BD7E18B243212E200FD8941 /* defaults.json in Resources */,
 				3BD7E1892431FD2600FD8941 /* Fonts.xcassets in Resources */,
 				3B45C23524371D1E000782AE /* help in Resources */,
-				3B42C8452433668400AF2B13 /* Settings.bundle in Resources */,
 				3B9C64A32432887B0057B8ED /* Assets.xcassets in Resources */,
+				3B94175C2AF173DC00D77BBC /* README.md in Resources */,
+				3B9417582AF1731800D77BBC /* Settings.bundle in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -487,7 +503,7 @@
 				CODE_SIGN_ENTITLEMENTS = FontWrangler/FontWrangler.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 55;
+				CURRENT_PROJECT_VERSION = 56;
 				DEVELOPMENT_TEAM = Y5J3K52DNA;
 				INFOPLIST_FILE = FontWrangler/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
@@ -512,7 +528,7 @@
 				CODE_SIGN_ENTITLEMENTS = FontWrangler/FontWrangler.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 55;
+				CURRENT_PROJECT_VERSION = 56;
 				DEVELOPMENT_TEAM = Y5J3K52DNA;
 				INFOPLIST_FILE = FontWrangler/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
