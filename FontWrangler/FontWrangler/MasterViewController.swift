@@ -302,9 +302,9 @@ class MasterViewController: UITableViewController,
                     // be larger than the loaded file. BUT we need to port across status values!
                     if loadedFonts.count != self.fonts.count {
                         // Copy the loaded status data to the new defaults
-                        #if DEBUG
+#if DEBUG
                             print("\(self.fonts.count - loadedFonts.count) new fonts added to defaults")
-                        #endif
+#endif
                         
                     }
                     
@@ -320,24 +320,19 @@ class MasterViewController: UITableViewController,
                     }
                     
                     // Store it
-                    self.saveFontList()
-                    
-                    /*
-                    } else {
-                        self.fonts = loadedFonts
-                    }
-                    */
+                    // self.saveFontList()
                     self.isFontListLoaded = true
                 }
             } else {
                 // NOTE If the file doesn't exist, we use the defaults we previously loaded
-                // TODO Should this be an error we expose to the user? If so, only only later calls
+                // TODO Should this be an error we expose to the user?
                 if self.fonts.count == 0 {
                     // Load in the defaults if there's no font list in place
                     self.showAlert("Sorry!", "Fontismo’s default font list can’t be loaded — the app may have become damaged. Please reinstall it.")
                     return
                 }
-
+                
+                // Save the defaults
                 self.saveFontList()
             }
         }
@@ -695,7 +690,7 @@ class MasterViewController: UITableViewController,
         // and re-registrations - see 'installFonts()' and 'uninstallFonts()'
 
         /*
-         An empty array indicates no errors. Each error reference will contain a CFArray of font asset names corresponding to kCTFontManagerErrorFontAssetNameKey. These represent the font asset names that were not successfully registered. Note, the handler may be called multiple times during the registration process. The done parameter will be set to true when the registration process has completed. The handler should return false if the operation is to be stopped. This may be desirable after receiving an error.
+         An empty array indicates no errors. Each error reference will contain a CFArray of font asset names corresponding to kCTFontManagerErrorFontAssetNameKey. These represent the font asset names that were not successfully registered. Note, the handler may be called multiple times during the registration process. The done parameter will be set to true when the registration process has completed. The handler should return `false` if the operation is to be stopped. This may be desirable after receiving an error.
          */
 
         // Set the return value
