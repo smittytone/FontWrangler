@@ -273,8 +273,13 @@ class MasterViewController: UITableViewController,
 
                 do {
                     // Try to load in the file as data then unarchive that data
+                    //loadedFonts = try NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(data) as! [UserFont]
+                    
+                    // FROM 1.2.2
+                    // Replace deprecated calls for NSCoding with Codable
                     let data: Data = try Data(contentsOf: URL.init(fileURLWithPath: loadPath))
-                    loadedFonts = try NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(data) as! [UserFont]
+                    let decoder = PropertyListDecoder.init()
+                    loadedFonts = try decoder.decode([UserFont].self, from: data)
                 } catch {
                     // Font list is damaged in some way - remove it and warn the user
                     NSLog("[ERROR] Could not font load list file: \(error.localizedDescription) - loadFontList()")
@@ -405,13 +410,20 @@ class MasterViewController: UITableViewController,
 
         do {
             // Try to encode the object to data and then try to write out the data
-            let data: Data = try NSKeyedArchiver.archivedData(withRootObject: self.fonts,
-                                                              requiringSecureCoding: true)
+            //let data: Data = try NSKeyedArchiver.archivedData(withRootObject: self.fonts, requiringSecureCoding: true)
+            // FROM 1.2.2
+            // Replace deprecated calls for NSCoding with Codable
+            let encoder: PropertyListEncoder = PropertyListEncoder.init()
+            encoder.outputFormat = .binary
+            let data: Data = try encoder.encode(self.fonts)
             try data.write(to: URL.init(fileURLWithPath: savePath))
-
-            #if DEBUG
-                //print("Font state saved \(savePath)")
-            #endif
+            
+#if DEBUG
+            let jsonEncoder: JSONEncoder = JSONEncoder.init()
+            let jsonData: Data = try jsonEncoder.encode(self.fonts)
+            try jsonData.write(to: URL.init(fileURLWithPath: savePath + ".json"))
+            print("Font state saved \(savePath)")
+#endif
 
         } catch {
             NSLog("[ERROR] Can't write font file: \(error.localizedDescription) - saveFontList()")
