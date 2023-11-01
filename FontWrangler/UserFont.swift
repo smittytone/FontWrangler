@@ -14,10 +14,14 @@ class UserFont: Codable {
     // Instances of this class preserve metadata about a font
     // stored in the app's bundle (in '/fonts')
 
+    // FROM 1.2.2
+    // NSCoding support removed and replaced by Codable support
+
 
     // MARK: - Object properties
 
     private var version: String = "1.0.0"   // Record version number - used to check for fields added later
+                                            // NOTE This is NOT the app version
     var name: String = ""                   // The font's file name, eg. 'Smythe-Regular'
     var path: String = ""                   // The font's file extension, eg. 'ttf'
     var psname: String = ""                 // The font's PostScript name, eg. 'Smythe'

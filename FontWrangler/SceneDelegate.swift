@@ -57,6 +57,7 @@ class SceneDelegate: UIResponder,
         // to restore the scene back to its current state.
     }
 
+    
     // MARK: - Split view
 
     func splitViewController(_ splitViewController: UISplitViewController, collapseSecondary secondaryViewController:UIViewController, onto primaryViewController:UIViewController) -> Bool {

@@ -9,7 +9,7 @@
 import UIKit
 
 
-class FontFamily: NSObject {
+class FontFamily {
     
     // Instances of this class are used to record a single
     // font family, eg. Comfortaa, encompassing its variants
@@ -20,12 +20,13 @@ class FontFamily: NSObject {
     // MARK: - Object properties
     
     private var version: String = "1.0.0"       // Record version number - used to check for fields added later
+                                                // NOTE This is NOT the app version number
     var tag: String = ""                        // The family's asset catalog tag
     var name: String = ""                       // Family name, taken from the asset catalog tag
     var fontsAreDownloaded: Bool = false        // Are all the family's fonts downloaded?
     var fontsAreInstalled: Bool = false         // Are all the family's fonts installed?
     var fontIndices: [Int]? = nil               // Array of indices to fonts in primary array
-    var progress: Progress? = nil               // NSProgress instances used during font installation
+    var progress: Progress? = nil               // Progress instances used during font installation
     var timer: Timer? = nil                     // Timer instance used to timeout installation
     
     // FROM 1.2.0
