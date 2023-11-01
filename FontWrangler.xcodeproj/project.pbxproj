@@ -38,6 +38,7 @@
 		3BD7E1892431FD2600FD8941 /* Fonts.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3BD7E1882431FD2600FD8941 /* Fonts.xcassets */; };
 		3BD7E18B243212E200FD8941 /* defaults.json in Resources */ = {isa = PBXBuildFile; fileRef = 3BD7E18A243212E100FD8941 /* defaults.json */; };
 		3BE5B2AB2434AD6B00A0C33A /* FontFamily.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BE5B2AA2434AD6B00A0C33A /* FontFamily.swift */; };
+		3BF457CF2AF2453600FF67E6 /* Configuration.storekit in Resources */ = {isa = PBXBuildFile; fileRef = 3BCE278F28088267004685A3 /* Configuration.storekit */; };
 		3BFF9F8924373134008B1EA9 /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3BFF9F8824373134008B1EA9 /* WebKit.framework */; };
 /* End PBXBuildFile section */
 
@@ -310,6 +311,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				3B879A35242E00B400BE47DC /* Main.storyboard in Resources */,
+				3BF457CF2AF2453600FF67E6 /* Configuration.storekit in Resources */,
 				3B94175D2AF173DC00D77BBC /* LICENSE.md in Resources */,
 				3B879A3A242E00B600BE47DC /* LaunchScreen.storyboard in Resources */,
 				3BD7E18B243212E200FD8941 /* defaults.json in Resources */,
@@ -503,7 +505,7 @@
 				CODE_SIGN_ENTITLEMENTS = FontWrangler/FontWrangler.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 56;
+				CURRENT_PROJECT_VERSION = 57;
 				DEVELOPMENT_TEAM = Y5J3K52DNA;
 				INFOPLIST_FILE = FontWrangler/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
@@ -528,7 +530,7 @@
 				CODE_SIGN_ENTITLEMENTS = FontWrangler/FontWrangler.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 56;
+				CURRENT_PROJECT_VERSION = 57;
 				DEVELOPMENT_TEAM = Y5J3K52DNA;
 				INFOPLIST_FILE = FontWrangler/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
