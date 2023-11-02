@@ -16,7 +16,7 @@ This repo contains the Fontismo source code only. It does not contain assets req
 
 ## Release Notes ##
 
-- 1.2.2 *Unreleased*
+- 1.2.2 *2 November 2023*
     - Fixed a bug in the feedback system preventing feedback being sent.
 - 1.2.1 *20 January 2023*
     - Update copyright date.
