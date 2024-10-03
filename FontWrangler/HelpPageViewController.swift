@@ -7,7 +7,7 @@
 
 
 import UIKit
-import WebKit
+@preconcurrency import WebKit
 
 
 class HelpPageViewController: UIViewController,
@@ -18,9 +18,14 @@ class HelpPageViewController: UIViewController,
 
     @IBOutlet weak var pageWebView: WKWebView!
 
+    
     // MARK: - Object properties
 
+    // Public
     var index: Int = 0
+    
+    // Private
+    private var helpNav: WKNavigation? = nil
 
     
     // MARK: - Lifecycle Functions
@@ -40,8 +45,7 @@ class HelpPageViewController: UIViewController,
         super.viewWillAppear(animated)
         
         // FROM 1.1.2
-        // Switch the WKWebView to a non-persistent (RAM only)
-        // website data store
+        // Switch the WKWebView to a non-persistent (RAM only) website data store
         let wc: WKWebViewConfiguration = self.pageWebView.configuration
         wc.websiteDataStore = WKWebsiteDataStore.nonPersistent()
         
@@ -49,30 +53,40 @@ class HelpPageViewController: UIViewController,
         // Add separate CSS, HTML for iPhone and iPad versions
         let pagePrefix = UIDevice.current.userInterfaceIdiom == .phone ? "phone" : "pad"
         let page_url = Bundle.main.url(forResource: "\(pagePrefix)_page\(self.index)",
-                                  withExtension: "html",
-                                  subdirectory: "help")!
+                                       withExtension: "html",
+                                       subdirectory: "help")!
         
         // Load up the page data
         let dir_url = Bundle.main.bundleURL.appendingPathComponent("help")
-        self.pageWebView.loadFileURL(page_url,
-                                     allowingReadAccessTo: dir_url)
+        self.helpNav = self.pageWebView.loadFileURL(page_url, allowingReadAccessTo: dir_url)
+        
         //let request = URLRequest(url: page_url)
         //self.pageWebView.load(request)
         
         self.pageWebView.evaluateJavaScript("window.scrollTo(0,0)",
                                             completionHandler: nil)
         
-        self.pageWebView.isHidden = false
+        //self.pageWebView.isHidden = false
     }
     
     
     // MARK: - WKWebView Navigation Functions
-    
-    func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
 
+    func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
+        
+        // FROM 2.0.0
+        // Asynchronously show the page view once the HTML file has loaded
+        // (triggered by delegate method)
+
+        if let nav = self.helpNav {
+            if nav == navigation {
+                // Display the view
+                self.pageWebView.isHidden = false
+            }
+        }
     }
-
-
+    
+    
     func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, preferences: WKWebpagePreferences, decisionHandler: @escaping (WKNavigationActionPolicy, WKWebpagePreferences) -> Void) {
 
         // Process clicked links to send them via Safari - all other

@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		3B0DF57C2440C8F50037BEDE /* IntroViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B0DF57B2440C8F50037BEDE /* IntroViewController.swift */; };
+		3B180A202CAD869000144160 /* Fonts in Resources */ = {isa = PBXBuildFile; fileRef = 3B180A1F2CAD867B00144160 /* Fonts */; };
 		3B2011DC24433F0800441739 /* MasterTitleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B2011DB24433F0800441739 /* MasterTitleView.swift */; };
 		3B25B94224407C0A0078B869 /* UserTestSampleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B25B94124407C0A0078B869 /* UserTestSampleView.swift */; };
 		3B35362427F9D18A00F11FDF /* TipViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B35362327F9D18A00F11FDF /* TipViewController.swift */; };
@@ -24,7 +25,6 @@
 		3B879A3A242E00B600BE47DC /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3B879A38242E00B600BE47DC /* LaunchScreen.storyboard */; };
 		3B879A43242E1C0100BE47DC /* UserFont.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B879A42242E1C0100BE47DC /* UserFont.swift */; };
 		3B9417582AF1731800D77BBC /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 3B9417572AF1731800D77BBC /* Settings.bundle */; };
-		3B94175C2AF173DC00D77BBC /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 3B94175A2AF173DC00D77BBC /* README.md */; };
 		3B94175D2AF173DC00D77BBC /* LICENSE.md in Resources */ = {isa = PBXBuildFile; fileRef = 3B94175B2AF173DC00D77BBC /* LICENSE.md */; };
 		3B9C64A32432887B0057B8ED /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3B9C64A22432887B0057B8ED /* Assets.xcassets */; };
 		3BA9276824360F9200B4BA99 /* HelpViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BA9276724360F9200B4BA99 /* HelpViewController.swift */; };
@@ -44,6 +44,7 @@
 
 /* Begin PBXFileReference section */
 		3B0DF57B2440C8F50037BEDE /* IntroViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntroViewController.swift; sourceTree = "<group>"; };
+		3B180A1F2CAD867B00144160 /* Fonts */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Fonts; path = "/Users/smitty/Library/CloudStorage/OneDrive-Personal/Programming/FontWrangler/Fonts"; sourceTree = "<absolute>"; };
 		3B2011DB24433F0800441739 /* MasterTitleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MasterTitleView.swift; sourceTree = "<group>"; };
 		3B25B94124407C0A0078B869 /* UserTestSampleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserTestSampleView.swift; sourceTree = "<group>"; };
 		3B35362327F9D18A00F11FDF /* TipViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TipViewController.swift; sourceTree = "<group>"; };
@@ -144,6 +145,7 @@
 				3B879A41242E010200BE47DC /* FontWrangler.entitlements */,
 				3BD7E18A243212E100FD8941 /* defaults.json */,
 				3B879A3B242E00B600BE47DC /* Info.plist */,
+				3B180A1F2CAD867B00144160 /* Fonts */,
 				3B45C23424371D1E000782AE /* help */,
 				3B9417572AF1731800D77BBC /* Settings.bundle */,
 				3BCE278D28088267004685A3 /* SK-Testing */,
@@ -207,7 +209,6 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = YES;
 				KnownAssetTags = (
-					abel,
 					alfa_slab_one,
 					allan,
 					amatic_sc,
@@ -279,7 +280,7 @@
 					unifraktur_maguntia,
 				);
 				LastSwiftUpdateCheck = 1130;
-				LastUpgradeCheck = 1500;
+				LastUpgradeCheck = 1600;
 				ORGANIZATIONNAME = "Tony Smith";
 				TargetAttributes = {
 					3B879A27242E00B400BE47DC = {
@@ -317,8 +318,8 @@
 				3BD7E18B243212E200FD8941 /* defaults.json in Resources */,
 				3BD7E1892431FD2600FD8941 /* Fonts.xcassets in Resources */,
 				3B45C23524371D1E000782AE /* help in Resources */,
+				3B180A202CAD869000144160 /* Fonts in Resources */,
 				3B9C64A32432887B0057B8ED /* Assets.xcassets in Resources */,
-				3B94175C2AF173DC00D77BBC /* README.md in Resources */,
 				3B9417582AF1731800D77BBC /* Settings.bundle in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -415,6 +416,7 @@
 				ENABLE_ON_DEMAND_RESOURCES = YES;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -479,6 +481,7 @@
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_ON_DEMAND_RESOURCES = YES;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -505,19 +508,25 @@
 				CODE_SIGN_ENTITLEMENTS = FontWrangler/FontWrangler.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 57;
+				CURRENT_PROJECT_VERSION = 60;
 				DEVELOPMENT_TEAM = Y5J3K52DNA;
 				INFOPLIST_FILE = FontWrangler/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = Fontismo;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.2.3;
+				MARKETING_VERSION = 2.0.0;
 				"OTHER_SWIFT_FLAGS[arch=*]" = "-DDEBUG";
 				PRODUCT_BUNDLE_IDENTIFIER = com.bps.fontwrangler;
 				PRODUCT_NAME = Fontismo;
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -530,19 +539,25 @@
 				CODE_SIGN_ENTITLEMENTS = FontWrangler/FontWrangler.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 57;
+				CURRENT_PROJECT_VERSION = 60;
 				DEVELOPMENT_TEAM = Y5J3K52DNA;
 				INFOPLIST_FILE = FontWrangler/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = Fontismo;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.2.3;
+				MARKETING_VERSION = 2.0.0;
 				"OTHER_SWIFT_FLAGS[arch=*]" = "-DRELEASE";
 				PRODUCT_BUNDLE_IDENTIFIER = com.bps.fontwrangler;
 				PRODUCT_NAME = Fontismo;
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};

@@ -148,6 +148,7 @@ class TipViewController: UIViewController,
         //      is what the frame will **become** -- otherwise it's what
         //      the frame **is**
         
+        /*
         let isPortrait: Bool = size.height > size.width
         if !isPortrait {
             upperLogoConstraint.constant = kLogoLandscapeSeparation
@@ -156,6 +157,7 @@ class TipViewController: UIViewController,
             upperLogoConstraint.constant = kStandardSeparation
             upperTextConstraint.constant = kStandardSeparation
         }
+         */
     }
 
     

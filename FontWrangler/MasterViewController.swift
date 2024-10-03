@@ -66,25 +66,25 @@ class MasterViewController: UITableViewController,
                                          style: .plain,
                                          target: self,
                                          action: #selector(self.doShowMenu(_:)))
-        navigationItem.leftBarButtonItem = menuButton
+        self.navigationItem.leftBarButtonItem = menuButton
 
         // Set up the 'Install' button on the right
         let addAllButton = UIBarButtonItem(title: "Add All",
                                            style: .plain,
                                            target: self,
                                            action: #selector(self.installAll(_:)))
-        navigationItem.rightBarButtonItem = addAllButton
+        self.navigationItem.rightBarButtonItem = addAllButton
 
         // Retain button for future use (enable and disable)
         self.installButton = addAllButton
         self.menuButton = menuButton
 
         // Set the title view and its font count info
-        navigationItem.titleView = self.titleView
+        self.navigationItem.titleView = self.titleView
         self.titleView.infoLabel.text = "No fonts installed (of 0)"
 
         // Set up the split view controller
-        if let split = splitViewController {
+        if let split = self.splitViewController {
             let controllers = split.viewControllers
             self.detailViewController = (controllers[controllers.count - 1] as! UINavigationController).topViewController as? DetailViewController
         }
@@ -126,9 +126,12 @@ class MasterViewController: UITableViewController,
     override func viewWillAppear(_ animated: Bool) {
 
         // Clear selection if the split view isn't collapsed
-        clearsSelectionOnViewWillAppear = splitViewController!.isCollapsed
+        self.clearsSelectionOnViewWillAppear = self.splitViewController!.isCollapsed
         super.viewWillAppear(animated)
         self.willForeground()
+        if self.clearsSelectionOnViewWillAppear {
+            self.navigationItem.titleView = self.titleView
+        }
     }
     
     
@@ -314,6 +317,9 @@ class MasterViewController: UITableViewController,
                             if loadedFont.name == font.name {
                                 font.isInstalled = loadedFont.isInstalled
                                 font.isDownloaded = loadedFont.isDownloaded
+                                if font.name == "Abel-Regular" || font.name == "AlfaSlabOne-Regular" {
+                                    font.isDownloaded = true
+                                }
                                 break
                             }
                         }
@@ -387,6 +393,10 @@ class MasterViewController: UITableViewController,
                         // to its family's own list of fonts
                         family.fontIndices!.append(i)
                     }
+                }
+                
+                if family.name == "Abel" || family.name == "Alfa Slab One" {
+                    family.fontsAreDownloaded = true
                 }
             }
             
@@ -675,11 +685,23 @@ class MasterViewController: UITableViewController,
             // Register the family's fonts using the API
             // NOTE Outcome is operated asynchronously
             self.installCount += 1
+            /*
             CTFontManagerRegisterFontsWithAssetNames(fontNames as CFArray,
                                                      nil,
                                                      .persistent,
                                                      true,
                                                      self.familyRegistrationHandler(errors:done:))
+            */
+            
+            var fontUrls = [URL]()
+            for fontName in fontNames {
+                fontUrls.append(Bundle.main.bundleURL.appendingPathComponent(fontName + ".ttf"))
+            }
+            
+            CTFontManagerRegisterFontURLs(fontUrls as CFArray,
+                                          .persistent,
+                                          true,
+                                          self.familyRegistrationHandler(errors:done:))
         }
     }
 
@@ -704,7 +726,10 @@ class MasterViewController: UITableViewController,
                 // TODO better error handling
                 let error: NSError = err as! NSError
                 NSLog("[ERROR] \(error.localizedDescription)")
-                let errFont = error.userInfo[kCTFontManagerErrorFontAssetNameKey as String] ?? "unknown"
+                var errFont = error.userInfo[kCTFontManagerErrorFontAssetNameKey as String] ?? "unknown"
+                if errFont as! String == "unknown" {
+                    errFont = error.userInfo[kCTFontManagerErrorFontURLsKey as String] ?? "unknown"
+                }
                 self.showAlert("Sorry!", "Fontismo had a problem registering typeface \(errFont).\n(\(error.localizedDescription))")
             }
 
@@ -816,7 +841,7 @@ class MasterViewController: UITableViewController,
             // Assume no fonts hve been installed
             for font: UserFont in self.fonts {
                 font.isInstalled = false
-                font.isDownloaded = false
+                //font.isDownloaded = false
                 font.updated = false
             }
 
@@ -1019,6 +1044,63 @@ class MasterViewController: UITableViewController,
             
             // Set preview image using the font family's tags
             cell.fontPreviewImageView.image = UIImage.init(named: family.tag)
+            cell.fontPreviewImageView.alpha = 0.4
+            
+            let userFont: UserFont = self.fonts[family.fontIndices![0]]
+            var fontSize: CGFloat = 32.0
+            var kernSize: CGFloat = 1.0
+            let maxHeight: CGFloat = cell.fontPreviewLabel.frame.height
+            let maxWidth: CGFloat = cell.fontPreviewLabel.frame.width
+            while true {
+                if let previewFont: UIFont = UIFont(name: userFont.psname, size: fontSize) {
+                    let attrStr: NSAttributedString = NSAttributedString.init(string: "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
+                                                                              attributes: [.font: previewFont,
+                                                                                           .kern: kernSize])
+                    
+                    let ts = NSTextStorage(attributedString: attrStr)
+                    let size = CGSize(width: CGFloat.greatestFiniteMagnitude, height: maxHeight)
+
+                    let tc = NSTextContainer(size: size)
+                    tc.lineFragmentPadding = 0.0
+
+                    let lm = NSLayoutManager()
+                    lm.addTextContainer(tc)
+                    ts.addLayoutManager(lm)
+                    lm.glyphRange(forBoundingRect: CGRect(origin: .zero, size: size), in: tc)
+                    let rect = lm.usedRect(for: tc)
+                    
+                    if rect.width == maxWidth {
+                        cell.fontPreviewLabel.attributedText = attrStr
+                        break
+                    }
+                    
+                    if rect.width < maxWidth {
+                        let diff = cell.fontPreviewLabel.frame.width - rect.width
+                        if diff >= 25.0 {
+                            kernSize += 1.0
+                            continue
+                        } else {
+                            cell.fontPreviewLabel.attributedText = attrStr
+                            break
+                        }
+                    }
+                    
+                    // Reduce the font size and test again
+                    fontSize -= 0.5
+                    if fontSize < 12.0 {
+                        break
+                    }
+                    
+                    //cell.fontPreviewLabel.font = previewFont
+                    //cell.fontPreviewLabel.adjustsFontForContentSizeCategory = true
+                    //cell.fontPreviewLabel.text = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+                } else {
+                    // Missing font
+                    cell.fontPreviewLabel.text = ""
+                    break
+                }
+            }
+
             return cell
         }
     }
@@ -1535,11 +1617,26 @@ class MasterViewController: UITableViewController,
                 // Set a back button to show the master view
                 controller.navigationItem.leftBarButtonItem = splitViewController?.displayModeButtonItem
                 controller.navigationItem.leftItemsSupplementBackButton = true
+                
+                // NOTE A bug? in iOS 18 zaps the titleview
 
                 // Keep a reference to the detail view controller
                 self.detailViewController = controller
             }
         }
+    }
+    
+
+    @IBAction func doUnwind(_ seg: UIStoryboardSegue) {
+        
+        // TEST
+        navigationItem.titleView = self.titleView
+    }
+    
+    
+    override func unwind(for unwindSegue: UIStoryboardSegue, towards subsequentVC: UIViewController) {
+        
+        // TEST
     }
     
 

@@ -1,4 +1,4 @@
-# Fontismo for iOS 1.2.2 #
+# Fontismo for iOS 2.0.0 #
 
 *Fontismo* provides a means to install a selection of OpenType (`.otf`) and TrueType (`.ttf`) files on an iPad or iPhone. It requires iOS 13.0 or above.
 
@@ -16,6 +16,10 @@ This repo contains the Fontismo source code only. It does not contain assets req
 
 ## Release Notes ##
 
+- 2.0.0 *Unreleased*
+    - Support iOS 18 icons.
+    - Stop the main font list view's title from being shifted down on return from viewing a specific font.
+    - Spring clean dates, etc.
 - 1.2.2 *2 November 2023*
     - Fixed a bug in the feedback system preventing feedback being sent.
 - 1.2.1 *20 January 2023*
@@ -44,4 +48,4 @@ This repo contains the Fontismo source code only. It does not contain assets req
 
 ## Copyright ##
 
-*Fontismo* is copyright &copy; 2023, Tony Smith.<br />The source code is available under the [MIT licence](LICENSE.md).
+*Fontismo* is copyright &copy; 2024, Tony Smith.<br />The source code is available under the [MIT licence](LICENSE.md).
