@@ -19,30 +19,43 @@ class MasterViewController: UITableViewController,
 
     @IBOutlet weak var titleView: MasterTitleView!
     @IBOutlet weak var tableHead: UIView!
+    @IBOutlet weak var viewOptionsButton: UIButton!
     
-    // MARK:- Private Instance Properties
-
-    private var detailViewController: DetailViewController? = nil
-    private var installButton: UIBarButtonItem? = nil
-    private var families = [FontFamily]()
-    private var isFontListLoaded: Bool = false
-    private var gotFontFamilies: Bool = false
-    private var installCount: Int = -1
-    // FROM 1.1.2
-    private var menuButton: UIBarButtonItem? = nil
-    // FROM 1.2.0
-    private var doShowNew: Bool = true
-    private var tvc: TipViewController? = nil
     
     // MARK:- Public Instance Properties
     
+    // Collect all the individual fonts
     var fonts = [UserFont]()
+    
+    
+    // MARK:- Private Instance Properties
+
+    private  var installButton: UIBarButtonItem? = nil
+    private  var menuButton: UIBarButtonItem? = nil
+    private  var tvc: TipViewController? = nil
+    
+    internal var detailViewController: DetailViewController? = nil
+    internal var installCount: Int = -1
+    internal var isFontListLoaded: Bool = false
+    internal var gotFontFamilies: Bool = false
+    
+    // Collect all the font families. Each entry contains an array of the
+    // indices of member fonts in the main font collection, `fonts`
+    internal var doIndicateNewFonts: Bool = true
+    internal var families = [FontFamily]()
+    internal var subFamilies = [FontFamily]()
+    internal var viewStates: [FontFamilyStyle: Bool] = [
+        .classic: true,
+        .headline: true,
+        .decorative: true,
+        .monospace: true
+    ]
+    
     
     // MARK:- Private Instance Constants
 
-    private let DOCS_PATH = NSSearchPathForDirectoriesInDomains(FileManager.SearchPathDirectory.documentDirectory, FileManager.SearchPathDomainMask.userDomainMask, true)[0]
-    private let BUNDLE_PATH = Bundle.main.bundlePath
-    
+    internal let DOCS_PATH = NSSearchPathForDirectoriesInDomains(FileManager.SearchPathDirectory.documentDirectory, FileManager.SearchPathDomainMask.userDomainMask, true)[0]
+    internal let BUNDLE_PATH = Bundle.main.bundlePath
     
     
     // MARK:- Lifecycle Functions
@@ -69,7 +82,7 @@ class MasterViewController: UITableViewController,
         self.navigationItem.leftBarButtonItem = menuButton
 
         // Set up the 'Install' button on the right
-        let addAllButton = UIBarButtonItem(title: "Add All",
+        let addAllButton = UIBarButtonItem(image: UIImage.init(systemName: "square.and.arrow.down.on.square"),
                                            style: .plain,
                                            target: self,
                                            action: #selector(self.installAll(_:)))
@@ -78,8 +91,61 @@ class MasterViewController: UITableViewController,
         // Retain button for future use (enable and disable)
         self.installButton = addAllButton
         self.menuButton = menuButton
+        
+        // FROM 2.0.0
+        // Assemble a contextual menu for font list subdivision
+        // NOTE This is only available in iOS 14 and up so we disable the options
+        //      button for earlier iOS versions
+        if #available(iOS 14, *) {
+            let showAllFontsAction = UIAction(title: "Show All",
+                                              image: nil,
+                                              handler: { (_) in
+                                                  self.doShowAll(self)
+                                              })
+            
+            let showClassicFontsAction = UIAction(title: "Classic",
+                                                  image: UIImage(named: "style_class"),
+                                                  handler: { (action) in
+                                                      self.doShowSome(action, .classic)
+                                                  })
+            
+            let showHeadlineFontsAction = UIAction(title: "Headline",
+                                                   image: UIImage(named: "style_head"),
+                                                   handler: { (action) in
+                                                       self.doShowSome(action, .headline)
+                                                   })
+            
+            let showDecorativeFontsAction = UIAction(title: "Decorative",
+                                                     image: UIImage(named: "style_dec"),
+                                                     handler: { (action) in
+                                                         self.doShowSome(action, .decorative)
+                                                     })
+            
+            let showMonospaceFontsAction = UIAction(title: "Monospace",
+                                                     image: UIImage(named: "style_mono"),
+                                                     handler: { (action) in
+                                                         self.doShowSome(action, .monospace)
+                                                     })
+            
+            // Set the state indicators to on, ie. show all
+            showClassicFontsAction.state = .on
+            showHeadlineFontsAction.state = .on
+            showDecorativeFontsAction.state = .on
+            showMonospaceFontsAction.state = .on
+            
+            // Assemble the menu, add it to the central table header button,
+            // and enable menu delivery by the button
+            let filterMenu = UIMenu(title: "Show Typefaces that are...", options: .displayInline, children: [showClassicFontsAction, showHeadlineFontsAction, showDecorativeFontsAction, showMonospaceFontsAction, showAllFontsAction])
+            self.viewOptionsButton.menu = filterMenu
+            self.viewOptionsButton.showsMenuAsPrimaryAction = true
+        } else {
+            // iOS 13: hide the button
+            self.viewOptionsButton.isHidden = true
+        }
+        
 
         // Set the title view and its font count info
+        // NOTE The title view is placed in the centre of the nav bar
         self.navigationItem.titleView = self.titleView
         self.titleView.infoLabel.text = "No fonts installed (of 0)"
 
@@ -103,15 +169,21 @@ class MasterViewController: UITableViewController,
 
         // Watch for font state changes
         nc.addObserver(self,
-                       selector: #selector(fontStatesChanged(_:)),
+                       selector: #selector(self.fontStatesChanged(_:)),
                        name: kCTFontManagerRegisteredFontsChangedNotification as NSNotification.Name,
                        object: nil)
 
         // FROM 1.1.1
         // Ask for a review on a long press
-        let pressRec: UILongPressGestureRecognizer = UILongPressGestureRecognizer.init(target: self,
-                                                                                       action: #selector(self.doRequestReview))
-        self.view?.addGestureRecognizer(pressRec)
+        let pressLong: UILongPressGestureRecognizer = UILongPressGestureRecognizer.init(target: self,
+                                                                                        action: #selector(self.doRequestReview))
+        self.view?.addGestureRecognizer(pressLong)
+        
+        // FROM 2.0.0
+        let doubleTap: UITapGestureRecognizer = UITapGestureRecognizer.init(target: self,
+                                                                            action: #selector(self.doRequestReview))
+        doubleTap.numberOfTapsRequired = 2
+        self.view?.addGestureRecognizer(doubleTap)
 
         // Load up the default list
         self.loadDefaults()
@@ -156,7 +228,7 @@ class MasterViewController: UITableViewController,
         self.setInstallButtonState()
         
         // FROM 1.2.0
-        self.doShowNew = UserDefaults.standard.bool(forKey: kDefaultsKeys.shouldShowNewFonts)
+        self.doIndicateNewFonts = UserDefaults.standard.bool(forKey: kDefaultsKeys.shouldShowNewFonts)
 
         // Show the intro panel
         // NOTE 'showIntroPanel()' checks whether the panel should
@@ -174,9 +246,9 @@ class MasterViewController: UITableViewController,
 
         // Get the default to see if we go ahead and display the intro panel
         let defaults: UserDefaults = UserDefaults.standard
-        let showIntro = defaults.bool(forKey: kDefaultsKeys.shouldShowIntro)
+        let shouldShowIntro = defaults.bool(forKey: kDefaultsKeys.shouldShowIntro)
 
-        if showIntro {
+        if shouldShowIntro {
             // Load and configure the menu view controller.
             let storyboard = UIStoryboard(name: "Main", bundle: nil)
             let ivc: IntroViewController = storyboard.instantiateViewController(withIdentifier: "intro.view.controller") as! IntroViewController
@@ -191,1028 +263,9 @@ class MasterViewController: UITableViewController,
             defaults.set(false, forKey: kDefaultsKeys.shouldShowIntro)
         }
     }
-    
 
-    // MARK: - Font List Management Functions
 
-    func loadDefaults() {
-        
-        // Load in the default list of available fonts and then sort it A-Z
-        // This is stored in the main bundle
-
-        let fm = FileManager.default
-        let defaultFontsPath = self.BUNDLE_PATH + kDefaultsPath
-        var fontDictionary: [String: Any] = [:]
-        
-        if fm.fileExists(atPath: defaultFontsPath) {
-            do {
-                let fileData = try Data(contentsOf: URL.init(fileURLWithPath: defaultFontsPath))
-                fontDictionary = try JSONSerialization.jsonObject(with: fileData, options: []) as! [String: Any]
-            } catch {
-                NSLog("[ERROR] can't load defaults: \(error.localizedDescription) - loadDefaults()")
-                self.showAlert("Sorry!", "Fontismo’s default font list can’t be loaded — it has become damaged. Please reinstall the app.")
-                return
-            }
-            
-            // Extract the data into UserFont instances
-            let fonts = fontDictionary["fonts"] as! [Any]
-            for font in fonts {
-                let aFont = font as! [String:String]
-                let newFont = UserFont()
-                newFont.name = aFont["name"] ?? ""
-                newFont.psname = aFont["name"] ?? ""
-                newFont.path = aFont["path"] ?? ""
-                newFont.tag = aFont["tag"] ?? ""
-                
-                let flag: String = aFont["new"] ?? ""
-                newFont.isNew = (flag == "true")
-                self.fonts.append(newFont)
-            }
-            
-            // Sort the list
-            self.sortFonts()
-        } else {
-            NSLog("[ERROR] can't load defaults - loadDefaults()")
-            self.showAlert("Error", "Sorry, the default font list is missing — Fontismo has become damaged. Please reinstall the app.")
-        }
-    }
-    
-    
-    @objc func initializeFontList() {
-
-        // Update and display the list of available fonts that the app knows about and is managing
-        //
-        // This is the called when the app comes into the foreground
-        // and when viewWillAppear() is callled
-
-        // Load the saved list from disk
-        // NOTE If nothing is loaded from disk, 'self.fonts' will be the defaults
-        self.loadFontList()
-        
-        // Determing the font families available in the font list
-        self.setFontFamilies()
-
-        // Double-check what's installed and what isn't and
-        // update the fonts' status
-        // NOTE This will save the list always
-        self.updateFamilyStatus()
-
-        // Reload the table
-        self.tableView.reloadData()
-    }
-
-
-    func loadFontList() {
-
-        // Load in the persisted font list, if it is present
-        
-        if !self.isFontListLoaded {
-            // Get the path to the list file
-            let loadPath = self.DOCS_PATH + kFontListFileSubPath
-            
-            if FileManager.default.fileExists(atPath: loadPath) {
-                // Create an array of UserFont instances to hold the loaded data
-                var loadedFonts = [UserFont]()
-
-                do {
-                    // Try to load in the file as data then unarchive that data
-                    //loadedFonts = try NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(data) as! [UserFont]
-                    
-                    // FROM 1.2.2
-                    // Replace deprecated calls for NSCoding with Codable
-                    let data: Data = try Data(contentsOf: URL.init(fileURLWithPath: loadPath))
-                    let decoder = PropertyListDecoder.init()
-                    loadedFonts = try decoder.decode([UserFont].self, from: data)
-                } catch {
-                    // Font list is damaged in some way - remove it and warn the user
-                    NSLog("[ERROR] Could not font load list file: \(error.localizedDescription) - loadFontList()")
-
-                    do {
-                        try FileManager.default.removeItem(atPath: loadPath)
-                    } catch {
-                        NSLog("[ERROR] Could not delete damaged font list file: \(error.localizedDescription) - loadFontList()")
-                    }
-
-                    return
-                }
-
-                if loadedFonts.count > 0 {
-                    // We loaded in some valid data so set it as the primary store
-                    // NOTE This must come before any other font addition/removal code
-                    //      because it resets 'self.fonts'
-                    
-                    // Check sizes in case we are updating from an old version and therefore the defaults will
-                    // be larger than the loaded file. BUT we need to port across status values!
-                    if loadedFonts.count != self.fonts.count {
-                        // Copy the loaded status data to the new defaults
-#if DEBUG
-                            print("\(self.fonts.count - loadedFonts.count) new fonts added to defaults")
-#endif
-                        
-                    }
-                    
-                    for font: UserFont in self.fonts {
-                        for loadedFont: UserFont in loadedFonts {
-                            // Compare file names when looking for added fonts
-                            if loadedFont.name == font.name {
-                                font.isInstalled = loadedFont.isInstalled
-                                font.isDownloaded = loadedFont.isDownloaded
-                                if font.name == "Abel-Regular" || font.name == "AlfaSlabOne-Regular" {
-                                    font.isDownloaded = true
-                                }
-                                break
-                            }
-                        }
-                    }
-                    
-                    // Store it
-                    // self.saveFontList()
-                    self.isFontListLoaded = true
-                }
-            } else {
-                // NOTE If the file doesn't exist, we use the defaults we previously loaded
-                // TODO Should this be an error we expose to the user?
-                if self.fonts.count == 0 {
-                    // Load in the defaults if there's no font list in place
-                    self.showAlert("Sorry!", "Fontismo’s default font list can’t be loaded — the app may have become damaged. Please reinstall it.")
-                    return
-                }
-                
-                // Save the defaults
-                self.saveFontList()
-            }
-        }
-    }
-    
-    
-    func setFontFamilies() {
-        
-        // Create a list of font families if we don't have one
-        
-        if !self.gotFontFamilies {
-            // Clear the existing list before we begin
-            self.families = [FontFamily]()
-            
-            // Run through the font list to extract family names via tags
-            // NOTE This may change
-            var got: Bool = false
-            for font: UserFont in self.fonts {
-                got = false
-                for family: FontFamily in self.families {
-                    if family.tag == font.tag {
-                        got = true
-                        break
-                    }
-                }
-                
-                if !got {
-                    let newFamily: FontFamily = FontFamily()
-                    newFamily.tag = font.tag
-                    newFamily.name = self.getPrinteableName(font.tag)
-                    newFamily.isNew = font.isNew
-                    self.families.append(newFamily)
-                }
-            }
-            
-            // Sort the family list A-Z
-            self.families.sort{ (family_1, family_2) -> Bool in
-                return (family_1.name < family_2.name)
-            }
-            
-            // For each family we now know about, add the member fonts
-            // to its own array of font references
-            for family: FontFamily in self.families {
-                for i in 0..<self.fonts.count {
-                    let font: UserFont = self.fonts[i]
-                    if font.tag == family.tag {
-                        if family.fontIndices == nil {
-                            family.fontIndices = [Int]()
-                        }
-                        
-                        // Add the font's index in the primary font array
-                        // to its family's own list of fonts
-                        family.fontIndices!.append(i)
-                    }
-                }
-                
-                if family.name == "Abel" || family.name == "Alfa Slab One" {
-                    family.fontsAreDownloaded = true
-                }
-            }
-            
-            // Mark that we're done
-            self.gotFontFamilies = true
-        }
-    }
-    
-    
-    @objc func saveFontList() {
-
-        // Persist the app's font database
-
-        // The app is going into the background or closing, so save the list of devices
-        let savePath = self.DOCS_PATH + kFontListFileSubPath
-
-        do {
-            // Try to encode the object to data and then try to write out the data
-            //let data: Data = try NSKeyedArchiver.archivedData(withRootObject: self.fonts, requiringSecureCoding: true)
-            // FROM 1.2.2
-            // Replace deprecated calls for NSCoding with Codable
-            let encoder: PropertyListEncoder = PropertyListEncoder.init()
-            encoder.outputFormat = .binary
-            let data: Data = try encoder.encode(self.fonts)
-            try data.write(to: URL.init(fileURLWithPath: savePath))
-            
-#if DEBUG
-            let jsonEncoder: JSONEncoder = JSONEncoder.init()
-            let jsonData: Data = try jsonEncoder.encode(self.fonts)
-            try jsonData.write(to: URL.init(fileURLWithPath: savePath + ".json"))
-            print("Font state saved \(savePath)")
-#endif
-
-        } catch {
-            NSLog("[ERROR] Can't write font file: \(error.localizedDescription) - saveFontList()")
-            self.showAlert("Error", "Sorry, Fontismo can’t access internal storage. It may have been damaged or mis-installed. Please re-installed from the App Store.")
-        }
-    }
-    
-    
-    @objc func fontStatesChanged(_ sender: Any) {
-        
-        // The app has received a font status update notification
-        // eg. the user removed a font using the system UI
-
-        // Update the families' status the UI
-        self.updateFamilyStatus()
-        self.updateUIonMain()
-    }
-
-
-    // MARK: - Family Handling Action Functions
-
-    @objc func installAll(_ sender: Any) {
-        
-        // Install all available font families, downloading as necessary
-        
-        if self.families.count > 0 {
-            for family: FontFamily in self.families {
-                if !family.fontsAreInstalled && family.progress == nil {
-                    // If the family is not marked as installed,
-                    // assume it is not downloaded (it might be
-                    // present) and attempt to get it
-                    self.getOneFontFamily(family)
-                }
-            }
-        }
-    }
-
-    
-    func removeAll() {
-
-        // Uninstall all available fonts
-        
-        if self.families.count > 0 {
-            // Assemble font descriptors for each of the family's fonts.
-            // These will be passed to the API for deregistration.
-            var fontDescs = [UIFontDescriptor]()
-            for family: FontFamily in self.families {
-                if family.fontsAreDownloaded {
-                    // Update the family's state information
-                    family.fontsAreInstalled = false
-                    family.fontsAreDownloaded = false
-                    
-                    if let fontIndexes: [Int] = family.fontIndices {
-                        for fontIndex: Int in fontIndexes {
-                            let font: UserFont = self.fonts[fontIndex]
-
-                            // Font Descriptors take POSTSCRIPT NAMES
-                            let fontDesc: UIFontDescriptor = UIFontDescriptor.init(name: font.psname, size: 48.0)
-                            fontDescs.append(fontDesc)
-                            
-                            // Update the font's state information
-                            font.isInstalled = false
-                            font.isDownloaded = false
-                        }
-                    }
-                }
-            }
-            
-            if fontDescs.count > 0 {
-                // Unregister the fonts via the API
-                CTFontManagerUnregisterFontDescriptors(fontDescs as CFArray,
-                                                       .persistent,
-                                                       self.familyRegistrationHandler(errors:done:))
-            }
-
-            // FROM 1.1.1
-            // Add the number of fonts removed to the current total
-            self.installCount += fontDescs.count
-        }
-    }
-    
-
-    func removeOneFontFamily(_ family: FontFamily) {
-
-        // Remove a single font family
-
-        if let fontIndexes: [Int] = family.fontIndices {
-            // Iterate the family's fonts, clearing their flags and adding their
-            // FontDescriptors to the array we'll use to deregister them
-            var fontDescs = [UIFontDescriptor]()
-            family.fontsAreInstalled = false
-            family.fontsAreDownloaded = false
-
-            for fontIndex: Int in fontIndexes {
-                let font: UserFont = self.fonts[fontIndex]
-                font.isInstalled = false
-                font.isDownloaded = false
-
-                // Font Descriptors take the POSTSCRIPT NAME
-                let fontDesc: UIFontDescriptor = UIFontDescriptor.init(name: font.psname,
-                                                                       size: 48.0)
-                fontDescs.append(fontDesc)
-            }
-
-            // Deregister the fonts using the API
-            CTFontManagerUnregisterFontDescriptors(fontDescs as CFArray,
-                                                   .persistent,
-                                                   self.fontRegistrationHandler(errors:done:))
-        }
-
-        // FROM 1.1.1
-        // Add the number of fonts removed to the current total
-        self.installCount += 1
-    }
-
-
-    func getOneFontFamily(_ family: FontFamily) {
-
-        // Acquire a single font fsmily resource using on-demand
-
-        if !family.fontsAreDownloaded {
-            
-            #if DEBUG
-                print("Family '\(family.name)' not downloaded")
-            #endif
-            
-            // The fsmily's font resource has not been downloaded so get its asset catalog tag
-            // ('family.tag') and assemble an asset request
-            let tags: Set<String> = Set.init([family.tag])
-            let fontRequest = NSBundleResourceRequest.init(tags: tags)
-
-            // Store the progress recorder and update the UI on
-            // the main thread so the Activity Indicator is shown
-            family.progress = fontRequest.progress
-            DispatchQueue.main.async {
-                self.tableView.reloadData()
-            }
-
-            // Set a timeout timer on this family-specific request
-            family.timer = Timer.scheduledTimer(withTimeInterval: kFontDownloadTimeout,
-                                                repeats: false,
-                                                block: { (firedTimer) in
-                // Find the family associated with the fired timer
-                for family: FontFamily in self.families {
-                    if let familyTimer = family.timer {
-                        if familyTimer == firedTimer {
-                            if !family.fontsAreDownloaded {
-                                self.showAlert("Sorry!", "Fontismo could not access the requested typeface because it could not connect to the App Store. Please check your Internet connection and try again.")
-                            }
-
-                            family.timer = nil
-                            family.progress = nil
-
-                            DispatchQueue.main.async {
-                                // FROM 1.2.0
-                                // Turn off the detail view controller's progress indicator
-                                if let dvc: DetailViewController = self.detailViewController {
-                                    if !dvc.downloadProgress.isHidden {
-                                        dvc.downloadProgress.stopAnimating()
-                                    }
-                                }
-                                
-                                // Update the typeface table
-                                self.tableView.reloadData()
-                            }
-
-                            break
-                        }
-                    }
-                }
-            })
-
-            fontRequest.beginAccessingResources { (error) in
-                // THIS BLOCK IS A CLOSURE
-
-                // Update the UI (on the main thread) to remove the
-                // Activity Indicator
-                family.progress = nil
-                DispatchQueue.main.async {
-                    self.tableView.reloadData()
-                }
-
-                // Check for a download error
-                if error != nil {
-                    // Handle errors
-                    // NOTE #1 Item not downloaded if 'error' != nil
-                    // NOTE #2 Not sure if this ever gets called... app usually timeouts
-                    //         It does get called if we download in Airplane Mode.
-                    NSLog("[ERROR] \(error!.localizedDescription)")
-
-                    // Zap the associated timer early
-                    if family.timer != nil {
-                        family.timer!.invalidate()
-                        family.timer = nil
-                    }
-
-                    self.showAlert("Sorry!", "Fontismo could not access the requested typeface because it was unable to connect to the App Store. Please check your Internet connection and try again.\n(\(error!.localizedDescription))")
-                    
-                    // FROM 1.2.0
-                    // Turn off the detail view controller's progress indicator
-                    DispatchQueue.main.async {
-                        if let dvc: DetailViewController = self.detailViewController {
-                            if !dvc.downloadProgress.isHidden {
-                                dvc.downloadProgress.stopAnimating()
-                            }
-                        }
-                    }
-                    
-                    return
-                }
-                
-                #if DEBUG
-                    print("Family '\(family.name)' downloaded")
-                #endif
-                
-                // Keep the downloaded file around permanently, ie.
-                // until the app is deleted
-                Bundle.main.setPreservationPriority(1.0, forTags: tags)
-
-                // Update the font's state
-                family.fontsAreDownloaded = true
-
-                // Register the font with the OS
-                self.registerFontFamily(family)
-            }
-        } else {
-            // Font family should already be downloaded
-            #if DEBUG
-                print("Family '\(family.name)' already downloaded")
-            #endif
-            
-            self.registerFontFamily(family)
-        }
-    }
-
-
-    func registerFontFamily(_ family: FontFamily) {
-
-        // Register the family's fonts
-        // NOTE This displays the system's Install dialog
-
-        if let fontIndexes: [Int] = family.fontIndices {
-            // Add the fonts' FILE NAMEs to 'fontNames'
-            var fontNames = [String]()
-            for fontIndex: Int in fontIndexes {
-                let font: UserFont = self.fonts[fontIndex]
-                fontNames.append(font.name)
-            }
-            
-            #if DEBUG
-                print("Registering family '\(family.name)'...")
-            #endif
-
-            // Register the family's fonts using the API
-            // NOTE Outcome is operated asynchronously
-            self.installCount += 1
-            /*
-            CTFontManagerRegisterFontsWithAssetNames(fontNames as CFArray,
-                                                     nil,
-                                                     .persistent,
-                                                     true,
-                                                     self.familyRegistrationHandler(errors:done:))
-            */
-            
-            var fontUrls = [URL]()
-            for fontName in fontNames {
-                fontUrls.append(Bundle.main.bundleURL.appendingPathComponent(fontName + ".ttf"))
-            }
-            
-            CTFontManagerRegisterFontURLs(fontUrls as CFArray,
-                                          .persistent,
-                                          true,
-                                          self.familyRegistrationHandler(errors:done:))
-        }
-    }
-
-
-    func familyRegistrationHandler(errors: CFArray, done: Bool) -> Bool {
-
-        // A callback triggered in response to system-level font registration
-        // and re-registrations - see 'installFonts()' and 'uninstallFonts()'
-
-        /*
-         An empty array indicates no errors. Each error reference will contain a CFArray of font asset names corresponding to kCTFontManagerErrorFontAssetNameKey. These represent the font asset names that were not successfully registered. Note, the handler may be called multiple times during the registration process. The done parameter will be set to true when the registration process has completed. The handler should return `false` if the operation is to be stopped. This may be desirable after receiving an error.
-         */
-
-        // Set the return value
-        let returnValue: Bool = true
-
-        // Process any errors passed in
-        let errs = errors as NSArray
-        if errs.count > 0 {
-            for err in errs {
-                // For now, just print the error
-                // TODO better error handling
-                let error: NSError = err as! NSError
-                NSLog("[ERROR] \(error.localizedDescription)")
-                var errFont = error.userInfo[kCTFontManagerErrorFontAssetNameKey as String] ?? "unknown"
-                if errFont as! String == "unknown" {
-                    errFont = error.userInfo[kCTFontManagerErrorFontURLsKey as String] ?? "unknown"
-                }
-                self.showAlert("Sorry!", "Fontismo had a problem registering typeface \(errFont).\n(\(error.localizedDescription))")
-            }
-
-            // As recommended, return false on error to
-            // halt further processing
-            // returnValue = false
-        }
-
-        // System sets 'done' to true on the final call
-        // (according to the header file)
-        if done {
-            #if DEBUG
-                print("(De)registration operation complete")
-            #endif
-            
-            // Update the fonts' status and update the UI
-            // NOTE Have to do all families becuase we can't know
-            //      which family has been registered
-            DispatchQueue.main.async {
-                self.updateFamilyStatus()
-                self.setInstallButtonState()
-                self.tableView.reloadData()
-
-                // FROM 1.1.1
-                // Check if we need to run a review prompt
-                if self.installCount > kFontInstallCountBeforeReviewRequest {
-                    self.installCount = 0
-                    UserDefaults.standard.set(self.installCount, forKey: kDefaultsKeys.fontInstallCount)
-                    self.requestReview()
-                }
-            }
-        }
-
-        // Signal state of operation
-        return returnValue
-    }
-    
-    
-    func updateFamilyStatus() {
-        
-        // Update family status properties
-        // Where possible rely on the OS for state data
-        
-        // Update the status of all the fonts
-        self.updateFontStatus()
-        
-        #if DEBUG
-            print("---------------------------------------------------")
-        #endif
-        
-        // Use the font data to set the familiies' status
-        var installedCount = 0
-        for family: FontFamily in self.families {
-            // Familities fonts have been downloaed - have they been installed?
-            // The number of font installations should match the number of
-            // fonts in the family
-            var installed: Int = 0
-            var downloaded: Int = 0
-            
-            if let fontIndexes: [Int] = family.fontIndices {
-                for fontIndex: Int in fontIndexes {
-                    let font: UserFont = self.fonts[fontIndex]
-                    installed += (font.isInstalled ? 1 : 0)
-                    downloaded += (font.isDownloaded ? 1 : 0)
-                }
-                
-                // Families are only considered installed if all their members are
-                family.fontsAreInstalled = installed == fontIndexes.count
-                family.fontsAreDownloaded = downloaded == fontIndexes.count
-
-                installedCount += (family.fontsAreInstalled ? 1 : 0)
-
-                #if DEBUG
-                    print("Family '\(family.name)': downloads: \(downloaded), installs: \(installed) of \(fontIndexes.count)")
-                #endif
-
-                // Turn of progress and/or timers if they're still active
-                if fontIndexes.count == installed {
-                    if family.progress != nil {
-                        family.progress = nil
-                    }
-
-                    if family.timer != nil {
-                        family.timer!.invalidate()
-                        family.timer = nil
-                    }
-                }
-            }
-        }
-
-        // Set the font installed/not installed count
-        let fontString = installedCount == 1 ? "typeface" : "typefaces"
-        let headString = installedCount == 0 ? "No" : "\(installedCount)"
-        self.titleView.infoLabel.text = "\(headString) \(fontString) installed (of \(self.families.count))"
-    }
-    
-    
-    // MARK: - Font Handling Action Functions
-    
-    func updateFontStatus() {
-
-        // Update the app's record of fonts in response to a notification
-        // from the system that some fonts' status has changed
-        // Called by 'updateFamilyStatus()'
-
-        // Get the registered (installed) fonts from the CTFontManager
-        if let registeredDescriptors = CTFontManagerCopyRegisteredFontDescriptors(.persistent, true) as? [CTFontDescriptor] {
-
-            // Assume no fonts hve been installed
-            for font: UserFont in self.fonts {
-                font.isInstalled = false
-                //font.isDownloaded = false
-                font.updated = false
-            }
-
-            // Map regsitered fonts to our list to record which have been registered
-            var setCount: Int = 0
-            for registeredDescriptor in registeredDescriptors {
-                if let fontName = CTFontDescriptorCopyAttribute(registeredDescriptor, kCTFontNameAttribute) as? String {
-
-                    #if DEBUG
-                        print("CoreText Font Manager says '\(fontName)' is registered...")
-                    #endif
-
-                    for font: UserFont in self.fonts {
-                        // Match against PostScript name
-                        if font.psname == fontName {
-                            font.isInstalled = true
-                            font.isDownloaded = true
-                            font.updated = true
-                            setCount += 1
-                            #if DEBUG
-                                print("  ...and matched for '\(font.name)'")
-                            #endif
-
-                            break
-                        }
-                    }
-                }
-            }
-            
-            // Did we just update fewer fonts than are registered?
-            // If so it's probably because there's a name mismatch, ie.
-            // the filename-derived name != the PostScript name
-            if setCount < registeredDescriptors.count {
-                // Some missing fonts, so check by URL
-                for registeredDescriptor in registeredDescriptors {
-                    if let fontName = CTFontDescriptorCopyAttribute(registeredDescriptor, kCTFontNameAttribute) as? String {
-                        for font: UserFont in self.fonts {
-                            if !font.updated {
-                                // Eg. 'TradeWinds' and 'TradeWinds-Regular'
-                                // TODO Needs some safety checking/more efficient
-                                if (font.psname as NSString).contains(fontName) {
-                                    font.isInstalled = true
-                                    font.isDownloaded = true
-                                    font.updated = true
-                                    
-                                    #if DEBUG
-                                        print("Font PostScript name changed from '\(font.name)' to '\(fontName)'")
-                                    #endif
-                                    
-                                    font.psname = fontName
-                                    break
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-
-            // Persist the updated font list
-            self.saveFontList()
-        } else {
-            NSLog("[ERROR] Could not list new registrations")
-        }
-    }
-    
-    
-    func fontRegistrationHandler(errors: CFArray, done: Bool) -> Bool {
-
-        // A callback triggered in response to system-level font registration
-        // and re-registrations - see 'installFonts()' and 'uninstallFonts()'
-
-        // Process any errors passed in
-        let errs = errors as NSArray
-        if errs.count > 0 {
-            for err in errs {
-                // For now, just print the error
-                // TODO better error handling
-                NSLog("[ERROR] \(err)")
-            }
-
-            // As recommended, return false on error to
-            // halt further processing
-            return false
-        }
-
-        // System sets 'done' to true on the final call
-        // (according to the header file)
-        if done {
-            // Update the fonts' status to match the system,
-            // save, and update the UI
-            //self.updateFontStatus()
-            self.updateUIonMain()
-        }
-
-        // Signal OK
-        return true
-    }
-
-
-    // MARK: - Table View Data Source and Delegate Functions
-
-    override func numberOfSections(in tableView: UITableView) -> Int {
-        
-        // Just return 1
-        
-        return 1
-    }
-
-
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-
-        // NOTE Add one for the header cell
-        
-        return self.families.count
-    }
-
-
-    override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-
-        // Return the custom table header row
-        
-        return self.tableHead
-    }
-
-
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        
-        // Return the requested table cell
-        
-        if indexPath.row == 999 {
-            // Show the header cell
-            let cell: UITableViewCell = tableView.dequeueReusableCell(withIdentifier: "header.cell", for: indexPath)
-            return cell
-        } else {
-            // Show a font cell
-            let cell: FontWranglerFontListTableViewCell = tableView.dequeueReusableCell(withIdentifier: "custom.cell",
-                                                                                        for: indexPath) as! FontWranglerFontListTableViewCell
-
-            // Get the referenced family and use its name
-            // NOTE Name is already human-readable
-            let family = self.families[indexPath.row]
-            
-            // FROM 1.2.0
-            // Highlight new fonts
-            if family.isNew && self.doShowNew {
-                let labelString = NSMutableAttributedString(string: family.name + " ")
-                let imageAttachment: NSTextAttachment = NSTextAttachment.init()
-                if let sealImage = UIImage.init(systemName: "checkmark.seal.fill") {
-                    imageAttachment.image = sealImage.withTintColor(UIColor.systemBlue)
-                    let imageString = NSAttributedString(attachment: imageAttachment)
-                    labelString.append(imageString)
-                }
-                cell.fontNameLabel!.attributedText = labelString
-            } else {
-                cell.fontNameLabel!.text = family.name
-            }
-
-            // Get all the fonts in the family
-            if let fontIndexes: [Int] = family.fontIndices {
-                // Update the number of fonts in the family
-                cell.fontCountLabel.text = "\(fontIndexes.count) " + (fontIndexes.count == 1 ? "font" : "fonts")
-
-                // Get the first font in the list, which should have the same
-                // status as the others
-                // TODO handle cases where it is not the same
-                //let font: UserFont = fonts[0]
-
-                if family.fontsAreInstalled {
-                    // Add a circled tick as the accessory if the font is installed
-                    if let accessoryImage: UIImage = UIImage.init(systemName: "checkmark.circle.fill") {
-                        let accessoryView: UIView = UIImageView.init(image: accessoryImage)
-                        cell.accessoryView = accessoryView
-                    } else {
-                        cell.accessoryView = nil
-                    }
-                } else {
-                    // Family is not installed, so add a spacer to ensure consitent column widths
-                    if let accessoryImage: UIImage = UIImage.init(named: "spacer") {
-                        let accessoryView: UIView = UIImageView.init(image: accessoryImage)
-                        cell.accessoryView = accessoryView
-                    } else {
-                        cell.accessoryView = nil
-                    }
-                }
-                
-                // Show and animate the Activity Indicator during downloads
-                if family.progress != nil {
-                    if !cell.downloadProgressView.isAnimating {
-                        cell.downloadProgressView!.startAnimating()
-                    }
-                } else {
-                    if cell.downloadProgressView.isAnimating {
-                        cell.downloadProgressView!.stopAnimating()
-                    }
-                }
-            } else {
-                // Display a default font count, but this should never be seen
-                cell.fontCountLabel.text = "No fonts"
-            }
-            
-            // Set preview image using the font family's tags
-            cell.fontPreviewImageView.image = UIImage.init(named: family.tag)
-            cell.fontPreviewImageView.alpha = 0.4
-            
-            let userFont: UserFont = self.fonts[family.fontIndices![0]]
-            var fontSize: CGFloat = 32.0
-            var kernSize: CGFloat = 1.0
-            let maxHeight: CGFloat = cell.fontPreviewLabel.frame.height
-            let maxWidth: CGFloat = cell.fontPreviewLabel.frame.width
-            while true {
-                if let previewFont: UIFont = UIFont(name: userFont.psname, size: fontSize) {
-                    let attrStr: NSAttributedString = NSAttributedString.init(string: "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
-                                                                              attributes: [.font: previewFont,
-                                                                                           .kern: kernSize])
-                    
-                    let ts = NSTextStorage(attributedString: attrStr)
-                    let size = CGSize(width: CGFloat.greatestFiniteMagnitude, height: maxHeight)
-
-                    let tc = NSTextContainer(size: size)
-                    tc.lineFragmentPadding = 0.0
-
-                    let lm = NSLayoutManager()
-                    lm.addTextContainer(tc)
-                    ts.addLayoutManager(lm)
-                    lm.glyphRange(forBoundingRect: CGRect(origin: .zero, size: size), in: tc)
-                    let rect = lm.usedRect(for: tc)
-                    
-                    if rect.width == maxWidth {
-                        cell.fontPreviewLabel.attributedText = attrStr
-                        break
-                    }
-                    
-                    if rect.width < maxWidth {
-                        let diff = cell.fontPreviewLabel.frame.width - rect.width
-                        if diff >= 25.0 {
-                            kernSize += 1.0
-                            continue
-                        } else {
-                            cell.fontPreviewLabel.attributedText = attrStr
-                            break
-                        }
-                    }
-                    
-                    // Reduce the font size and test again
-                    fontSize -= 0.5
-                    if fontSize < 12.0 {
-                        break
-                    }
-                    
-                    //cell.fontPreviewLabel.font = previewFont
-                    //cell.fontPreviewLabel.adjustsFontForContentSizeCategory = true
-                    //cell.fontPreviewLabel.text = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-                } else {
-                    // Missing font
-                    cell.fontPreviewLabel.text = ""
-                    break
-                }
-            }
-
-            return cell
-        }
-    }
-    
-    
-    override func tableView(_ tableView: UITableView, leadingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
-
-        // Actions that appear when the table view cell is swiped L-R
-        // NOTE These actions affect all families
-    
-        var config: UISwipeActionsConfiguration? = nil
-        var actions = [UIContextualAction]()
-        var action: UIContextualAction = UIContextualAction.init(style: .destructive,
-                                         title: "Remove All") { (theAction, theView, handler) in
-                                            // Check that there are fonts to be removed
-                                            if self.anyFontsInstalled() {
-                                                // Remove the installed fonts
-                                                let alert = UIAlertController.init(title: "Are You Sure?",
-                                                                                   message: "Tap OK to uninstall all the typefaces, or Cancel to quit. You can reinstall uninstalled typefaces at any time.",
-                                                                                   preferredStyle: .alert)
-                                                
-                                                alert.addAction(UIAlertAction(title: NSLocalizedString("Cancel", comment: "Default action"),
-                                                                                style: .default,
-                                                                                handler: nil))
-                                                
-                                                alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "Default action"),
-                                                                              style: .default,
-                                                                              handler: { (action) in
-                                                    self.removeAll()
-                                                }))
-                                                
-                                                self.present(alert,
-                                                             animated: true,
-                                                             completion: nil)
-                                            } else {
-                                                self.showAlert("No Typefaces Installed", "You have not yet installed any of the available typefaces")
-                                            }
-                                            
-                                            handler(true)
-        }
-        
-        actions.append(action)
-        
-        // Configure an 'Add All' action
-        action = UIContextualAction.init(style: .normal,
-                                         title: "Add All") { (theAction, theView, handler) in
-                                            // Check that there are fonts to be installed
-                                            if self.allFontsInstalled() {
-                                                self.showAlert("All Typefaces Installed", "You have already installed all of the available typefaces")
-                                            } else {
-                                                // Install any remaining fonts
-                                                self.installAll(self)
-                                            }
-                                            
-                                            handler(true)
-        }
-
-        // Set the colour to blue
-        action.backgroundColor = UIColor.systemBlue
-        actions.append(action)
-        
-        // Create the config to be returned, making sure a full swipe DOESN'T auto-trigger
-        config = UISwipeActionsConfiguration.init(actions: actions)
-        config?.performsFirstActionWithFullSwipe = false
-        return config
-    }
-    
-    
-    override func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
-        
-        // Actions that appear when the table view cell is swiped R-Ls
-        // NOTE These actions are family specific
-
-        var config: UISwipeActionsConfiguration? = nil
-        var action: UIContextualAction
-
-        // Get the referenced family
-        let family: FontFamily = self.families[indexPath.row]
-
-        // Show the controls only if we're not already downloading
-        if family.progress == nil {
-            if family.fontsAreInstalled {
-                // Configure a 'Remove' action -- only one item affected: the table view cell's family
-                action = UIContextualAction.init(style: .destructive,
-                                                 title: "Remove") { (theAction, theView, handler) in
-                                                    // Remove the single, row-referenced font
-                                                    self.removeOneFontFamily(family)
-                                                    handler(true)
-                }
-            } else {
-                // Configure an 'Add' action -- only one item affected: the table view cell's
-                action = UIContextualAction.init(style: .normal,
-                                                 title: "Add") { (theAction, theView, handler) in
-                                                    // Install the single, row-referenced font
-                                                    self.getOneFontFamily(family)
-                                                    handler(true)
-                }
-
-                // Set the colour to blue
-                action.backgroundColor = UIColor.systemBlue
-            }
-
-            // Create the config to be returned, making sure a full swipe DOESN'T auto-trigger
-            config = UISwipeActionsConfiguration.init(actions: [action])
-        }
-
-        config?.performsFirstActionWithFullSwipe = false
-        return config
-    }
-
-    
-    // MARK: - UI Action Functions
+    // MARK: - UI Action Functions — Top-Left Menu
 
     @objc func doShowMenu(_ sender: Any) {
 
@@ -1231,7 +284,6 @@ class MasterViewController: UITableViewController,
                                     handler: { (anAction) in
                                         self.doShowHelpSheet(self)
                                     })
-
         actionMenu.addAction(action)
 
         // Allow the user to view the app's settings
@@ -1262,7 +314,7 @@ class MasterViewController: UITableViewController,
         actionMenu.addAction(action)
         
         // Allow the user to go to the website
-        action = UIAlertAction.init(title: "Visit the Fontismo Website",
+        action = UIAlertAction.init(title: "Visit Fontismo’s Website",
                                     style: .default,
                                     handler: { (anAction) in
                                         self.doShowWebsite(self)
@@ -1272,7 +324,7 @@ class MasterViewController: UITableViewController,
         
         // FROM 1.2.0
         // Allow the user to report a bug
-        action = UIAlertAction.init(title: "Tip the Developer",
+        action = UIAlertAction.init(title: "Fuel Fontismo’s Development",
                                     style: .default,
                                     handler: { (anAction) in
                                         self.doShowTipSheet(self)
@@ -1356,7 +408,7 @@ class MasterViewController: UITableViewController,
     }
     
     
-    func doShowWebsite(_ sender: Any) {
+    @objc func doShowWebsite(_ sender: Any) {
         
         // FROM 1.1.2
         // Open the Fontismo web page in Safari
@@ -1369,24 +421,69 @@ class MasterViewController: UITableViewController,
     }
     
     
-    func showAlert(_ title: String, _ message: String) {
+    // MARK: - UIAction Functions — Filter Contextual Menu
+    
+    private func doShowAll(_ sender: Any) {
         
-        // Generic alert display function which ensures
-        // the alert is actioned on the main thread
-
-        DispatchQueue.main.async {
-            let alert = UIAlertController.init(title: title,
-                                               message: message,
-                                               preferredStyle: .alert)
-            alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "Default action"),
-                                          style: .default,
-                                          handler: nil))
-            self.present(alert,
-                         animated: true,
-                         completion: nil)
+        if #available(iOS 14.0, *) {
+            self.viewStates[.classic] = true
+            self.viewStates[.headline] = true
+            self.viewStates[.decorative] = true
+            doShowSome(nil, .unknown)
         }
     }
-
+    
+    
+    private func doShowSome(_ item: UIAction?, _ style: FontFamilyStyle) {
+        
+        if #available(iOS 14.0, *) {
+            // Set the view options based on current state:
+            // If the item is on when clicked, it's going to be off, so
+            // the viewStates entry should be `false`
+            if item != nil {
+                self.viewStates[style] = !(item!.state == .on)
+            }
+            
+            // Set the menu items according to view state
+            var menuItem: UIAction = self.viewOptionsButton.menu!.children[0] as! UIAction
+            menuItem.state = self.viewStates[.classic]! ? .on : .off
+            
+            menuItem = self.viewOptionsButton.menu!.children[1] as! UIAction
+            menuItem.state = self.viewStates[.headline]! ? .on : .off
+            
+            menuItem = self.viewOptionsButton.menu!.children[2] as! UIAction
+            menuItem.state = self.viewStates[.decorative]! ? .on : .off
+            
+            self.tableView.reloadData()
+            
+            if self.subFamilies.count == 0 {
+                // Empty display
+                let paraStyle: NSMutableParagraphStyle = NSMutableParagraphStyle.init()
+                paraStyle.alignment = .center
+                
+                let attributes: [NSAttributedString.Key : Any] = [
+                    .paragraphStyle: paraStyle,
+                    .font: UIFont.systemFont(ofSize: 18.0, weight: .bold)
+                ]
+                
+                let titleString: NSMutableAttributedString = NSMutableAttributedString.init(string: "Use the ", attributes: attributes)
+                if let buttonImage = UIImage.init(systemName: "line.3.horizontal.decrease.circle") {
+                    let imageAttachment: NSTextAttachment = NSTextAttachment.init()
+                    imageAttachment.image = buttonImage.withTintColor(UIColor.systemBlue)
+                    let imageString = NSAttributedString(attachment: imageAttachment)
+                    titleString.append(imageString)
+                } else {
+                    let nameString: NSAttributedString = NSAttributedString.init(string: "Sort", attributes: attributes)
+                    titleString.append(nameString)
+                }
+                
+                let endString: NSAttributedString = NSAttributedString.init(string: " button above to select the styles of face you’d like to see listed", attributes: attributes)
+                titleString.append(endString)
+                
+                self.showFancyAlert(titleString, "")
+            }
+        }
+    }
 
     // MARK: - Utility Functions
 
@@ -1473,6 +570,8 @@ class MasterViewController: UITableViewController,
 
     func anyFontsInstalled() -> Bool {
         
+        // Report if any number of fonts have been installed
+        
         var installedCount: Int = 0
         
         for family: FontFamily in self.families {
@@ -1485,6 +584,8 @@ class MasterViewController: UITableViewController,
     
     func allFontsInstalled() -> Bool {
         
+        // Report if all the available fonts have been installed
+        
         var installedCount: Int = 0
         
         for family: FontFamily in self.families {
@@ -1493,8 +594,45 @@ class MasterViewController: UITableViewController,
         
         return (installedCount == self.families.count)
     }
-
     
+    
+    internal func showAlert(_ title: String, _ message: String) {
+        
+        // Generic alert display function which ensures
+        // the alert is actioned on the main thread
+
+        DispatchQueue.main.async {
+            let alert = UIAlertController.init(title: title,
+                                               message: message,
+                                               preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "Default action"),
+                                          style: .default,
+                                          handler: nil))
+            self.present(alert,
+                         animated: true,
+                         completion: nil)
+        }
+    }
+    
+    
+    internal func showFancyAlert(_ title: NSAttributedString, _ message: String) {
+        
+        
+        DispatchQueue.main.async {
+            let alert = UIAlertController.init(title: "",
+                                               message: message,
+                                               preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "Default action"),
+                                          style: .default,
+                                          handler: nil))
+            
+            alert.setValue(title, forKey: "attributedTitle")
+            
+            self.present(alert,
+                         animated: true,
+                         completion: nil)
+        }
+    }
     
     // MARK: - StoreKit Functions
 
@@ -1596,7 +734,7 @@ class MasterViewController: UITableViewController,
         if segue.identifier == "show.detail" {
             if let indexPath = tableView.indexPathForSelectedRow {
                 // Get the referenced font family
-                let family: FontFamily = families[indexPath.row]
+                let family: FontFamily = self.subFamilies[indexPath.row]
                 
                 // Get the first font on the list
                 var font: UserFont? = nil
@@ -1618,25 +756,10 @@ class MasterViewController: UITableViewController,
                 controller.navigationItem.leftBarButtonItem = splitViewController?.displayModeButtonItem
                 controller.navigationItem.leftItemsSupplementBackButton = true
                 
-                // NOTE A bug? in iOS 18 zaps the titleview
-
                 // Keep a reference to the detail view controller
                 self.detailViewController = controller
             }
         }
-    }
-    
-
-    @IBAction func doUnwind(_ seg: UIStoryboardSegue) {
-        
-        // TEST
-        navigationItem.titleView = self.titleView
-    }
-    
-    
-    override func unwind(for unwindSegue: UIStoryboardSegue, towards subsequentVC: UIViewController) {
-        
-        // TEST
     }
     
 
@@ -1652,18 +775,4 @@ class MasterViewController: UITableViewController,
                                                    presenting: source)
     }
 
-}
-
-
-// MARK: - Extensions
-
-extension UISplitViewController {
-    
-    func toggleMasterView() {
-        
-        let barButtonItem = self.displayModeButtonItem
-        let _ = UIApplication.shared.sendAction(barButtonItem.action!,
-                                                to: barButtonItem.target,
-                                                from: nil, for: nil)
-    }
 }

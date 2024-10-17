@@ -32,4 +32,8 @@ class UserFont: Codable {
     
     // FROM 1.2.0
     var isNew: Bool = false                 // Is the font a new addition?
+    
+    // FROM 2.0.0
+    var isSerif: Bool = true                // Does the font have serifs?
+    var style: String = ""                  // The font's Fontismo style: classic, headline, decorative
 }

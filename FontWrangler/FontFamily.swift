@@ -8,6 +8,15 @@
 
 import UIKit
 
+enum FontFamilyStyle: String {
+
+    case classic    = "classic"
+    case headline   = "headline"
+    case decorative = "decorative"
+    case monospace  = "monospace"
+    case unknown    = "unknown"
+}
+
 
 class FontFamily {
     
@@ -31,4 +40,8 @@ class FontFamily {
     
     // FROM 1.2.0
     var isNew: Bool = false
+    
+    // FROM 2.0.0
+    var isSerif: Bool = true                    // Does the family have serifs?
+    var style: FontFamilyStyle = .unknown       // The family's Fontismo style: classic, headline, decorative
 }

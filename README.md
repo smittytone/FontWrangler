@@ -18,8 +18,12 @@ This repo contains the Fontismo source code only. It does not contain assets req
 
 - 2.0.0 *Unreleased*
     - Support iOS 18 icons.
+    - Add Filter menu for (iOS 14 and up only).
+    - Add monospace fonts.
     - Stop the main font list view's title from being shifted down on return from viewing a specific font.
+    - Stop the Help screen flashing white on first load.
     - Spring clean dates, etc.
+    - Re-organise the codebase.
 - 1.2.2 *2 November 2023*
     - Fixed a bug in the feedback system preventing feedback being sent.
 - 1.2.1 *20 January 2023*
@@ -48,4 +52,4 @@ This repo contains the Fontismo source code only. It does not contain assets req
 
 ## Copyright ##
 
-*Fontismo* is copyright &copy; 2024, Tony Smith.<br />The source code is available under the [MIT licence](LICENSE.md).
+*Fontismo* is copyright &copy; 2024, Tony Smith.<br />The source code is available under the [MIT licence](LICENSE.md). Visual assets are not included under this licence.

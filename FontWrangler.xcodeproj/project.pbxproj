@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		3B0DF57C2440C8F50037BEDE /* IntroViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B0DF57B2440C8F50037BEDE /* IntroViewController.swift */; };
-		3B180A202CAD869000144160 /* Fonts in Resources */ = {isa = PBXBuildFile; fileRef = 3B180A1F2CAD867B00144160 /* Fonts */; };
 		3B2011DC24433F0800441739 /* MasterTitleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B2011DB24433F0800441739 /* MasterTitleView.swift */; };
 		3B25B94224407C0A0078B869 /* UserTestSampleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B25B94124407C0A0078B869 /* UserTestSampleView.swift */; };
 		3B35362427F9D18A00F11FDF /* TipViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B35362327F9D18A00F11FDF /* TipViewController.swift */; };
@@ -16,6 +15,9 @@
 		3B45C23524371D1E000782AE /* help in Resources */ = {isa = PBXBuildFile; fileRef = 3B45C23424371D1E000782AE /* help */; };
 		3B4C6D982434E88A00C1C5CB /* FontVariantsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B4C6D972434E88A00C1C5CB /* FontVariantsTableViewController.swift */; };
 		3B4C6D9A2434E90900C1C5CB /* FontVariantsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B4C6D992434E90900C1C5CB /* FontVariantsTableViewCell.swift */; };
+		3B5DADC52CC0FD5100D0DB4D /* MasterViewControllerTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B5DADC42CC0FD5100D0DB4D /* MasterViewControllerTable.swift */; };
+		3B5DADC72CC1390800D0DB4D /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B5DADC62CC1390800D0DB4D /* Extensions.swift */; };
+		3B5DADC92CC1399100D0DB4D /* MasterViewControllerFonts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B5DADC82CC1399100D0DB4D /* MasterViewControllerFonts.swift */; };
 		3B6E85E42430AB8500C6549A /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B6E85E32430AB8500C6549A /* Constants.swift */; };
 		3B879A2C242E00B400BE47DC /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B879A2B242E00B400BE47DC /* AppDelegate.swift */; };
 		3B879A2E242E00B400BE47DC /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B879A2D242E00B400BE47DC /* SceneDelegate.swift */; };
@@ -52,6 +54,9 @@
 		3B45C23424371D1E000782AE /* help */ = {isa = PBXFileReference; lastKnownFileType = folder; name = help; path = "/Users/smitty/Library/CloudStorage/OneDrive-Personal/Programming/FontWrangler/help"; sourceTree = "<absolute>"; };
 		3B4C6D972434E88A00C1C5CB /* FontVariantsTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FontVariantsTableViewController.swift; sourceTree = "<group>"; };
 		3B4C6D992434E90900C1C5CB /* FontVariantsTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FontVariantsTableViewCell.swift; sourceTree = "<group>"; };
+		3B5DADC42CC0FD5100D0DB4D /* MasterViewControllerTable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MasterViewControllerTable.swift; sourceTree = "<group>"; };
+		3B5DADC62CC1390800D0DB4D /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
+		3B5DADC82CC1399100D0DB4D /* MasterViewControllerFonts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MasterViewControllerFonts.swift; sourceTree = "<group>"; };
 		3B6E85E32430AB8500C6549A /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		3B879A28242E00B400BE47DC /* Fontismo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Fontismo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3B879A2B242E00B400BE47DC /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -122,8 +127,11 @@
 				3B879A2B242E00B400BE47DC /* AppDelegate.swift */,
 				3B879A2D242E00B400BE47DC /* SceneDelegate.swift */,
 				3B879A2F242E00B400BE47DC /* MasterViewController.swift */,
+				3B5DADC82CC1399100D0DB4D /* MasterViewControllerFonts.swift */,
+				3B5DADC42CC0FD5100D0DB4D /* MasterViewControllerTable.swift */,
 				3B2011DB24433F0800441739 /* MasterTitleView.swift */,
 				3B879A31242E00B400BE47DC /* DetailViewController.swift */,
+				3B5DADC62CC1390800D0DB4D /* Extensions.swift */,
 				3BBD14FF25CF17A7008CB0E2 /* FeedbackViewController.swift */,
 				3BBD150225CF191F008CB0E2 /* FeedbackPresentationController.swift */,
 				3B35362327F9D18A00F11FDF /* TipViewController.swift */,
@@ -209,6 +217,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = YES;
 				KnownAssetTags = (
+					abel,
 					alfa_slab_one,
 					allan,
 					amatic_sc,
@@ -241,6 +250,7 @@
 					holtwood_one,
 					josefin_sans,
 					knewave,
+					kode_mono,
 					libre_franklin,
 					limelight,
 					lobster,
@@ -318,7 +328,6 @@
 				3BD7E18B243212E200FD8941 /* defaults.json in Resources */,
 				3BD7E1892431FD2600FD8941 /* Fonts.xcassets in Resources */,
 				3B45C23524371D1E000782AE /* help in Resources */,
-				3B180A202CAD869000144160 /* Fonts in Resources */,
 				3B9C64A32432887B0057B8ED /* Assets.xcassets in Resources */,
 				3B9417582AF1731800D77BBC /* Settings.bundle in Resources */,
 			);
@@ -331,11 +340,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3B5DADC72CC1390800D0DB4D /* Extensions.swift in Sources */,
 				3BA9277424361D3600B4BA99 /* HelpPageViewController.swift in Sources */,
 				3BCE077725BEC49F006AB656 /* Secrets.swift in Sources */,
 				3BBD150025CF17A7008CB0E2 /* FeedbackViewController.swift in Sources */,
 				3BA9276824360F9200B4BA99 /* HelpViewController.swift in Sources */,
 				3B4C6D9A2434E90900C1C5CB /* FontVariantsTableViewCell.swift in Sources */,
+				3B5DADC52CC0FD5100D0DB4D /* MasterViewControllerTable.swift in Sources */,
 				3B879A2C242E00B400BE47DC /* AppDelegate.swift in Sources */,
 				3BBD150325CF191F008CB0E2 /* FeedbackPresentationController.swift in Sources */,
 				3BB361AD2804823100B1F861 /* TipViewCollectionViewCell.swift in Sources */,
@@ -344,6 +355,7 @@
 				3B35362627F9D76A00F11FDF /* StoreController.swift in Sources */,
 				3B879A43242E1C0100BE47DC /* UserFont.swift in Sources */,
 				3B879A30242E00B400BE47DC /* MasterViewController.swift in Sources */,
+				3B5DADC92CC1399100D0DB4D /* MasterViewControllerFonts.swift in Sources */,
 				3BE5B2AB2434AD6B00A0C33A /* FontFamily.swift in Sources */,
 				3B0DF57C2440C8F50037BEDE /* IntroViewController.swift in Sources */,
 				3B2011DC24433F0800441739 /* MasterTitleView.swift in Sources */,

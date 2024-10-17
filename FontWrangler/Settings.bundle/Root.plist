@@ -20,7 +20,7 @@
 			<key>Type</key>
 			<string>PSToggleSwitchSpecifier</string>
 			<key>Title</key>
-			<string>Show New Fonts</string>
+			<string>Highlight New Fonts</string>
 			<key>Key</key>
 			<string>com.bps.fontismo.show.new</string>
 			<key>DefaultValue</key>

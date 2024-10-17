@@ -59,14 +59,8 @@ class HelpPageViewController: UIViewController,
         // Load up the page data
         let dir_url = Bundle.main.bundleURL.appendingPathComponent("help")
         self.helpNav = self.pageWebView.loadFileURL(page_url, allowingReadAccessTo: dir_url)
-        
-        //let request = URLRequest(url: page_url)
-        //self.pageWebView.load(request)
-        
         self.pageWebView.evaluateJavaScript("window.scrollTo(0,0)",
                                             completionHandler: nil)
-        
-        //self.pageWebView.isHidden = false
     }
     
     
@@ -80,8 +74,12 @@ class HelpPageViewController: UIViewController,
 
         if let nav = self.helpNav {
             if nav == navigation {
-                // Display the view
-                self.pageWebView.isHidden = false
+                // Display the view: we include a timer to allow rendering to complete
+                // so there's no 'white flash' when the panel appears
+                Timer.scheduledTimer(withTimeInterval: 0.05, repeats: false) { timer in
+                    timer.invalidate()
+                    self.pageWebView.isHidden = false
+                }
             }
         }
     }
