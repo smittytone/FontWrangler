@@ -59,3 +59,13 @@ enum kPaymentNotifications {
 let kStandardSeparation                 = 8.0
 let kLogoLandscapeSeparation            = -16.0
 let kTextLandscapeSeparation            = 0.0
+
+// FROM 2.0.0
+
+enum kFontStyleIndices {
+    static let classic                  = 0
+    static let headline                 = 1
+    static let decorative               = 2
+    static let monospace                = 3
+    static let unknown                  = 99
+}

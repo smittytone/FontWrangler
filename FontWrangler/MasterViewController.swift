@@ -445,14 +445,17 @@ class MasterViewController: UITableViewController,
             }
             
             // Set the menu items according to view state
-            var menuItem: UIAction = self.viewOptionsButton.menu!.children[0] as! UIAction
+            var menuItem: UIAction = self.viewOptionsButton.menu!.children[kFontStyleIndices.classic] as! UIAction
             menuItem.state = self.viewStates[.classic]! ? .on : .off
             
-            menuItem = self.viewOptionsButton.menu!.children[1] as! UIAction
+            menuItem = self.viewOptionsButton.menu!.children[kFontStyleIndices.headline] as! UIAction
             menuItem.state = self.viewStates[.headline]! ? .on : .off
             
-            menuItem = self.viewOptionsButton.menu!.children[2] as! UIAction
+            menuItem = self.viewOptionsButton.menu!.children[kFontStyleIndices.decorative] as! UIAction
             menuItem.state = self.viewStates[.decorative]! ? .on : .off
+            
+            menuItem = self.viewOptionsButton.menu!.children[kFontStyleIndices.monospace] as! UIAction
+            menuItem.state = self.viewStates[.monospace]! ? .on : .off
             
             self.tableView.reloadData()
             
