@@ -42,6 +42,7 @@ class MasterViewController: UITableViewController,
     // Collect all the font families. Each entry contains an array of the
     // indices of member fonts in the main font collection, `fonts`
     internal var doIndicateNewFonts: Bool = true
+    internal var hasShownClearedListWarning: Bool = false
     internal var families = [FontFamily]()
     internal var subFamilies = [FontFamily]()
     internal var viewStates: [FontFamilyStyle: Bool] = [
@@ -58,7 +59,7 @@ class MasterViewController: UITableViewController,
     internal let BUNDLE_PATH = Bundle.main.bundlePath
     
     
-    // MARK:- Lifecycle Functions
+    // MARK: - Lifecycle Functions
 
     override func viewDidLoad() {
         
@@ -100,8 +101,14 @@ class MasterViewController: UITableViewController,
             let showAllFontsAction = UIAction(title: "Show All",
                                               image: nil,
                                               handler: { (_) in
-                                                  self.doShowAll(self)
+                                                  self.doShowAll()
                                               })
+            
+            let clearAllFontsAction = UIAction(title: "Clear Selections",
+                                               image: nil,
+                                               handler: { (_) in
+                                                  self.doClearAll()
+                                               })
             
             let showClassicFontsAction = UIAction(title: "Classic",
                                                   image: UIImage(named: "style_class"),
@@ -127,6 +134,8 @@ class MasterViewController: UITableViewController,
                                                          self.doShowSome(action, .monospace)
                                                      })
             
+            let spacer: UIMenu = UIMenu.init(title: "", options: .displayInline, children: [showAllFontsAction, clearAllFontsAction])
+            
             // Set the state indicators to on, ie. show all
             showClassicFontsAction.state = .on
             showHeadlineFontsAction.state = .on
@@ -135,7 +144,7 @@ class MasterViewController: UITableViewController,
             
             // Assemble the menu, add it to the central table header button,
             // and enable menu delivery by the button
-            let filterMenu = UIMenu(title: "Show Typefaces that are...", options: .displayInline, children: [showClassicFontsAction, showHeadlineFontsAction, showDecorativeFontsAction, showMonospaceFontsAction, showAllFontsAction])
+            let filterMenu = UIMenu(title: "Show Typefaces that are...", children: [showClassicFontsAction, showHeadlineFontsAction, showDecorativeFontsAction, showMonospaceFontsAction, spacer])
             self.viewOptionsButton.menu = filterMenu
             self.viewOptionsButton.showsMenuAsPrimaryAction = true
         } else {
@@ -423,13 +432,30 @@ class MasterViewController: UITableViewController,
     
     // MARK: - UIAction Functions — Filter Contextual Menu
     
-    private func doShowAll(_ sender: Any) {
+    private func doShowAll() {
         
         if #available(iOS 14.0, *) {
-            self.viewStates[.classic] = true
-            self.viewStates[.headline] = true
-            self.viewStates[.decorative] = true
-            doShowSome(nil, .unknown)
+            self.setContextMenu(true)
+        }
+    }
+    
+    
+    private func doClearAll() {
+        
+        if #available(iOS 14.0, *) {
+            self.setContextMenu(false)
+        }
+    }
+    
+    
+    private func setContextMenu(_ state: Bool) {
+        
+        if #available(iOS 14.0, *) {
+            self.viewStates[.classic] = state
+            self.viewStates[.headline] = state
+            self.viewStates[.decorative] = state
+            self.viewStates[.monospace] = state
+            self.doShowSome(nil, .unknown)
         }
     }
     
@@ -459,7 +485,7 @@ class MasterViewController: UITableViewController,
             
             self.tableView.reloadData()
             
-            if self.subFamilies.count == 0 {
+            if self.subFamilies.count == 0 && !self.hasShownClearedListWarning {
                 // Empty display
                 let paraStyle: NSMutableParagraphStyle = NSMutableParagraphStyle.init()
                 paraStyle.alignment = .center
@@ -483,6 +509,7 @@ class MasterViewController: UITableViewController,
                 let endString: NSAttributedString = NSAttributedString.init(string: " button above to select the styles of face you’d like to see listed", attributes: attributes)
                 titleString.append(endString)
                 
+                self.hasShownClearedListWarning = true
                 self.showFancyAlert(titleString, "")
             }
         }
