@@ -561,44 +561,6 @@ class MasterViewController: UITableViewController,
     }
     
     
-    func sortFonts() {
-
-        // Simple font name sorting routine
-
-        self.fonts.sort { (font_1, font_2) -> Bool in
-            return (font_1.name < font_2.name)
-        }
-    }
-
-
-    func anyFontsInstalled() -> Bool {
-        
-        // Report if any number of fonts have been installed
-        
-        var installedCount: Int = 0
-        
-        for family: FontFamily in self.families {
-            installedCount += (family.fontsAreInstalled ? 1 : 0)
-        }
-        
-        return (installedCount != 0)
-    }
-    
-    
-    func allFontsInstalled() -> Bool {
-        
-        // Report if all the available fonts have been installed
-        
-        var installedCount: Int = 0
-        
-        for family: FontFamily in self.families {
-            installedCount += (family.fontsAreInstalled ? 1 : 0)
-        }
-        
-        return (installedCount == self.families.count)
-    }
-    
-    
     internal func showAlert(_ title: String, _ message: String) {
         
         // Generic alert display function which ensures

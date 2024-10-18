@@ -22,13 +22,13 @@ class FeedbackViewController: UIViewController,
     @IBOutlet var textLengthLabel: UILabel!
     @IBOutlet var sendButton: UIButton!
     
+    
     // MARK: - Private Properties
 
     private var feedbackTask: URLSessionTask? = nil
     private var tapGestureRecognizer: UITapGestureRecognizer = UITapGestureRecognizer()
 
 
-    
     // MARK: - Lifecycle Functions
 
     override func viewDidLoad() {
@@ -77,7 +77,7 @@ class FeedbackViewController: UIViewController,
     }
 
     
-    // MARK: - User Actions
+    // MARK: - User Action Functions
 
     @IBAction @objc func doCancel(sender: Any?) {
 

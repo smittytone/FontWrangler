@@ -22,8 +22,5 @@ class FontWranglerFontListTableViewCell: UITableViewCell {
     @IBOutlet weak var fontNameLabel: UILabel!
     @IBOutlet weak var fontCountLabel: UILabel!
     @IBOutlet weak var fontPreviewImageView: UIImageView!
-    
-    // FROM 2.0.0
-    @IBOutlet weak var fontPreviewLabel: UILabel!
 
 }

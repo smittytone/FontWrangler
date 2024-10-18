@@ -1,6 +1,7 @@
 
 //  MasterViewControllerFonts.swift
 //  FontWrangler
+//  Font listing and management functions
 //
 //  Created by Tony Smith on 17/10/2024.
 //  Copyright © 2024 Tony Smith. All rights reserved.
@@ -15,7 +16,7 @@ extension MasterViewController  {
     
     // MARK: - Font List Management Functions
 
-    func loadDefaults() {
+    internal func loadDefaults() {
         
         // Load in the default list of available fonts and then sort it A-Z
         // This is stored in the main bundle
@@ -63,7 +64,7 @@ extension MasterViewController  {
     }
     
     
-    @objc func initializeFontList() {
+    internal func initializeFontList() {
 
         // Update and display the list of available fonts that the app knows about and is managing
         //
@@ -97,7 +98,7 @@ extension MasterViewController  {
     }
 
 
-    func loadFontList() {
+    internal func loadFontList() {
 
         // Load in the persisted font list, if it is present
         
@@ -185,27 +186,39 @@ extension MasterViewController  {
     }
     
     
-    private func familyFromFontIndex(_ index: Int) -> FontFamily {
-        
-        // Using an index in the main fonts collection, identify
-        // the indexed font's family and return it
-        
-        for family: FontFamily in self.families {
-            if let fontIndices: [Int] = family.fontIndices {
-                for fontIndex: Int in fontIndices {
-                    if fontIndex == index {
-                        return family
-                    }
-                }
-            }
-        }
-        
-        // ERROR
-        return self.families[0]
-    }
+    internal func saveFontList() {
 
+        // Persist the app's font database
+
+        // The app is going into the background or closing, so save the list of devices
+        let savePath = self.DOCS_PATH + kFontListFileSubPath
+
+        do {
+            // Try to encode the object to data and then try to write out the data
+            //let data: Data = try NSKeyedArchiver.archivedData(withRootObject: self.fonts, requiringSecureCoding: true)
+            // FROM 1.2.2
+            // Replace deprecated calls for NSCoding with Codable
+            let encoder: PropertyListEncoder = PropertyListEncoder.init()
+            encoder.outputFormat = .binary
+            let data: Data = try encoder.encode(self.fonts)
+            try data.write(to: URL.init(fileURLWithPath: savePath))
+            
+#if DEBUG
+            // Also save a JSON file for easy checking
+            let jsonEncoder: JSONEncoder = JSONEncoder.init()
+            let jsonData: Data = try jsonEncoder.encode(self.fonts)
+            try jsonData.write(to: URL.init(fileURLWithPath: savePath + ".json"))
+            print("Font state saved \(savePath)")
+#endif
+
+        } catch {
+            NSLog("[ERROR] Can't write font file: \(error.localizedDescription) - saveFontList()")
+            self.showAlert("Error", "Sorry, Fontismo can’t access internal storage. It may have been damaged or mis-installed. Please re-installed from the App Store.")
+        }
+    }
     
-    private func setFontFamilies() {
+    
+    internal func setFontFamilies() {
         
         // Create a list of font families if we don't have one
         
@@ -259,12 +272,6 @@ extension MasterViewController  {
                         family.fontIndices!.append(i)
                     }
                 }
-                
-                /*
-                if family.name == "Abel" || family.name == "Alfa Slab One" {
-                    family.fontsAreDownloaded = true
-                }
-                */
             }
             
             // Mark that we're done
@@ -273,58 +280,92 @@ extension MasterViewController  {
     }
     
     
-    internal func saveFontList() {
+    internal func updateFontStatus() {
 
-        // Persist the app's font database
+        // Update the app's record of fonts in response to a notification
+        // from the system that some fonts' status has changed
+        // Called by 'updateFamilyStatus()'
 
-        // The app is going into the background or closing, so save the list of devices
-        let savePath = self.DOCS_PATH + kFontListFileSubPath
+        // Get the registered (installed) fonts from the CTFontManager
+        if let registeredDescriptors = CTFontManagerCopyRegisteredFontDescriptors(.persistent, true) as? [CTFontDescriptor] {
 
-        do {
-            // Try to encode the object to data and then try to write out the data
-            //let data: Data = try NSKeyedArchiver.archivedData(withRootObject: self.fonts, requiringSecureCoding: true)
-            // FROM 1.2.2
-            // Replace deprecated calls for NSCoding with Codable
-            let encoder: PropertyListEncoder = PropertyListEncoder.init()
-            encoder.outputFormat = .binary
-            let data: Data = try encoder.encode(self.fonts)
-            try data.write(to: URL.init(fileURLWithPath: savePath))
+            // Assume no fonts hve been installed
+            for font: UserFont in self.fonts {
+                font.isInstalled = false
+                font.updated = false
+                font.isDownloaded = false
+            }
+
+            // Map regsitered fonts to our list to record which have been registered
+            var setCount: Int = 0
+            for registeredDescriptor in registeredDescriptors {
+                if let fontName = CTFontDescriptorCopyAttribute(registeredDescriptor, kCTFontNameAttribute) as? String {
+
+                    #if DEBUG
+                        print("CoreText Font Manager says '\(fontName)' is registered...")
+                    #endif
+
+                    for font: UserFont in self.fonts {
+                        // Match against PostScript name
+                        if font.psname == fontName {
+                            font.isInstalled = true
+                            font.isDownloaded = true
+                            font.updated = true
+                            setCount += 1
+                            #if DEBUG
+                                print("  ...and matched for '\(font.name)'")
+                            #endif
+
+                            break
+                        }
+                    }
+                }
+            }
             
-#if DEBUG
-            // Also save a JSON file for easy checking
-            let jsonEncoder: JSONEncoder = JSONEncoder.init()
-            let jsonData: Data = try jsonEncoder.encode(self.fonts)
-            try jsonData.write(to: URL.init(fileURLWithPath: savePath + ".json"))
-            print("Font state saved \(savePath)")
-#endif
+            // Did we just update fewer fonts than are registered?
+            // If so it's probably because there's a name mismatch, ie.
+            // the filename-derived name != the PostScript name
+            if setCount < registeredDescriptors.count {
+                // Some missing fonts, so check by URL
+                for registeredDescriptor in registeredDescriptors {
+                    if let fontName = CTFontDescriptorCopyAttribute(registeredDescriptor, kCTFontNameAttribute) as? String {
+                        for font: UserFont in self.fonts {
+                            if !font.updated {
+                                // Eg. 'TradeWinds' and 'TradeWinds-Regular'
+                                // TODO Needs some safety checking/more efficient
+                                if (font.psname as NSString).contains(fontName) {
+                                    font.isInstalled = true
+                                    font.isDownloaded = true
+                                    font.updated = true
+                                    
+                                    #if DEBUG
+                                        print("Font PostScript name changed from '\(font.name)' to '\(fontName)'")
+                                    #endif
+                                    
+                                    font.psname = fontName
+                                    break
+                                }
+                            }
+                        }
+                    }
+                }
+            }
 
-        } catch {
-            NSLog("[ERROR] Can't write font file: \(error.localizedDescription) - saveFontList()")
-            self.showAlert("Error", "Sorry, Fontismo can’t access internal storage. It may have been damaged or mis-installed. Please re-installed from the App Store.")
+            // Persist the updated font list
+            self.saveFontList()
+        } else {
+            NSLog("[ERROR] Could not list new registrations")
         }
     }
     
     
-    @objc internal func fontStatesChanged(_ sender: Any) {
-        
-        // The app has received a font status update notification
-        // eg. the user removed a font using the system UI
-        
-        // NOTE Set to @objc because it's called as a selector
-
-        // Update the families' status the UI
-        self.updateFamilyStatus()
-        self.updateUIonMain()
-    }
-
-
     // MARK: - Family Handling Action Functions
 
     @objc func installAll(_ sender: Any) {
         
         // Install all available font families, downloading as necessary
         
-        // NOTE Set to @objc because it's called as a selector
+        // NOTE Set to `@objc` because it's called as a selector
         
         if self.families.count > 0 {
             for family: FontFamily in self.families {
@@ -339,7 +380,7 @@ extension MasterViewController  {
     }
 
     
-    func removeAll() {
+    internal func removeAll() {
 
         // Uninstall all available fonts
         
@@ -641,7 +682,7 @@ extension MasterViewController  {
     }
     
     
-    func updateFamilyStatus() {
+    internal func updateFamilyStatus() {
         
         // Update family status properties
         // Where possible rely on the OS for state data
@@ -700,88 +741,22 @@ extension MasterViewController  {
     }
     
     
-    // MARK: - Font Handling Action Functions
+    // MARK: - Font Handling Callback Functions
     
-    func updateFontStatus() {
+    @objc internal func fontStatesChanged(_ sender: Any) {
+        
+        // The app has received a font status update notification
+        // eg. the user removed a font using the system UI
+        
+        // NOTE Set to `@objc` because it's called as a selector
 
-        // Update the app's record of fonts in response to a notification
-        // from the system that some fonts' status has changed
-        // Called by 'updateFamilyStatus()'
-
-        // Get the registered (installed) fonts from the CTFontManager
-        if let registeredDescriptors = CTFontManagerCopyRegisteredFontDescriptors(.persistent, true) as? [CTFontDescriptor] {
-
-            // Assume no fonts hve been installed
-            for font: UserFont in self.fonts {
-                font.isInstalled = false
-                font.updated = false
-                font.isDownloaded = false
-            }
-
-            // Map regsitered fonts to our list to record which have been registered
-            var setCount: Int = 0
-            for registeredDescriptor in registeredDescriptors {
-                if let fontName = CTFontDescriptorCopyAttribute(registeredDescriptor, kCTFontNameAttribute) as? String {
-
-                    #if DEBUG
-                        print("CoreText Font Manager says '\(fontName)' is registered...")
-                    #endif
-
-                    for font: UserFont in self.fonts {
-                        // Match against PostScript name
-                        if font.psname == fontName {
-                            font.isInstalled = true
-                            font.isDownloaded = true
-                            font.updated = true
-                            setCount += 1
-                            #if DEBUG
-                                print("  ...and matched for '\(font.name)'")
-                            #endif
-
-                            break
-                        }
-                    }
-                }
-            }
-            
-            // Did we just update fewer fonts than are registered?
-            // If so it's probably because there's a name mismatch, ie.
-            // the filename-derived name != the PostScript name
-            if setCount < registeredDescriptors.count {
-                // Some missing fonts, so check by URL
-                for registeredDescriptor in registeredDescriptors {
-                    if let fontName = CTFontDescriptorCopyAttribute(registeredDescriptor, kCTFontNameAttribute) as? String {
-                        for font: UserFont in self.fonts {
-                            if !font.updated {
-                                // Eg. 'TradeWinds' and 'TradeWinds-Regular'
-                                // TODO Needs some safety checking/more efficient
-                                if (font.psname as NSString).contains(fontName) {
-                                    font.isInstalled = true
-                                    font.isDownloaded = true
-                                    font.updated = true
-                                    
-                                    #if DEBUG
-                                        print("Font PostScript name changed from '\(font.name)' to '\(fontName)'")
-                                    #endif
-                                    
-                                    font.psname = fontName
-                                    break
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-
-            // Persist the updated font list
-            self.saveFontList()
-        } else {
-            NSLog("[ERROR] Could not list new registrations")
-        }
+        // Update the families' status the UI
+        self.updateFamilyStatus()
+        self.updateUIonMain()
     }
-    
-    
-    func fontRegistrationHandler(errors: CFArray, done: Bool) -> Bool {
+
+
+    internal func fontRegistrationHandler(errors: CFArray, done: Bool) -> Bool {
 
         // A callback triggered in response to system-level font registration
         // and re-registrations - see 'installFonts()' and 'uninstallFonts()'
@@ -811,5 +786,65 @@ extension MasterViewController  {
 
         // Signal OK
         return true
+    }
+    
+    
+    // MARK: - Utility Functions
+    
+    internal func sortFonts() {
+
+        // Simple font name sorting routine
+
+        self.fonts.sort { (font_1, font_2) -> Bool in
+            return (font_1.name < font_2.name)
+        }
+    }
+
+
+    internal func familyFromFontIndex(_ index: Int) -> FontFamily {
+        
+        // Using an index in the main fonts collection, identify
+        // the indexed font's family and return it
+        
+        for family: FontFamily in self.families {
+            if let fontIndices: [Int] = family.fontIndices {
+                for fontIndex: Int in fontIndices {
+                    if fontIndex == index {
+                        return family
+                    }
+                }
+            }
+        }
+        
+        // ERROR
+        return self.families[0]
+    }
+
+    
+    internal func anyFontsInstalled() -> Bool {
+        
+        // Report if any number of fonts have been installed
+        
+        var installedCount: Int = 0
+        
+        for family: FontFamily in self.families {
+            installedCount += (family.fontsAreInstalled ? 1 : 0)
+        }
+        
+        return (installedCount != 0)
+    }
+    
+    
+    internal func allFontsInstalled() -> Bool {
+        
+        // Report if all the available fonts have been installed
+        
+        var installedCount: Int = 0
+        
+        for family: FontFamily in self.families {
+            installedCount += (family.fontsAreInstalled ? 1 : 0)
+        }
+        
+        return (installedCount == self.families.count)
     }
 }

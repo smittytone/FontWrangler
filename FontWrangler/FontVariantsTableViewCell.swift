@@ -9,7 +9,7 @@
 import UIKit
 
 
-class FontVariantsTableViewCell: UITableViewCell {
+final class FontVariantsTableViewCell: UITableViewCell {
 
     // Simple custom UITableViewCell with its own properties but no
     // custom or overridden functions. It is used to create the

@@ -9,18 +9,24 @@
 import UIKit
 
 
-class IntroViewController: UIViewController {
+final class IntroViewController: UIViewController {
 
-    // Subclass UIViewController in order to add the close button
+    // A sub-class of UIViewController used to add a close button
+    // to the presented view
 
+    
+    // MARK: - UI Outlet Properties
+    
     @IBOutlet weak var ownTextView: UITextView!
 
 
+    // MARK: - Lifecycle Functions
+    
     override func viewDidLoad() {
 
         super.viewDidLoad()
 
-        // Update the embedded Attributed String with the correct colour,
+        // Update the embedded attributed string with the correct colour,
         // unobtainable via InterfaceBuilder
         let mas: NSMutableAttributedString = NSMutableAttributedString(attributedString: self.ownTextView.attributedText)
         let range = NSRange(location: 0,
@@ -32,6 +38,8 @@ class IntroViewController: UIViewController {
     }
 
 
+    // MARK: - Action Functions
+    
     @IBAction func doClose(_ sender: Any) {
 
         // Close the Help panel

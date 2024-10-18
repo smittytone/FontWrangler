@@ -9,11 +9,12 @@
 import UIKit
 
 
-class FontVariantsTableViewController: UITableViewController {
+final class FontVariantsTableViewController: UITableViewController {
     
-    // This table View Controller manages the font variants menu if it is
+    // This UITableViewController manages the font variants menu if it is
     // enabled by the detail view controller - ie. if the selected font
     // has variants, eg. Regular, Bold, Italic, etc.
+    //
     // The user can select a variant to demo that specific font
     
     

@@ -10,16 +10,19 @@ import UIKit
 @preconcurrency import WebKit
 
 
-class HelpPageViewController: UIViewController,
-                              WKNavigationDelegate {
+final class HelpPageViewController: UIViewController,
+                                    WKNavigationDelegate {
 
-
-    // MARK: - UI properties
+    // A UIPageViewController used to manage a single Help page which contains
+    // a WebKit view populated with HTML loaded from disk.
+    
+    
+    // MARK: - UI Outlet Properties
 
     @IBOutlet weak var pageWebView: WKWebView!
 
     
-    // MARK: - Object properties
+    // MARK: - Object Properties
 
     // Public
     var index: Int = 0
@@ -128,7 +131,7 @@ class HelpPageViewController: UIViewController,
     
     // MARK: - Action Functions
     
-    func openURL(_ url: URL) {
+    private func openURL(_ url: URL) {
 
         // Just open the external URL specified
 

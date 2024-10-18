@@ -237,37 +237,21 @@
                                             <rect key="frame" x="20" y="39" width="374" height="30"/>
                                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         </imageView>
-                                        <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="justified" lineBreakMode="middleTruncation" baselineAdjustment="alignBaselines" minimumFontSize="12" sizingRule="oversize" translatesAutoresizingMaskIntoConstraints="NO" id="A9v-jC-eYL">
-                                            <rect key="frame" x="20" y="20" width="374" height="64"/>
-                                            <constraints>
-                                                <constraint firstAttribute="height" constant="64" id="amQ-c4-MYW"/>
-                                                <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="44" id="s73-gP-tDL"/>
-                                            </constraints>
-                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                            <nil key="textColor"/>
-                                            <nil key="highlightedColor"/>
-                                        </label>
                                     </subviews>
                                     <constraints>
-                                        <constraint firstAttribute="trailing" secondItem="A9v-jC-eYL" secondAttribute="trailing" constant="20" symbolic="YES" id="1jF-Tm-kkT"/>
-                                        <constraint firstAttribute="bottom" secondItem="A9v-jC-eYL" secondAttribute="bottom" id="3Cy-Rh-l1f"/>
                                         <constraint firstItem="LGt-vl-ktm" firstAttribute="top" secondItem="mHw-1S-Ubx" secondAttribute="topMargin" constant="1" id="6I0-bE-po6"/>
                                         <constraint firstItem="vPK-eP-x7y" firstAttribute="leading" secondItem="PdS-EH-uWa" secondAttribute="leading" id="6XM-Ql-04p"/>
                                         <constraint firstItem="eC3-LX-IY4" firstAttribute="bottom" secondItem="LGt-vl-ktm" secondAttribute="bottom" id="6a5-KP-ged"/>
                                         <constraint firstItem="PdS-EH-uWa" firstAttribute="top" secondItem="vPK-eP-x7y" secondAttribute="bottom" constant="9" id="7JR-BU-ROe"/>
                                         <constraint firstItem="vPK-eP-x7y" firstAttribute="leading" secondItem="mHw-1S-Ubx" secondAttribute="leadingMargin" id="DhE-2P-bqH"/>
-                                        <constraint firstAttribute="bottom" secondItem="A9v-jC-eYL" secondAttribute="bottom" id="JEW-EY-k3m"/>
                                         <constraint firstItem="eC3-LX-IY4" firstAttribute="centerX" secondItem="LGt-vl-ktm" secondAttribute="centerX" id="Lrp-5Z-ojr"/>
                                         <constraint firstItem="vPK-eP-x7y" firstAttribute="centerX" secondItem="LGt-vl-ktm" secondAttribute="centerX" id="UU6-ni-O5G"/>
                                         <constraint firstItem="eC3-LX-IY4" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="vPK-eP-x7y" secondAttribute="leading" id="VRZ-wz-Sqf"/>
                                         <constraint firstItem="LGt-vl-ktm" firstAttribute="centerX" secondItem="mHw-1S-Ubx" secondAttribute="centerX" id="WfF-zi-LLz"/>
                                         <constraint firstItem="eC3-LX-IY4" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="mHw-1S-Ubx" secondAttribute="leadingMargin" id="YMw-IJ-VrL"/>
                                         <constraint firstItem="vPK-eP-x7y" firstAttribute="trailing" secondItem="PdS-EH-uWa" secondAttribute="trailing" id="ZiY-Rt-cIb"/>
-                                        <constraint firstItem="A9v-jC-eYL" firstAttribute="leading" secondItem="mHw-1S-Ubx" secondAttribute="leading" constant="20" symbolic="YES" id="bAI-0x-45W"/>
                                         <constraint firstAttribute="bottomMargin" secondItem="PdS-EH-uWa" secondAttribute="bottom" constant="4" id="cgB-Jn-yg9"/>
-                                        <constraint firstAttribute="trailing" secondItem="A9v-jC-eYL" secondAttribute="trailing" constant="20" symbolic="YES" id="dzl-66-CKN"/>
                                         <constraint firstItem="eC3-LX-IY4" firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="vPK-eP-x7y" secondAttribute="trailing" id="iPG-ze-mfR"/>
-                                        <constraint firstItem="A9v-jC-eYL" firstAttribute="leading" secondItem="mHw-1S-Ubx" secondAttribute="leading" constant="20" symbolic="YES" id="kLe-Ik-GYs"/>
                                         <constraint firstItem="eC3-LX-IY4" firstAttribute="top" secondItem="LGt-vl-ktm" secondAttribute="top" id="m5t-K1-BSI"/>
                                         <constraint firstItem="eC3-LX-IY4" firstAttribute="centerY" secondItem="vPK-eP-x7y" secondAttribute="centerY" constant="1" id="niq-yr-fXB"/>
                                         <constraint firstItem="PdS-EH-uWa" firstAttribute="top" secondItem="eC3-LX-IY4" secondAttribute="bottom" constant="7" id="wT2-3k-xT8"/>
@@ -278,7 +262,6 @@
                                     <outlet property="fontCountLabel" destination="vPK-eP-x7y" id="R9G-Dc-Dwa"/>
                                     <outlet property="fontNameLabel" destination="eC3-LX-IY4" id="WTX-zX-vlR"/>
                                     <outlet property="fontPreviewImageView" destination="PdS-EH-uWa" id="yyg-6t-Pat"/>
-                                    <outlet property="fontPreviewLabel" destination="A9v-jC-eYL" id="WRC-Sg-HuM"/>
                                     <segue destination="vC3-pB-5Vb" kind="showDetail" identifier="show.detail" id="P8n-YU-qfu"/>
                                 </connections>
                             </tableViewCell>
@@ -370,13 +353,13 @@
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                     <subviews>
                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="mjJ-HX-hIE">
-                            <rect key="frame" x="0.0" y="29" width="240" height="18"/>
+                            <rect key="frame" x="0.0" y="26" width="240" height="18"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             <fontDescription key="fontDescription" type="system" pointSize="12"/>
                             <nil key="highlightedColor"/>
                         </label>
                         <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="logo" translatesAutoresizingMaskIntoConstraints="NO" id="AvW-iF-ODr">
-                            <rect key="frame" x="0.0" y="4" width="240" height="26"/>
+                            <rect key="frame" x="0.0" y="0.0" width="240" height="26"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         </imageView>
                     </subviews>
@@ -413,14 +396,14 @@
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <prototypes>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="variant.cell" id="s6R-e5-hht" customClass="FontVariantsTableViewCell" customModule="Fontismo" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="50" width="414" height="44"/>
+                                <rect key="frame" x="0.0" y="50" width="414" height="43.5"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="s6R-e5-hht" id="roM-ok-dfU">
-                                    <rect key="frame" x="0.0" y="0.0" width="414" height="44"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="414" height="43.5"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="uaK-Ee-cyN">
-                                            <rect key="frame" x="20" y="11" width="374" height="21.5"/>
+                                            <rect key="frame" x="20" y="11" width="374" height="21"/>
                                             <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="17"/>
                                             <nil key="textColor"/>
                                             <nil key="highlightedColor"/>
@@ -641,7 +624,7 @@
                                             <paragraphStyle key="NSParagraphStyle" alignment="left" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0"/>
                                         </attributes>
                                     </fragment>
-                                    <fragment content=", please rate it in the App Store.">
+                                    <fragment content=", please rate it in the App Store. ">
                                         <attributes>
                                             <color key="NSColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                             <font key="NSFont" size="20" name="Avenir-Book"/>

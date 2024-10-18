@@ -1,6 +1,7 @@
 
 //  MasterViewControllerTable.swift
 //  FontWrangler
+//  UITableViewDelegate and UITableViewDataSource functions
 //
 //  Created by Tony Smith on 17/10/2024.
 //  Copyright © 2024 Tony Smith. All rights reserved.

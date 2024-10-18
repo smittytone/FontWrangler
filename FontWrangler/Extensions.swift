@@ -11,9 +11,9 @@ import UIKit
 
 
 /*
- FROM 1.1.1
- Add alternative (and better) sample text line counter
- Adapted from https://stackoverflow.com/a/49528540
+    FROM 1.1.1
+    Add alternative (and better) sample text line counter
+    Adapted from https://stackoverflow.com/a/49528540
  */
 
 extension NSLayoutManager {

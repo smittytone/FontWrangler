@@ -9,8 +9,14 @@
 import UIKit
 
 
-class UserTestSampleView: UIView {
-
+final class UserTestSampleView: UIView {
+    
+    
+    // A UIView sub-class used to draw a rounded red rectangle around
+    // the view's contents.
+    
+    // UNUSED SINCE 1.1.0.
+    
     override func draw(_ rect: CGRect) {
 
         // Get the current graphics context to set the stroke colour

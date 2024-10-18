@@ -9,16 +9,22 @@
 import UIKit
 
 
-class HelpViewController: UIViewController,
-                          UIPageViewControllerDelegate,
-                          UIPageViewControllerDataSource {
+final class HelpViewController: UIViewController,
+                                UIPageViewControllerDelegate,
+                                UIPageViewControllerDataSource {
+    
+    
+    // Manage the Help View screen, which cointains a series of
+    // UIPageViewController-mediated pages.
     
     
     // MARK: - Object properties
 
+    // Private
     private var pageViewControllers = [HelpPageViewController]()
     private var pvc: UIPageViewController? = nil
 
+    // Public
     var pageIndex: Int = 0
     
     
@@ -64,6 +70,8 @@ class HelpViewController: UIViewController,
     }
     
     
+    // MARK: - Action Functions
+    
     @IBAction func doClose(_ sender: Any) {
             
         // Close the Help panel
@@ -80,7 +88,7 @@ class HelpViewController: UIViewController,
     }
     
 
-    // MARK: - Page View Controller Data Source Functions
+    // MARK: - UIPageViewController Data Source Functions
 
     func pageViewController(_ pageViewController: UIPageViewController, viewControllerBefore viewController: UIViewController) -> UIViewController? {
         

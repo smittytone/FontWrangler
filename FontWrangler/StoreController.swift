@@ -201,6 +201,7 @@ extension SKProduct {
 
     // Add a `localPrice` property which provides the local price with
     // an appropriate currency label attached
+    
     var localPrice: String? {
         let priceFormatter: NumberFormatter = NumberFormatter()
         priceFormatter.numberStyle = .currency
