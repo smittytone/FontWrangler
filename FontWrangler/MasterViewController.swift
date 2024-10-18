@@ -18,7 +18,7 @@ class MasterViewController: UITableViewController,
     // MARK: - UI properties
 
     @IBOutlet weak var titleView: MasterTitleView!
-    @IBOutlet weak var tableHead: UIView!
+    @IBOutlet weak var tableHead: MasterTableHeaderView!
     @IBOutlet weak var viewOptionsButton: UIButton!
     
     
@@ -718,7 +718,11 @@ class MasterViewController: UITableViewController,
                 controller.detailItem = font
 
                 // Set a back button to show the master view
-                controller.navigationItem.leftBarButtonItem = splitViewController?.displayModeButtonItem
+                // NOTE Apply to iPad only in 2.0.0 to avoid `Failed to create 0x132 image slot (alpha=1 wide=1) (client=0xcd7a6129) [0x5 (os/kern) failure]`
+                if UIDevice.current.userInterfaceIdiom == .pad {
+                    controller.navigationItem.leftBarButtonItem = splitViewController?.displayModeButtonItem
+                }
+                
                 controller.navigationItem.leftItemsSupplementBackButton = true
                 
                 // Keep a reference to the detail view controller

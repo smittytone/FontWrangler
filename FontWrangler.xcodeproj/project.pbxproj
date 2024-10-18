@@ -10,6 +10,7 @@
 		3B0DF57C2440C8F50037BEDE /* IntroViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B0DF57B2440C8F50037BEDE /* IntroViewController.swift */; };
 		3B2011DC24433F0800441739 /* MasterTitleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B2011DB24433F0800441739 /* MasterTitleView.swift */; };
 		3B25B94224407C0A0078B869 /* UserTestSampleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B25B94124407C0A0078B869 /* UserTestSampleView.swift */; };
+		3B2D46412CC2A5A8003F6ACD /* MasterTableHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B2D46402CC2A5A8003F6ACD /* MasterTableHeaderView.swift */; };
 		3B35362427F9D18A00F11FDF /* TipViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B35362327F9D18A00F11FDF /* TipViewController.swift */; };
 		3B35362627F9D76A00F11FDF /* StoreController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B35362527F9D76A00F11FDF /* StoreController.swift */; };
 		3B45C23524371D1E000782AE /* help in Resources */ = {isa = PBXBuildFile; fileRef = 3B45C23424371D1E000782AE /* help */; };
@@ -49,6 +50,7 @@
 		3B180A1F2CAD867B00144160 /* Fonts */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Fonts; path = "/Users/smitty/Library/CloudStorage/OneDrive-Personal/Programming/FontWrangler/Fonts"; sourceTree = "<absolute>"; };
 		3B2011DB24433F0800441739 /* MasterTitleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MasterTitleView.swift; sourceTree = "<group>"; };
 		3B25B94124407C0A0078B869 /* UserTestSampleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserTestSampleView.swift; sourceTree = "<group>"; };
+		3B2D46402CC2A5A8003F6ACD /* MasterTableHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MasterTableHeaderView.swift; sourceTree = "<group>"; };
 		3B35362327F9D18A00F11FDF /* TipViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TipViewController.swift; sourceTree = "<group>"; };
 		3B35362527F9D76A00F11FDF /* StoreController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreController.swift; sourceTree = "<group>"; };
 		3B45C23424371D1E000782AE /* help */ = {isa = PBXFileReference; lastKnownFileType = folder; name = help; path = "/Users/smitty/Library/CloudStorage/OneDrive-Personal/Programming/FontWrangler/help"; sourceTree = "<absolute>"; };
@@ -130,6 +132,7 @@
 				3B5DADC82CC1399100D0DB4D /* MasterViewControllerFonts.swift */,
 				3B5DADC42CC0FD5100D0DB4D /* MasterViewControllerTable.swift */,
 				3B2011DB24433F0800441739 /* MasterTitleView.swift */,
+				3B2D46402CC2A5A8003F6ACD /* MasterTableHeaderView.swift */,
 				3B879A31242E00B400BE47DC /* DetailViewController.swift */,
 				3B5DADC62CC1390800D0DB4D /* Extensions.swift */,
 				3BBD14FF25CF17A7008CB0E2 /* FeedbackViewController.swift */,
@@ -347,6 +350,7 @@
 				3BA9276824360F9200B4BA99 /* HelpViewController.swift in Sources */,
 				3B4C6D9A2434E90900C1C5CB /* FontVariantsTableViewCell.swift in Sources */,
 				3B5DADC52CC0FD5100D0DB4D /* MasterViewControllerTable.swift in Sources */,
+				3B2D46412CC2A5A8003F6ACD /* MasterTableHeaderView.swift in Sources */,
 				3B879A2C242E00B400BE47DC /* AppDelegate.swift in Sources */,
 				3BBD150325CF191F008CB0E2 /* FeedbackPresentationController.swift in Sources */,
 				3BB361AD2804823100B1F861 /* TipViewCollectionViewCell.swift in Sources */,
@@ -520,7 +524,7 @@
 				CODE_SIGN_ENTITLEMENTS = FontWrangler/FontWrangler.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 60;
+				CURRENT_PROJECT_VERSION = 61;
 				DEVELOPMENT_TEAM = Y5J3K52DNA;
 				INFOPLIST_FILE = FontWrangler/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Fontismo;
@@ -551,7 +555,7 @@
 				CODE_SIGN_ENTITLEMENTS = FontWrangler/FontWrangler.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 60;
+				CURRENT_PROJECT_VERSION = 61;
 				DEVELOPMENT_TEAM = Y5J3K52DNA;
 				INFOPLIST_FILE = FontWrangler/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Fontismo;

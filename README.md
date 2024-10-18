@@ -22,6 +22,7 @@ This repo contains the Fontismo source code only. It does not contain assets req
     - Add monospace fonts.
     - Stop the main font list view's title from being shifted down on return from viewing a specific font.
     - Stop the Help screen flashing white on first load.
+    - Correctly align the font list table's header text across rotations.
     - Spring clean dates, etc.
     - Re-organise the codebase.
 - 1.2.2 *2 November 2023*

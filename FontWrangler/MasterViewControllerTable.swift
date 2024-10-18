@@ -55,10 +55,13 @@ extension MasterViewController {
     override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
 
         // Return the custom table header row
-        let fittingSize = CGSize(width: tableView.bounds.width - (tableView.safeAreaInsets.left + tableView.safeAreaInsets.right), height: 0)
-        let size = self.tableHead.systemLayoutSizeFitting(fittingSize, withHorizontalFittingPriority: .required, verticalFittingPriority: .fittingSizeLevel)
-        self.tableHead.frame = CGRect(origin: .zero, size: size)
+        //let fittingSize = CGSize(width: tableView.frame.width - (tableView.safeAreaInsets.left + tableView.safeAreaInsets.right), height: 0)
+        //let size = self.tableHead.systemLayoutSizeFitting(fittingSize, withHorizontalFittingPriority: .required, verticalFittingPriority: .fittingSizeLevel)
+        //self.tableHead.frame = CGRect(origin: .zero, size: size)
         
+        self.tableHead.parent = tableView
+        //let r = tableView.rectForHeader(inSection: section)
+        //self.tableHead.frame = r
         return self.tableHead
     }
 

@@ -167,6 +167,8 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <viewLayoutGuide key="contentLayoutGuide" id="Qst-pT-mtT"/>
+                        <viewLayoutGuide key="frameLayoutGuide" id="ZVw-or-4pJ"/>
                         <color key="separatorColor" systemColor="labelColor"/>
                         <prototypes>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" reuseIdentifier="header.cell" rowHeight="64" id="1hT-GC-xrd">
@@ -305,7 +307,26 @@
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Rux-fX-hf1" sceneMemberID="firstResponder"/>
-                <view alpha="0.90000000000000002" contentMode="scaleToFill" id="pWt-n4-Npf">
+                <view contentMode="scaleToFill" id="HBc-1a-JKN" customClass="MasterTitleView" customModule="Fontismo" customModuleProvider="target">
+                    <rect key="frame" x="0.0" y="0.0" width="240" height="128"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                    <subviews>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="mjJ-HX-hIE">
+                            <rect key="frame" x="0.0" y="26" width="240" height="18"/>
+                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <fontDescription key="fontDescription" type="system" pointSize="12"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                        <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="logo" translatesAutoresizingMaskIntoConstraints="NO" id="AvW-iF-ODr">
+                            <rect key="frame" x="0.0" y="0.0" width="240" height="26"/>
+                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        </imageView>
+                    </subviews>
+                    <connections>
+                        <outlet property="infoLabel" destination="mjJ-HX-hIE" id="mvP-Vn-YKD"/>
+                    </connections>
+                </view>
+                <view alpha="0.90000000000000002" contentMode="scaleToFill" id="pWt-n4-Npf" customClass="MasterTableHeaderView" customModule="Fontismo" customModuleProvider="target">
                     <rect key="frame" x="0.0" y="0.0" width="240" height="128"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                     <subviews>
@@ -347,24 +368,9 @@
                         <constraint firstItem="xZh-cz-wog" firstAttribute="top" secondItem="pWt-n4-Npf" secondAttribute="top" constant="8" id="xhm-OE-fDY"/>
                         <constraint firstItem="bSO-hH-KNy" firstAttribute="centerX" secondItem="pWt-n4-Npf" secondAttribute="centerX" id="zU0-Wt-ROF"/>
                     </constraints>
-                </view>
-                <view contentMode="scaleToFill" id="HBc-1a-JKN" customClass="MasterTitleView" customModule="Fontismo" customModuleProvider="target">
-                    <rect key="frame" x="0.0" y="0.0" width="240" height="128"/>
-                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                    <subviews>
-                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="mjJ-HX-hIE">
-                            <rect key="frame" x="0.0" y="26" width="240" height="18"/>
-                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                            <fontDescription key="fontDescription" type="system" pointSize="12"/>
-                            <nil key="highlightedColor"/>
-                        </label>
-                        <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="logo" translatesAutoresizingMaskIntoConstraints="NO" id="AvW-iF-ODr">
-                            <rect key="frame" x="0.0" y="0.0" width="240" height="26"/>
-                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                        </imageView>
-                    </subviews>
                     <connections>
-                        <outlet property="infoLabel" destination="mjJ-HX-hIE" id="mvP-Vn-YKD"/>
+                        <outlet property="leftConstraint" destination="91E-dR-XIK" id="0Sm-Wg-xKl"/>
+                        <outlet property="rightConstraint" destination="0Dq-Zz-X34" id="aAm-E0-CUC"/>
                     </connections>
                 </view>
             </objects>
