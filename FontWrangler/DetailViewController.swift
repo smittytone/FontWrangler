@@ -19,6 +19,7 @@ class DetailViewController: UIViewController,
     
     @IBOutlet weak var dynamicSampleHeadLabel: UILabel!
     @IBOutlet weak var dynamicSampleTextView: UITextView!
+    @IBOutlet weak var uninstalledPreviewImage: UIImageView!
 
     @IBOutlet weak var fontSizeLabel: UILabel!
     @IBOutlet weak var fontSizeSlider: UISlider!
@@ -44,6 +45,8 @@ class DetailViewController: UIViewController,
     var currentFamily: FontFamily? = nil
     var currentFontIndex: Int = 0
     var hasCustomText: Bool = false
+    // FROM 2.0.0
+    var shouldAutoInstallFonts: Bool = false
 
     var detailItem: UserFont? {
         
@@ -97,9 +100,32 @@ class DetailViewController: UIViewController,
         
         // Configure the detail view
         self.configureView()
+        
+        // Set the preview image tint as we're now using template images
+        self.uninstalledPreviewImage.tintColor = .label
 
         // Show the master view
         self.splitViewController?.toggleMasterView()
+    }
+    
+    
+    override func viewDidAppear(_ animated: Bool) {
+        
+        super.viewDidAppear(animated)
+        
+        // FROM 2.0.0
+        if let detail = self.detailItem {
+            if !detail.isInstalled {
+                // Font not installed, so offer to install it
+                if self.shouldAutoInstallFonts {
+                    // Don't ask: perform the install automatically
+                    self.installCurrentFamily()
+                } else {
+                    // Ask: dffer the installation as a choice
+                    self.doInstall()
+                }
+            }
+        }
     }
     
     
@@ -116,6 +142,7 @@ class DetailViewController: UIViewController,
         guard let sampleHead = self.dynamicSampleHeadLabel else { return }
         guard let sizeLabel = self.fontSizeLabel else { return }
         guard let sizeSlider = self.fontSizeSlider else { return }
+        guard let unImage = self.uninstalledPreviewImage else { return }
 
         // REMOVED IN 1.1.0
         // guard let sampleNote = self.userSampleTextView else { return }
@@ -125,7 +152,7 @@ class DetailViewController: UIViewController,
         //sizeSlider.isEnabled = false
 
         // FROM 1.1.1
-        // Turn of the indicator and hide
+        // Turn off the indicator and hide
         if let dp = self.downloadProgress {
             dp.stopAnimating()
         }
@@ -153,41 +180,45 @@ class DetailViewController: UIViewController,
             }
 
             if detail.isInstalled {
-                // Set the samples' fonts
-                sampleText.alpha = 1.0
-                sampleHead.alpha = 1.0
-
+                // Set the sample's font
                 if let font = UIFont.init(name: detail.psname, size: self.fontSize) {
                     sampleText.font = font
                 }
                 
+                sampleText.alpha = 1.0
+                sampleText.isHidden = false
+                
                 // Set the font size slider control and label
                 sizeLabel.text = "\(Int(self.fontSize))pt"
-                sizeSlider.isEnabled = true
                 sizeSlider.setValue(Float(self.fontSize), animated: true);
+                sizeSlider.isEnabled = true
                 
-                // REMOVED IN 1.1.0
-                //sampleNote.isEditable = true
-                //sampleNote.alpha = 1.0
-                //parent.alpha = 1.0
-                // if let font = UIFont.init(name: detail.psname, size: KBaseUserSampleFontSize) { sampleNote.font = font }
+                // FROM 2.0.0
+                unImage.isHidden = true
             } else {
                 sampleText.font = self.substituteFont
                 sampleText.alpha = 0.3
-                sampleHead.alpha = 0.3
+                sampleText.isHidden = true
+                
                 sizeLabel.text = ""
                 sizeSlider.isEnabled = false
                 
-                // REMOVED IN 1.1.0
-                //sampleNote.font = substituteFont
-                //sampleNote.isEditable = false
-                //sampleNote.alpha = 0.3
-                //parent.alpha = 0.3
+                // FROM 2.0.0
+                // Use graphic preview for uninstalled fonts
+                if let family = self.currentFamily {
+                    if let image: UIImage = UIImage.init(named: "preview_" + family.tag) {
+                        unImage.image = image
+                    }
+                }
+                
+                unImage.alpha = 0.3
+                unImage.isHidden = false
             }
             
             // Set the font status label
-            let ext = (detail.path as NSString).pathExtension.lowercased()
-            var labelText = "This " + (ext == "otf" ? "OpenType" : "TrueType" ) + " font is "
+            //let ext = (detail.path as NSString).pathExtension.lowercased()
+            //var labelText = "This " + (ext == "otf" ? "OpenType" : "TrueType" ) + " font is "
+            var labelText = "This typeface is "
             labelText += (detail.isInstalled ? "installed" : "not installed")
             statusLabel.text = labelText
             
@@ -197,15 +228,16 @@ class DetailViewController: UIViewController,
                 if let familyFonts = family.fontIndices {
                     count = familyFonts.count
                 }
+                
+                // Set the creator
+                sampleHead.text = "Created by \(family.creator)"
             }
 
             self.variantsButton?.isEnabled = count > 1 ? true : false
 
             // FROM 1.1.0
             // Font not installed, so offer to install it
-            if !detail.isInstalled {
-                doInstall()
-            }
+            //if !detail.isInstalled { doInstall() }
         } else {
             // Hide the labels; disable the slider
             self.title = "Font Info"
@@ -218,7 +250,7 @@ class DetailViewController: UIViewController,
     }
 
 
-    func doInstall() {
+    private func doInstall() {
 
         // FROM 1.1.0
         // Offer to install the font if it has not yet been installed
@@ -226,15 +258,13 @@ class DetailViewController: UIViewController,
         // Create and present an alert with two buttons
         if let cf = self.currentFamily {
             let alert = UIAlertController.init(title: "\(cf.name)",
-                                               message: "This font family is not installed. Would you like to install it now?",
+                                               message: "This font family is not installed. Dynamic previews are not enabled for uninstalled fonts. Would you like to install \(cf.name) now?",
                                                preferredStyle: .alert)
 
             var alertButton = UIAlertAction.init(title: "Yes",
                                                  style: .default) { (action) in
                 // Install the font
-                self.downloadProgress.isHidden = false
-                self.downloadProgress.startAnimating()
-                self.mvc!.getOneFontFamily(cf)
+                self.installCurrentFamily()
             }
 
             alert.addAction(alertButton)
@@ -250,6 +280,20 @@ class DetailViewController: UIViewController,
                          completion: nil)
         }
     }
+    
+    
+    private func installCurrentFamily() {
+        
+        // If a single family has been tapped in the master view, we set the value
+        // of `currentFamily`. If it has been set, run the install process for it.
+        
+        if let cf = self.currentFamily {
+            // Install the font family
+            self.downloadProgress.startAnimating()
+            self.mvc!.getOneFontFamily(cf)
+        }
+    }
+    
 
     // REMOVED IN 1.1.0
     /*
@@ -267,7 +311,7 @@ class DetailViewController: UIViewController,
     
     // MARK: - Action Functions
     
-    @IBAction func setFontSize(_ sender: Any) {
+    @IBAction private func setFontSize(_ sender: Any) {
 
         // Respond to the user adjusting the font size slider
 
@@ -320,17 +364,17 @@ class DetailViewController: UIViewController,
     }
     
 
-    @objc func doTap() {
+    @objc private func doTap() {
 
         // End editing of the user sample text view on a tap
 
-        if let stv = self.dynamicSampleTextView {
-            stv.endEditing(true)
+        if let dstv = self.dynamicSampleTextView {
+            dstv.endEditing(true)
         }
     }
 
 
-    @objc func doSwipe(_ pgr: UIPinchGestureRecognizer) {
+    @objc private func doSwipe(_ pgr: UIPinchGestureRecognizer) {
 
         // FROM 1.1.0
         // Triggered by the pinch gesture on the main view
@@ -348,35 +392,44 @@ class DetailViewController: UIViewController,
             setFontSize(self)
         }
     }
+    
+    
+    func doCancelInstall() {
+        
+        // Stop the download process if the user has cancelled it
+        // FROM 2.0.0
+        
+        self.downloadProgress.stopAnimating()
+    }
 
 
-    @objc func showVariantsMenu() {
+    @objc private func showVariantsMenu() {
         
         // Load and configure the font variants menu view controller
 
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
-        let fvc: FontVariantsTableViewController = storyboard.instantiateViewController(withIdentifier: "font.variants.controller") as! FontVariantsTableViewController
-        fvc.dvc = self
+        let fvtvc: FontVariantsTableViewController = storyboard.instantiateViewController(withIdentifier: "font.variants.controller") as! FontVariantsTableViewController
+        fvtvc.dvc = self
         
         // Set the popover's data
         if let fontIndices = self.currentFamily!.fontIndices {
-            fvc.fontIndices = fontIndices
-            fvc.currentFont = currentFontIndex
+            fvtvc.fontIndices = fontIndices
+            fvtvc.currentFont = currentFontIndex
         }
         
         // Use the popover presentation style for your view controller.
-        fvc.modalPresentationStyle = .popover
+        fvtvc.modalPresentationStyle = .popover
 
         // Specify the anchor point for the popover.
-        fvc.popoverPresentationController?.barButtonItem = navigationItem.rightBarButtonItem
-        fvc.popoverPresentationController?.delegate = self
+        fvtvc.popoverPresentationController?.barButtonItem = navigationItem.rightBarButtonItem
+        fvtvc.popoverPresentationController?.delegate = self
                    
         // Present the view controller (in a popover).
-        self.present(fvc, animated: true, completion: nil)
+        self.present(fvtvc, animated: true, completion: nil)
     }
     
     
-    func getVariantName(_ fontName: String) -> String {
+    private func getVariantName(_ fontName: String) -> String {
         
         // Extract the font variant from the font name
         
@@ -387,6 +440,10 @@ class DetailViewController: UIViewController,
 
 
     // MARK: - Font Quirks
+    
+    /*
+     These are routines called for handling individual fonts with non-standard naming.
+     */
 
     func getBungeeTitle(_ fontName: String) -> String {
 
@@ -425,6 +482,3 @@ class DetailViewController: UIViewController,
     }
 
 }
-
-
-

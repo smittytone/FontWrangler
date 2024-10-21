@@ -51,6 +51,7 @@ extension MasterViewController  {
                 let serifFlag: String = aFont["serif"] ?? ""
                 newFont.isSerif = (serifFlag == "true" || serifFlag == "")
                 newFont.style = aFont["class"] ?? "Unknown"
+                newFont.creator = aFont["creator"]
                 
                 self.fonts.append(newFont)
             }
@@ -77,16 +78,6 @@ extension MasterViewController  {
         
         // Determing the font families available in the font list
         self.setFontFamilies()
-        
-        /*
-        // EXPERIMENT
-        // Register downloaded, ie. in-bundle, fonts
-        for (index, font) in self.fonts.enumerated() {
-            if font.isDownloaded {
-                registerFontFamily(familyFromFontIndex(index))
-            }
-        }
-        */
         
         // Double-check what's installed and what isn't and
         // update the fonts' status
@@ -152,15 +143,6 @@ extension MasterViewController  {
                             if loadedFont.name == font.name {
                                 font.isInstalled = loadedFont.isInstalled
                                 font.isDownloaded = loadedFont.isDownloaded
-                                
-                                /*
-                                // EXPERIMENTAL
-                                // Set known downloads' records
-                                if font.name == "Abel-Regular" || font.name == "AlfaSlabOne-Regular" {
-                                    font.isDownloaded = true
-                                }
-                                */
-                                
                                 break
                             }
                         }
@@ -204,7 +186,7 @@ extension MasterViewController  {
             try data.write(to: URL.init(fileURLWithPath: savePath))
             
 #if DEBUG
-            // Also save a JSON file for easy checking
+            // Also save a JSON file for easy checking during debugging
             let jsonEncoder: JSONEncoder = JSONEncoder.init()
             let jsonData: Data = try jsonEncoder.encode(self.fonts)
             try jsonData.write(to: URL.init(fileURLWithPath: savePath + ".json"))
@@ -234,6 +216,12 @@ extension MasterViewController  {
                 for family: FontFamily in self.families {
                     if family.tag == font.tag {
                         got = true
+                        // FROM 2.0.0 record the creator
+                        if family.creator.isEmpty {
+                            if let creator = font.creator {
+                                family.creator = creator
+                            }
+                        }
                         break
                     }
                 }
@@ -248,7 +236,13 @@ extension MasterViewController  {
                     newFamily.isSerif = font.isSerif
                     newFamily.style = FontFamilyStyle(rawValue: font.style) ?? .unknown
                     
+                    if let creator = font.creator {
+                        newFamily.creator = creator
+                    }
+                    
                     self.families.append(newFamily)
+                } else {
+                    
                 }
             }
             
@@ -603,19 +597,6 @@ extension MasterViewController  {
                                                      .persistent,
                                                      true,
                                                      self.familyRegistrationHandler(errors:done:))
-            
-            /*
-            // EXPERIMENTAL
-            var fontUrls = [URL]()
-            for fontName in fontNames {
-                fontUrls.append(Bundle.main.bundleURL.appendingPathComponent("Fonts/" + fontName + ".ttf"))
-            }
-            
-            CTFontManagerRegisterFontURLs(fontUrls as CFArray,
-                                          .persistent,
-                                          true,
-                                          self.familyRegistrationHandler(errors:done:))
-            */
         }
     }
 
@@ -640,16 +621,44 @@ extension MasterViewController  {
                 // TODO better error handling
                 let error: NSError = err as! NSError
                 NSLog("[ERROR] \(error.localizedDescription)")
-                var errFont = error.userInfo[kCTFontManagerErrorFontAssetNameKey as String] ?? "unknown"
-                if errFont as! String == "unknown" {
-                    errFont = error.userInfo[kCTFontManagerErrorFontURLsKey as String] ?? "unknown"
+                
+                // Get the error-generating font's name
+                // FROM 2.0.0 we also check if `errFont` is an array, as it will be in the case
+                // when a family contains multiople fonts.
+                let errFont = error.userInfo[kCTFontManagerErrorFontAssetNameKey as String]
+                var family: FontFamily
+                if let fontName = errFont as? String {
+                    family = self.familyFromFontName(fontName)
+                } else if let fontNames = errFont as? [String] {
+                    family = self.familyFromFontName(fontNames[0])
+                } else {
+                    family = FontFamily.init()
+                    family.name = "unknown"
                 }
-                self.showAlert("Sorry!", "Fontismo had a problem registering typeface \(errFont).\n(\(error.localizedDescription))")
+                
+                // FROM 2.0.0
+                // Check for user cancellation
+                if error.localizedDescription.hasPrefix("The operation was cancelled") {
+                    DispatchQueue.main.async {
+                        if let dvc = self.detailViewController {
+                            dvc.doCancelInstall()
+                        }
+                    }
+                    
+                    // Invalidate the install timer so we don't get a time-out alert
+                    family.timer?.invalidate()
+                    
+                    return false
+                }
+                
+                // Post a warning
+                self.showAlert("Sorry!", "Fontismo had a problem registering typeface \(family.name).\n(\(error.localizedDescription))")
             }
 
-            // As recommended, return false on error to
-            // halt further processing
-            // returnValue = false
+            // As recommended, return `false` on error to halt further processing.
+            // HOWEVER, this was cancel other installations if multiple installations
+            // have been requested, so we *don't* return `false`
+            // returnValue  = false
         }
 
         // System sets 'done' to true on the final call
@@ -664,7 +673,7 @@ extension MasterViewController  {
             //      which family has been registered
             DispatchQueue.main.async {
                 self.updateFamilyStatus()
-                self.setInstallButtonState()
+                //self.setInstallButtonState()
                 self.tableView.reloadData()
 
                 // FROM 1.1.1
@@ -780,7 +789,6 @@ extension MasterViewController  {
         if done {
             // Update the fonts' status to match the system,
             // save, and update the UI
-            //self.updateFontStatus()
             self.updateUIonMain()
         }
 
@@ -819,7 +827,28 @@ extension MasterViewController  {
         // ERROR
         return self.families[0]
     }
-
+    
+    
+    internal func familyFromFontName(_ psname: String) -> FontFamily {
+        
+        // Using font's PostScript name, identify its family and
+        // and return it
+        
+        for family: FontFamily in self.families {
+            if let fontIndices: [Int] = family.fontIndices {
+                for fontIndex: Int in fontIndices {
+                    let font: UserFont = self.fonts[fontIndex]
+                    if font.psname == psname {
+                        return family
+                    }
+                }
+            }
+        }
+        
+        // ERROR
+        return self.families[0]
+    }
+    
     
     internal func anyFontsInstalled() -> Bool {
         

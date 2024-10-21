@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="23094" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="H1p-Uh-vWS">
-    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <device id="retina6_1" orientation="portrait" appearance="dark"/>
     <dependencies>
         <deployment version="4864" identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="23084"/>
@@ -51,19 +51,26 @@
                                 <constraints>
                                     <constraint firstAttribute="height" constant="21" id="XLt-aC-Vvg"/>
                                 </constraints>
-                                <fontDescription key="fontDescription" type="system" pointSize="16"/>
-                                <nil key="textColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                            <label opaque="NO" userInteractionEnabled="NO" alpha="0.29999999999999999" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Adjust the slider to alter the preview size" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="12" adjustsLetterSpacingToFitWidth="YES" translatesAutoresizingMaskIntoConstraints="NO" id="rCs-GY-1Kq">
-                                <rect key="frame" x="0.0" y="37" width="414" height="21"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="21" id="5aE-Z4-O7E"/>
-                                </constraints>
                                 <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="16"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Adjust the slider to alter the preview size" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="8" adjustsLetterSpacingToFitWidth="YES" translatesAutoresizingMaskIntoConstraints="NO" id="rCs-GY-1Kq">
+                                <rect key="frame" x="0.0" y="37" width="414" height="21"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="21" id="5aE-Z4-O7E"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="ISj-Bb-NQz">
+                                <rect key="frame" x="57" y="74" width="300" height="300"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="300" id="RI5-ig-KPA"/>
+                                    <constraint firstAttribute="height" constant="300" id="r86-OO-PUc"/>
+                                </constraints>
+                            </imageView>
                             <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="cAp-4J-Aez">
                                 <rect key="frame" x="0.0" y="60" width="414" height="750"/>
                                 <subviews>
@@ -91,6 +98,7 @@
                             </scrollView>
                             <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="48" minValue="10" maxValue="288" minimumValueImage="slider_min" maximumValueImage="slider_max" translatesAutoresizingMaskIntoConstraints="NO" id="qJB-Ox-ARY">
                                 <rect key="frame" x="27" y="847" width="360" height="30"/>
+                                <color key="tintColor" systemColor="labelColor"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="356" id="AB0-s7-UP5"/>
                                     <constraint firstAttribute="height" constant="29" id="vgN-s2-lNJ"/>
@@ -111,7 +119,9 @@
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
+                            <constraint firstItem="ISj-Bb-NQz" firstAttribute="centerX" secondItem="svH-Pt-448" secondAttribute="centerX" id="1wr-wV-0h1"/>
                             <constraint firstItem="pTu-Of-OYx" firstAttribute="leading" secondItem="svH-Pt-448" secondAttribute="leadingMargin" id="8ZY-Gi-NxQ"/>
+                            <constraint firstItem="ISj-Bb-NQz" firstAttribute="top" secondItem="rCs-GY-1Kq" secondAttribute="bottom" constant="16" id="ASs-Wg-7qI"/>
                             <constraint firstItem="R3p-V2-hhZ" firstAttribute="centerY" secondItem="svH-Pt-448" secondAttribute="centerY" id="Es4-Ts-bOE"/>
                             <constraint firstItem="IoY-2B-4ip" firstAttribute="leading" secondItem="svH-Pt-448" secondAttribute="leadingMargin" id="FEO-Sg-doo"/>
                             <constraint firstItem="R3p-V2-hhZ" firstAttribute="centerX" secondItem="svH-Pt-448" secondAttribute="centerX" id="GXr-fx-Wv2"/>
@@ -139,11 +149,12 @@
                         <outlet property="fontSizeLabel" destination="IoY-2B-4ip" id="BMC-ZX-MC7"/>
                         <outlet property="fontSizeSlider" destination="qJB-Ox-ARY" id="4BA-GL-v06"/>
                         <outlet property="fontStatusLabel" destination="pTu-Of-OYx" id="qdr-Xj-NdH"/>
+                        <outlet property="uninstalledPreviewImage" destination="ISj-Bb-NQz" id="JZw-sm-Y96"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="FJe-Yq-33r" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="708.6330935251799" y="128.9568345323741"/>
+            <point key="canvasLocation" x="707.24637681159425" y="128.57142857142856"/>
         </scene>
         <!--Split View Controller-->
         <scene sceneID="Nki-YV-4Qg">
@@ -402,14 +413,14 @@
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <prototypes>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="variant.cell" id="s6R-e5-hht" customClass="FontVariantsTableViewCell" customModule="Fontismo" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="50" width="414" height="43.5"/>
+                                <rect key="frame" x="0.0" y="50" width="414" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="s6R-e5-hht" id="roM-ok-dfU">
-                                    <rect key="frame" x="0.0" y="0.0" width="414" height="43.5"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="414" height="44"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="uaK-Ee-cyN">
-                                            <rect key="frame" x="20" y="11" width="374" height="21"/>
+                                            <rect key="frame" x="20" y="11" width="374" height="21.5"/>
                                             <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="17"/>
                                             <nil key="textColor"/>
                                             <nil key="highlightedColor"/>

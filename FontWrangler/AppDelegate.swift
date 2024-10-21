@@ -50,6 +50,12 @@ class AppDelegate: UIResponder,
             defaults.set(true, forKey: kDefaultsKeys.shouldShowNewFonts)
         }
         
+        // FROM 2.0.0
+        let shouldAutoInstall = defaults.object(forKey: kDefaultsKeys.shouldAutoInstall)
+        if shouldAutoInstall == nil {
+            defaults.set(false, forKey: kDefaultsKeys.shouldAutoInstall)
+        }
+        
         return true
     }
 

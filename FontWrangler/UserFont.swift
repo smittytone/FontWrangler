@@ -36,4 +36,5 @@ class UserFont: Codable {
     // FROM 2.0.0
     var isSerif: Bool = true                // Does the font have serifs?
     var style: String = ""                  // The font's Fontismo style: classic, headline, decorative
+    var creator: String? = nil              // The font's creator, pulled from `defaults.json`
 }

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="17156" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" launchScreen="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="01J-lp-oVM">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="23094" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" launchScreen="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="01J-lp-oVM">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17125"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="23084"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -19,17 +19,19 @@
                         <subviews>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="logo" translatesAutoresizingMaskIntoConstraints="NO" id="lhp-yB-FbO">
                                 <rect key="frame" x="20" y="417.5" width="374" height="61"/>
+                                <color key="tintColor" systemColor="labelColor"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" secondItem="lhp-yB-FbO" secondAttribute="height" multiplier="374:61" id="Oto-Gd-O9o"/>
+                                    <constraint firstAttribute="width" secondItem="lhp-yB-FbO" secondAttribute="height" multiplier="374:61" id="f2w-xj-5a0"/>
                                 </constraints>
                             </imageView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
-                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="lhp-yB-FbO" secondAttribute="trailing" constant="20" id="Xun-d5-4z0"/>
-                            <constraint firstItem="lhp-yB-FbO" firstAttribute="centerY" secondItem="Ze5-6b-2t3" secondAttribute="centerY" id="rva-5O-0RH"/>
-                            <constraint firstItem="lhp-yB-FbO" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="20" id="tpZ-mN-gh8"/>
+                            <constraint firstItem="lhp-yB-FbO" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="20" id="dq2-5h-qH8"/>
+                            <constraint firstItem="lhp-yB-FbO" firstAttribute="centerY" secondItem="Ze5-6b-2t3" secondAttribute="centerY" id="efA-nq-HcT"/>
+                            <constraint firstItem="lhp-yB-FbO" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="qVv-C1-73l"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="lhp-yB-FbO" secondAttribute="trailing" constant="20" id="uxA-KD-7Gx"/>
                         </constraints>
                     </view>
                 </viewController>
@@ -40,6 +42,9 @@
     </scenes>
     <resources>
         <image name="logo" width="400" height="61"/>
+        <systemColor name="labelColor">
+            <color white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>

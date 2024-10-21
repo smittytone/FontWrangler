@@ -45,4 +45,5 @@ class FontFamily {
     // FROM 2.0.0
     var isSerif: Bool = true                    // Does the family have serifs?
     var style: FontFamilyStyle = .unknown       // The family's Fontismo style: classic, headline, decorative
+    var creator: String = ""
 }

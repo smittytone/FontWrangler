@@ -19,6 +19,9 @@ This repo contains the Fontismo source code only. It does not contain assets req
 - 2.0.0 *Unreleased*
     - Support iOS 18 icons.
     - Add Filter menu for (iOS 14 and up only).
+    - Show a non-dynamic preview for uninstalled fonts.
+    - Show font creator(s) on the preview page.
+    - Add a setting to allow installation when an uninstalled font is previewed.
     - Add monospace fonts.
     - Stop the main font list view's title from being shifted down on return from viewing a specific font.
     - Stop the Help screen flashing white on first load.

@@ -10,9 +10,9 @@ import UIKit
 import StoreKit
 
 
-class MasterViewController: UITableViewController,
-                            UIPopoverPresentationControllerDelegate,
-                            UIViewControllerTransitioningDelegate {
+final class MasterViewController: UITableViewController,
+                                  UIPopoverPresentationControllerDelegate,
+                                  UIViewControllerTransitioningDelegate {
 
     
     // MARK: - UI properties
@@ -38,11 +38,12 @@ class MasterViewController: UITableViewController,
     internal var installCount: Int = -1
     internal var isFontListLoaded: Bool = false
     internal var gotFontFamilies: Bool = false
+    internal var doIndicateNewFonts: Bool = true
+    internal var hasShownClearedListWarning: Bool = false
+    internal var shouldAutoInstallFonts: Bool = false
     
     // Collect all the font families. Each entry contains an array of the
     // indices of member fonts in the main font collection, `fonts`
-    internal var doIndicateNewFonts: Bool = true
-    internal var hasShownClearedListWarning: Bool = false
     internal var families = [FontFamily]()
     internal var subFamilies = [FontFamily]()
     internal var viewStates: [FontFamilyStyle: Bool] = [
@@ -65,34 +66,80 @@ class MasterViewController: UITableViewController,
         
         super.viewDidLoad()
 
-        // Set up the 'Help' button on the left
-        /*navigationItem.leftBarButtonItem = editButtonItem
-        let helpButton = UIBarButtonItem(title: "Help",
-                                          style: .plain,
-                                          target: self,
-                                          action: #selector(self.doShowHelpSheet(_:)))
-        */
-        
-        // FROM 1.1.2
-        // Add a standard iOS menu icon in place of the 'Help' menu
-        // Users can get help via the menu
-        let menuButton = UIBarButtonItem(image: UIImage.init(systemName: "ellipsis.circle"),
+        // FROM 2.0.0
+        // Provide a contextual menu on iOS 14 and up, or an alert menu on iOS 13
+        // NOTE We don't support iOS 12 and under (no font capability)
+        var menuButton: UIBarButtonItem
+        if #available(iOS 14, *) {
+            // Generate the main contextual menu with the usual buttons
+            let showHelpAction = UIAction(title: "Show Help",
+                                          image: UIImage(systemName: "questionmark.circle"),
+                                          handler: { (_) in
+                                              self.doShowHelpSheet(self)
+                                          })
+            
+            let showSettingsAction = UIAction(title: "Settings",
+                                              image: UIImage(systemName: "gearshape"),
+                                              handler: { (_) in
+                                                  UIApplication.shared.open(URL(string: UIApplication.openSettingsURLString)!)
+                                              })
+            
+            let showFeedbackSheetAction = UIAction(title: "Report a Bug",
+                                                   image: UIImage(systemName: "ladybug"),
+                                                   handler: { (_) in
+                                                       self.doShowFeedbackSheet(self)
+                                                   })
+            
+            let showReviewOfferAction = UIAction(title: "Review Fontismo",
+                                                 image: UIImage(systemName: "pencil.and.scribble"),
+                                                 handler: { (_) in
+                                                     self.doReview()
+                                                 })
+            
+            let showWebsiteAction = UIAction(title: "Visit Fontismo’s Website",
+                                             image: UIImage(systemName: "globe"),
+                                             handler: { (_) in
+                                                 self.doShowWebsite(self)
+                                             })
+            
+            let showTipsAction = UIAction(title: "Fuel Fontismo’s Development",
+                                          image: UIImage(systemName: "dollarsign.circle"),
+                                          handler: { (_) in
+                                              self.doShowTipSheet(self)
+                                          })
+            
+            // Assemble the menu, add it to the central table header button,
+            // and enable menu delivery by the button
+            let mainMenu = UIMenu(title: "", children: [
+                showHelpAction, showSettingsAction, showFeedbackSheetAction, showReviewOfferAction, showWebsiteAction, showTipsAction
+            ])
+            
+            menuButton = UIBarButtonItem()
+            menuButton.image = UIImage(systemName: "ellipsis.circle")
+            menuButton.menu = mainMenu
+            menuButton.style = .plain
+        } else {
+            // For iOS 13, use the old-style UIAlert menu
+            menuButton = UIBarButtonItem(image: UIImage.init(systemName: "ellipsis.circle"),
                                          style: .plain,
                                          target: self,
                                          action: #selector(self.doShowMenu(_:)))
-        self.navigationItem.leftBarButtonItem = menuButton
-
+        }
+        
+        // Add whatever menu button we've created to the navigation bar
+        self.menuButton = menuButton
+        self.navigationItem.rightBarButtonItem = menuButton
+        
+        /* REMOVED IN 2.0.0
         // Set up the 'Install' button on the right
         let addAllButton = UIBarButtonItem(image: UIImage.init(systemName: "square.and.arrow.down.on.square"),
                                            style: .plain,
                                            target: self,
                                            action: #selector(self.installAll(_:)))
-        self.navigationItem.rightBarButtonItem = addAllButton
-
-        // Retain button for future use (enable and disable)
+        self.navigationItem.leftBarButtonItem = menuButton
         self.installButton = addAllButton
-        self.menuButton = menuButton
-        
+        */
+
         // FROM 2.0.0
         // Assemble a contextual menu for font list subdivision
         // NOTE This is only available in iOS 14 and up so we disable the options
@@ -101,13 +148,13 @@ class MasterViewController: UITableViewController,
             let showAllFontsAction = UIAction(title: "Show All",
                                               image: nil,
                                               handler: { (_) in
-                                                  self.doShowAll()
+                                                  self.setContextMenu(true)
                                               })
             
             let clearAllFontsAction = UIAction(title: "Clear Selections",
                                                image: nil,
                                                handler: { (_) in
-                                                  self.doClearAll()
+                                                   self.setContextMenu(false)
                                                })
             
             let showClassicFontsAction = UIAction(title: "Classic",
@@ -151,7 +198,6 @@ class MasterViewController: UITableViewController,
             // iOS 13: hide the button
             self.viewOptionsButton.isHidden = true
         }
-        
 
         // Set the title view and its font count info
         // NOTE The title view is placed in the centre of the nav bar
@@ -224,6 +270,8 @@ class MasterViewController: UITableViewController,
         // Save the list
         // NOTE This is probably unnecessary now
         self.saveFontList()
+        
+        // Record the number of installs
         UserDefaults.standard.set(self.installCount, forKey: kDefaultsKeys.fontInstallCount)
     }
 
@@ -234,19 +282,24 @@ class MasterViewController: UITableViewController,
         self.initializeFontList()
 
         // Update the UI
-        self.setInstallButtonState()
+        // NOT REQD. IN 2.0.0
+        //self.setInstallButtonState()
         
         // FROM 1.2.0
         self.doIndicateNewFonts = UserDefaults.standard.bool(forKey: kDefaultsKeys.shouldShowNewFonts)
+        
+        // FROM 2.0.0
+        // Check for auto-installation
+        self.shouldAutoInstallFonts = UserDefaults.standard.bool(forKey: kDefaultsKeys.shouldAutoInstall)
 
         // Show the intro panel
-        // NOTE 'showIntroPanel()' checks whether the panel should
+        // NOTE `showIntroPanel()` checks whether the panel should
         //      actually be shown
         self.showIntroPanel()
     }
 
 
-    func showIntroPanel() {
+    private func showIntroPanel() {
 
         // If required, display an introductory page of guidance on app usage
         // NOTE This should appear on the first use of the app, but never again.
@@ -279,18 +332,22 @@ class MasterViewController: UITableViewController,
     @objc func doShowMenu(_ sender: Any) {
 
         // FROM 1.1.2
-        // We've removed the 'Help' menu and replace it with an action menu,
+        // We've removed the 'Help' menu and replaced it with an action menu,
         // which includes a Help option and space for other things
         
+        // FROM 2.0.0
+        // This is now only called if the host device is on iOS 13, our minimum
+        // supported version. iOS 14 and up will result in a contextual menu
+        
         let actionMenu: UIAlertController = UIAlertController.init(title: nil,
-                                                                    message: nil,
-                                                                    preferredStyle: .actionSheet)
+                                                                   message: nil,
+                                                                   preferredStyle: .actionSheet)
         
         // Allow the user to view the Help screen
         var action: UIAlertAction!
         action = UIAlertAction.init(title: "Show Help",
                                     style: .default,
-                                    handler: { (anAction) in
+                                    handler: { (_) in
                                         self.doShowHelpSheet(self)
                                     })
         actionMenu.addAction(action)
@@ -298,7 +355,7 @@ class MasterViewController: UITableViewController,
         // Allow the user to view the app's settings
         action = UIAlertAction.init(title: "Fontismo Settings",
                                     style: .default,
-                                    handler: { (anAction) in
+                                    handler: { (_) in
                                         UIApplication.shared.open(URL(string: UIApplication.openSettingsURLString)!)
                                     })
 
@@ -307,7 +364,7 @@ class MasterViewController: UITableViewController,
         // Allow the user to report a bug
         action = UIAlertAction.init(title: "Report a Bug",
                                     style: .default,
-                                    handler: { (anAction) in
+                                    handler: { (_) in
                                         self.doShowFeedbackSheet(self)
                                     })
 
@@ -316,7 +373,7 @@ class MasterViewController: UITableViewController,
         // Allow the user to review the app
         action = UIAlertAction.init(title: "Review Fontismo",
                                     style: .default,
-                                    handler: { (anAction) in
+                                    handler: { (_) in
                                         self.doReview()
                                     })
         
@@ -325,7 +382,7 @@ class MasterViewController: UITableViewController,
         // Allow the user to go to the website
         action = UIAlertAction.init(title: "Visit Fontismo’s Website",
                                     style: .default,
-                                    handler: { (anAction) in
+                                    handler: { (_) in
                                         self.doShowWebsite(self)
                                     })
 
@@ -335,7 +392,7 @@ class MasterViewController: UITableViewController,
         // Allow the user to report a bug
         action = UIAlertAction.init(title: "Fuel Fontismo’s Development",
                                     style: .default,
-                                    handler: { (anAction) in
+                                    handler: { (_) in
                                         self.doShowTipSheet(self)
                                     })
 
@@ -367,14 +424,14 @@ class MasterViewController: UITableViewController,
 
         // Display the Help panel
 
-        // Load and configure the menu view controller.
+        // Load and configure the menu view controller
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         let hvc: HelpViewController = storyboard.instantiateViewController(withIdentifier: "help.view.controller") as! HelpViewController
 
-        // Use the popover presentation style for your view controller.
+        // Use the popover presentation style
         hvc.modalPresentationStyle = .pageSheet
 
-        // Present the view controller (in a popover).
+        // Present the view controller (in a popover)
         self.present(hvc, animated: true, completion: nil)
     }
 
@@ -405,15 +462,16 @@ class MasterViewController: UITableViewController,
     @objc func doShowTipSheet(_ sender: Any) {
         
         // FROM 1.2.0
+        // Display the StoreKit sheet for tips
         
         if self.tvc == nil {
             let storyboard = UIStoryboard(name: "Main", bundle: nil)
-            tvc = storyboard.instantiateViewController(withIdentifier: "tip.view.controller") as? TipViewController
-            tvc!.modalPresentationStyle = UIDevice.current.userInterfaceIdiom == .pad ? .custom : .pageSheet
-            tvc!.transitioningDelegate = self
+            self.tvc = storyboard.instantiateViewController(withIdentifier: "tip.view.controller") as? TipViewController
+            self.tvc!.modalPresentationStyle = UIDevice.current.userInterfaceIdiom == .pad ? .custom : .pageSheet
+            self.tvc!.transitioningDelegate = self
         }
         
-        self.present(tvc!, animated: true, completion: nil)
+        self.present(self.tvc!, animated: true, completion: nil)
     }
     
     
@@ -432,36 +490,21 @@ class MasterViewController: UITableViewController,
     
     // MARK: - UIAction Functions — Filter Contextual Menu
     
-    private func doShowAll() {
-        
-        if #available(iOS 14.0, *) {
-            self.setContextMenu(true)
-        }
-    }
-    
-    
-    private func doClearAll() {
-        
-        if #available(iOS 14.0, *) {
-            self.setContextMenu(false)
-        }
-    }
-    
-    
     private func setContextMenu(_ state: Bool) {
         
-        if #available(iOS 14.0, *) {
-            self.viewStates[.classic] = state
-            self.viewStates[.headline] = state
-            self.viewStates[.decorative] = state
-            self.viewStates[.monospace] = state
-            self.doShowSome(nil, .unknown)
-        }
+        self.viewStates[.classic] = state
+        self.viewStates[.headline] = state
+        self.viewStates[.decorative] = state
+        self.viewStates[.monospace] = state
+        self.doShowSome(nil, .unknown)
     }
     
     
     private func doShowSome(_ item: UIAction?, _ style: FontFamilyStyle) {
         
+        // NOTE We include the iOS 14 check here to avoid compiler warnings, even
+        //      though this function will not be called on any system running iOS 13
+        //      or lower.
         if #available(iOS 14.0, *) {
             // Set the view options based on current state:
             // If the item is on when clicked, it's going to be off, so
@@ -528,16 +571,18 @@ class MasterViewController: UITableViewController,
             }
 
             // Set the 'Add All' button state and update the table
-            self.setInstallButtonState()
+            //self.setInstallButtonState()
             self.tableView.reloadData()
         }
     }
 
 
-    func setInstallButtonState() {
+    internal func setInstallButtonState() {
 
         // If we have a list of fonts (see viewWillAppear()), determine whether
         // we need to enable or disable the install button
+        
+        // UNUSED in 2.0.0
         
         if self.fonts.count > 0 {
             var installedCount = 0
@@ -558,7 +603,7 @@ class MasterViewController: UITableViewController,
     }
 
 
-    func getPrinteableName(_ name: String, _ separator: String = "_") -> String {
+    internal func getPrinteableName(_ name: String, _ separator: String = "_") -> String {
         
         // Get the family human-readable name from the tag,
         // eg. convert 'my_font_one' to 'My Font One'
@@ -591,7 +636,7 @@ class MasterViewController: UITableViewController,
     internal func showAlert(_ title: String, _ message: String) {
         
         // Generic alert display function which ensures
-        // the alert is actioned on the main thread
+        // the alert is actioned on the main thread.
 
         DispatchQueue.main.async {
             let alert = UIAlertController.init(title: title,
@@ -609,16 +654,21 @@ class MasterViewController: UITableViewController,
     
     internal func showFancyAlert(_ title: NSAttributedString, _ message: String) {
         
+        // Generic alert display function which not only ensures
+        // the alert is actioned on the main thread but also uses an
+        // attributed string for the title.
+        
+        // FROM 2.0.0
         
         DispatchQueue.main.async {
             let alert = UIAlertController.init(title: "",
                                                message: message,
                                                preferredStyle: .alert)
+            alert.setValue(title, forKey: "attributedTitle")
+            
             alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "Default action"),
                                           style: .default,
                                           handler: nil))
-            
-            alert.setValue(title, forKey: "attributedTitle")
             
             self.present(alert,
                          animated: true,
@@ -626,9 +676,10 @@ class MasterViewController: UITableViewController,
         }
     }
     
+    
     // MARK: - StoreKit Functions
 
-    func requestReview() {
+    internal func requestReview() {
 
         // FROM 1.1.1
         // Show the 'please review' dialog if the user is on a new version
@@ -651,7 +702,7 @@ class MasterViewController: UITableViewController,
     }
 
 
-    func makeRequest(_ currentVersion: String) {
+    private func makeRequest(_ currentVersion: String) {
 
         // FROM 1.1.1
         // Configure the rating dialog to appear in two seconds' time
@@ -667,7 +718,7 @@ class MasterViewController: UITableViewController,
     }
 
 
-    @objc func doRequestReview() {
+    @objc private func doRequestReview() {
 
         // FROM 1.1.1
         // Display an option to review the app on a long press of the master view
@@ -696,7 +747,7 @@ class MasterViewController: UITableViewController,
     }
 
 
-    func doReview() {
+    private func doReview() {
 
         // FROM 1.1.2
         // Refactor this action into a separate function
@@ -740,6 +791,8 @@ class MasterViewController: UITableViewController,
                 controller.mvc = self
                 controller.currentFontIndex = 0
                 controller.hasCustomText = false
+                // FROM 2.0.0
+                controller.shouldAutoInstallFonts = self.shouldAutoInstallFonts
 
                 // This line updates the detail view, so keep it LAST
                 controller.detailItem = font

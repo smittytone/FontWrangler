@@ -144,69 +144,8 @@ extension MasterViewController {
             // Set preview image using the font family's tags
             cell.fontPreviewImageView.image = UIImage.init(named: family.tag)
             
-            /*
-            // EXPERIMENTAL
-            cell.fontPreviewImageView.alpha = 0.4
-             
-            // Render the font list image to size
-            let userFont: UserFont = self.fonts[family.fontIndices![0]]
-            var fontSize: CGFloat = 32.0
-            var kernSize: CGFloat = 1.0
-            let maxHeight: CGFloat = cell.fontPreviewLabel.frame.height
-            let maxWidth: CGFloat = cell.fontPreviewLabel.frame.width
-            while true {
-                if let previewFont: UIFont = UIFont(name: userFont.psname, size: fontSize) {
-                    let attrStr: NSAttributedString = NSAttributedString.init(string: "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
-                                                                              attributes: [.font: previewFont,
-                                                                                           .kern: kernSize])
-                    
-                    let ts = NSTextStorage(attributedString: attrStr)
-                    let size = CGSize(width: CGFloat.greatestFiniteMagnitude, height: maxHeight)
-
-                    let tc = NSTextContainer(size: size)
-                    tc.lineFragmentPadding = 0.0
-
-                    let lm = NSLayoutManager()
-                    lm.addTextContainer(tc)
-                    ts.addLayoutManager(lm)
-                    lm.glyphRange(forBoundingRect: CGRect(origin: .zero, size: size), in: tc)
-                    let rect = lm.usedRect(for: tc)
-                    
-                    print("WIDTH: \(rect.width)/\(maxWidth)")
-                    if rect.width == maxWidth {
-                        cell.fontPreviewLabel.attributedText = attrStr
-                        break
-                    }
-                    
-                    if rect.width < maxWidth {
-                        let diff = cell.fontPreviewLabel.frame.width - rect.width
-                        print("DIFF: \(diff)")
-                        if diff >= 2.0 {
-                            kernSize += 0.2
-                            continue
-                        } else {
-                            cell.fontPreviewLabel.attributedText = attrStr
-                            break
-                        }
-                    }
-                    
-                    // Reduce the font size and test again
-                    fontSize -= 0.5
-                    if fontSize < 12.0 {
-                        break
-                    }
-                    
-                    //cell.fontPreviewLabel.font = previewFont
-                    //cell.fontPreviewLabel.adjustsFontForContentSizeCategory = true
-                    //cell.fontPreviewLabel.text = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-                } else {
-                    // Missing font
-                    cell.fontPreviewLabel.text = ""
-                    break
-                }
-            }
-            */
-            
+            // FROM 2.0.0 Set the image tint as we're now using template images
+            cell.fontPreviewImageView.tintColor = .label
             return cell
         }
     }
@@ -220,7 +159,7 @@ extension MasterViewController {
         var config: UISwipeActionsConfiguration? = nil
         var actions = [UIContextualAction]()
         var action: UIContextualAction = UIContextualAction.init(style: .destructive,
-                                         title: "Remove All") { (theAction, theView, handler) in
+                                         title: "") { (theAction, theView, handler) in
                                             // Check that there are fonts to be removed
                                             if self.anyFontsInstalled() {
                                                 // Remove the installed fonts
@@ -247,12 +186,12 @@ extension MasterViewController {
                                             
                                             handler(true)
         }
-        
+        action.image = UIImage.init(systemName: "trash")
         actions.append(action)
         
         // Configure an 'Add All' action
         action = UIContextualAction.init(style: .normal,
-                                         title: "Add All") { (theAction, theView, handler) in
+                                         title: "") { (theAction, theView, handler) in
                                             // Check that there are fonts to be installed
                                             if self.allFontsInstalled() {
                                                 self.showAlert("All Typefaces Installed", "You have already installed all of the available typefaces")
@@ -263,6 +202,7 @@ extension MasterViewController {
                                             
                                             handler(true)
         }
+        action.image = UIImage(systemName: "square.and.arrow.down.on.square")
 
         // Set the colour to blue
         action.backgroundColor = UIColor.systemBlue
@@ -291,20 +231,22 @@ extension MasterViewController {
             if family.fontsAreInstalled {
                 // Configure a 'Remove' action -- only one item affected: the table view cell's family
                 action = UIContextualAction.init(style: .destructive,
-                                                 title: "Remove") { (theAction, theView, handler) in
+                                                 title: "") { (theAction, theView, handler) in
                                                     // Remove the single, row-referenced font
                                                     self.removeOneFontFamily(family)
                                                     handler(true)
                 }
+                action.image = UIImage.init(systemName: "trash")
             } else {
                 // Configure an 'Add' action -- only one item affected: the table view cell's
                 action = UIContextualAction.init(style: .normal,
-                                                 title: "Add") { (theAction, theView, handler) in
+                                                 title: "") { (theAction, theView, handler) in
                                                     // Install the single, row-referenced font
                                                     self.getOneFontFamily(family)
                                                     handler(true)
                 }
-
+                action.image = UIImage.init(systemName: "square.and.arrow.down")
+                
                 // Set the colour to blue
                 action.backgroundColor = UIColor.systemBlue
             }
