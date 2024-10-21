@@ -54,7 +54,7 @@ final class FontVariantsTableViewController: UITableViewController {
         var cell: FontVariantsTableViewCell = tableView.dequeueReusableCell(withIdentifier: "variant.cell", for: indexPath) as! FontVariantsTableViewCell
         
         if let fontIndexes: [Int] = self.fontIndices {
-            let font: UserFont = dvc!.mvc!.fonts[fontIndexes[indexPath.row]]
+            let font: UserFont = self.dvc!.mvc!.fonts[fontIndexes[indexPath.row]]
             
             if font.tag == "bungee" {
                 // Set Quirk for Bungee, which has non-variant fonts under the same tag
@@ -73,6 +73,11 @@ final class FontVariantsTableViewController: UITableViewController {
                 if cell.name.text?.count == 0 {
                     cell.name.text = font.name
                 }
+                
+                // FROM 2.0.0
+                // Don't allow variant selection if the font is not installed
+                cell.name.isEnabled = font.isInstalled
+                cell.tintColor = font.isInstalled ? .systemBlue : .lightGray
             }
             
             // Tick the current variant

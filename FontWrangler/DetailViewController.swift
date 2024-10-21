@@ -379,16 +379,22 @@ class DetailViewController: UIViewController,
         // FROM 1.1.0
         // Triggered by the pinch gesture on the main view
         guard pgr.view != nil else { return }
+        
+        // FROM 2.0.0
+        // Don't accept gestures on non-dynamic previews
+        if self.detailItem == nil || !self.detailItem!.isInstalled {
+            return
+        }
 
         // Store the current size: we will scale from this value
         if pgr.state == .began {
-            storeSliderValue = self.fontSizeSlider.value
+            self.storeSliderValue = self.fontSizeSlider.value
         }
 
         // Apply the scale if the pinch distance changes
         if pgr.state == .began || pgr.state == .changed {
             // Set the slider and then trigger the action function
-            self.fontSizeSlider.value = storeSliderValue * Float(pgr.scale)
+            self.fontSizeSlider.value = self.storeSliderValue * Float(pgr.scale)
             setFontSize(self)
         }
     }

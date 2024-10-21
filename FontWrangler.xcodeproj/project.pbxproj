@@ -47,7 +47,6 @@
 
 /* Begin PBXFileReference section */
 		3B0DF57B2440C8F50037BEDE /* IntroViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntroViewController.swift; sourceTree = "<group>"; };
-		3B180A1F2CAD867B00144160 /* Fonts */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Fonts; path = "/Users/smitty/Library/CloudStorage/OneDrive-Personal/Programming/FontWrangler/Fonts"; sourceTree = "<absolute>"; };
 		3B2011DB24433F0800441739 /* MasterTitleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MasterTitleView.swift; sourceTree = "<group>"; };
 		3B25B94124407C0A0078B869 /* UserTestSampleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserTestSampleView.swift; sourceTree = "<group>"; };
 		3B2D46402CC2A5A8003F6ACD /* MasterTableHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MasterTableHeaderView.swift; sourceTree = "<group>"; };
@@ -156,7 +155,6 @@
 				3B879A41242E010200BE47DC /* FontWrangler.entitlements */,
 				3BD7E18A243212E100FD8941 /* defaults.json */,
 				3B879A3B242E00B600BE47DC /* Info.plist */,
-				3B180A1F2CAD867B00144160 /* Fonts */,
 				3B45C23424371D1E000782AE /* help */,
 				3B9417572AF1731800D77BBC /* Settings.bundle */,
 				3BCE278D28088267004685A3 /* SK-Testing */,
@@ -524,7 +522,7 @@
 				CODE_SIGN_ENTITLEMENTS = FontWrangler/FontWrangler.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 64;
+				CURRENT_PROJECT_VERSION = 65;
 				DEVELOPMENT_TEAM = Y5J3K52DNA;
 				INFOPLIST_FILE = FontWrangler/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Fontismo;
@@ -555,7 +553,7 @@
 				CODE_SIGN_ENTITLEMENTS = FontWrangler/FontWrangler.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 64;
+				CURRENT_PROJECT_VERSION = 65;
 				DEVELOPMENT_TEAM = Y5J3K52DNA;
 				INFOPLIST_FILE = FontWrangler/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Fontismo;
