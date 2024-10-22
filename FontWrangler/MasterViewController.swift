@@ -603,36 +603,6 @@ final class MasterViewController: UITableViewController,
     }
 
 
-    internal func getPrinteableName(_ name: String, _ separator: String = "_") -> String {
-        
-        // Get the family human-readable name from the tag,
-        // eg. convert 'my_font_one' to 'My Font One'
-        
-        // FROM 1.2.0
-        // Hack for Amatic Sc -> Amatic Small Caps
-        if name == "amatic_sc" {
-            return "Amatic Small Caps"
-        }
-        
-        var printeableName: String = ""
-        let parts = (name as NSString).components(separatedBy: separator)
-        
-        if parts.count > 1 {
-            for part in parts {
-                printeableName += part.capitalized + " "
-            }
-
-            // Remove the final ' '
-            let ps = printeableName as NSString
-            printeableName = ps.substring(to: ps.length - 1)
-        } else {
-            printeableName = parts[0].capitalized
-        }
-        
-        return printeableName
-    }
-    
-    
     internal func showAlert(_ title: String, _ message: String) {
         
         // Generic alert display function which ensures

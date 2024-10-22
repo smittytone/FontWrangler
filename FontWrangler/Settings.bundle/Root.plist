@@ -86,7 +86,7 @@
 			<key>Title</key>
 			<string>Licences</string>
 			<key>FooterText</key>
-			<string>The fonts provided through this app are licensed under either the Open Font Licence or the Apache Licence. Please see ‘Open Font Licence’ and ‘Apache Licence’, above, for the terms of these licences. See ‘Typeface Designers’ to learn under which licence a font is made available.</string>
+			<string>The fonts provided through this app are issued under either one or more of the above licences. Please see ‘Open Font Licence’, ‘Apache Licence’, ‘MIT Licence’ and ‘Bitstream Vera Licence’ above, for the terms of these licences. See ‘Typeface Designers’ to learn under which licence(s) a font is made available.</string>
 		</dict>
 		<dict>
 			<key>Type</key>
@@ -103,6 +103,22 @@
 			<string>Apache Licence</string>
 			<key>File</key>
 			<string>licence2</string>
+		</dict>
+        <dict>
+			<key>Type</key>
+			<string>PSChildPaneSpecifier</string>
+			<key>Title</key>
+			<string>MIT Licence</string>
+			<key>File</key>
+			<string>licence3</string>
+		</dict>
+        <dict>
+			<key>Type</key>
+			<string>PSChildPaneSpecifier</string>
+			<key>Title</key>
+			<string>Bitstream Vera Licence</string>
+			<key>File</key>
+			<string>licence4</string>
 		</dict>
 	</array>
 </dict>

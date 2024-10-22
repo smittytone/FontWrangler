@@ -240,6 +240,10 @@ extension MasterViewController  {
                         newFamily.creator = creator
                     }
                     
+                    if font.tag.hasSuffix("_nfm") {
+                        newFamily.isNerdFont = true
+                    }
+                    
                     self.families.append(newFamily)
                 } else {
                     
@@ -876,4 +880,44 @@ extension MasterViewController  {
         
         return (installedCount == self.families.count)
     }
+    
+    
+    internal func getPrinteableName(_ name: String, _ separator: String = "_") -> String {
+        
+        // Get the family human-readable name from the tag,
+        // eg. convert 'my_font_one' to 'My Font One'
+        
+        // FROM 1.2.0
+        // Hack for Amatic Sc -> Amatic Small Caps
+        if name == "amatic_sc" {
+            return "Amatic Small Caps"
+        }
+        
+        var printeableName: String = ""
+        let parts = (name as NSString).components(separatedBy: separator)
+        
+        if parts.count > 1 {
+            for part in parts {
+                if part != "nfm" {
+                    printeableName += part.capitalized + " "
+                }
+            }
+
+            // Remove the final ' '
+            let ps = printeableName as NSString
+            printeableName = ps.substring(to: ps.length - 1)
+        } else {
+            printeableName = parts[0].capitalized
+        }
+        
+        /* FROM 2.0.0
+        // Hacks for Nerd Fonts
+        if printeableName.hasSuffix("Nfm") {
+            printeableName = printeableName.replacingOccurrences(of: "Nfm", with: "Nerd Font")
+        }
+         */
+        
+        return printeableName
+    }
+
 }

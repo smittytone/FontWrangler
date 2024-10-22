@@ -62,12 +62,19 @@ final class FontVariantsTableViewController: UITableViewController {
             } else if font.tag == "hanalei" {
                 // Set Quirk for Hanalei, which has non-variant fonts under the same tag
                 cell = self.doHanalei(cell, font)
+            } else if font.tag == "iosevka_term_nfm" {
+                // Set Quirk for Iosevka Term: its regular font has no `_Regular`
+                cell = self.doIosevkaTerm(cell, font)
             } else {
                 // Display the font variant type, extracted from the name:
                 // eg. 'Audio-Regular' -> 'Regular'
                 let name: NSString = font.name as NSString
                 let index = name.range(of: "-")
                 cell.name.text = name.substring(from: index.location + 1)
+                
+                // FROMM 2.0.0
+                // Apply variant quirks
+                cell.name.text = self.dvc!.getFiraCodeVariant(cell.name.text!)
                 
                 // Back-up, just in case...
                 if cell.name.text?.count == 0 {
@@ -113,7 +120,7 @@ final class FontVariantsTableViewController: UITableViewController {
 
     // MARK: - Font Quirks
 
-    func doBungee(_ cell: FontVariantsTableViewCell, _ font: UserFont) -> FontVariantsTableViewCell {
+    private func doBungee(_ cell: FontVariantsTableViewCell, _ font: UserFont) -> FontVariantsTableViewCell {
 
         let name: NSString = font.name as NSString
         let index = name.range(of: "-")
@@ -125,7 +132,7 @@ final class FontVariantsTableViewController: UITableViewController {
     }
     
     
-    func doHanalei(_ cell: FontVariantsTableViewCell, _ font: UserFont) -> FontVariantsTableViewCell {
+    private func doHanalei(_ cell: FontVariantsTableViewCell, _ font: UserFont) -> FontVariantsTableViewCell {
 
         // FROM 1.1.2
         
@@ -135,6 +142,23 @@ final class FontVariantsTableViewController: UITableViewController {
         }
         
         cell.name.text = hanaleiName + "Regular"
+        return cell
+    }
+    
+    
+    private func doIosevkaTerm(_ cell: FontVariantsTableViewCell, _ font: UserFont) -> FontVariantsTableViewCell {
+        
+        // FROM 2.0.0
+        // Deal with the fact that Ioskeva Term Regular has no `-regular` in its PostScript name
+        
+        let name: NSString = font.name as NSString
+        let index = name.range(of: "-")
+        if index.location == NSNotFound {
+            cell.name.text = "Regular"
+        } else {
+            cell.name.text = name.substring(from: index.location + 1)
+        }
+        
         return cell
     }
 }

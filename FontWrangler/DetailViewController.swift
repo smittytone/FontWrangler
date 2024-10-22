@@ -165,10 +165,17 @@ class DetailViewController: UIViewController,
             if self.mvc != nil {
                 if self.currentFamily != nil {
                     if detail.tag == "bungee" {
-                        // Use Bungee Quirk
+                        // Use Bungee quirk
                         self.title = self.getBungeeTitle(detail.name)
                     } else if detail.tag == "hanalei" {
+                        // Use Hanalei quirk
                         self.title = self.getHanaleiTitle(detail.name)
+                    } else if detail.tag == "fira_code_nfm" {
+                        // Use Fira Code quirk
+                        self.title = self.getFiraCodeTitle(detail.name)
+                    } else if detail.tag.contains("_nfm") {
+                        // Use quirk for other Nerd Fonts
+                        self.title = self.getNerdFontTitle(detail.name, self.currentFamily!.name)
                     } else {
                         self.title = self.currentFamily!.name + self.getVariantName(detail.name)
                     }
@@ -257,7 +264,7 @@ class DetailViewController: UIViewController,
 
         // Create and present an alert with two buttons
         if let cf = self.currentFamily {
-            let alert = UIAlertController.init(title: "\(cf.name)",
+            let alert = UIAlertController.init(title: "",
                                                message: "This font family is not installed. Dynamic previews are not enabled for uninstalled fonts. Would you like to install \(cf.name) now?",
                                                preferredStyle: .alert)
 
@@ -451,7 +458,7 @@ class DetailViewController: UIViewController,
      These are routines called for handling individual fonts with non-standard naming.
      */
 
-    func getBungeeTitle(_ fontName: String) -> String {
+    private func getBungeeTitle(_ fontName: String) -> String {
 
         // Set Quirk for Bungee, which has non-variant fonts under the same tag
 
@@ -464,7 +471,7 @@ class DetailViewController: UIViewController,
     }
     
     
-    func getHanaleiTitle(_ fontName: String) -> String {
+    private func getHanaleiTitle(_ fontName: String) -> String {
 
         // FROM 1.1.2
         // Set Quirk for Hanalei, which has non-variant fonts under the same tag
@@ -475,6 +482,49 @@ class DetailViewController: UIViewController,
         }
         
         return "Hanalei" + hanaleiName + " Regular"
+    }
+    
+    
+    private func getFiraCodeTitle(_ fontName: String) -> String {
+
+        // FROM 2.0.0
+        // Set Quirk for FiraCode, which has non-variant fonts under the same tag
+        
+        let name: NSString = fontName as NSString
+        let index = name.range(of: "-")
+        let variantType = self.getFiraCodeVariant(name.substring(from: index.location + 1))
+        return "FiraCode " + variantType
+    }
+    
+    
+    func getFiraCodeVariant(_ initial: String) -> String {
+        
+        // FROM 2.0.0
+        // Set Quirk for FiraCode, which has mis-named font variants
+        
+        if initial == "Reg" { return "Regular" }
+        if initial == "Med" { return "Medium" }
+        if initial == "SemBd" { return "SemiBold" }
+        return initial
+    }
+    
+    
+    private func getNerdFontTitle(_ fontName: String, _ familyName: String) -> String {
+
+        // FROM 2.0.0
+        // Set Quirk for Iosevka, which has non-variant fonts under the same tag
+        
+        let name: NSString = fontName as NSString
+        let newName: String = "\(familyName) NF"
+        let index = name.range(of: "-")
+        var variantType: String
+        if index.location == NSNotFound {
+            variantType = "Regular"
+        } else {
+            variantType = name.substring(from: index.location + 1)
+        }
+        
+        return newName + " " + variantType
     }
 
 

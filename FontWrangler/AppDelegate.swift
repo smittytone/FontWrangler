@@ -124,11 +124,42 @@ class AppDelegate: UIResponder,
             // NOTE Use '\r\n' for newlines - required by iOS settings
             var creatorString = ""
             for item in creators {
-                creatorString += (item["t"]!.capitalized + " by " + item["c"]! + " " + (item["l"]! == "OFT" ? "*" : "†") + "\r\n")
+                // FROM 2.0.0
+                // Hack for NFM
+                var name = item["t"]!
+                if name.contains("_nfm") {
+                    name = name.replacingOccurrences(of: "_nfm", with: " (Nerd Font version)")
+                }
+                
+                // FROM 2.0.0
+                // Use spaces rather than underscores
+                //name = name.replacingOccurrences(of: "_", with: " ")
+                
+                creatorString += (name.capitalized + " by " + item["c"]! + " ")
+                
+                // FROM 2.0.0
+                // Expand licence range
+                switch item["l"] {
+                    case "MIT/BIT":
+                        creatorString += "§ ¶"
+                    case "MIT":
+                        creatorString += "§"
+                    case "BIT":
+                        creatorString += "¶"
+                    case "AL2":
+                        creatorString += "†"
+                    case "OFL":
+                        creatorString += "*"
+                    default:
+                        creatorString += "°"
+                }
+                
+                creatorString += "\r\n"
             }
+        
             
             // Add the footnotes and return the completed string
-            creatorString += "\r\n* Open Font Licence\r\n† Apache Licence 2.0"
+            creatorString += "\r\n* Open Font Licence\r\n† Apache Licence 2.0\r\n§ MIT Licence\r\n¶ Bitstream Vera Licence\r\n° Public Domain\r\n\r\nNerd Font versions patched by Ryan L McIntyre (https://www.nerdfonts.com/)"
             return creatorString
         } else {
             NSLog("[ERROR] can't find defaults from App Delegate")

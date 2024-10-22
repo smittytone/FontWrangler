@@ -232,6 +232,8 @@
 					bungee,
 					caesar_dressing,
 					carter_one,
+					caskaydia_cove,
+					caskaydia_cove_nfm,
 					cinzel_decorative,
 					codystar,
 					comfortaa,
@@ -241,14 +243,18 @@
 					domine,
 					eb_garamond,
 					faster_one,
+					fira_code_nfm,
 					fredoka_one,
 					frijole,
 					fruktur,
 					girassol,
 					gruppo,
 					gugi,
+					hack_mono_nfm,
+					hack_nfm,
 					hanalei,
 					holtwood_one,
+					iosevka_term_nfm,
 					josefin_sans,
 					knewave,
 					kode_mono,
@@ -522,7 +528,7 @@
 				CODE_SIGN_ENTITLEMENTS = FontWrangler/FontWrangler.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 65;
+				CURRENT_PROJECT_VERSION = 67;
 				DEVELOPMENT_TEAM = Y5J3K52DNA;
 				INFOPLIST_FILE = FontWrangler/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Fontismo;
@@ -553,7 +559,7 @@
 				CODE_SIGN_ENTITLEMENTS = FontWrangler/FontWrangler.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 65;
+				CURRENT_PROJECT_VERSION = 67;
 				DEVELOPMENT_TEAM = Y5J3K52DNA;
 				INFOPLIST_FILE = FontWrangler/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Fontismo;

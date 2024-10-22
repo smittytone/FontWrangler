@@ -86,7 +86,7 @@ extension MasterViewController {
             // FROM 1.2.0
             // Highlight new fonts
             if family.isNew && self.doIndicateNewFonts {
-                let labelString = NSMutableAttributedString(string: family.name + " ")
+                let labelString = NSMutableAttributedString(string: family.name + (family.isNerdFont ? " Nerd Font " : " "))
                 let imageAttachment: NSTextAttachment = NSTextAttachment.init()
                 if let sealImage = UIImage.init(systemName: "checkmark.seal.fill") {
                     imageAttachment.image = sealImage.withTintColor(UIColor.systemBlue)
@@ -95,7 +95,7 @@ extension MasterViewController {
                 }
                 cell.fontNameLabel!.attributedText = labelString
             } else {
-                cell.fontNameLabel!.text = family.name
+                cell.fontNameLabel!.text = family.name + (family.isNerdFont ? "Nerd Font" : "")
             }
 
             // Get all the fonts in the family
@@ -224,7 +224,7 @@ extension MasterViewController {
         var action: UIContextualAction
 
         // Get the referenced family
-        let family: FontFamily = self.families[indexPath.row]
+        let family: FontFamily = self.subFamilies[indexPath.row]
 
         // Show the controls only if we're not already downloading
         if family.progress == nil {
