@@ -22,32 +22,7 @@ extension MasterViewController {
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
-        self.subFamilies.removeAll()
-        
-        // Show all is a match against any criteria, but we can shortcut just
-        // by checking that all viewStates are true.
-        if !self.viewStates.values.contains(false) {
-            self.subFamilies = self.families
-            return self.subFamilies.count
-        }
-        
-        // Iterate over the list of families. Check if any of the criteria are met:
-        // if so, add the family to the display list, `subFamilies`.
-        for family in self.families {
-            var includeFamily: Bool = false
-            for viewState in self.viewStates {
-                if viewState.value {
-                    if family.style == viewState.key {
-                        includeFamily = true
-                    }
-                }
-            }
-            
-            if includeFamily {
-                self.subFamilies.append(family)
-            }
-        }
-        
+        self.setSubFamilies()
         return self.subFamilies.count
     }
 
@@ -217,7 +192,7 @@ extension MasterViewController {
     
     override func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
         
-        // Actions that appear when the table view cell is swiped R-Ls
+        // Actions that appear when the table view cell is swiped R-L
         // NOTE These actions are family specific
 
         var config: UISwipeActionsConfiguration? = nil
@@ -257,5 +232,65 @@ extension MasterViewController {
 
         config?.performsFirstActionWithFullSwipe = false
         return config
+    }
+    
+    
+    private func setSubFamilies() {
+        
+        // Determine which sub-set of the font families we will actually show
+        
+        // To start with, clear the list: we'll add the families
+        // we will actually display
+        self.subFamilies.removeAll()
+        
+        // Show all is a match against any criteria, but we can shortcut just
+        // by checking that all view options are `false` and all view states are `true`.
+        if !self.viewOptions.contains(true) && !self.viewStates.values.contains(false) {
+            self.subFamilies = self.families
+            return
+        }
+        
+        // Iterate over the list of families. Check if it is one of the selected
+        // family classess. If so set a flag.
+        for family in self.families {
+            var includeFamily: Bool = false
+            for viewState in self.viewStates {
+                if viewState.value {
+                    if family.style == viewState.key {
+                        includeFamily = true
+                    }
+                }
+            }
+            
+            if includeFamily {
+                // Family meets the class criterion, but does it also match on
+                // view options?
+                if !self.viewOptions.contains(true) {
+                    // No view options set, so add the family and continue
+                    self.subFamilies.append(family)
+                    continue
+                }
+                
+                // If any of the options are `true` and the relevant family property is set, add the family
+                if self.viewOptions[kFontShowModeIndices.new] && !family.isNew {
+                    // Family isn't new, so move to the next one
+                    continue
+                }
+
+                if self.viewOptions[kFontShowModeIndices.installed] == self.viewOptions[kFontShowModeIndices.uninstalled] {
+                    self.subFamilies.append(family)
+                    continue
+                }
+                
+                if self.viewOptions[kFontShowModeIndices.installed] && family.fontsAreInstalled {
+                    self.subFamilies.append(family)
+                    continue
+                }
+                
+                if self.viewOptions[kFontShowModeIndices.uninstalled] && !family.fontsAreInstalled {
+                    self.subFamilies.append(family)
+                }
+            }
+        }
     }
 }

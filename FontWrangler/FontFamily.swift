@@ -14,6 +14,7 @@ enum FontFamilyStyle: String {
     case headline   = "headline"
     case decorative = "decorative"
     case monospace  = "monospace"
+    case new        = ""
     case unknown    = "unknown"
 }
 

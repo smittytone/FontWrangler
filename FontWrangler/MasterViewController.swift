@@ -10,6 +10,19 @@ import UIKit
 import StoreKit
 
 
+enum FilterMenuItems: String {
+
+    case classic
+    case headline
+    case decorative
+    case monospace
+    case viewOptions
+    case new
+    case installed
+    case uninstalled
+}
+
+
 final class MasterViewController: UITableViewController,
                                   UIPopoverPresentationControllerDelegate,
                                   UIViewControllerTransitioningDelegate {
@@ -46,13 +59,26 @@ final class MasterViewController: UITableViewController,
     // indices of member fonts in the main font collection, `fonts`
     internal var families = [FontFamily]()
     internal var subFamilies = [FontFamily]()
+    internal var viewOptions: [Bool] = [false, false, false]
     internal var viewStates: [FontFamilyStyle: Bool] = [
         .classic: true,
         .headline: true,
         .decorative: true,
-        .monospace: true
+        .monospace: true,
     ]
     
+    internal var filterMenuItemIndices: [FilterMenuItems: Int] = [
+        .classic: 0,
+        .headline: 0,
+        .decorative: 0,
+        .monospace: 0,
+        .new: 0,
+        .installed: 0,
+        .uninstalled: 0,
+        .viewOptions: 0
+    ]
+    
+    internal var viewMenu: UIMenu? = nil
     
     // MARK:- Private Instance Constants
 
@@ -103,7 +129,7 @@ final class MasterViewController: UITableViewController,
                                              })
             
             let showTipsAction = UIAction(title: "Fuel Fontismo’s Development",
-                                          image: UIImage(systemName: "dollarsign.circle"),
+                                          image: UIImage(systemName: "fork.knife.circle"),
                                           handler: { (_) in
                                               self.doShowTipSheet(self)
                                           })
@@ -111,7 +137,8 @@ final class MasterViewController: UITableViewController,
             // Assemble the menu, add it to the central table header button,
             // and enable menu delivery by the button
             let mainMenu = UIMenu(title: "", children: [
-                showHelpAction, showSettingsAction, showFeedbackSheetAction, showReviewOfferAction, showWebsiteAction, showTipsAction
+                showHelpAction, showSettingsAction, showFeedbackSheetAction,
+                showReviewOfferAction, showWebsiteAction, showTipsAction
             ])
             
             menuButton = UIBarButtonItem()
@@ -145,18 +172,6 @@ final class MasterViewController: UITableViewController,
         // NOTE This is only available in iOS 14 and up so we disable the options
         //      button for earlier iOS versions
         if #available(iOS 14, *) {
-            let showAllFontsAction = UIAction(title: "Show All",
-                                              image: nil,
-                                              handler: { (_) in
-                                                  self.setContextMenu(true)
-                                              })
-            
-            let clearAllFontsAction = UIAction(title: "Clear Selections",
-                                               image: nil,
-                                               handler: { (_) in
-                                                   self.setContextMenu(false)
-                                               })
-            
             let showClassicFontsAction = UIAction(title: "Classic",
                                                   image: UIImage(named: "style_class"),
                                                   handler: { (action) in
@@ -181,7 +196,43 @@ final class MasterViewController: UITableViewController,
                                                          self.doShowSome(action, .monospace)
                                                      })
             
-            let spacer: UIMenu = UIMenu.init(title: "", options: .displayInline, children: [showAllFontsAction, clearAllFontsAction])
+            let showNewFontsAction = UIAction(title: "New",
+                                              handler: { (_) in
+                                                  self.setViewOptions(kFontShowModeIndices.new)
+                                              })
+            
+            let showInstalledFontsAction = UIAction(title: "Installed",
+                                                    handler: { (_) in
+                                                        self.setViewOptions(kFontShowModeIndices.installed)
+                                                    })
+            
+            let showUninstalledFontsAction = UIAction(title: "Not Iinstalled",
+                                                      handler: { (_) in
+                                                          self.setViewOptions(kFontShowModeIndices.uninstalled)
+                                                      })
+            
+            let showAllFontsAction = UIAction(title: "Show All",
+                                              image: nil,
+                                              handler: { (_) in
+                                                  self.setContextMenu(true)
+                                              })
+            
+            let clearAllFontsAction = UIAction(title: "Clear Selections",
+                                               image: nil,
+                                               handler: { (_) in
+                                                   self.setContextMenu(false)
+                                               })
+            
+            let viewSubMenu: UIMenu = UIMenu.init(title: "", options: .displayInline, children: [
+                showNewFontsAction,
+                showInstalledFontsAction,
+                showUninstalledFontsAction
+            ])
+            
+            let controlSubMenu: UIMenu = UIMenu.init(title: "", options: .displayInline, children: [
+                showAllFontsAction,
+                clearAllFontsAction
+            ])
             
             // Set the state indicators to on, ie. show all
             showClassicFontsAction.state = .on
@@ -189,9 +240,28 @@ final class MasterViewController: UITableViewController,
             showDecorativeFontsAction.state = .on
             showMonospaceFontsAction.state = .on
             
+            self.filterMenuItemIndices[.classic] = 0
+            self.filterMenuItemIndices[.headline] = 1
+            self.filterMenuItemIndices[.decorative] = 2
+            self.filterMenuItemIndices[.monospace] = 3
+            
             // Assemble the menu, add it to the central table header button,
             // and enable menu delivery by the button
-            let filterMenu = UIMenu(title: "Show Typefaces that are...", children: [showClassicFontsAction, showHeadlineFontsAction, showDecorativeFontsAction, showMonospaceFontsAction, spacer])
+            let filterMenu = UIMenu(title: "Show Typefaces that are...", children: [
+                showClassicFontsAction, showHeadlineFontsAction,
+                showDecorativeFontsAction, showMonospaceFontsAction,
+                viewSubMenu, controlSubMenu])
+            
+            self.filterMenuItemIndices[.classic] = 0
+            self.filterMenuItemIndices[.headline] = 1
+            self.filterMenuItemIndices[.decorative] = 2
+            self.filterMenuItemIndices[.monospace] = 3
+            self.filterMenuItemIndices[.viewOptions] = 4
+            self.filterMenuItemIndices[.new] = 0
+            self.filterMenuItemIndices[.installed] = 1
+            self.filterMenuItemIndices[.uninstalled] = 2
+            self.filterMenuItemIndices[.monospace] = 3
+            
             self.viewOptionsButton.menu = filterMenu
             self.viewOptionsButton.showsMenuAsPrimaryAction = true
         } else {
@@ -492,15 +562,42 @@ final class MasterViewController: UITableViewController,
     
     private func setContextMenu(_ state: Bool) {
         
+        // Enable or clear all the typeface classes
         self.viewStates[.classic] = state
         self.viewStates[.headline] = state
         self.viewStates[.decorative] = state
         self.viewStates[.monospace] = state
+        
+        // Clear the view options
+        self.viewOptions = [false, false, false]
+        
+        // Update the menu and table
+        self.doShowSome(nil, .unknown)
+    }
+    
+    
+    private func setViewOptions(_ index: Int) {
+        
+        // The view options are subdivisions of the class-based view
+        
+        // Invert the selected item
+        self.viewOptions[index] = !self.viewOptions[index]
+        
+        // Make installed/uninstalled a radio
+        if index == 1 && self.viewOptions[1] {
+            self.viewOptions[2] = false
+        } else if index == 2 && self.viewOptions[2] {
+            self.viewOptions[1] = false
+        }
+        
+        // Update the menu and table
         self.doShowSome(nil, .unknown)
     }
     
     
     private func doShowSome(_ item: UIAction?, _ style: FontFamilyStyle) {
+        
+        // General Filter contextual menu handler
         
         // NOTE We include the iOS 14 check here to avoid compiler warnings, even
         //      though this function will not be called on any system running iOS 13
@@ -514,20 +611,31 @@ final class MasterViewController: UITableViewController,
             }
             
             // Set the menu items according to view state
-            var menuItem: UIAction = self.viewOptionsButton.menu!.children[kFontStyleIndices.classic] as! UIAction
+            var menuItem: UIAction = self.viewOptionsButton.menu!.children[self.filterMenuItemIndices[.classic]!] as! UIAction
             menuItem.state = self.viewStates[.classic]! ? .on : .off
             
-            menuItem = self.viewOptionsButton.menu!.children[kFontStyleIndices.headline] as! UIAction
+            menuItem = self.viewOptionsButton.menu!.children[self.filterMenuItemIndices[.headline]!] as! UIAction
             menuItem.state = self.viewStates[.headline]! ? .on : .off
             
-            menuItem = self.viewOptionsButton.menu!.children[kFontStyleIndices.decorative] as! UIAction
+            menuItem = self.viewOptionsButton.menu!.children[self.filterMenuItemIndices[.decorative]!] as! UIAction
             menuItem.state = self.viewStates[.decorative]! ? .on : .off
             
-            menuItem = self.viewOptionsButton.menu!.children[kFontStyleIndices.monospace] as! UIAction
+            menuItem = self.viewOptionsButton.menu!.children[self.filterMenuItemIndices[.monospace]!] as! UIAction
             menuItem.state = self.viewStates[.monospace]! ? .on : .off
             
+            // Set the 'view options' submenu states
+            // NOTE Only deal with menu's children 0 through 3, the specific option entries.
+            let submenu: UIMenu = self.viewOptionsButton.menu!.children[self.filterMenuItemIndices[.viewOptions]!] as! UIMenu
+            for i in 0..<submenu.children.count {
+                menuItem = submenu.children[i] as! UIAction
+                menuItem.state = self.viewOptions[i] ? .on : .off
+            }
+            
+            // Update the table
             self.tableView.reloadData()
             
+            // Check for nothing being shown, and if it's the first time,
+            // present an informational alert about how to fix it
             if self.subFamilies.count == 0 && !self.hasShownClearedListWarning {
                 // Empty display
                 let paraStyle: NSMutableParagraphStyle = NSMutableParagraphStyle.init()

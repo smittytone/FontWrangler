@@ -25,7 +25,7 @@ let kFontSampleText_2                   = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789a
 let kFontSampleText_1_Lines             = 8
 let kFontSampleText_1_Limit             = 48.0
 
-let kHelpPageCount                      = 4
+let kHelpPageCount                      = 5
 
 let kFontInstallCountBeforeReviewRequest = 20
 
@@ -69,5 +69,12 @@ enum kFontStyleIndices {
     static let headline                 = 1
     static let decorative               = 2
     static let monospace                = 3
+    static let new                      = 6
     static let unknown                  = 99
+}
+
+enum kFontShowModeIndices {
+    static let new                      = 0
+    static let installed                = 1
+    static let uninstalled              = 2
 }
