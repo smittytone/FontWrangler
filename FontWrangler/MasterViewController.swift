@@ -110,8 +110,8 @@ final class MasterViewController: UITableViewController,
                                                   UIApplication.shared.open(URL(string: UIApplication.openSettingsURLString)!)
                                               })
             
-            let showFeedbackSheetAction = UIAction(title: "Report a Bug",
-                                                   image: UIImage(systemName: "ladybug"),
+            let showFeedbackSheetAction = UIAction(title: "Give Feedback",
+                                                   image: UIImage(systemName: "envelope"),
                                                    handler: { (_) in
                                                        self.doShowFeedbackSheet(self)
                                                    })
@@ -129,7 +129,7 @@ final class MasterViewController: UITableViewController,
                                              })
             
             let showTipsAction = UIAction(title: "Fuel Fontismo’s Development",
-                                          image: UIImage(systemName: "fork.knife.circle"),
+                                          image: UIImage(systemName: "fork.knife"),
                                           handler: { (_) in
                                               self.doShowTipSheet(self)
                                           })
