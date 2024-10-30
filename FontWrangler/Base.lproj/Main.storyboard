@@ -38,14 +38,6 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <activityIndicatorView hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="large" translatesAutoresizingMaskIntoConstraints="NO" id="R3p-V2-hhZ">
-                                <rect key="frame" x="197" y="438" width="20" height="20"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" constant="20" id="Wft-64-yrK"/>
-                                    <constraint firstAttribute="height" constant="20" id="xOM-fC-hR4"/>
-                                </constraints>
-                                <color key="color" systemColor="labelColor"/>
-                            </activityIndicatorView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Font State" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="pTu-Of-OYx">
                                 <rect key="frame" x="0.0" y="8" width="414" height="21"/>
                                 <constraints>
@@ -76,7 +68,7 @@
                                 <subviews>
                                     <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" text="Dynamic Font Sample" textAlignment="center" selectable="NO" layoutManager="textKit1" translatesAutoresizingMaskIntoConstraints="NO" id="klB-YI-zKP">
                                         <rect key="frame" x="0.0" y="0.0" width="414" height="750"/>
-                                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <color key="textColor" systemColor="labelColor"/>
                                         <fontDescription key="fontDescription" name="ArialMT" family="Arial" pointSize="20"/>
                                         <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" keyboardType="alphabet" enablesReturnKeyAutomatically="YES" smartDashesType="no" smartInsertDeleteType="no" smartQuotesType="no"/>
@@ -85,6 +77,7 @@
                                         </connections>
                                     </textView>
                                 </subviews>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
                                     <constraint firstItem="klB-YI-zKP" firstAttribute="top" secondItem="VvM-2W-j2X" secondAttribute="top" id="7Dz-C5-cJM"/>
                                     <constraint firstItem="klB-YI-zKP" firstAttribute="trailing" secondItem="VvM-2W-j2X" secondAttribute="trailing" id="QBG-Ss-wts"/>
@@ -115,23 +108,96 @@
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <activityIndicatorView hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="large" translatesAutoresizingMaskIntoConstraints="NO" id="R3p-V2-hhZ">
+                                <rect key="frame" x="197" y="438" width="20" height="20"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="20" id="Wft-64-yrK"/>
+                                    <constraint firstAttribute="height" constant="20" id="xOM-fC-hR4"/>
+                                </constraints>
+                                <color key="color" systemColor="labelColor"/>
+                            </activityIndicatorView>
+                            <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Retrieving..." textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="tGZ-rU-Rlb">
+                                <rect key="frame" x="20" y="466" width="374" height="21"/>
+                                <color key="backgroundColor" red="0.38823529410000002" green="0.38823529410000002" blue="0.40000000000000002" alpha="0.5" colorSpace="custom" customColorSpace="sRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="21" id="stb-xl-MgK"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <view hidden="YES" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="center" translatesAutoresizingMaskIntoConstraints="NO" id="fQw-03-JIl" customClass="RetrievalView" customModule="Fontismo" customModuleProvider="target">
+                                <rect key="frame" x="87" y="328" width="240" height="240"/>
+                                <subviews>
+                                    <visualEffectView opaque="NO" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="SIO-sB-baU">
+                                        <rect key="frame" x="0.0" y="0.0" width="240" height="240"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" userInteractionEnabled="NO" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="hNI-GO-QAG">
+                                            <rect key="frame" x="0.0" y="0.0" width="240" height="240"/>
+                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                        </view>
+                                        <blurEffect style="systemUltraThinMaterial"/>
+                                    </visualEffectView>
+                                    <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="large" translatesAutoresizingMaskIntoConstraints="NO" id="SiI-3A-OSH">
+                                        <rect key="frame" x="88" y="88" width="64" height="64"/>
+                                        <color key="tintColor" systemColor="systemBackgroundColor"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="64" id="ena-To-jp3"/>
+                                            <constraint firstAttribute="width" constant="64" id="u31-QW-l4z"/>
+                                        </constraints>
+                                        <color key="color" systemColor="labelColor"/>
+                                    </activityIndicatorView>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Retrieving..." textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="NYR-lF-TR6">
+                                        <rect key="frame" x="8" y="160" width="224" height="21"/>
+                                        <color key="tintColor" systemColor="systemBackgroundColor"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="21" id="2mX-8x-iqi"/>
+                                        </constraints>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                </subviews>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <accessibility key="accessibilityConfiguration">
+                                    <accessibilityTraits key="traits" notEnabled="YES"/>
+                                </accessibility>
+                                <constraints>
+                                    <constraint firstItem="SiI-3A-OSH" firstAttribute="centerX" secondItem="fQw-03-JIl" secondAttribute="centerX" id="SJe-bh-9hb"/>
+                                    <constraint firstAttribute="width" constant="240" id="Ykx-Uy-5vw"/>
+                                    <constraint firstAttribute="height" constant="240" id="m9b-wO-7Oy"/>
+                                    <constraint firstAttribute="trailing" secondItem="NYR-lF-TR6" secondAttribute="trailing" constant="8" id="n6H-Kg-Byg"/>
+                                    <constraint firstItem="SiI-3A-OSH" firstAttribute="centerY" secondItem="fQw-03-JIl" secondAttribute="centerY" id="ryl-FX-cxW"/>
+                                    <constraint firstItem="NYR-lF-TR6" firstAttribute="leading" secondItem="fQw-03-JIl" secondAttribute="leading" constant="8" id="tuU-J1-W08"/>
+                                    <constraint firstItem="NYR-lF-TR6" firstAttribute="top" secondItem="SiI-3A-OSH" secondAttribute="bottom" constant="8" symbolic="YES" id="u2z-2j-b6C"/>
+                                </constraints>
+                                <connections>
+                                    <outlet property="backgroundView" destination="SIO-sB-baU" id="Cqd-DL-BmA"/>
+                                    <outlet property="downloadProgress" destination="SiI-3A-OSH" id="ZTM-zL-P7h"/>
+                                </connections>
+                            </view>
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
                             <constraint firstItem="ISj-Bb-NQz" firstAttribute="centerX" secondItem="svH-Pt-448" secondAttribute="centerX" id="1wr-wV-0h1"/>
+                            <constraint firstItem="tGZ-rU-Rlb" firstAttribute="top" secondItem="R3p-V2-hhZ" secondAttribute="bottom" constant="8" symbolic="YES" id="2pi-4f-ImZ"/>
+                            <constraint firstItem="fQw-03-JIl" firstAttribute="centerY" secondItem="svH-Pt-448" secondAttribute="centerY" id="5nj-GD-m0K"/>
                             <constraint firstItem="pTu-Of-OYx" firstAttribute="leading" secondItem="svH-Pt-448" secondAttribute="leadingMargin" id="8ZY-Gi-NxQ"/>
                             <constraint firstItem="ISj-Bb-NQz" firstAttribute="top" secondItem="rCs-GY-1Kq" secondAttribute="bottom" constant="16" id="ASs-Wg-7qI"/>
                             <constraint firstItem="R3p-V2-hhZ" firstAttribute="centerY" secondItem="svH-Pt-448" secondAttribute="centerY" id="Es4-Ts-bOE"/>
                             <constraint firstItem="IoY-2B-4ip" firstAttribute="leading" secondItem="svH-Pt-448" secondAttribute="leadingMargin" id="FEO-Sg-doo"/>
                             <constraint firstItem="R3p-V2-hhZ" firstAttribute="centerX" secondItem="svH-Pt-448" secondAttribute="centerX" id="GXr-fx-Wv2"/>
                             <constraint firstItem="pTu-Of-OYx" firstAttribute="top" secondItem="9Sf-XZ-O0v" secondAttribute="bottom" constant="8" symbolic="YES" id="GlS-Yk-uVg"/>
+                            <constraint firstItem="fQw-03-JIl" firstAttribute="centerX" secondItem="svH-Pt-448" secondAttribute="centerX" id="IJq-7B-Dtp"/>
                             <constraint firstItem="rCs-GY-1Kq" firstAttribute="trailing" secondItem="svH-Pt-448" secondAttribute="trailingMargin" id="K7j-ou-NOe"/>
                             <constraint firstItem="qJB-Ox-ARY" firstAttribute="centerX" secondItem="svH-Pt-448" secondAttribute="centerX" id="TaO-qB-v9W"/>
                             <constraint firstItem="IoY-2B-4ip" firstAttribute="top" secondItem="cAp-4J-Aez" secondAttribute="bottom" constant="8" symbolic="YES" id="V8T-f0-TfT"/>
                             <constraint firstItem="qJB-Ox-ARY" firstAttribute="top" secondItem="IoY-2B-4ip" secondAttribute="bottom" constant="8" symbolic="YES" id="cTN-J3-9FR"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="tGZ-rU-Rlb" secondAttribute="trailing" constant="20" id="gdb-uY-kSF"/>
                             <constraint firstItem="rCs-GY-1Kq" firstAttribute="leading" secondItem="svH-Pt-448" secondAttribute="leadingMargin" id="iT0-EV-Npl"/>
                             <constraint firstItem="pTu-Of-OYx" firstAttribute="trailing" secondItem="svH-Pt-448" secondAttribute="trailingMargin" id="qIx-vN-aaZ"/>
                             <constraint firstItem="IoY-2B-4ip" firstAttribute="trailing" secondItem="svH-Pt-448" secondAttribute="trailingMargin" id="ryx-tH-cpL"/>
+                            <constraint firstItem="tGZ-rU-Rlb" firstAttribute="leading" secondItem="svH-Pt-448" secondAttribute="leadingMargin" constant="20" id="sg0-y0-Tk7"/>
                             <constraint firstItem="2G9-pd-sW8" firstAttribute="top" secondItem="qJB-Ox-ARY" secondAttribute="bottom" constant="20" id="tZL-Al-8eN"/>
                             <constraint firstItem="rCs-GY-1Kq" firstAttribute="top" secondItem="pTu-Of-OYx" secondAttribute="bottom" constant="8" symbolic="YES" id="uGN-YL-fnb"/>
                             <constraint firstItem="cAp-4J-Aez" firstAttribute="leading" secondItem="rCs-GY-1Kq" secondAttribute="leading" id="vt3-vl-btB"/>
@@ -142,7 +208,9 @@
                     <toolbarItems/>
                     <navigationItem key="navigationItem" title="Font Info" id="mOI-FS-AaM"/>
                     <connections>
+                        <outlet property="downloadLabel" destination="tGZ-rU-Rlb" id="Z8r-rj-61f"/>
                         <outlet property="downloadProgress" destination="R3p-V2-hhZ" id="rgQ-e8-97B"/>
+                        <outlet property="downloadView" destination="fQw-03-JIl" id="wyz-h3-riw"/>
                         <outlet property="dynamicSampleHeadLabel" destination="rCs-GY-1Kq" id="6SN-n5-J0k"/>
                         <outlet property="dynamicSampleTextView" destination="klB-YI-zKP" id="wGt-Wq-tSK"/>
                         <outlet property="fontSizeLabel" destination="IoY-2B-4ip" id="BMC-ZX-MC7"/>
@@ -579,7 +647,7 @@
                                         </attributes>
                                     </fragment>
                                     <fragment>
-                                        <mutableString key="content"> to install a selection of typefaces and their component fonts onto your iPad or iPhone.   Swipe right to left across a font then tap the # icon to install that typeface.  Tap typefaces’ names for a static preview, or install them for a dynamic preview in all their available styles and weights. Installed typefaces can be removed by swiping right to left on the list then tapping the # icon.  Installed typefaces can be used in any app that supports iOS’ fonts functionality.  Tap the # icon at the top for more options, including help and submitting feedback.  If you like </mutableString>
+                                        <string key="content"> to install a selection of typefaces and their component fonts onto your iPad or iPhone.   Swipe right to left across a font then tap the # icon to install that typeface.  Tap typefaces’ names for a static preview, or install them for a dynamic preview in all their available styles and weights. Installed typefaces can be removed by swiping right to left on the list then tapping the # icon.  Installed typefaces can be used in any app that supports iOS’ fonts functionality.  Tap the # icon at the top for more options, including help and submitting feedback.  If you like </string>
                                         <attributes>
                                             <color key="NSColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                             <font key="NSFont" size="20" name="Avenir-Book"/>

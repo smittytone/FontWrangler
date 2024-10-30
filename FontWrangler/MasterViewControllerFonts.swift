@@ -483,22 +483,29 @@ extension MasterViewController  {
                                                 repeats: false,
                                                 block: { (firedTimer) in
                 // Find the family associated with the fired timer
-                for family: FontFamily in self.families {
-                    if let familyTimer = family.timer {
+                for aFamily: FontFamily in self.families {
+                    if let familyTimer = aFamily.timer {
                         if familyTimer == firedTimer {
-                            if !family.fontsAreDownloaded {
-                                self.showAlert("Sorry!", "Fontismo could not access the requested typeface because it could not connect to the App Store. Please check your Internet connection and try again.")
-                            }
-
-                            family.timer = nil
-                            family.progress = nil
-
+                            aFamily.timer = nil
+                            aFamily.progress = nil
+                            
+                            
                             DispatchQueue.main.async {
+                                if !aFamily.fontsAreDownloaded {
+                                    self.showAlert("Sorry!", "Fontismo could not access the requested typeface because it could not connect to the App Store. Please check your Internet connection and try again.")
+                                }
+                                
                                 // FROM 1.2.0
                                 // Turn off the detail view controller's progress indicator
                                 if let dvc: DetailViewController = self.detailViewController {
+                                    /*
                                     if !dvc.downloadProgress.isHidden {
                                         dvc.downloadProgress.stopAnimating()
+                                        dvc.downloadLabel.isHidden = true
+                                    }
+                                     */
+                                    if !dvc.downloadView.isHidden {
+                                        dvc.downloadView.doHide()
                                     }
                                 }
                                 
@@ -514,14 +521,14 @@ extension MasterViewController  {
 
             fontRequest.beginAccessingResources { (error) in
                 // THIS BLOCK IS A CLOSURE
-
+                
                 // Update the UI (on the main thread) to remove the
                 // Activity Indicator
                 family.progress = nil
                 DispatchQueue.main.async {
                     self.tableView.reloadData()
                 }
-
+                
                 // Check for a download error
                 if error != nil {
                     // Handle errors
@@ -529,21 +536,28 @@ extension MasterViewController  {
                     // NOTE #2 Not sure if this ever gets called... app usually timeouts
                     //         It does get called if we download in Airplane Mode.
                     NSLog("[ERROR] \(error!.localizedDescription)")
-
+                    
                     // Zap the associated timer early
                     if family.timer != nil {
                         family.timer!.invalidate()
                         family.timer = nil
                     }
-
-                    self.showAlert("Sorry!", "Fontismo could not access the requested typeface because it was unable to connect to the App Store. Please check your Internet connection and try again.\n(\(error!.localizedDescription))")
                     
                     // FROM 1.2.0
                     // Turn off the detail view controller's progress indicator
                     DispatchQueue.main.async {
+                        self.showAlert("Sorry!", "Fontismo could not access the requested typeface because it was unable to connect to the App Store. Please check your Internet connection and try again.\n(\(error!.localizedDescription))")
+                        
                         if let dvc: DetailViewController = self.detailViewController {
+                            /*
                             if !dvc.downloadProgress.isHidden {
                                 dvc.downloadProgress.stopAnimating()
+                                dvc.downloadLabel.isHidden = true
+                            }
+                             */
+                            
+                            if !dvc.downloadView.isHidden {
+                                dvc.downloadView.doHide()
                             }
                         }
                     }
@@ -551,17 +565,17 @@ extension MasterViewController  {
                     return
                 }
                 
-                #if DEBUG
-                    print("Family '\(family.name)' downloaded")
-                #endif
+#if DEBUG
+                print("Family '\(family.name)' downloaded")
+#endif
                 
                 // Keep the downloaded file around permanently, ie.
                 // until the app is deleted
                 Bundle.main.setPreservationPriority(1.0, forTags: tags)
-
+                
                 // Update the font's state
                 family.fontsAreDownloaded = true
-
+                
                 // Register the font with the OS
                 self.registerFontFamily(family)
             }
@@ -677,7 +691,6 @@ extension MasterViewController  {
             //      which family has been registered
             DispatchQueue.main.async {
                 self.updateFamilyStatus()
-                //self.setInstallButtonState()
                 self.tableView.reloadData()
 
                 // FROM 1.1.1
@@ -729,9 +742,9 @@ extension MasterViewController  {
 
                 installedCount += (family.fontsAreInstalled ? 1 : 0)
 
-                #if DEBUG
+#if DEBUG
                 print("Family '\(family.name)': downloads: \(downloaded), installs: \(installed) of \(fontIndexes.count). Style: \(family.style), serif: \(family.isSerif ? "YES" : "NO")")
-                #endif
+#endif
 
                 // Turn of progress and/or timers if they're still active
                 if fontIndexes.count == installed {

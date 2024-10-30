@@ -161,7 +161,7 @@ class FeedbackViewController: UIViewController,
 
         // Some sort of connection error - report it
 
-        sendFeedbackError()
+        self.sendFeedbackError()
     }
 
 
@@ -171,7 +171,7 @@ class FeedbackViewController: UIViewController,
 
         if let _ = error {
             // An error took place - report it
-            sendFeedbackError()
+            self.sendFeedbackError()
         } else {
             // The comment was submitted successfully, so thank the user
             DispatchQueue.main.async {

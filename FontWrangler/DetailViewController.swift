@@ -25,6 +25,9 @@ class DetailViewController: UIViewController,
     @IBOutlet weak var fontSizeSlider: UISlider!
 
     @IBOutlet weak var downloadProgress: UIActivityIndicatorView!
+    @IBOutlet weak var downloadLabel: UILabel!
+    
+    @IBOutlet weak var downloadView: RetrievalView!
 
     // REMOVED IN 1.1.0
     //@IBOutlet weak var dynamicSampleParentView: UserTestSampleView!
@@ -80,6 +83,11 @@ class DetailViewController: UIViewController,
         self.dynamicSampleTextView.text = kFontSampleText_1
         self.dynamicSampleTextView.isEditable = true
         self.dynamicSampleTextView.alpha = 0.3
+        
+        self.downloadView.layer.cornerRadius = 16
+        //self.downloadView.backgroundView
+        //self.downloadView.backgroundColor = .clear
+        //self.downloadView.downloadProgress.tintColor = UIColor.systemBackground
         
         // REMOVED IN 1.1.0
         // Block access to the user-entered sample
@@ -143,7 +151,10 @@ class DetailViewController: UIViewController,
         guard let sizeLabel = self.fontSizeLabel else { return }
         guard let sizeSlider = self.fontSizeSlider else { return }
         guard let unImage = self.uninstalledPreviewImage else { return }
-
+        guard let dloadProgress = self.downloadProgress else { return }
+        guard let dloadLabel = self.downloadLabel else { return }
+        guard let dloadView = self.downloadView else { return }
+        
         // REMOVED IN 1.1.0
         // guard let sampleNote = self.userSampleTextView else { return }
         // guard let parent = self.dynamicSampleParentView else { return }
@@ -153,9 +164,9 @@ class DetailViewController: UIViewController,
 
         // FROM 1.1.1
         // Turn off the indicator and hide
-        if let dp = self.downloadProgress {
-            dp.stopAnimating()
-        }
+        dloadProgress.stopAnimating()
+        dloadLabel.isHidden = true
+        dloadView.doHide()
         
         if let detail = self.detailItem {
             // We have an item to display, so load the font and register
@@ -296,7 +307,9 @@ class DetailViewController: UIViewController,
         
         if let cf = self.currentFamily {
             // Install the font family
-            self.downloadProgress.startAnimating()
+            self.downloadView.doShow()
+            //self.downloadProgress.startAnimating()
+            //self.downloadLabel.isHidden = false
             self.mvc!.getOneFontFamily(cf)
         }
     }
@@ -412,7 +425,9 @@ class DetailViewController: UIViewController,
         // Stop the download process if the user has cancelled it
         // FROM 2.0.0
         
-        self.downloadProgress.stopAnimating()
+        self.downloadView.doHide()
+        //self.downloadProgress.stopAnimating()
+        //self.downloadLabel.isHidden = true
     }
 
 
