@@ -78,14 +78,12 @@ extension MasterViewController  {
         
         // Determing the font families available in the font list
         self.setFontFamilies()
+        self.setDisplayFamilies()
         
         // Double-check what's installed and what isn't and
         // update the fonts' status
         // NOTE This will save the list always
-        self.updateFamilyStatus()
-
-        // Reload the table
-        self.tableView.reloadData()
+        self.reloadFontList()
     }
 
 
@@ -475,7 +473,7 @@ extension MasterViewController  {
             // the main thread so the Activity Indicator is shown
             family.progress = fontRequest.progress
             DispatchQueue.main.async {
-                self.tableView.reloadData()
+                self.reloadFontList()
             }
 
             // Set a timeout timer on this family-specific request
@@ -501,16 +499,16 @@ extension MasterViewController  {
                                     /*
                                     if !dvc.downloadProgress.isHidden {
                                         dvc.downloadProgress.stopAnimating()
-                                        dvc.downloadLabel.isHidden = true
                                     }
-                                     */
+                                    */
+                                    
                                     if !dvc.downloadView.isHidden {
                                         dvc.downloadView.doHide()
                                     }
                                 }
                                 
                                 // Update the typeface table
-                                self.tableView.reloadData()
+                                self.reloadFontList()
                             }
 
                             break
@@ -526,7 +524,7 @@ extension MasterViewController  {
                 // Activity Indicator
                 family.progress = nil
                 DispatchQueue.main.async {
-                    self.tableView.reloadData()
+                    self.reloadFontList()
                 }
                 
                 // Check for a download error
@@ -552,9 +550,8 @@ extension MasterViewController  {
                             /*
                             if !dvc.downloadProgress.isHidden {
                                 dvc.downloadProgress.stopAnimating()
-                                dvc.downloadLabel.isHidden = true
                             }
-                             */
+                            */
                             
                             if !dvc.downloadView.isHidden {
                                 dvc.downloadView.doHide()
@@ -690,8 +687,7 @@ extension MasterViewController  {
             // NOTE Have to do all families becuase we can't know
             //      which family has been registered
             DispatchQueue.main.async {
-                self.updateFamilyStatus()
-                self.tableView.reloadData()
+                self.reloadFontList()
 
                 // FROM 1.1.1
                 // Check if we need to run a review prompt
@@ -763,7 +759,7 @@ extension MasterViewController  {
         // Set the font installed/not installed count
         let fontString = installedCount == 1 ? "typeface" : "typefaces"
         let headString = installedCount == 0 ? "No" : "\(installedCount)"
-        self.titleView.infoLabel.text = "\(headString) \(fontString) installed (of \(self.families.count))"
+        self.titleView.infoLabel.text = "\(headString) \(fontString) of \(self.families.count) installed, \(self.displayFamilies.count) shown"
     }
     
     

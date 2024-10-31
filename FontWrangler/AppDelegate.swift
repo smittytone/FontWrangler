@@ -13,9 +13,12 @@ import UIKit
 class AppDelegate: UIResponder,
                    UIApplicationDelegate {
 
-
+    // MARK: - Private Properties
+    
     private let bundlePath = Bundle.main.bundlePath
     
+    
+    // MARK: - Lifecycle Functions
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
 
@@ -60,7 +63,7 @@ class AppDelegate: UIResponder,
     }
 
 
-    // MARK: UISceneSession Lifecycle
+    // MARK: - UISceneSession Lifecycle
 
     func application(_ application: UIApplication, configurationForConnecting connectingSceneSession: UISceneSession, options: UIScene.ConnectionOptions) -> UISceneConfiguration {
 
@@ -77,6 +80,8 @@ class AppDelegate: UIResponder,
         // Use this method to release any resources that were specific to the discarded scenes, as they will not return.
     }
     
+    
+    // MARK: - Settings Text Generation Functions
     
     func getCreators() -> String {
         
@@ -124,18 +129,19 @@ class AppDelegate: UIResponder,
             // NOTE Use '\r\n' for newlines - required by iOS settings
             var creatorString = ""
             for item in creators {
-                // FROM 2.0.0
-                // Hack for NFM
-                var name = item["t"]!
-                if name.contains("_nfm") {
-                    name = name.replacingOccurrences(of: "_nfm", with: " (Nerd Font version)")
-                }
+                var name = item["t"]!.capitalized
                 
                 // FROM 2.0.0
                 // Use spaces rather than underscores
-                //name = name.replacingOccurrences(of: "_", with: " ")
+                name = name.replacingOccurrences(of: "_", with: " ")
                 
-                creatorString += (name.capitalized + " by " + item["c"]! + " ")
+                // FROM 2.0.0
+                // Hack for NFM
+                if name.hasSuffix("Nfm") {
+                    name = name.replacingOccurrences(of: "Nfm", with: "(Nerd Font version)")
+                }
+                
+                creatorString += (name + " by " + item["c"]! + " ")
                 
                 // FROM 2.0.0
                 // Expand licence range
@@ -159,10 +165,10 @@ class AppDelegate: UIResponder,
         
             
             // Add the footnotes and return the completed string
-            creatorString += "\r\n* Open Font Licence\r\n† Apache Licence 2.0\r\n§ MIT Licence\r\n¶ Bitstream Vera Licence\r\n° Public Domain\r\n\r\nNerd Font versions patched by Ryan L McIntyre (https://www.nerdfonts.com/)"
+            creatorString += "\r\n* Open Font Licence\r\n† Apache Licence 2.0\r\n§ MIT Licence\r\n¶ Bitstream Vera Licence\r\n° Public Domain\r\n\r\nNerd Font versions patched by Ryan L McIntyre (https://www.nerdfonts.com/). Use of the Nerd Fonts name does not imply the approval of Fontismo by the Nerd Fonts website."
             return creatorString
         } else {
-            NSLog("[ERROR] can't find defaults from App Delegate")
+            NSLog("[ERROR] Can't load defaults from App Delegate")
         }
         
         return ""

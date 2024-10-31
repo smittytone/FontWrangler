@@ -132,26 +132,26 @@
 				3B879A2F242E00B400BE47DC /* MasterViewController.swift */,
 				3B5DADC82CC1399100D0DB4D /* MasterViewControllerFonts.swift */,
 				3B5DADC42CC0FD5100D0DB4D /* MasterViewControllerTable.swift */,
+				3BD0DF4924332B7F002878F7 /* FontWranglerFontListTableViewCell.swift */,
 				3B2011DB24433F0800441739 /* MasterTitleView.swift */,
 				3B2D46402CC2A5A8003F6ACD /* MasterTableHeaderView.swift */,
 				3B879A31242E00B400BE47DC /* DetailViewController.swift */,
+				3B4C6D972434E88A00C1C5CB /* FontVariantsTableViewController.swift */,
+				3B4C6D992434E90900C1C5CB /* FontVariantsTableViewCell.swift */,
+				3B6710282CD28B8700FE2887 /* RetrievalView.swift */,
+				3B25B94124407C0A0078B869 /* UserTestSampleView.swift */,
 				3B5DADC62CC1390800D0DB4D /* Extensions.swift */,
 				3BBD14FF25CF17A7008CB0E2 /* FeedbackViewController.swift */,
 				3BBD150225CF191F008CB0E2 /* FeedbackPresentationController.swift */,
 				3B35362327F9D18A00F11FDF /* TipViewController.swift */,
 				3BB361AC2804823100B1F861 /* TipViewCollectionViewCell.swift */,
 				3B35362527F9D76A00F11FDF /* StoreController.swift */,
-				3B25B94124407C0A0078B869 /* UserTestSampleView.swift */,
-				3BD0DF4924332B7F002878F7 /* FontWranglerFontListTableViewCell.swift */,
-				3B4C6D972434E88A00C1C5CB /* FontVariantsTableViewController.swift */,
-				3B4C6D992434E90900C1C5CB /* FontVariantsTableViewCell.swift */,
 				3BA9276724360F9200B4BA99 /* HelpViewController.swift */,
 				3BA9277324361D3600B4BA99 /* HelpPageViewController.swift */,
 				3B0DF57B2440C8F50037BEDE /* IntroViewController.swift */,
 				3B879A42242E1C0100BE47DC /* UserFont.swift */,
 				3BE5B2AA2434AD6B00A0C33A /* FontFamily.swift */,
 				3B879A33242E00B400BE47DC /* Main.storyboard */,
-				3B6710282CD28B8700FE2887 /* RetrievalView.swift */,
 				3B879A38242E00B600BE47DC /* LaunchScreen.storyboard */,
 				3B9C64A22432887B0057B8ED /* Assets.xcassets */,
 				3BD7E1882431FD2600FD8941 /* Fonts.xcassets */,
@@ -532,7 +532,7 @@
 				CODE_SIGN_ENTITLEMENTS = FontWrangler/FontWrangler.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 71;
+				CURRENT_PROJECT_VERSION = 72;
 				DEVELOPMENT_TEAM = Y5J3K52DNA;
 				INFOPLIST_FILE = FontWrangler/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Fontismo;
@@ -564,7 +564,7 @@
 				CODE_SIGN_ENTITLEMENTS = FontWrangler/FontWrangler.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 71;
+				CURRENT_PROJECT_VERSION = 72;
 				DEVELOPMENT_TEAM = Y5J3K52DNA;
 				INFOPLIST_FILE = FontWrangler/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Fontismo;

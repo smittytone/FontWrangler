@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="23094" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="H1p-Uh-vWS">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="23504" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="H1p-Uh-vWS">
     <device id="retina6_1" orientation="portrait" appearance="dark"/>
     <dependencies>
         <deployment version="4864" identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="23084"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="23506"/>
         <capability name="Image references" minToolsVersion="12.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="collection view cell content view" minToolsVersion="11.0"/>
@@ -116,42 +116,31 @@
                                 </constraints>
                                 <color key="color" systemColor="labelColor"/>
                             </activityIndicatorView>
-                            <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Retrieving..." textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="tGZ-rU-Rlb">
-                                <rect key="frame" x="20" y="466" width="374" height="21"/>
-                                <color key="backgroundColor" red="0.38823529410000002" green="0.38823529410000002" blue="0.40000000000000002" alpha="0.5" colorSpace="custom" customColorSpace="sRGB"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="21" id="stb-xl-MgK"/>
-                                </constraints>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <nil key="textColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
                             <view hidden="YES" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="center" translatesAutoresizingMaskIntoConstraints="NO" id="fQw-03-JIl" customClass="RetrievalView" customModule="Fontismo" customModuleProvider="target">
-                                <rect key="frame" x="87" y="328" width="240" height="240"/>
+                                <rect key="frame" x="111" y="352" width="192" height="192"/>
                                 <subviews>
                                     <visualEffectView opaque="NO" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="SIO-sB-baU">
-                                        <rect key="frame" x="0.0" y="0.0" width="240" height="240"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="192" height="192"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" userInteractionEnabled="NO" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="hNI-GO-QAG">
-                                            <rect key="frame" x="0.0" y="0.0" width="240" height="240"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="192" height="192"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                         </view>
                                         <blurEffect style="systemUltraThinMaterial"/>
                                     </visualEffectView>
                                     <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="large" translatesAutoresizingMaskIntoConstraints="NO" id="SiI-3A-OSH">
-                                        <rect key="frame" x="88" y="88" width="64" height="64"/>
-                                        <color key="tintColor" systemColor="systemBackgroundColor"/>
+                                        <rect key="frame" x="64" y="64" width="64" height="64"/>
                                         <constraints>
-                                            <constraint firstAttribute="height" constant="64" id="ena-To-jp3"/>
-                                            <constraint firstAttribute="width" constant="64" id="u31-QW-l4z"/>
+                                            <constraint firstAttribute="width" constant="64" id="cE7-RO-eV2"/>
+                                            <constraint firstAttribute="height" constant="64" id="uFY-f4-Qk8"/>
                                         </constraints>
                                         <color key="color" systemColor="labelColor"/>
                                     </activityIndicatorView>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Retrieving..." textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="NYR-lF-TR6">
-                                        <rect key="frame" x="8" y="160" width="224" height="21"/>
+                                        <rect key="frame" x="0.0" y="146" width="192" height="21"/>
                                         <color key="tintColor" systemColor="systemBackgroundColor"/>
                                         <constraints>
-                                            <constraint firstAttribute="height" constant="21" id="2mX-8x-iqi"/>
+                                            <constraint firstAttribute="height" constant="21" id="aiW-OY-UTO"/>
                                         </constraints>
                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                         <nil key="textColor"/>
@@ -163,13 +152,13 @@
                                     <accessibilityTraits key="traits" notEnabled="YES"/>
                                 </accessibility>
                                 <constraints>
-                                    <constraint firstItem="SiI-3A-OSH" firstAttribute="centerX" secondItem="fQw-03-JIl" secondAttribute="centerX" id="SJe-bh-9hb"/>
-                                    <constraint firstAttribute="width" constant="240" id="Ykx-Uy-5vw"/>
-                                    <constraint firstAttribute="height" constant="240" id="m9b-wO-7Oy"/>
-                                    <constraint firstAttribute="trailing" secondItem="NYR-lF-TR6" secondAttribute="trailing" constant="8" id="n6H-Kg-Byg"/>
-                                    <constraint firstItem="SiI-3A-OSH" firstAttribute="centerY" secondItem="fQw-03-JIl" secondAttribute="centerY" id="ryl-FX-cxW"/>
-                                    <constraint firstItem="NYR-lF-TR6" firstAttribute="leading" secondItem="fQw-03-JIl" secondAttribute="leading" constant="8" id="tuU-J1-W08"/>
-                                    <constraint firstItem="NYR-lF-TR6" firstAttribute="top" secondItem="SiI-3A-OSH" secondAttribute="bottom" constant="8" symbolic="YES" id="u2z-2j-b6C"/>
+                                    <constraint firstItem="NYR-lF-TR6" firstAttribute="top" secondItem="SiI-3A-OSH" secondAttribute="bottom" constant="18" id="EyR-G9-M9P"/>
+                                    <constraint firstAttribute="width" constant="192" id="HR7-6b-oQd"/>
+                                    <constraint firstItem="NYR-lF-TR6" firstAttribute="leading" secondItem="fQw-03-JIl" secondAttribute="leading" id="RAU-s3-JeU"/>
+                                    <constraint firstItem="SiI-3A-OSH" firstAttribute="centerX" secondItem="fQw-03-JIl" secondAttribute="centerX" id="lXe-HM-gkN"/>
+                                    <constraint firstItem="SiI-3A-OSH" firstAttribute="centerY" secondItem="fQw-03-JIl" secondAttribute="centerY" id="pyy-OK-oXQ"/>
+                                    <constraint firstAttribute="height" constant="192" id="wfn-m0-svJ"/>
+                                    <constraint firstAttribute="trailing" secondItem="NYR-lF-TR6" secondAttribute="trailing" id="wiH-vo-CoI"/>
                                 </constraints>
                                 <connections>
                                     <outlet property="backgroundView" destination="SIO-sB-baU" id="Cqd-DL-BmA"/>
@@ -180,24 +169,21 @@
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
                             <constraint firstItem="ISj-Bb-NQz" firstAttribute="centerX" secondItem="svH-Pt-448" secondAttribute="centerX" id="1wr-wV-0h1"/>
-                            <constraint firstItem="tGZ-rU-Rlb" firstAttribute="top" secondItem="R3p-V2-hhZ" secondAttribute="bottom" constant="8" symbolic="YES" id="2pi-4f-ImZ"/>
-                            <constraint firstItem="fQw-03-JIl" firstAttribute="centerY" secondItem="svH-Pt-448" secondAttribute="centerY" id="5nj-GD-m0K"/>
                             <constraint firstItem="pTu-Of-OYx" firstAttribute="leading" secondItem="svH-Pt-448" secondAttribute="leadingMargin" id="8ZY-Gi-NxQ"/>
                             <constraint firstItem="ISj-Bb-NQz" firstAttribute="top" secondItem="rCs-GY-1Kq" secondAttribute="bottom" constant="16" id="ASs-Wg-7qI"/>
                             <constraint firstItem="R3p-V2-hhZ" firstAttribute="centerY" secondItem="svH-Pt-448" secondAttribute="centerY" id="Es4-Ts-bOE"/>
                             <constraint firstItem="IoY-2B-4ip" firstAttribute="leading" secondItem="svH-Pt-448" secondAttribute="leadingMargin" id="FEO-Sg-doo"/>
                             <constraint firstItem="R3p-V2-hhZ" firstAttribute="centerX" secondItem="svH-Pt-448" secondAttribute="centerX" id="GXr-fx-Wv2"/>
                             <constraint firstItem="pTu-Of-OYx" firstAttribute="top" secondItem="9Sf-XZ-O0v" secondAttribute="bottom" constant="8" symbolic="YES" id="GlS-Yk-uVg"/>
-                            <constraint firstItem="fQw-03-JIl" firstAttribute="centerX" secondItem="svH-Pt-448" secondAttribute="centerX" id="IJq-7B-Dtp"/>
+                            <constraint firstItem="fQw-03-JIl" firstAttribute="centerX" secondItem="svH-Pt-448" secondAttribute="centerX" id="Ib6-vq-lPf"/>
                             <constraint firstItem="rCs-GY-1Kq" firstAttribute="trailing" secondItem="svH-Pt-448" secondAttribute="trailingMargin" id="K7j-ou-NOe"/>
                             <constraint firstItem="qJB-Ox-ARY" firstAttribute="centerX" secondItem="svH-Pt-448" secondAttribute="centerX" id="TaO-qB-v9W"/>
                             <constraint firstItem="IoY-2B-4ip" firstAttribute="top" secondItem="cAp-4J-Aez" secondAttribute="bottom" constant="8" symbolic="YES" id="V8T-f0-TfT"/>
                             <constraint firstItem="qJB-Ox-ARY" firstAttribute="top" secondItem="IoY-2B-4ip" secondAttribute="bottom" constant="8" symbolic="YES" id="cTN-J3-9FR"/>
-                            <constraint firstAttribute="trailingMargin" secondItem="tGZ-rU-Rlb" secondAttribute="trailing" constant="20" id="gdb-uY-kSF"/>
+                            <constraint firstItem="fQw-03-JIl" firstAttribute="centerY" secondItem="svH-Pt-448" secondAttribute="centerY" id="dhX-J7-PvU"/>
                             <constraint firstItem="rCs-GY-1Kq" firstAttribute="leading" secondItem="svH-Pt-448" secondAttribute="leadingMargin" id="iT0-EV-Npl"/>
                             <constraint firstItem="pTu-Of-OYx" firstAttribute="trailing" secondItem="svH-Pt-448" secondAttribute="trailingMargin" id="qIx-vN-aaZ"/>
                             <constraint firstItem="IoY-2B-4ip" firstAttribute="trailing" secondItem="svH-Pt-448" secondAttribute="trailingMargin" id="ryx-tH-cpL"/>
-                            <constraint firstItem="tGZ-rU-Rlb" firstAttribute="leading" secondItem="svH-Pt-448" secondAttribute="leadingMargin" constant="20" id="sg0-y0-Tk7"/>
                             <constraint firstItem="2G9-pd-sW8" firstAttribute="top" secondItem="qJB-Ox-ARY" secondAttribute="bottom" constant="20" id="tZL-Al-8eN"/>
                             <constraint firstItem="rCs-GY-1Kq" firstAttribute="top" secondItem="pTu-Of-OYx" secondAttribute="bottom" constant="8" symbolic="YES" id="uGN-YL-fnb"/>
                             <constraint firstItem="cAp-4J-Aez" firstAttribute="leading" secondItem="rCs-GY-1Kq" secondAttribute="leading" id="vt3-vl-btB"/>
@@ -208,7 +194,6 @@
                     <toolbarItems/>
                     <navigationItem key="navigationItem" title="Font Info" id="mOI-FS-AaM"/>
                     <connections>
-                        <outlet property="downloadLabel" destination="tGZ-rU-Rlb" id="Z8r-rj-61f"/>
                         <outlet property="downloadProgress" destination="R3p-V2-hhZ" id="rgQ-e8-97B"/>
                         <outlet property="downloadView" destination="fQw-03-JIl" id="wyz-h3-riw"/>
                         <outlet property="dynamicSampleHeadLabel" destination="rCs-GY-1Kq" id="6SN-n5-J0k"/>
@@ -480,14 +465,14 @@
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <prototypes>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="variant.cell" id="s6R-e5-hht" customClass="FontVariantsTableViewCell" customModule="Fontismo" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="50" width="414" height="44"/>
+                                <rect key="frame" x="0.0" y="50" width="414" height="43.5"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="s6R-e5-hht" id="roM-ok-dfU">
-                                    <rect key="frame" x="0.0" y="0.0" width="414" height="44"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="414" height="43.5"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="uaK-Ee-cyN">
-                                            <rect key="frame" x="20" y="11" width="374" height="21.5"/>
+                                            <rect key="frame" x="20" y="11" width="374" height="21"/>
                                             <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="17"/>
                                             <nil key="textColor"/>
                                             <nil key="highlightedColor"/>
@@ -952,6 +937,7 @@
     <inferredMetricsTieBreakers>
         <segue reference="P8n-YU-qfu"/>
     </inferredMetricsTieBreakers>
+    <color key="tintColor" systemColor="systemBlueColor"/>
     <resources>
         <image name="line.3.horizontal.decrease.circle" catalog="system" width="128" height="123"/>
         <image name="logo" width="400" height="61"/>

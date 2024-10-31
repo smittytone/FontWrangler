@@ -58,7 +58,7 @@ final class MasterViewController: UITableViewController,
     // Collect all the font families. Each entry contains an array of the
     // indices of member fonts in the main font collection, `fonts`
     internal var families = [FontFamily]()
-    internal var subFamilies = [FontFamily]()
+    internal var displayFamilies = [FontFamily]()
     internal var viewOptions: [Bool] = [false, false, false]
     internal var viewStates: [FontFamilyStyle: Bool] = [
         .classic: true,
@@ -351,9 +351,9 @@ final class MasterViewController: UITableViewController,
         // Prepare the font list table
         self.initializeFontList()
 
+        // REMOVED 2.0.0
         // Update the UI
-        // NOT REQD. IN 2.0.0
-        //self.setInstallButtonState()
+        // self.setInstallButtonState()
         
         // FROM 1.2.0
         self.doIndicateNewFonts = UserDefaults.standard.bool(forKey: kDefaultsKeys.shouldShowNewFonts)
@@ -632,11 +632,12 @@ final class MasterViewController: UITableViewController,
             }
             
             // Update the table
-            self.tableView.reloadData()
+            self.setDisplayFamilies()
+            self.reloadFontList()
             
             // Check for nothing being shown, and if it's the first time,
             // present an informational alert about how to fix it
-            if self.subFamilies.count == 0 && !self.hasShownClearedListWarning {
+            if self.displayFamilies.count == 0 && !self.hasShownClearedListWarning {
                 // Empty display
                 let paraStyle: NSMutableParagraphStyle = NSMutableParagraphStyle.init()
                 paraStyle.alignment = .center
@@ -678,9 +679,11 @@ final class MasterViewController: UITableViewController,
                 dvc.configureView()
             }
 
+            // REMOVED 2.0.0
             // Set the 'Add All' button state and update the table
-            //self.setInstallButtonState()
-            self.tableView.reloadData()
+            // self.setInstallButtonState()
+            
+            self.reloadFontList()
         }
     }
 
@@ -855,7 +858,7 @@ final class MasterViewController: UITableViewController,
         if segue.identifier == "show.detail" {
             if let indexPath = tableView.indexPathForSelectedRow {
                 // Get the referenced font family
-                let family: FontFamily = self.subFamilies[indexPath.row]
+                let family: FontFamily = self.displayFamilies[indexPath.row]
                 
                 // Get the first font on the list
                 var font: UserFont? = nil

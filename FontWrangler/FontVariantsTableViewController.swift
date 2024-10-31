@@ -18,14 +18,14 @@ final class FontVariantsTableViewController: UITableViewController {
     // The user can select a variant to demo that specific font
     
     
-    // MARK: - Object properties
+    // MARK: - Public Properties
     
     var fontIndices: [Int]? = nil
     var currentFont: Int = -1
     var dvc: DetailViewController? = nil
 
     
-    // MARK: - Lifecycle Methods
+    // MARK: - Lifecycle Functions
     
     override func viewDidLoad() {
         
@@ -107,9 +107,9 @@ final class FontVariantsTableViewController: UITableViewController {
                     self.currentFont = indexPath.row
                     //advc.configureView()
                     
-                    #if DEBUG
-                        print("Font selected '\(font.name)' at row \(indexPath.row)")
-                    #endif
+#if DEBUG
+                    print("Font selected '\(font.name)' at row \(indexPath.row)")
+#endif
                 }
             }
         }

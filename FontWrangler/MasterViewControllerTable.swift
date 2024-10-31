@@ -22,21 +22,17 @@ extension MasterViewController {
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
-        self.setSubFamilies()
-        return self.subFamilies.count
+        // Return the number of families to display
+        
+        return self.displayFamilies.count
     }
 
 
     override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
 
         // Return the custom table header row
-        //let fittingSize = CGSize(width: tableView.frame.width - (tableView.safeAreaInsets.left + tableView.safeAreaInsets.right), height: 0)
-        //let size = self.tableHead.systemLayoutSizeFitting(fittingSize, withHorizontalFittingPriority: .required, verticalFittingPriority: .fittingSizeLevel)
-        //self.tableHead.frame = CGRect(origin: .zero, size: size)
         
         self.tableHead.parent = tableView
-        //let r = tableView.rectForHeader(inSection: section)
-        //self.tableHead.frame = r
         return self.tableHead
     }
 
@@ -56,7 +52,7 @@ extension MasterViewController {
             
             // Get the referenced family and use its name
             // NOTE Name is already human-readable
-            let family = self.subFamilies[indexPath.row]
+            let family = self.displayFamilies[indexPath.row]
             
             // FROM 1.2.0
             // Highlight new fonts
@@ -199,7 +195,7 @@ extension MasterViewController {
         var action: UIContextualAction
 
         // Get the referenced family
-        let family: FontFamily = self.subFamilies[indexPath.row]
+        let family: FontFamily = self.displayFamilies[indexPath.row]
 
         // Show the controls only if we're not already downloading
         if family.progress == nil {
@@ -235,18 +231,19 @@ extension MasterViewController {
     }
     
     
-    private func setSubFamilies() {
+    internal func setDisplayFamilies() {
         
         // Determine which sub-set of the font families we will actually show
         
         // To start with, clear the list: we'll add the families
         // we will actually display
-        self.subFamilies.removeAll()
+        self.displayFamilies.removeAll()
         
         // Show all is a match against any criteria, but we can shortcut just
         // by checking that all view options are `false` and all view states are `true`.
         if !self.viewOptions.contains(true) && !self.viewStates.values.contains(false) {
-            self.subFamilies = self.families
+            self.displayFamilies = self.families
+            self.updateFamilyStatus()
             return
         }
         
@@ -267,7 +264,7 @@ extension MasterViewController {
                 // view options?
                 if !self.viewOptions.contains(true) {
                     // No view options set, so add the family and continue
-                    self.subFamilies.append(family)
+                    self.displayFamilies.append(family)
                     continue
                 }
                 
@@ -278,19 +275,32 @@ extension MasterViewController {
                 }
 
                 if self.viewOptions[kFontShowModeIndices.installed] == self.viewOptions[kFontShowModeIndices.uninstalled] {
-                    self.subFamilies.append(family)
+                    self.displayFamilies.append(family)
                     continue
                 }
                 
                 if self.viewOptions[kFontShowModeIndices.installed] && family.fontsAreInstalled {
-                    self.subFamilies.append(family)
+                    self.displayFamilies.append(family)
                     continue
                 }
                 
                 if self.viewOptions[kFontShowModeIndices.uninstalled] && !family.fontsAreInstalled {
-                    self.subFamilies.append(family)
+                    self.displayFamilies.append(family)
                 }
             }
         }
+        
+        self.updateFamilyStatus()
+    }
+    
+    
+    internal func reloadFontList() {
+        
+        // Update the displayed list of fonts
+        
+        // FROM 2.0.0
+        
+        self.updateFamilyStatus()
+        self.tableView.reloadData()
     }
 }

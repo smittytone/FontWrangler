@@ -25,7 +25,6 @@ class DetailViewController: UIViewController,
     @IBOutlet weak var fontSizeSlider: UISlider!
 
     @IBOutlet weak var downloadProgress: UIActivityIndicatorView!
-    @IBOutlet weak var downloadLabel: UILabel!
     
     @IBOutlet weak var downloadView: RetrievalView!
 
@@ -151,21 +150,15 @@ class DetailViewController: UIViewController,
         guard let sizeLabel = self.fontSizeLabel else { return }
         guard let sizeSlider = self.fontSizeSlider else { return }
         guard let unImage = self.uninstalledPreviewImage else { return }
-        guard let dloadProgress = self.downloadProgress else { return }
-        guard let dloadLabel = self.downloadLabel else { return }
         guard let dloadView = self.downloadView else { return }
         
         // REMOVED IN 1.1.0
         // guard let sampleNote = self.userSampleTextView else { return }
         // guard let parent = self.dynamicSampleParentView else { return }
 
-        // Generic cases
-        //sizeSlider.isEnabled = false
-
-        // FROM 1.1.1
+        // FROM 2.0.0
         // Turn off the indicator and hide
-        dloadProgress.stopAnimating()
-        dloadLabel.isHidden = true
+        // dloadProgress.stopAnimating()
         dloadView.doHide()
         
         if let detail = self.detailItem {
@@ -208,18 +201,20 @@ class DetailViewController: UIViewController,
                 
                 // Set the font size slider control and label
                 sizeLabel.text = "\(Int(self.fontSize))pt"
-                sizeSlider.setValue(Float(self.fontSize), animated: true);
+                sizeSlider.setValue(Float(self.fontSize), animated: true)
+                sizeSlider.tintColor = .systemBlue
                 sizeSlider.isEnabled = true
                 
                 // FROM 2.0.0
                 unImage.isHidden = true
             } else {
-                sampleText.font = self.substituteFont
-                sampleText.alpha = 0.3
+                // sampleText.font = self.substituteFont
+                // sampleText.alpha = 0.3
                 sampleText.isHidden = true
                 
                 sizeLabel.text = ""
                 sizeSlider.isEnabled = false
+                sizeSlider.tintColor = .gray
                 
                 // FROM 2.0.0
                 // Use graphic preview for uninstalled fonts
@@ -229,13 +224,14 @@ class DetailViewController: UIViewController,
                     }
                 }
                 
-                unImage.alpha = 0.3
+                unImage.alpha = 0.5
                 unImage.isHidden = false
             }
             
             // Set the font status label
-            //let ext = (detail.path as NSString).pathExtension.lowercased()
-            //var labelText = "This " + (ext == "otf" ? "OpenType" : "TrueType" ) + " font is "
+            // FROM 2.0.0 Remove typeface type
+            // let ext = (detail.path as NSString).pathExtension.lowercased()
+            // var labelText = "This " + (ext == "otf" ? "OpenType" : "TrueType" ) + " font is "
             var labelText = "This typeface is "
             labelText += (detail.isInstalled ? "installed" : "not installed")
             statusLabel.text = labelText
@@ -253,9 +249,9 @@ class DetailViewController: UIViewController,
 
             self.variantsButton?.isEnabled = count > 1 ? true : false
 
-            // FROM 1.1.0
+            // REMOVED 2.0.0
             // Font not installed, so offer to install it
-            //if !detail.isInstalled { doInstall() }
+            // if !detail.isInstalled { doInstall() }
         } else {
             // Hide the labels; disable the slider
             self.title = "Font Info"
@@ -307,9 +303,8 @@ class DetailViewController: UIViewController,
         
         if let cf = self.currentFamily {
             // Install the font family
+            // self.downloadProgress.startAnimating()
             self.downloadView.doShow()
-            //self.downloadProgress.startAnimating()
-            //self.downloadLabel.isHidden = false
             self.mvc!.getOneFontFamily(cf)
         }
     }
@@ -423,11 +418,8 @@ class DetailViewController: UIViewController,
     func doCancelInstall() {
         
         // Stop the download process if the user has cancelled it
-        // FROM 2.0.0
-        
+        // self.downloadProgress.stopAnimating()
         self.downloadView.doHide()
-        //self.downloadProgress.stopAnimating()
-        //self.downloadLabel.isHidden = true
     }
 
 
