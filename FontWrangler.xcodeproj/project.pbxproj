@@ -257,7 +257,10 @@
 					hack_nfm,
 					hanalei,
 					holtwood_one,
+					inconsolata_nfm,
 					iosevka_term_nfm,
+					iosevka_term_slab_nfm,
+					jetbrains_mono_nfm,
 					josefin_sans,
 					knewave,
 					kode_mono,
@@ -268,6 +271,7 @@
 					megrim,
 					michroma,
 					mirza,
+					monaspice_nfm,
 					monofett,
 					monoton,
 					nova_cut,
@@ -285,6 +289,7 @@
 					righteous,
 					risque,
 					roboto,
+					roboto_mono_nfm,
 					rokkitt,
 					sancreek,
 					shojumaru,
@@ -532,7 +537,7 @@
 				CODE_SIGN_ENTITLEMENTS = FontWrangler/FontWrangler.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 72;
+				CURRENT_PROJECT_VERSION = 74;
 				DEVELOPMENT_TEAM = Y5J3K52DNA;
 				INFOPLIST_FILE = FontWrangler/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Fontismo;
@@ -564,7 +569,7 @@
 				CODE_SIGN_ENTITLEMENTS = FontWrangler/FontWrangler.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 72;
+				CURRENT_PROJECT_VERSION = 74;
 				DEVELOPMENT_TEAM = Y5J3K52DNA;
 				INFOPLIST_FILE = FontWrangler/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Fontismo;

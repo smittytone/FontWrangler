@@ -861,6 +861,7 @@ final class MasterViewController: UITableViewController,
                 let family: FontFamily = self.displayFamilies[indexPath.row]
                 
                 // Get the first font on the list
+                // NOTE Redundant -- remove
                 var font: UserFont? = nil
                 if let fontIndexes: [Int] = family.fontIndices {
                     font = self.fonts[fontIndexes[0]]
@@ -876,6 +877,7 @@ final class MasterViewController: UITableViewController,
                 controller.shouldAutoInstallFonts = self.shouldAutoInstallFonts
 
                 // This line updates the detail view, so keep it LAST
+                // NOTE Redundant -- remove
                 controller.detailItem = font
 
                 // Set a back button to show the master view

@@ -58,13 +58,15 @@ final class FontVariantsTableViewController: UITableViewController {
             
             if font.tag == "bungee" {
                 // Set Quirk for Bungee, which has non-variant fonts under the same tag
-                cell = self.doBungee(cell, font)
+                cell = self.processBungee(cell, font)
             } else if font.tag == "hanalei" {
                 // Set Quirk for Hanalei, which has non-variant fonts under the same tag
-                cell = self.doHanalei(cell, font)
-            } else if font.tag == "iosevka_term_nfm" {
-                // Set Quirk for Iosevka Term: its regular font has no `_Regular`
-                cell = self.doIosevkaTerm(cell, font)
+                cell = self.processHanalei(cell, font)
+            } else if font.tag.hasPrefix("iosevka_") {
+                // Set Quirk for Iosevka Term and Iosevka Term Slab: its regular font has no `_Regular`
+                cell = self.processIosevka(cell, font)
+            } else if font.tag == "roboto_mono_nfm" {
+                cell.name.text = getRobotoMonoVarName(font.name)
             } else {
                 // Display the font variant type, extracted from the name:
                 // eg. 'Audio-Regular' -> 'Regular'
@@ -120,19 +122,19 @@ final class FontVariantsTableViewController: UITableViewController {
 
     // MARK: - Font Quirks
 
-    private func doBungee(_ cell: FontVariantsTableViewCell, _ font: UserFont) -> FontVariantsTableViewCell {
+    private func processBungee(_ cell: FontVariantsTableViewCell, _ font: UserFont) -> FontVariantsTableViewCell {
 
         let name: NSString = font.name as NSString
-        let index = name.range(of: "-")
-        let variantType = name.substring(from: index.location + 1)
+        let index: NSRange = name.range(of: "-")
+        let variantType: String = name.substring(from: index.location + 1)
         let range: NSRange = NSRange(location: 6, length: index.location - 6)
-        let fontName = name.substring(with: range)
+        let fontName: String = name.substring(with: range)
         cell.name.text = (fontName != "" ? fontName : variantType)
         return cell
     }
     
     
-    private func doHanalei(_ cell: FontVariantsTableViewCell, _ font: UserFont) -> FontVariantsTableViewCell {
+    private func processHanalei(_ cell: FontVariantsTableViewCell, _ font: UserFont) -> FontVariantsTableViewCell {
 
         // FROM 1.1.2
         
@@ -146,13 +148,13 @@ final class FontVariantsTableViewController: UITableViewController {
     }
     
     
-    private func doIosevkaTerm(_ cell: FontVariantsTableViewCell, _ font: UserFont) -> FontVariantsTableViewCell {
+    private func processIosevka(_ cell: FontVariantsTableViewCell, _ font: UserFont) -> FontVariantsTableViewCell {
         
         // FROM 2.0.0
-        // Deal with the fact that Ioskeva Term Regular has no `-regular` in its PostScript name
+        // Deal with the fact that Ioskeva Term and Iosevka Term Slab Regular have no `-regular` in its PostScript name
         
         let name: NSString = font.name as NSString
-        let index = name.range(of: "-")
+        let index: NSRange = name.range(of: "-")
         if index.location == NSNotFound {
             cell.name.text = "Regular"
         } else {
@@ -160,5 +162,30 @@ final class FontVariantsTableViewController: UITableViewController {
         }
         
         return cell
+    }
+    
+    
+    func getRobotoMonoVarName(_ name: String) -> String {
+        
+        // FROM 2.0.0
+        // Deal with the fact that Roboto Mono has non-standard style PostScript name suffixes
+        
+        var varName: String
+        let nsName: NSString = name as NSString
+        let index: NSRange = nsName.range(of: "-")
+        if index.location != NSNotFound {
+            varName = nsName.substring(from: index.location + 1)
+            varName = varName.replacingOccurrences(of: "Bd", with: "Bold")
+            varName = varName.replacingOccurrences(of: "It", with: "Italic")
+            varName = varName.replacingOccurrences(of: "Sm", with: "Semi")
+            varName = varName.replacingOccurrences(of: "Lt", with: "Light")
+            varName = varName.replacingOccurrences(of: "Rg", with: "Regular")
+            varName = varName.replacingOccurrences(of: "Th", with: "Thin")
+            varName = varName.replacingOccurrences(of: "Md", with: "Medium")
+        } else {
+            varName = "Regular"
+        }
+        
+        return varName
     }
 }

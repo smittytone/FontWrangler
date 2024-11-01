@@ -937,7 +937,7 @@
     <inferredMetricsTieBreakers>
         <segue reference="P8n-YU-qfu"/>
     </inferredMetricsTieBreakers>
-    <color key="tintColor" systemColor="systemBlueColor"/>
+    <color key="tintColor" red="0.039215686270000001" green="0.51764705879999995" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
     <resources>
         <image name="line.3.horizontal.decrease.circle" catalog="system" width="128" height="123"/>
         <image name="logo" width="400" height="61"/>

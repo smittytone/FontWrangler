@@ -739,7 +739,7 @@ extension MasterViewController  {
                 installedCount += (family.fontsAreInstalled ? 1 : 0)
 
 #if DEBUG
-                print("Family '\(family.name)': downloads: \(downloaded), installs: \(installed) of \(fontIndexes.count). Style: \(family.style), serif: \(family.isSerif ? "YES" : "NO")")
+                //print("Family '\(family.name)': downloads: \(downloaded), installs: \(installed) of \(fontIndexes.count). Style: \(family.style), serif: \(family.isSerif ? "YES" : "NO")")
 #endif
 
                 // Turn of progress and/or timers if they're still active

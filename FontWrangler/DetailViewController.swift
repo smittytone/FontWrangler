@@ -82,11 +82,9 @@ class DetailViewController: UIViewController,
         self.dynamicSampleTextView.text = kFontSampleText_1
         self.dynamicSampleTextView.isEditable = true
         self.dynamicSampleTextView.alpha = 0.3
+        self.dynamicSampleTextView.textContainer.lineBreakMode = .byCharWrapping
         
         self.downloadView.layer.cornerRadius = 16
-        //self.downloadView.backgroundView
-        //self.downloadView.backgroundColor = .clear
-        //self.downloadView.downloadProgress.tintColor = UIColor.systemBackground
         
         // REMOVED IN 1.1.0
         // Block access to the user-entered sample
@@ -121,7 +119,7 @@ class DetailViewController: UIViewController,
         super.viewDidAppear(animated)
         
         // FROM 2.0.0
-        if let detail = self.detailItem {
+        if let detail: UserFont = self.detailItem {
             if !detail.isInstalled {
                 // Font not installed, so offer to install it
                 if self.shouldAutoInstallFonts {
@@ -177,6 +175,8 @@ class DetailViewController: UIViewController,
                     } else if detail.tag == "fira_code_nfm" {
                         // Use Fira Code quirk
                         self.title = self.getFiraCodeTitle(detail.name)
+                    } else if detail.tag == "roboto_mono_nfm" {
+                        self.title = self.getRobotoMonoTitle(detail.name)
                     } else if detail.tag.contains("_nfm") {
                         // Use quirk for other Nerd Fonts
                         self.title = self.getNerdFontTitle(detail.name, self.currentFamily!.name)
@@ -192,7 +192,7 @@ class DetailViewController: UIViewController,
 
             if detail.isInstalled {
                 // Set the sample's font
-                if let font = UIFont.init(name: detail.psname, size: self.fontSize) {
+                if let font: UIFont = UIFont.init(name: detail.psname, size: self.fontSize) {
                     sampleText.font = font
                 }
                 
@@ -218,8 +218,8 @@ class DetailViewController: UIViewController,
                 
                 // FROM 2.0.0
                 // Use graphic preview for uninstalled fonts
-                if let family = self.currentFamily {
-                    if let image: UIImage = UIImage.init(named: "preview_" + family.tag) {
+                if let cf: FontFamily = self.currentFamily {
+                    if let image: UIImage = UIImage.init(named: "preview_" + cf.tag) {
                         unImage.image = image
                     }
                 }
@@ -232,19 +232,19 @@ class DetailViewController: UIViewController,
             // FROM 2.0.0 Remove typeface type
             // let ext = (detail.path as NSString).pathExtension.lowercased()
             // var labelText = "This " + (ext == "otf" ? "OpenType" : "TrueType" ) + " font is "
-            var labelText = "This typeface is "
+            var labelText: String = "This typeface is "
             labelText += (detail.isInstalled ? "installed" : "not installed")
             statusLabel.text = labelText
             
             // Enable or disable the Variants button according to whether there are any
             var count = 0
-            if let family = self.currentFamily {
-                if let familyFonts = family.fontIndices {
+            if let cf: FontFamily = self.currentFamily {
+                if let familyFonts: [Int] = cf.fontIndices {
                     count = familyFonts.count
                 }
                 
                 // Set the creator
-                sampleHead.text = "Created by \(family.creator)"
+                sampleHead.text = "Created by \(cf.creator)"
             }
 
             self.variantsButton?.isEnabled = count > 1 ? true : false
@@ -270,7 +270,7 @@ class DetailViewController: UIViewController,
         // Offer to install the font if it has not yet been installed
 
         // Create and present an alert with two buttons
-        if let cf = self.currentFamily {
+        if let cf: FontFamily = self.currentFamily {
             let alert = UIAlertController.init(title: "",
                                                message: "This font family is not installed. Dynamic previews are not enabled for uninstalled fonts. Would you like to install \(cf.name) now?",
                                                preferredStyle: .alert)
@@ -301,7 +301,7 @@ class DetailViewController: UIViewController,
         // If a single family has been tapped in the master view, we set the value
         // of `currentFamily`. If it has been set, run the install process for it.
         
-        if let cf = self.currentFamily {
+        if let cf: FontFamily = self.currentFamily {
             // Install the font family
             // self.downloadProgress.startAnimating()
             self.downloadView.doShow()
@@ -347,7 +347,7 @@ class DetailViewController: UIViewController,
                 // Not yet flipped, so check for flip condition, ie. number of lines is greater than expected
                 // Get the number of displayed lines
                 //let numLines = Int(self.dynamicSampleTextView.contentSize.height / self.dynamicSampleTextView.font!.lineHeight)
-                let numLines = self.dynamicSampleTextView.layoutManager.lines
+                let numLines: Int = self.dynamicSampleTextView.layoutManager.lines
 
                 if numLines > kFontSampleText_1_Lines && self.fontSize > CGFloat(kFontSampleText_1_Limit) {
                     // At least one line has wrapped, so trigger a flip:
@@ -373,7 +373,7 @@ class DetailViewController: UIViewController,
         // Update the view
         // self.configureView()
         self.fontSizeLabel.text = "\(Int(self.fontSize))pt"
-        if let font = UIFont.init(name: self.detailItem!.psname, size: self.fontSize) {
+        if let font: UIFont = UIFont.init(name: self.detailItem!.psname, size: self.fontSize) {
             self.dynamicSampleTextView.font = font
         }
     }
@@ -432,7 +432,7 @@ class DetailViewController: UIViewController,
         fvtvc.dvc = self
         
         // Set the popover's data
-        if let fontIndices = self.currentFamily!.fontIndices {
+        if let fontIndices: [Int] = self.currentFamily!.fontIndices {
             fvtvc.fontIndices = fontIndices
             fvtvc.currentFont = currentFontIndex
         }
@@ -454,7 +454,7 @@ class DetailViewController: UIViewController,
         // Extract the font variant from the font name
         
         let name: NSString = fontName as NSString
-        let index = name.range(of: "-")
+        let index: NSRange = name.range(of: "-")
         return index.location != NSNotFound ? (" " + name.substring(from: index.location + 1).capitalized) : " Regular"
     }
 
@@ -470,10 +470,10 @@ class DetailViewController: UIViewController,
         // Set Quirk for Bungee, which has non-variant fonts under the same tag
 
         let name: NSString = fontName as NSString
-        let index = name.range(of: "-")
-        let variantType = name.substring(from: index.location + 1)
+        let index: NSRange = name.range(of: "-")
+        let variantType: String = name.substring(from: index.location + 1)
         let range: NSRange = NSRange(location: 6, length: index.location - 6)
-        let bungeeName = name.substring(with: range)
+        let bungeeName: String = name.substring(with: range)
         return "Bungee " + (bungeeName != "" ? bungeeName : variantType)
     }
     
@@ -498,8 +498,8 @@ class DetailViewController: UIViewController,
         // Set Quirk for FiraCode, which has non-variant fonts under the same tag
         
         let name: NSString = fontName as NSString
-        let index = name.range(of: "-")
-        let variantType = self.getFiraCodeVariant(name.substring(from: index.location + 1))
+        let index: NSRange = name.range(of: "-")
+        let variantType: String = self.getFiraCodeVariant(name.substring(from: index.location + 1))
         return "FiraCode " + variantType
     }
     
@@ -516,6 +516,16 @@ class DetailViewController: UIViewController,
     }
     
     
+    private func getRobotoMonoTitle(_ fontName: String) -> String {
+        
+        // FROM 2.0.0
+        // Set Quirk for Roboto Mono NFM, which has mis-named font variants
+        
+        let fvtvc: FontVariantsTableViewController = FontVariantsTableViewController.init()
+        return "Roboto Mono NF " + fvtvc.getRobotoMonoVarName(fontName)
+    }
+    
+    
     private func getNerdFontTitle(_ fontName: String, _ familyName: String) -> String {
 
         // FROM 2.0.0
@@ -523,7 +533,7 @@ class DetailViewController: UIViewController,
         
         let name: NSString = fontName as NSString
         let newName: String = "\(familyName) NF"
-        let index = name.range(of: "-")
+        let index: NSRange = name.range(of: "-")
         var variantType: String
         if index.location == NSNotFound {
             variantType = "Regular"

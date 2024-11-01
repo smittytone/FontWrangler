@@ -33,7 +33,7 @@ class MasterTableHeaderView: UIView {
         
         // Adjust the left and right margin constrainsts
         // (left for TYPEFACE and right for ADDED) to align over columns
-        if let parent = self.parent {
+        if let parent: UITableView = self.parent {
             self.leftConstraint.constant = parent.frame.origin.x + parent.safeAreaInsets.left + 16
             let a = (parent.safeAreaInsets.right + 12) * -1.0
             self.rightConstraint.constant = a
