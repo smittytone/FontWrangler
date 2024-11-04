@@ -52,12 +52,13 @@ extension MasterViewController  {
                 newFont.isSerif = (serifFlag == "true" || serifFlag == "")
                 newFont.style = aFont["class"] ?? "Unknown"
                 newFont.creator = aFont["creator"]
+                newFont.familyName = aFont["fname"] ?? ""
                 
                 self.fonts.append(newFont)
             }
             
             // Sort the list
-            self.sortFonts()
+            //self.sortFonts()
         } else {
             NSLog("[ERROR] can't load defaults - loadDefaults()")
             self.showAlert("Error", "Sorry, the default font list is missing — Fontismo has become damaged. Please reinstall the app.")
@@ -220,6 +221,7 @@ extension MasterViewController  {
                                 family.creator = creator
                             }
                         }
+                        
                         break
                     }
                 }
@@ -227,12 +229,18 @@ extension MasterViewController  {
                 if !got {
                     let newFamily: FontFamily = FontFamily()
                     newFamily.tag = font.tag
-                    newFamily.name = self.getPrinteableName(font.tag)
                     newFamily.isNew = font.isNew
                     
                     // FROM 2.0.0
                     newFamily.isSerif = font.isSerif
                     newFamily.style = FontFamilyStyle(rawValue: font.style) ?? .unknown
+                    
+                    // FROM 2.0.0
+                    if font.familyName.isEmpty {
+                        newFamily.name = self.getPrinteableName(font.tag)
+                    } else {
+                        newFamily.name = font.familyName
+                    }
                     
                     if let creator = font.creator {
                         newFamily.creator = creator
@@ -243,8 +251,6 @@ extension MasterViewController  {
                     }
                     
                     self.families.append(newFamily)
-                } else {
-                    
                 }
             }
             
