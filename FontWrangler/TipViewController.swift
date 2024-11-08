@@ -428,7 +428,7 @@ class TipViewController: UIViewController,
         
         // Pop up a 'thanks for your purchase' alert
         
-        self.showAlert("Thank You!", "Your donation is very gratefully received and will fuel further Fontismo development.", true)
+        self.showAlert("Thank You!", "Your donation is very gratefully received and will assist further Fontismo development.", true)
     }
 
 

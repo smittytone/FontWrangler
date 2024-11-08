@@ -128,7 +128,7 @@ final class MasterViewController: UITableViewController,
                                                  self.doShowWebsite(self)
                                              })
             
-            let showTipsAction = UIAction(title: "Fuel Fontismo’s Development",
+            let showTipsAction = UIAction(title: "Fuel Development",
                                           image: UIImage(systemName: "fork.knife"),
                                           handler: { (_) in
                                               self.doShowTipSheet(self)
@@ -423,7 +423,7 @@ final class MasterViewController: UITableViewController,
         actionMenu.addAction(action)
 
         // Allow the user to view the app's settings
-        action = UIAlertAction.init(title: "Fontismo Settings",
+        action = UIAlertAction.init(title: "Settings",
                                     style: .default,
                                     handler: { (_) in
                                         UIApplication.shared.open(URL(string: UIApplication.openSettingsURLString)!)
@@ -432,7 +432,7 @@ final class MasterViewController: UITableViewController,
         actionMenu.addAction(action)
         
         // Allow the user to report a bug
-        action = UIAlertAction.init(title: "Report a Bug",
+        action = UIAlertAction.init(title: "Give Feedback",
                                     style: .default,
                                     handler: { (_) in
                                         self.doShowFeedbackSheet(self)
@@ -460,7 +460,7 @@ final class MasterViewController: UITableViewController,
         
         // FROM 1.2.0
         // Allow the user to report a bug
-        action = UIAlertAction.init(title: "Fuel Fontismo’s Development",
+        action = UIAlertAction.init(title: "Fuel Development",
                                     style: .default,
                                     handler: { (_) in
                                         self.doShowTipSheet(self)
