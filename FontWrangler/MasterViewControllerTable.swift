@@ -74,11 +74,7 @@ extension MasterViewController {
                 // Update the number of fonts in the family
                 cell.fontCountLabel.text = "\(fontIndexes.count) " + (fontIndexes.count == 1 ? "font" : "fonts")
 
-                // Get the first font in the list, which should have the same
-                // status as the others
-                // TODO handle cases where it is not the same
-                //let font: UserFont = fonts[0]
-
+                // Set the accessory view
                 if family.fontsAreInstalled {
                     // Add a circled tick as the accessory if the font is installed
                     if let accessoryImage: UIImage = UIImage.init(systemName: "checkmark.circle.fill") {
@@ -88,16 +84,30 @@ extension MasterViewController {
                         cell.accessoryView = nil
                     }
                 } else {
-                    // Family is not installed, so add a spacer to ensure consitent column widths
-                    if let accessoryImage: UIImage = UIImage.init(named: "spacer") {
+                    // Family is not installed: are we downloading it?
+                    if family.progress != nil {
+                        // FROM 2.0.0
+                        // Set an activity indicator as the cell's accessory view
+                        let av: UIActivityIndicatorView = UIActivityIndicatorView.init(frame: CGRect.init(x: 0.0, y: 0.0, width: 24.0, height: 24.0))
+                        av.color = UIColor.systemBlue
+                        av.style = .medium
+                        av.contentMode = .scaleToFill
+                        av.startAnimating()
+                        cell.accessoryView = av
+                    } else if let accessoryImage: UIImage = UIImage.init(named: "spacer") {
+                        // The family's not being downloaded, so just place the space image
+                        // to maintain the size
                         let accessoryView: UIView = UIImageView.init(image: accessoryImage)
                         cell.accessoryView = accessoryView
                     } else {
+                        // Nothing to show at all, so clear the accessory view
                         cell.accessoryView = nil
                     }
                 }
                 
                 // Show and animate the Activity Indicator during downloads
+                // UNUSED FROM 2.0.0
+                /*
                 if family.progress != nil {
                     if !cell.downloadProgressView.isAnimating {
                         cell.downloadProgressView!.startAnimating()
@@ -107,6 +117,7 @@ extension MasterViewController {
                         cell.downloadProgressView!.stopAnimating()
                     }
                 }
+                */
             } else {
                 // Display a default font count, but this should never be seen
                 cell.fontCountLabel.text = "No fonts"
