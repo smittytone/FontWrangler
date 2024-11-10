@@ -1,6 +1,7 @@
 
 //  TipViewCollectionViewCell.swift
-//  FontWrangler
+//  Fontismo
+//
 //
 //  Created by Tony Smith on 11/04/2022.
 //  Copyright © 2024 Tony Smith. All rights reserved.

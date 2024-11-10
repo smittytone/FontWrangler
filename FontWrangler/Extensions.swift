@@ -1,22 +1,21 @@
 
 //  Extensions.swift
-//  FontWrangler
+//  Fontismo
+//  iOS Class Extensions
 //
 //  Created by Tony Smith on 17/10/2024.
 //  Copyright © 2024 Tony Smith. All rights reserved.
 
 
-import Foundation
 import UIKit
+import StoreKit
 
-
-/*
-    FROM 1.1.1
-    Add alternative (and better) sample text line counter
-    Adapted from https://stackoverflow.com/a/49528540
- */
 
 extension NSLayoutManager {
+
+    // FROM 1.1.1
+    // Add alternative (and better) sample text line counter
+    // Adapted from https://stackoverflow.com/a/49528540
 
     var lines: Int {
         guard let _ = textStorage else { return 0 }
@@ -40,5 +39,19 @@ extension UISplitViewController {
         let _ = UIApplication.shared.sendAction(barButtonItem.action!,
                                                 to: barButtonItem.target,
                                                 from: nil, for: nil)
+    }
+}
+
+
+extension SKProduct {
+
+    // Add a `localPrice` property which provides the local price with
+    // an appropriate currency label attached
+    
+    var localPrice: String? {
+        let priceFormatter: NumberFormatter = NumberFormatter()
+        priceFormatter.numberStyle = .currency
+        priceFormatter.locale = self.priceLocale
+        return priceFormatter.string(from: self.price)
     }
 }

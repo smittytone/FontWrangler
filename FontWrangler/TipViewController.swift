@@ -1,10 +1,11 @@
-//
+
 //  TipViewController.swift
-//  FontWrangler
+//  Fontismo
+//
 //
 //  Created by Tony Smith on 03/04/2022.
 //  Copyright © 2024 Tony Smith. All rights reserved.
-//
+
 
 import UIKit
 import StoreKit

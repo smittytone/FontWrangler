@@ -2,6 +2,7 @@
 //  FontWranglerFontListTableViewCell.swift
 //  Fontismo
 //
+//
 //  Created by Tony Smith on 31/03/2020.
 //  Copyright © 2024 Tony Smith. All rights reserved.
 
@@ -18,7 +19,7 @@ class FontWranglerFontListTableViewCell: UITableViewCell {
     
     // MARK: - UI properties
     
-    @IBOutlet weak var downloadProgressView: UIActivityIndicatorView!
+    @IBOutlet weak var downloadProgressView: UIActivityIndicatorView!       // UNUSED FROM 2.0.0
     @IBOutlet weak var fontNameLabel: UILabel!
     @IBOutlet weak var fontCountLabel: UILabel!
     @IBOutlet weak var fontPreviewImageView: UIImageView!

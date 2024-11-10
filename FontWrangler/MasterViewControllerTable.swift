@@ -1,6 +1,6 @@
 
 //  MasterViewControllerTable.swift
-//  FontWrangler
+//  Fontismo
 //  UITableViewDelegate and UITableViewDataSource functions
 //
 //  Created by Tony Smith on 17/10/2024.

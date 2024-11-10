@@ -1,6 +1,7 @@
 
 //  StoreController.swift
-//  FontWrangler
+//  Fontismo
+//
 //
 //  Created by Tony Smith on 03/04/2022.
 //  Copyright © 2024 Tony Smith. All rights reserved.
@@ -191,21 +192,5 @@ final class StoreController: NSObject,
         NotificationCenter.default.post(name: NSNotification.Name.init(rawValue: rawName),
                                         object: self,
                                         userInfo: userInfo)
-    }
-}
-
-
-// MARK: - SK Product Extensions
-
-extension SKProduct {
-
-    // Add a `localPrice` property which provides the local price with
-    // an appropriate currency label attached
-    
-    var localPrice: String? {
-        let priceFormatter: NumberFormatter = NumberFormatter()
-        priceFormatter.numberStyle = .currency
-        priceFormatter.locale = self.priceLocale
-        return priceFormatter.string(from: self.price)
     }
 }

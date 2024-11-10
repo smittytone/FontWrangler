@@ -1,12 +1,12 @@
-//
+
 //  MasterTableHeaderView.swift
-//  FontWrangler
+//  Fontismo
+//
 //
 //  Created by Tony Smith on 18/10/2024.
 //  Copyright © 2024 Tony Smith. All rights reserved.
-//
 
-import Foundation
+
 import UIKit
 
 
