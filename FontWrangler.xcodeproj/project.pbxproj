@@ -305,7 +305,7 @@
 					unifraktur_maguntia,
 				);
 				LastSwiftUpdateCheck = 1130;
-				LastUpgradeCheck = 1600;
+				LastUpgradeCheck = 1610;
 				ORGANIZATIONNAME = "Tony Smith";
 				TargetAttributes = {
 					3B879A27242E00B400BE47DC = {
@@ -410,6 +410,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
@@ -475,6 +476,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
@@ -537,7 +539,7 @@
 				CODE_SIGN_ENTITLEMENTS = FontWrangler/FontWrangler.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 78;
+				CURRENT_PROJECT_VERSION = 81;
 				DEVELOPMENT_TEAM = Y5J3K52DNA;
 				INFOPLIST_FILE = FontWrangler/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Fontismo;
@@ -569,7 +571,7 @@
 				CODE_SIGN_ENTITLEMENTS = FontWrangler/FontWrangler.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 78;
+				CURRENT_PROJECT_VERSION = 81;
 				DEVELOPMENT_TEAM = Y5J3K52DNA;
 				INFOPLIST_FILE = FontWrangler/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Fontismo;
