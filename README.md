@@ -16,7 +16,7 @@ This repo contains the Fontismo source code only. It does not contain assets req
 
 ## Release Notes ##
 
-- 2.0.0 *Unreleased*
+- 2.0.0 *12 November 2024*
     - Support iOS 18 icons.
     - Add Filter menu for (iOS 14 and up only) to list fonts by typeface style, whether they are new to Fontismo, installed or uninstalled.
     - Show a non-dynamic preview for uninstalled fonts.
