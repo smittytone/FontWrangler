@@ -17,8 +17,8 @@ final class HelpViewController: UIViewController,
     
     // Manage the Help View screen, which cointains a series of
     // UIPageViewController-mediated pages.
-    
-    
+
+
     // MARK: - Object properties
 
     // Private
@@ -27,8 +27,8 @@ final class HelpViewController: UIViewController,
 
     // Public
     var pageIndex: Int = 0
-    
-    
+
+
     // MARK: - Lifecycle Functions
     
     override func viewDidLoad() {
@@ -69,14 +69,15 @@ final class HelpViewController: UIViewController,
         proxy.pageIndicatorTintColor = UIColor.label.withAlphaComponent(0.4)
         proxy.currentPageIndicatorTintColor = UIColor.label
     }
-    
-    
+
+
     // MARK: - Action Functions
     
+    /**
+     Close the Help panel
+     */
     @IBAction func doClose(_ sender: Any) {
             
-        // Close the Help panel
-
         // FROM 1.1.1
         // Halt the web pages if open
         for pvc in self.pageViewControllers {
@@ -87,7 +88,7 @@ final class HelpViewController: UIViewController,
 
         self.dismiss(animated: true, completion: nil)
     }
-    
+
 
     // MARK: - UIPageViewController Data Source Functions
 
@@ -132,5 +133,4 @@ final class HelpViewController: UIViewController,
         return self.pageIndex
     }
 
-    
 }

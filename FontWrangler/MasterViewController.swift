@@ -11,6 +11,9 @@ import UIKit
 import StoreKit
 
 
+/**
+ Items on the app's view-filter menu
+ */
 enum FilterMenuItems: String {
 
     case classic
@@ -36,13 +39,12 @@ final class MasterViewController: UITableViewController,
     @IBOutlet weak var viewOptionsButton: UIButton!
     
     
-    // MARK:- Public Instance Properties
+    // MARK: - Public Instance Properties
     
-    // Collect all the individual fonts
     var fonts = [UserFont]()
     
     
-    // MARK:- Private Instance Properties
+    // MARK: - Private Instance Properties
 
     private  var installButton: UIBarButtonItem? = nil
     private  var menuButton: UIBarButtonItem? = nil
@@ -57,7 +59,7 @@ final class MasterViewController: UITableViewController,
     internal var shouldAutoInstallFonts: Bool = false
     
     // Collect all the font families. Each entry contains an array of the
-    // indices of member fonts in the main font collection, `fonts`
+    // indices of member fonts in the main font collection, `fonts`, above
     internal var families = [FontFamily]()
     internal var displayFamilies = [FontFamily]()
     internal var viewOptions: [Bool] = [false, false, false]
@@ -81,7 +83,8 @@ final class MasterViewController: UITableViewController,
     
     internal var viewMenu: UIMenu? = nil
     
-    // MARK:- Private Instance Constants
+    
+    // MARK: - Private Instance Constants
 
     internal let DOCS_PATH = NSSearchPathForDirectoriesInDomains(FileManager.SearchPathDirectory.documentDirectory, FileManager.SearchPathDomainMask.userDomainMask, true)[0]
     internal let BUNDLE_PATH = Bundle.main.bundlePath
@@ -335,9 +338,6 @@ final class MasterViewController: UITableViewController,
     
     @objc func hasBackgrounded() {
 
-        // The View Controller has been notified that the app has
-        // gone into the background
-
         // Save the list
         // NOTE This is probably unnecessary now
         self.saveFontList()
@@ -370,12 +370,15 @@ final class MasterViewController: UITableViewController,
     }
 
 
-    private func showIntroPanel() {
+    /**
+     If required, display an introductory page of guidance on app usage
+     
+     NOTE This should appear on the first use of the app, but never again.
+          However, the user can choose to re-show the panel by flipping a
+          switch in the app settings
 
-        // If required, display an introductory page of guidance on app usage
-        // NOTE This should appear on the first use of the app, but never again.
-        //      However, the user can choose to re-show the panel by flipping a
-        //      switch in the app settings
+     */
+    private func showIntroPanel() {
 
         // Get the default to see if we go ahead and display the intro panel
         let defaults: UserDefaults = UserDefaults.standard
@@ -546,10 +549,12 @@ final class MasterViewController: UITableViewController,
     }
     
     
+    /**
+     Open the Fontismo web page in Safari
+     
+     FROM 1.1.2
+     */
     @objc func doShowWebsite(_ sender: Any) {
-        
-        // FROM 1.1.2
-        // Open the Fontismo web page in Safari
         
         guard let webURL = URL(string: kWebsiteURL) else { fatalError("Expected a valid Fontismo website URL") }
         
@@ -557,8 +562,8 @@ final class MasterViewController: UITableViewController,
                                   options: [:],
                                   completionHandler: nil)
     }
-    
-    
+
+
     // MARK: - UIAction Functions — Filter Contextual Menu
     
     private func setContextMenu(_ state: Bool) {
@@ -579,7 +584,7 @@ final class MasterViewController: UITableViewController,
     
     private func setViewOptions(_ index: Int) {
         
-        // The view options are subdivisions of the class-based view
+        // NOTE The view options are subdivisions of the class-based view
         
         // Invert the selected item
         self.viewOptions[index] = !self.viewOptions[index]
@@ -596,9 +601,10 @@ final class MasterViewController: UITableViewController,
     }
     
     
+    /**
+     General Filter contextual menu handler
+     */
     private func doShowSome(_ item: UIAction?, _ style: FontFamilyStyle) {
-        
-        // General Filter contextual menu handler
         
         // NOTE We include the iOS 14 check here to avoid compiler warnings, even
         //      though this function will not be called on any system running iOS 13
@@ -668,12 +674,15 @@ final class MasterViewController: UITableViewController,
         }
     }
 
+
     // MARK: - Utility Functions
 
+    /**
+     Update the UI on the main thread
+     
+     This function usually called from callbacks
+     */
     func updateUIonMain() {
-
-        // Update the UI on the main thread
-        // (This function usually called from callbacks)
 
         DispatchQueue.main.async {
             if let dvc = self.detailViewController {
@@ -689,13 +698,14 @@ final class MasterViewController: UITableViewController,
     }
 
 
+    /**
+     If we have a list of fonts (see viewWillAppear()), determine whether
+     we need to enable or disable the install button.
+     
+     UNUSED 2.0.0
+     */
     internal func setInstallButtonState() {
 
-        // If we have a list of fonts (see viewWillAppear()), determine whether
-        // we need to enable or disable the install button
-        
-        // UNUSED in 2.0.0
-        
         if self.fonts.count > 0 {
             var installedCount = 0
 
@@ -715,12 +725,13 @@ final class MasterViewController: UITableViewController,
     }
 
 
+    /**
+     Generic alert display function which ensures
+     the alert is actioned on the main thread.
+     */
     internal func showAlert(_ title: String, _ message: String) {
         
-        // Generic alert display function which ensures
-        // the alert is actioned on the main thread.
-
-        DispatchQueue.main.async {
+         DispatchQueue.main.async {
             let alert = UIAlertController.init(title: title,
                                                message: message,
                                                preferredStyle: .alert)
@@ -732,15 +743,16 @@ final class MasterViewController: UITableViewController,
                          completion: nil)
         }
     }
-    
-    
+
+
+    /**
+     Generic alert display function which not only ensures
+     the alert is actioned on the main thread but also uses an
+     attributed string for the title.
+     
+     FROM 2.0.0
+     */
     internal func showFancyAlert(_ title: NSAttributedString, _ message: String) {
-        
-        // Generic alert display function which not only ensures
-        // the alert is actioned on the main thread but also uses an
-        // attributed string for the title.
-        
-        // FROM 2.0.0
         
         DispatchQueue.main.async {
             let alert = UIAlertController.init(title: "",
@@ -757,16 +769,18 @@ final class MasterViewController: UITableViewController,
                          completion: nil)
         }
     }
-    
-    
+
+
     // MARK: - StoreKit Functions
 
+    /**
+     Show the 'please review' dialog if the user is on a new version
+     and has installed at least 20 fonts
+     
+     FROM 1.1.1
+     */
     internal func requestReview() {
 
-        // FROM 1.1.1
-        // Show the 'please review' dialog if the user is on a new version
-        // and has installed at least 20 fonts
-        
         let infoDictionaryKey = kCFBundleVersionKey as String
         guard let currentVersion = Bundle.main.object(forInfoDictionaryKey: infoDictionaryKey) as? String
             else { fatalError("Expected to find a bundle version in the info dictionary") }
@@ -784,11 +798,13 @@ final class MasterViewController: UITableViewController,
     }
 
 
+    /**
+     Configure the rating dialog to appear in two seconds' time
+     
+     FROM 1.1.1
+     */
     private func makeRequest(_ currentVersion: String) {
 
-        // FROM 1.1.1
-        // Configure the rating dialog to appear in two seconds' time
-        
         let twoSecondsFromNow = DispatchTime.now() + 2.0
         DispatchQueue.main.asyncAfter(deadline: twoSecondsFromNow) { [navigationController] in
             if navigationController?.topViewController is MasterViewController {
@@ -800,11 +816,13 @@ final class MasterViewController: UITableViewController,
     }
 
 
+    /**
+     Display an option to review the app on a long press of the master view
+     
+     FROM 1.1.1
+     */
     @objc private func doRequestReview() {
 
-        // FROM 1.1.1
-        // Display an option to review the app on a long press of the master view
-        
         DispatchQueue.main.async {
             let alert = UIAlertController.init(title: "Would you like to rate or review this app?",
                                                message: "If you have found Fontismo useful, please consider writing a short App Store review.",
@@ -829,10 +847,12 @@ final class MasterViewController: UITableViewController,
     }
 
 
+    /**
+     User has chosen to review the app, so pass them on to where they can do so
+     
+     FROM 1.1.2
+     */
     private func doReview() {
-
-        // FROM 1.1.2
-        // Refactor this action into a separate function
 
         guard let writeReviewURL = URL(string: kAppStoreURL + "?action=write-review") else { fatalError("Expected a valid Fontismo review URL") }
 
@@ -898,11 +918,13 @@ final class MasterViewController: UITableViewController,
 
     // MARK: - UIViewControllerTransitioningDelegate Functions
 
+    /**
+     Instantiate and return the Presentation Controller
+     
+     NOTE This delegate method should only be called on an iPad
+          (see 'doShowFeedbackSheet()')
+     */
     func presentationController(forPresented presented: UIViewController, presenting: UIViewController?, source: UIViewController) -> UIPresentationController? {
-        
-        // Instantiate and return the Presentation Controller
-        // NOTE This delegate method should only be called on an iPad
-        //      (see 'doShowFeedbackSheet()')
         
         return FeedbackPresentationController.init(presentedViewController: presented,
                                                    presenting: source)

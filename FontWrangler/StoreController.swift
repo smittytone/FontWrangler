@@ -22,8 +22,8 @@ final class StoreController: NSObject,
     
     private var productIdentifiers: [String] = []
     private var productRequest: SKProductsRequest? = nil
-    
-    
+
+
     // MARK: Public Properties
     
     var canMakePayments: Bool {
@@ -32,8 +32,8 @@ final class StoreController: NSObject,
 
     var availableProducts: [SKProduct] = []
     var paymentQueue: SKPaymentQueue? = nil
-    
-    
+
+
     // MARK: - Initialization Methods
     
     override init() {
@@ -45,8 +45,8 @@ final class StoreController: NSObject,
                                    kTipTypes.large,
                                    kTipTypes.huge]
     }
-    
-    
+
+
     func initPaymentQueue() {
 
         // If we have an initialised payment queue, set
@@ -55,14 +55,16 @@ final class StoreController: NSObject,
             self.paymentQueue!.add(self)
         }
     }
-    
-    
+
+
+    /**
+     Request a list of available products
+     
+     NOTE List is set in ASC and defined by our
+          Product ID array, `productIdentifiers`
+     */
     func validateProductIdentifiers() {
         
-        // Request a list of available products
-        // NOTE List is set in ASC and defined by our
-        //      Product ID array, `productIdentifiers`
-
         self.productRequest = SKProductsRequest.init(productIdentifiers: Set(self.productIdentifiers))
         if let pr: SKProductsRequest = self.productRequest {
             // Set the instance as the request delegate, and start a request for products
@@ -77,10 +79,11 @@ final class StoreController: NSObject,
         }
     }
 
-    
-    func productsRequest(_ request: SKProductsRequest, didReceive response: SKProductsResponse) {
 
-        // Async handler for Product list request
+    /**
+     Async handler for Product list request
+     */
+    func productsRequest(_ request: SKProductsRequest, didReceive response: SKProductsResponse) {
 
         self.availableProducts.removeAll()
         for item: String in self.productIdentifiers {
@@ -92,7 +95,7 @@ final class StoreController: NSObject,
             }
         }
  
-        #if DEBUG
+#if DEBUG
         // List valid and invalid Product IDs for debugging
         if !response.invalidProductIdentifiers.isEmpty {
             print("Invalid Store Product IDs:")
@@ -107,29 +110,32 @@ final class StoreController: NSObject,
                 print("  \(product.productIdentifier)")
             }
         }
-        #endif
+#endif
         
         // Tell the host view controller the Product list has been updated
         notifyParent(kPaymentNotifications.updated)
     }
-    
-    
+
+
+    /**
+     Restore past purchases.
+     
+     NOTE Tips don't really need this, so this function may be removed in future
+     */
     func restorePurchasedProducts() {
         
-        // Restore past purchases.
-        // NOTE Tips don't really need this, so may remove
-
         self.paymentQueue!.restoreCompletedTransactions()
     }
-    
-    
+
+
     // MARK: - Payment Processing Handler
     
+    /**
+     This is called asynchronously (often not on the main thread) in response
+     to incoming messages from the App Store during purchases
+     */
     func paymentQueue(_ queue: SKPaymentQueue, updatedTransactions transactions: [SKPaymentTransaction]) {
         
-        // This is called asynchronously (often not on the main thread) in response
-        // to incoming messages from the App Store during purchases
-
         var purchaseState: String = ""
         var doFinishTransaction: Bool = false
         
@@ -181,13 +187,14 @@ final class StoreController: NSObject,
             #endif
         }
     }
-    
-    
+
+
     // MARK: - Payment Event Handlers
     
+    /**
+     Generic notification issuer. Receiver is the host view controller
+     */
     private func notifyParent(_ rawName: String, _ userInfo: [AnyHashable: Any]? = nil) {
-
-        // Generic notification issuer. Receiver is the host view controller
 
         NotificationCenter.default.post(name: NSNotification.Name.init(rawValue: rawName),
                                         object: self,

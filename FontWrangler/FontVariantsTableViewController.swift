@@ -25,7 +25,7 @@ final class FontVariantsTableViewController: UITableViewController {
     var currentFont: Int = -1
     var dvc: DetailViewController? = nil
 
-    
+
     // MARK: - Lifecycle Functions
     
     override func viewDidLoad() {
@@ -34,22 +34,27 @@ final class FontVariantsTableViewController: UITableViewController {
         self.clearsSelectionOnViewWillAppear = false
     }
 
-    
+
     // MARK: - Table View Data Source Functions
 
+    /**
+     Just return 1
+     */
     override func numberOfSections(in tableView: UITableView) -> Int {
         
-        // Return the number of sections
         return 1
     }
 
+
+    /**
+     Return the number of rows
+     */
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
-        // Return the number of rows
         return self.fontIndices == nil ? 0 : self.fontIndices!.count
     }
 
-    
+
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         var cell: FontVariantsTableViewCell = tableView.dequeueReusableCell(withIdentifier: "variant.cell", for: indexPath) as! FontVariantsTableViewCell
@@ -96,8 +101,8 @@ final class FontVariantsTableViewController: UITableViewController {
 
         return cell
     }
-    
-    
+
+
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
         // Update the (underlying) detail view with the newly selected variant
@@ -133,8 +138,8 @@ final class FontVariantsTableViewController: UITableViewController {
         cell.name.text = (fontName != "" ? fontName : variantType)
         return cell
     }
-    
-    
+
+
     private func processHanalei(_ cell: FontVariantsTableViewCell, _ font: UserFont) -> FontVariantsTableViewCell {
 
         // FROM 1.1.2
@@ -147,12 +152,14 @@ final class FontVariantsTableViewController: UITableViewController {
         cell.name.text = hanaleiName + "Regular"
         return cell
     }
-    
-    
+
+
+    /**
+     Deal with the fact that Ioskeva Term and Iosevka Term Slab Regular have no `-regular` in its PostScript name
+     
+     FROM 2.0.0
+     */
     private func processIosevka(_ cell: FontVariantsTableViewCell, _ font: UserFont) -> FontVariantsTableViewCell {
-        
-        // FROM 2.0.0
-        // Deal with the fact that Ioskeva Term and Iosevka Term Slab Regular have no `-regular` in its PostScript name
         
         let name: NSString = font.name as NSString
         let index: NSRange = name.range(of: "-")
@@ -164,12 +171,14 @@ final class FontVariantsTableViewController: UITableViewController {
         
         return cell
     }
-    
-    
+
+
+    /**
+     Deal with the fact that Roboto Mono has non-standard style PostScript name suffixes
+     
+     FROM 2.0.0
+     */
     func getRobotoMonoVarName(_ name: String) -> String {
-        
-        // FROM 2.0.0
-        // Deal with the fact that Roboto Mono has non-standard style PostScript name suffixes
         
         var varName: String
         let nsName: NSString = name as NSString

@@ -16,13 +16,13 @@ final class HelpPageViewController: UIViewController,
 
     // A UIPageViewController used to manage a single Help page which contains
     // a WebKit view populated with HTML loaded from disk.
-    
-    
+
+
     // MARK: - UI Outlet Properties
 
     @IBOutlet weak var pageWebView: WKWebView!
 
-    
+
     // MARK: - Object Properties
 
     // Public
@@ -31,7 +31,7 @@ final class HelpPageViewController: UIViewController,
     // Private
     private var helpNav: WKNavigation? = nil
 
-    
+
     // MARK: - Lifecycle Functions
     
     override func viewDidLoad() {
@@ -42,8 +42,8 @@ final class HelpPageViewController: UIViewController,
         self.pageWebView.isHidden = true
         self.pageWebView.navigationDelegate = self
     }
-    
-    
+
+
     override func viewWillAppear(_ animated: Bool) {
         
         super.viewWillAppear(animated)
@@ -66,8 +66,8 @@ final class HelpPageViewController: UIViewController,
         self.pageWebView.evaluateJavaScript("window.scrollTo(0,0)",
                                             completionHandler: nil)
     }
-    
-    
+
+
     // MARK: - WKWebView Navigation Functions
 
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
@@ -87,8 +87,8 @@ final class HelpPageViewController: UIViewController,
             }
         }
     }
-    
-    
+
+
     func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, preferences: WKWebpagePreferences, decisionHandler: @escaping (WKNavigationActionPolicy, WKWebpagePreferences) -> Void) {
 
         // Process clicked links to send them via Safari - all other
@@ -99,9 +99,9 @@ final class HelpPageViewController: UIViewController,
             // The user clicked on a link
             if let linkURL = navigationAction.request.url {
 
-                #if DEBUG
+#if DEBUG
                 print(linkURL.absoluteString)
-                #endif
+#endif
 
                 if linkURL.absoluteString == "https://settings/" {
                     if let settingsURL = URL(string: UIApplication.openSettingsURLString) {
@@ -129,12 +129,13 @@ final class HelpPageViewController: UIViewController,
         }
     }
 
-    
+
     // MARK: - Action Functions
     
+    /**
+     Open the external URL specified
+     */
     private func openURL(_ url: URL) {
-
-        // Just open the external URL specified
 
         UIApplication.shared.open(url,
                                   options: [.universalLinksOnly: false],

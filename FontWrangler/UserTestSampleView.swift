@@ -17,7 +17,7 @@ final class UserTestSampleView: UIView {
     // the view's contents.
     
     // UNUSED SINCE 1.1.0.
-    
+
     override func draw(_ rect: CGRect) {
 
         // Get the current graphics context to set the stroke colour

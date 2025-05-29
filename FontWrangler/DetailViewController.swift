@@ -113,8 +113,8 @@ class DetailViewController: UIViewController,
         // Show the master view
         self.splitViewController?.toggleMasterView()
     }
-    
-    
+
+
     override func viewDidAppear(_ animated: Bool) {
         
         super.viewDidAppear(animated)
@@ -133,14 +133,16 @@ class DetailViewController: UIViewController,
             }
         }
     }
-    
-    
+
+
     // MARK: - Presentation Functions
-    
+
+
+    /**
+     Update the user interface for the detail item
+     */
     func configureView() {
         
-        // Update the user interface for the detail item.
-
         // Make sure we can access the UI items -- they may not have been
         // instantiated, if 'self.detailItem' is set before the view loads
         guard let statusLabel = self.fontStatusLabel else { return }
@@ -295,12 +297,13 @@ class DetailViewController: UIViewController,
                          completion: nil)
         }
     }
-    
-    
+
+
+    /**
+     If a single family has been tapped in the master view, we set the value
+     // of `currentFamily`. If it has been set, run the install process for it
+     */
     private func installCurrentFamily() {
-        
-        // If a single family has been tapped in the master view, we set the value
-        // of `currentFamily`. If it has been set, run the install process for it.
         
         if let cf: FontFamily = self.currentFamily {
             // Install the font family
@@ -309,7 +312,7 @@ class DetailViewController: UIViewController,
             self.mvc!.getOneFontFamily(cf)
         }
     }
-    
+
 
     // REMOVED IN 1.1.0
     /*
@@ -324,12 +327,13 @@ class DetailViewController: UIViewController,
     }
     */
 
-    
-    // MARK: - Action Functions
-    
-    @IBAction private func setFontSize(_ sender: Any) {
 
-        // Respond to the user adjusting the font size slider
+    // MARK: - Action Functions
+
+    /**
+     Respond to the user adjusting the font size slider
+     */
+    @IBAction private func setFontSize(_ sender: Any) {
 
         // Update the current font size based on the slider value and update the UI
         self.fontSize = CGFloat(Int(self.fontSizeSlider.value))
@@ -378,11 +382,12 @@ class DetailViewController: UIViewController,
             self.dynamicSampleTextView.font = font
         }
     }
-    
 
+
+    /**
+     End editing of the user sample text view on a tap
+     */
     @objc private func doTap() {
-
-        // End editing of the user sample text view on a tap
 
         if let dstv = self.dynamicSampleTextView {
             dstv.endEditing(true)
@@ -390,10 +395,13 @@ class DetailViewController: UIViewController,
     }
 
 
+    /**
+     Triggered by the pinch gesture on the main view
+     
+     FROM 1.1.0
+     */
     @objc private func doSwipe(_ pgr: UIPinchGestureRecognizer) {
 
-        // FROM 1.1.0
-        // Triggered by the pinch gesture on the main view
         guard pgr.view != nil else { return }
         
         // FROM 2.0.0
@@ -414,20 +422,23 @@ class DetailViewController: UIViewController,
             setFontSize(self)
         }
     }
-    
-    
+
+
+    /**
+     Stop the download process if the user has cancelled it
+     */
     func doCancelInstall() {
         
-        // Stop the download process if the user has cancelled it
         // self.downloadProgress.stopAnimating()
         self.downloadView.doHide()
     }
 
 
+    /**
+     Load and configure the font variants menu view controller
+     */
     @objc private func showVariantsMenu() {
         
-        // Load and configure the font variants menu view controller
-
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         let fvtvc: FontVariantsTableViewController = storyboard.instantiateViewController(withIdentifier: "font.variants.controller") as! FontVariantsTableViewController
         fvtvc.dvc = self
@@ -448,11 +459,12 @@ class DetailViewController: UIViewController,
         // Present the view controller (in a popover).
         self.present(fvtvc, animated: true, completion: nil)
     }
-    
-    
+
+
+    /**
+     Extract the font variant from the font name
+     */
     private func getVariantName(_ fontName: String) -> String {
-        
-        // Extract the font variant from the font name
         
         let name: NSString = fontName as NSString
         let index: NSRange = name.range(of: "-")
@@ -466,9 +478,10 @@ class DetailViewController: UIViewController,
      These are routines called for handling individual fonts with non-standard naming.
      */
 
+    /**
+     Set Quirk for Bungee, which has non-variant fonts under the same tag
+     */
     private func getBungeeTitle(_ fontName: String) -> String {
-
-        // Set Quirk for Bungee, which has non-variant fonts under the same tag
 
         let name: NSString = fontName as NSString
         let index: NSRange = name.range(of: "-")
@@ -477,13 +490,15 @@ class DetailViewController: UIViewController,
         let bungeeName: String = name.substring(with: range)
         return "Bungee " + (bungeeName != "" ? bungeeName : variantType)
     }
-    
-    
+
+
+    /**
+     Set Quirk for Hanalei, which has non-variant fonts under the same tag
+     
+     FROM 1.1.2
+     */
     private func getHanaleiTitle(_ fontName: String) -> String {
 
-        // FROM 1.1.2
-        // Set Quirk for Hanalei, which has non-variant fonts under the same tag
-        
         var hanaleiName: String = " ";
         if (fontName as NSString).contains("Fill") {
             hanaleiName = " Fill"
@@ -491,47 +506,55 @@ class DetailViewController: UIViewController,
         
         return "Hanalei" + hanaleiName + " Regular"
     }
-    
-    
+
+
+    /**
+     Set Quirk for FiraCode, which has non-variant fonts under the same tag
+     
+     FROM 2.0.0
+     */
     private func getFiraCodeTitle(_ fontName: String) -> String {
 
-        // FROM 2.0.0
-        // Set Quirk for FiraCode, which has non-variant fonts under the same tag
-        
         let name: NSString = fontName as NSString
         let index: NSRange = name.range(of: "-")
         let variantType: String = self.getFiraCodeVariant(name.substring(from: index.location + 1))
         return "FiraCode " + variantType
     }
-    
-    
+
+
+    /**
+     Set Quirk for FiraCode, which has mis-named font variants
+     
+     FROM 2.0.0
+     */
     func getFiraCodeVariant(_ initial: String) -> String {
-        
-        // FROM 2.0.0
-        // Set Quirk for FiraCode, which has mis-named font variants
         
         if initial == "Reg" { return "Regular" }
         if initial == "Med" { return "Medium" }
         if initial == "SemBd" { return "SemiBold" }
         return initial
     }
-    
-    
+
+
+    /**
+     Set Quirk for Roboto Mono NFM, which has mis-named font variants
+     
+     FROM 2.0.0
+     */
     private func getRobotoMonoTitle(_ fontName: String) -> String {
-        
-        // FROM 2.0.0
-        // Set Quirk for Roboto Mono NFM, which has mis-named font variants
         
         let fvtvc: FontVariantsTableViewController = FontVariantsTableViewController.init()
         return "Roboto Mono NF " + fvtvc.getRobotoMonoVarName(fontName)
     }
-    
-    
+
+
+    /**
+     Set Quirk for Iosevka, which has non-variant fonts under the same tag
+     
+     FROM 2.0.0
+     */
     private func getNerdFontTitle(_ fontName: String, _ familyName: String) -> String {
 
-        // FROM 2.0.0
-        // Set Quirk for Iosevka, which has non-variant fonts under the same tag
-        
         let name: NSString = fontName as NSString
         let newName: String = "\(familyName) NF"
         let index: NSRange = name.range(of: "-")
@@ -548,10 +571,13 @@ class DetailViewController: UIViewController,
 
     // MARK: - UITextViewDelegate Functions
 
+    /**
+     If the sample text has changed, record the fact
+     
+     FROM 1.1.1
+     */
     func textViewDidChange(_ textView: UITextView) {
 
-        // FROM 1.1.1
-        // If the sample text has changed, record the fact
         self.hasCustomText = true
     }
 

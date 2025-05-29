@@ -79,7 +79,7 @@ class SceneDelegate: UIResponder,
         guard let topAsDetailController = secondaryAsNavController.topViewController as? DetailViewController else { return false }
         
         if topAsDetailController.detailItem == nil {
-            // Return `true` to indicate that we have handled the collapse by doing nothing; the secondary controller will be discarded.
+            // Return `true` to indicate that we have handled the collapse (by doing nothing); the secondary controller will be discarded.
             return true
         }
         

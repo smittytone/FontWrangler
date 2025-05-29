@@ -11,35 +11,39 @@ import UIKit
 
 
 extension MasterViewController {
-    
+
+    /**
+     Just return 1
+     */
     override func numberOfSections(in tableView: UITableView) -> Int {
-        
-        // Just return 1
         
         return 1
     }
 
 
+    /**
+     Return the number of families to display
+     */
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        
-        // Return the number of families to display
         
         return self.displayFamilies.count
     }
 
 
+    /**
+     Return the custom table header row
+     */
     override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
 
-        // Return the custom table header row
-        
         self.tableHead.parent = tableView
         return self.tableHead
     }
 
 
+    /**
+     Return the requested table cell
+     */
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        
-        // Return the requested table cell
         
         if indexPath.row == 999 {
             // Show the header cell
@@ -134,13 +138,15 @@ extension MasterViewController {
             return cell
         }
     }
-    
-    
+
+
+    /**
+     Actions that appear when the table view cell is swiped L-R
+     
+     NOTE These actions affect all families
+     */
     override func tableView(_ tableView: UITableView, leadingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
 
-        // Actions that appear when the table view cell is swiped L-R
-        // NOTE These actions affect all families
-    
         var config: UISwipeActionsConfiguration? = nil
         var actions = [UIContextualAction]()
         var action: UIContextualAction = UIContextualAction.init(style: .destructive,
@@ -198,13 +204,15 @@ extension MasterViewController {
         config?.performsFirstActionWithFullSwipe = false
         return config
     }
-    
-    
+
+
+    /**
+     Actions that appear when the table view cell is swiped R-L
+     
+     NOTE These actions are family specific
+     */
     override func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
         
-        // Actions that appear when the table view cell is swiped R-L
-        // NOTE These actions are family specific
-
         var config: UISwipeActionsConfiguration? = nil
         var action: UIContextualAction
 
@@ -243,11 +251,12 @@ extension MasterViewController {
         config?.performsFirstActionWithFullSwipe = false
         return config
     }
-    
-    
+
+
+    /**
+     Determine which sub-set of the font families we will actually show
+     */
     internal func setDisplayFamilies() {
-        
-        // Determine which sub-set of the font families we will actually show
         
         // To start with, clear the list: we'll add the families
         // we will actually display
@@ -306,13 +315,14 @@ extension MasterViewController {
         
         self.updateFamilyStatus()
     }
-    
-    
+
+
+    /**
+     Update the displayed list of fonts
+     
+     FROM 2.0.0
+     */
     internal func reloadFontList() {
-        
-        // Update the displayed list of fonts
-        
-        // FROM 2.0.0
         
         self.updateFamilyStatus()
         self.tableView.reloadData()

@@ -15,19 +15,21 @@ class FeedbackPresentationController: UIPresentationController {
     // This is the custom UIPresentationController for the feedback view controller
     // when it is displayed on an iPad. We use this in order to control the size
     // of the presented view controller's view frame
-    
-    
+
+
     // MARK: - Private Properties
-    
+
     private let blurEffectView: UIVisualEffectView!
     private var tapGestureRecognizer: UITapGestureRecognizer = UITapGestureRecognizer()
-    
+
     // MARK: - Other Properties
-    
+
+    /**
+     Set the size of the presented view controller's view
+     
+     NOTE This is only called on iPads
+     */
     override var frameOfPresentedViewInContainerView: CGRect {
-        
-        // Set the size of the presented view controller's view
-        // NOTE This is only called on iPads
         
         let screenWidth = UIScreen.main.bounds.size.width
         let screenHeight = UIScreen.main.bounds.size.height
@@ -49,8 +51,8 @@ class FeedbackPresentationController: UIPresentationController {
         
         return frame
     }
-    
-    
+
+
     // MARK: - Lifecycle Functions
     
     override init(presentedViewController: UIViewController, presenting presentingViewController: UIViewController?) {
@@ -70,21 +72,24 @@ class FeedbackPresentationController: UIPresentationController {
                                                            action: #selector(self.dismiss))
         self.blurEffectView.addGestureRecognizer(tapGestureRecognizer)
     }
-    
-    
+
+
+    /**
+     Handler for background taps: dismiss the feedback view controller
+     */
     @objc func dismiss() {
         
-        // Handler for background taps: dismiss the feedback view controller
         self.presentedViewController.dismiss(animated: true,
                                              completion: nil)
     }
-    
-    
+
+
     // MARK: - Presentation Start and End Functions
     
+    /**
+     The Presentation Controller is about to show the FeedbackViewController
+     */
     override func presentationTransitionWillBegin() {
-        
-        // The Presentation Controller is about to show the FeedbackViewController
         
         // Add and configure the background blue
         self.blurEffectView.alpha = 0.0
@@ -97,11 +102,12 @@ class FeedbackPresentationController: UIPresentationController {
                 self.blurEffectView.alpha = 0.7
             }, completion: nil)
     }
-    
-    
+
+
+    /**
+     The Presentation Controller is about to remove the FeedbackViewController
+     */
     override func dismissalTransitionWillBegin() {
-        
-        // The Presentation Controller is about to remove the FeedbackViewController
         
         self.presentedViewController.transitionCoordinator?.animate(alongsideTransition: {
             (UIViewControllerTransitionCoordinatorContext) in
@@ -112,12 +118,12 @@ class FeedbackPresentationController: UIPresentationController {
                 self.blurEffectView.removeFromSuperview()
             })
     }
-    
-    
+
+
+    /**
+     The presented view is about to be laid out, so configure the layout
+     */
     override func containerViewWillLayoutSubviews() {
-        
-        // The presented view is about to be laid out,
-        // so configure the layout
         
         // Make sure we call the parent class' function
         super.containerViewWillLayoutSubviews()
@@ -126,12 +132,12 @@ class FeedbackPresentationController: UIPresentationController {
         presentedView!.layer.masksToBounds = true
         presentedView!.layer.cornerRadius = 20
     }
-    
-    
+
+
+    /**
+     The presented view was laid out, so now set up the frame and the extent of the background blur
+     */
     override func containerViewDidLayoutSubviews() {
-        
-        // The presented view was laid out, so now set up the frame
-        // and the extent of the background blur
         
         // Make sure we call the parent class' function
         super.containerViewDidLayoutSubviews()

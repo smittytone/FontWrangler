@@ -17,8 +17,8 @@ class MasterTitleView: UIView {
      
     // It contains a single property: the UILabel used to indicate the number
     // of typefaces available and the number that have been installed.
-    
-    
+
+
     // MARK: - UI properties
 
     @IBOutlet weak var infoLabel: UILabel!

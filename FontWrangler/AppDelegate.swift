@@ -49,12 +49,14 @@ class AppDelegate: UIResponder,
         }
         
         // FROM 1.2.0
+        // Highlight fonts added to the app in this version
         let newKeyIsPresent = defaults.object(forKey: kDefaultsKeys.shouldShowNewFonts)
         if newKeyIsPresent == nil {
             defaults.set(true, forKey: kDefaultsKeys.shouldShowNewFonts)
         }
         
         // FROM 2.0.0
+        // Automatically install previewed fonts
         let shouldAutoInstall = defaults.object(forKey: kDefaultsKeys.shouldAutoInstall)
         if shouldAutoInstall == nil {
             defaults.set(false, forKey: kDefaultsKeys.shouldAutoInstall)
@@ -66,30 +68,38 @@ class AppDelegate: UIResponder,
 
     // MARK: - UISceneSession Lifecycle
 
+    /**
+     Called when a new scene session is being created.
+     
+     Use this method to select a configuration to create the new scene with.
+     */
     func application(_ application: UIApplication, configurationForConnecting connectingSceneSession: UISceneSession, options: UIScene.ConnectionOptions) -> UISceneConfiguration {
 
-        // Called when a new scene session is being created.
-        // Use this method to select a configuration to create the new scene with.
         return UISceneConfiguration(name: "Default Configuration", sessionRole: connectingSceneSession.role)
     }
 
 
+    /**
+     Called when the user discards a scene session.
+     
+     If any sessions were discarded while the application was not running, this will be called shortly after application:didFinishLaunchingWithOptions.
+     
+     Use this method to release any resources that were specific to the discarded scenes, as they will not return.
+     */
     func application(_ application: UIApplication, didDiscardSceneSessions sceneSessions: Set<UISceneSession>) {
 
-        // Called when the user discards a scene session.
-        // If any sessions were discarded while the application was not running, this will be called shortly after application:didFinishLaunchingWithOptions.
-        // Use this method to release any resources that were specific to the discarded scenes, as they will not return.
     }
-    
-    
+
+
     // MARK: - Settings Text Generation Functions
     
+    /**
+     Load in the default list of available fonts and extract their creators
+     and licence details into a string, which is returned.
+     Returns an empty string on failure
+     */
     func getCreators() -> String {
         
-        // Load in the default list of available fonts and extract their creators
-        // and licence details into a string, which is returned.
-        // Returns an empty string on failure
-
         let fm = FileManager.default
         let defaultFontsPath = self.bundlePath + kDefaultsPath
         var fontDictionary: [String: Any] = [:]
@@ -163,7 +173,6 @@ class AppDelegate: UIResponder,
                 
                 creatorString += "\r\n"
             }
-        
             
             // Add the footnotes and return the completed string
             creatorString += "\r\n* Open Font Licence\r\n† Apache Licence 2.0\r\n§ MIT Licence\r\n¶ Bitstream Vera Licence\r\n° Public Domain\r\n\r\nNerd Font versions patched by Ryan L McIntyre (https://www.nerdfonts.com/). Use of the Nerd Fonts name does not imply the approval of Fontismo by the Nerd Fonts website."

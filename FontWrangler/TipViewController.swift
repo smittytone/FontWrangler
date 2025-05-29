@@ -22,7 +22,8 @@ class TipViewController: UIViewController,
     @IBOutlet weak var priceCollectionView: UICollectionView!
     @IBOutlet weak var upperLogoConstraint: NSLayoutConstraint!
     @IBOutlet weak var upperTextConstraint: NSLayoutConstraint!
-    
+
+
     // MARK: Private Properties
     
     private var storeController: StoreController? = nil
@@ -30,7 +31,7 @@ class TipViewController: UIViewController,
     private var deferred: String? = nil
     private var deferTime: Date = Date.init(timeIntervalSinceNow: 0.0)
     private var productIcons: [String] = ["🍬", "☕️", "🍩", "🥧", "🍱"]
-    
+
 
     // MARK: - Initialisation Functions
     
@@ -88,8 +89,8 @@ class TipViewController: UIViewController,
                        name: NSNotification.Name.init(rawValue: kPaymentNotifications.inflight),
                        object: nil)
     }
-    
-    
+
+
     override func viewWillAppear(_ animated: Bool) {
         
         // Prepare for a new appearance
@@ -105,8 +106,8 @@ class TipViewController: UIViewController,
         // Handle super class stuff
         super.viewWillAppear(animated)
     }
-    
-    
+
+
     private func initStore() {
         
         // Start the loading animation
@@ -122,11 +123,12 @@ class TipViewController: UIViewController,
         // Get available products
         self.storeController!.validateProductIdentifiers()
     }
-    
-    
-    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
 
-        // Update the collection view on rotation
+
+    /**
+     Update the collection view on rotation
+     */
+    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
 
         super.viewWillTransition(to: size, with: coordinator)
         
@@ -140,15 +142,16 @@ class TipViewController: UIViewController,
             self?.priceCollectionView.collectionViewLayout.invalidateLayout()
         }
     }
-    
-    
+
+
+    /**
+     Set key constraints based on the screen orientation.
+     
+     NOTE When called ahead of a rotation, the value of `size`
+          is what the frame will **become** -- otherwise it's what
+          the frame **is**
+     */
     private func setKeyConstraints(_ size: CGSize) {
-        
-        // Set key constraints based on the screen orientation.
-        // NOTE When called ahead of a rotation, the value of `size`
-        //      is what the frame will **become** -- otherwise it's what
-        //      the frame **is**
-        
         
         let isPortrait: Bool = size.height > size.width
         if !isPortrait {
@@ -161,19 +164,21 @@ class TipViewController: UIViewController,
          
     }
 
-    
-    private func hideProductList() {
 
-        // Hide the Products collection view
+    /**
+     Hide the Products collection view
+     */
+    private func hideProductList() {
 
         self.priceCollectionView.isUserInteractionEnabled = false
         self.priceCollectionView.alpha = 0.5
     }
 
 
+    /**
+     Reload and preseent the Products collection view
+     */
     private func showProductList() {
-        
-        // Reload and preseent the Products collection view
         
         self.priceCollectionView.reloadData()
         updateCollectionViewSize()
@@ -190,23 +195,24 @@ class TipViewController: UIViewController,
         
         self.priceCollectionView.isHidden = false
     }
-    
-    
+
+
     // MARK: - Action Functions
     
+    /**
+     User has clicked 'Done', so just close the sheet
+     */
     @IBAction @objc func doDone(_ sender: Any) {
-        
-        // User has clicked 'Done', so just close the sheet
         
         self.dismiss(animated: true, completion: nil)
     }
-    
-    
+
+
+    /**
+     Async notification received when we get a list of products from the store: Show the Products
+     */
     @objc func productListReceived(_ note: Notification) {
         
-        // Async notification received when we get a list of products from the store:
-        // Show the Products
-
         DispatchQueue.main.async {
             self.onAsyncReturn()
 
@@ -225,11 +231,12 @@ class TipViewController: UIViewController,
     }
 
 
+    /**
+     Async notification received if something went wrong with the purchase:
+     Clear the selection and post the warnning text
+     */
     @objc func storeFailure(_ note: Notification) {
 
-        // Async notification received if something went wrong with the purchase:
-        // Clear the selection and post the warnning text
-        
         DispatchQueue.main.async {
             self.onAsyncReturn()
             self.processDeferred(note)
@@ -237,12 +244,13 @@ class TipViewController: UIViewController,
             self.showWarning("You weren’t able to give a tip at this time. Please try to donate again later.")
         }
     }
-    
-    
-    @objc func storeCancel(_ note: Notification) {
 
-        // Async notification received if the user cancelled the purchase:
-        // Just clear the selection
+
+    /**
+     Async notification received if the user cancelled the purchase:
+     Just clear the selection
+     */
+    @objc func storeCancel(_ note: Notification) {
 
         DispatchQueue.main.async {
             self.onAsyncReturn()
@@ -251,11 +259,12 @@ class TipViewController: UIViewController,
     }
 
 
+    /**
+     Async notification received if payment has been deferred --
+     usually when a minor requests payment auth from a parent
+     */
     @objc func purchaseDeferred(_ note: Notification) {
 
-        // Async notification received if payment has been deferred --
-        // usually when a minor requests payment auth from a parent
-        
         // Record the payment ID...
         if let userInfo: [AnyHashable: Any] = note.userInfo {
             self.deferred = userInfo["pid"] as? String
@@ -271,11 +280,12 @@ class TipViewController: UIViewController,
     }
 
 
+    /**
+     Async notification received if the user successfully made a purchase:
+     // Clear the selection, hide the products, and post the thanks text
+     */
     @objc func showThankYou(_ note: Notification) {
 
-        // Async notification received if the user successfully made a purchase:
-        // Clear the selection, hide the products, and post the thanks text
-        
         DispatchQueue.main.async {
             self.processDeferred(note)
             self.onAsyncReturn()
@@ -284,12 +294,12 @@ class TipViewController: UIViewController,
         }
     }
 
-    
+
+    /**
+     Check if we have a deferred purchase (`self.deferred` != nil)
+     Look for a matching product ID and clear the deferred flag if they match
+     */
     private func processDeferred(_ note: Notification) {
-        
-        // Check if we have a deferred purchase (`self.deferred` != nil)
-        // Look for a matching product ID and clear the deferred flag
-        // if they match
         
         if let pid: String = self.deferred {
             if let userInfo: [AnyHashable: Any] = note.userInfo {
@@ -300,21 +310,23 @@ class TipViewController: UIViewController,
             }
         }
     }
-    
-    
-    private func onAsyncReturn() {
 
-        // Generic operations to be perfomed on async return from store operations
+
+    /**
+     Generic operations to be perfomed on async return from store operations
+     */
+    private func onAsyncReturn() {
 
         self.storeProgress.stopAnimating()
         self.clearCellHighlight()
     }
 
 
+    /**
+     If there's a reference to a cell, set when it's selected,
+     // then clear the highlight and the stored reference
+     */
     func clearCellHighlight() {
-
-        // If there's a reference to a cell, set when it's selected,
-        // then clear the highlight and the stored reference
 
         if let tvcv: TipViewCollectionViewCell = self.clickedCell {
             tvcv.isClicked = false
@@ -326,26 +338,29 @@ class TipViewController: UIViewController,
 
     // MARK: - NSCollectionViewDelegate Functions
 
+    /**
+     Return 1
+     */
     func numberOfSections(in collectionView: UICollectionView) -> Int {
-
-        // Only one section in this collection
 
         return 1
     }
 
 
+    /**
+     Just return the number of products we have, or zero
+     */
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-
-        // Just return the number of products we have, or zero
 
         return self.storeController != nil ? self.storeController!.availableProducts.count : 0
     }
 
 
+    /**
+     Create (or retrieve) a CollectionViewItem instance and configure it
+     */
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
 
-        // Create (or retrieve) a CollectionViewItem instance and configure it
-        
         // Dequeue a generic UICollectionViewCell...
         let item: UICollectionViewCell = collectionView.dequeueReusableCell(withReuseIdentifier: "com.bps.tip.view.cvi", for: indexPath)
         
@@ -368,12 +383,13 @@ class TipViewController: UIViewController,
         tcvc.priceLabel.text = "0.00"
         return tcvc
     }
-    
 
+
+    /**
+     A Product has been tapped, so highlight its cell and save a reference
+     */
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
 
-        // A Product has been tapped, so highlight its cell and save a reference
-        
         if self.clickedCell == nil {
             let tcvc: TipViewCollectionViewCell = collectionView.cellForItem(at: indexPath) as! TipViewCollectionViewCell
             if let product: SKProduct = tcvc.product {
@@ -398,8 +414,8 @@ class TipViewController: UIViewController,
             self.showWarning("Fontismo can’t find the options. Please go back to the font list and try again.")
         }
     }
-    
-    
+
+
     func updateCollectionViewSize() {
 
         if let sc: StoreController = self.storeController {
@@ -410,11 +426,12 @@ class TipViewController: UIViewController,
             }
         }
     }
-    
-    
+
+
+    /**
+     Pop up a general warning alert
+     */
     private func showWarning(_ note: String? = nil) {
-        
-        // Pop up a general warning alert
         
         var message: String = "You can’t give a tip at this time. Please try again later."
         if note != nil {
@@ -425,18 +442,19 @@ class TipViewController: UIViewController,
     }
 
 
+    /**
+     Pop up a 'thanks for your purchase' alert
+     */
     private func showThanks() {
-        
-        // Pop up a 'thanks for your purchase' alert
         
         self.showAlert("Thank You!", "Your donation is very gratefully received and will assist further Fontismo development.", true)
     }
 
 
+    /**
+     Generic alert display function which ensures the alert is actioned on the main thread
+     */
     private func showAlert(_ title: String, _ message: String, _ doExit: Bool = false) {
-
-        // Generic alert display function which ensures
-        // the alert is actioned on the main thread
 
         DispatchQueue.main.async {
             let alert = UIAlertController.init(title: title,

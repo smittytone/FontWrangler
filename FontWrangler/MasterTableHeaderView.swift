@@ -14,19 +14,19 @@ class MasterTableHeaderView: UIView {
     
     // A UIView sub-class used to provide the view set as the main table's
     // header view.
-    
-    
+
+
     // MARK: - UI properties
 
     @IBOutlet weak var leftConstraint: NSLayoutConstraint!
     @IBOutlet weak var rightConstraint: NSLayoutConstraint!
-    
-    
+
+
     // MARK: - Public Properties
     
     var parent: UITableView? = nil
-    
-    
+
+
     // MARK: - Draw Function
     
     override func draw(_ dirtyRect: CGRect) {

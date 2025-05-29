@@ -14,27 +14,31 @@ final class RetrievalView: UIView {
     
     // Translucent view containing font family download progress updates.
     // Displayed only on the Detail View Controller
-    
-    
+
+
     // MARK: - Outlet Properties
     
     @IBOutlet weak var downloadProgress: UIActivityIndicatorView!
     @IBOutlet weak var backgroundView: UIVisualEffectView!
-    
-    
+
+
     // MARK: - Control Functions
-    
+
+
+    /**
+     Present the view and start animating the indicator
+     */
     func doShow() {
         
-        // Preset the view and start animating the indicator
         self.downloadProgress.startAnimating()
         self.isHidden = false
     }
-    
-    
+
+
+    /**
+     Stop the indicator and hide the vie
+     */
     func doHide() {
-        
-        // Stop the indicator and hide the view
         
         self.downloadProgress.stopAnimating()
         self.isHidden = true
