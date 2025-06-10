@@ -20,6 +20,7 @@ enum FilterMenuItems: String {
     case headline
     case decorative
     case monospace
+    case ancient
     case viewOptions
     case new
     case installed
@@ -68,6 +69,7 @@ final class MasterViewController: UITableViewController,
         .headline: true,
         .decorative: true,
         .monospace: true,
+        .ancient: true
     ]
     
     internal var filterMenuItemIndices: [FilterMenuItems: Int] = [
@@ -75,6 +77,7 @@ final class MasterViewController: UITableViewController,
         .headline: 0,
         .decorative: 0,
         .monospace: 0,
+        .ancient: 0,
         .new: 0,
         .installed: 0,
         .uninstalled: 0,
@@ -199,6 +202,12 @@ final class MasterViewController: UITableViewController,
                                                      handler: { (action) in
                                                          self.doShowSome(action, .monospace)
                                                      })
+                                                     
+            let showAncientFontsAction = UIAction(title: "Ancient",
+                                                     image: UIImage(named: "style_anc"),
+                                                     handler: { (action) in
+                                                         self.doShowSome(action, .ancient)
+                                                     }) 
             
             let showNewFontsAction = UIAction(title: "New",
                                               handler: { (_) in
@@ -243,23 +252,29 @@ final class MasterViewController: UITableViewController,
             showHeadlineFontsAction.state = .on
             showDecorativeFontsAction.state = .on
             showMonospaceFontsAction.state = .on
+            // FROM 2.0.1
+            showAncientFontsAction.state = .on
             
+            /*
             self.filterMenuItemIndices[.classic] = 0
             self.filterMenuItemIndices[.headline] = 1
             self.filterMenuItemIndices[.decorative] = 2
             self.filterMenuItemIndices[.monospace] = 3
+            */             
             
             // Assemble the menu, add it to the central table header button,
             // and enable menu delivery by the button
             let filterMenu = UIMenu(title: "Show Typefaces that are...", children: [
                 showClassicFontsAction, showHeadlineFontsAction,
                 showDecorativeFontsAction, showMonospaceFontsAction,
+                showAncientFontsAction,
                 viewSubMenu, controlSubMenu])
             
             self.filterMenuItemIndices[.classic] = 0
             self.filterMenuItemIndices[.headline] = 1
             self.filterMenuItemIndices[.decorative] = 2
             self.filterMenuItemIndices[.monospace] = 3
+            self.filterMenuItemIndices[.ancient] = 4
             self.filterMenuItemIndices[.viewOptions] = 4
             self.filterMenuItemIndices[.new] = 0
             self.filterMenuItemIndices[.installed] = 1
@@ -573,6 +588,8 @@ final class MasterViewController: UITableViewController,
         self.viewStates[.headline] = state
         self.viewStates[.decorative] = state
         self.viewStates[.monospace] = state
+        // FROM 2.0.1
+        self.viewStates[.ancient] = state
         
         // Clear the view options
         self.viewOptions = [false, false, false]
@@ -629,6 +646,10 @@ final class MasterViewController: UITableViewController,
             
             menuItem = self.viewOptionsButton.menu!.children[self.filterMenuItemIndices[.monospace]!] as! UIAction
             menuItem.state = self.viewStates[.monospace]! ? .on : .off
+            
+            // FROM 2.0.1
+            menuItem = self.viewOptionsButton.menu!.children[self.filterMenuItemIndices[.ancient!] as! UIAction
+            menuItem.state = self.viewStates[.ancient]! ? .on : .off
             
             // Set the 'view options' submenu states
             // NOTE Only deal with menu's children 0 through 3, the specific option entries.
