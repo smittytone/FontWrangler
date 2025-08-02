@@ -252,8 +252,6 @@ final class MasterViewController: UITableViewController,
             showHeadlineFontsAction.state = .on
             showDecorativeFontsAction.state = .on
             showMonospaceFontsAction.state = .on
-            // FROM 2.0.1
-            showAncientFontsAction.state = .on
             
             /*
             self.filterMenuItemIndices[.classic] = 0
@@ -588,8 +586,6 @@ final class MasterViewController: UITableViewController,
         self.viewStates[.headline] = state
         self.viewStates[.decorative] = state
         self.viewStates[.monospace] = state
-        // FROM 2.0.1
-        self.viewStates[.ancient] = state
         
         // Clear the view options
         self.viewOptions = [false, false, false]
@@ -646,10 +642,6 @@ final class MasterViewController: UITableViewController,
             
             menuItem = self.viewOptionsButton.menu!.children[self.filterMenuItemIndices[.monospace]!] as! UIAction
             menuItem.state = self.viewStates[.monospace]! ? .on : .off
-            
-            // FROM 2.0.1
-            menuItem = self.viewOptionsButton.menu!.children[self.filterMenuItemIndices[.ancient!] as! UIAction
-            menuItem.state = self.viewStates[.ancient]! ? .on : .off
             
             // Set the 'view options' submenu states
             // NOTE Only deal with menu's children 0 through 3, the specific option entries.

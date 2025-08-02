@@ -73,8 +73,6 @@ enum kFontStyleIndices {
     static let monospace                = 3
     static let new                      = 6
     static let unknown                  = 99
-    // FROM 2.0.1
-    static let ancient                  = 4
 }
 
 enum kFontShowModeIndices {
