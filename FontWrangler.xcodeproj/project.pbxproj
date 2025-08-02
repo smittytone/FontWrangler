@@ -274,6 +274,7 @@
 					monaspice_nfm,
 					monofett,
 					monoton,
+					noto_linear_b,
 					nova_cut,
 					odibee_sans,
 					oswald,
