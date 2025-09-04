@@ -4,6 +4,7 @@
     - Correct and update Help text.
     - Update first-run intro text.
     - Improve UI language consistency.
+    - Bring codebase up to date with my other apps.
 - 2.0.0 *12 November 2024*
     - Support iOS 18 icons.
     - Add Filter menu for (iOS 14 and up only) to list fonts by typeface style, whether they are new to Fontismo, installed or uninstalled.
