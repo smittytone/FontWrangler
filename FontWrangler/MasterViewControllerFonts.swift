@@ -21,7 +21,7 @@ extension MasterViewController  {
     internal func loadDefaults() {
         
         let fm = FileManager.default
-        let defaultFontsPath = self.BUNDLE_PATH + kDefaultsPath
+        let defaultFontsPath = self.BUNDLE_PATH + FONTISMO_CONSTANTS.FONT_DEFAULTS_FILENAME
         var fontDictionary: [String: Any] = [:]
         
         if fm.fileExists(atPath: defaultFontsPath) {
@@ -95,7 +95,7 @@ extension MasterViewController  {
 
         if !self.isFontListLoaded {
             // Get the path to the list file
-            let loadPath = self.DOCS_PATH + kFontListFileSubPath
+            let loadPath = self.DOCS_PATH + FONTISMO_CONSTANTS.FONT_LIST_SUB_PATH
             
             if FileManager.default.fileExists(atPath: loadPath) {
                 // Create an array of UserFont instances to hold the loaded data
@@ -174,7 +174,7 @@ extension MasterViewController  {
     internal func saveFontList() {
 
         // The app is going into the background or closing, so save the list of devices
-        let savePath = self.DOCS_PATH + kFontListFileSubPath
+        let savePath = self.DOCS_PATH + FONTISMO_CONSTANTS.FONT_LIST_SUB_PATH
 
         do {
             // Try to encode the object to data and then try to write out the data
@@ -491,7 +491,7 @@ extension MasterViewController  {
             }
 
             // Set a timeout timer on this family-specific request
-            family.timer = Timer.scheduledTimer(withTimeInterval: kFontDownloadTimeout,
+            family.timer = Timer.scheduledTimer(withTimeInterval: FONTISMO_CONSTANTS.TIMEOUTS.FONT_DOWNLOAD,
                                                 repeats: false,
                                                 block: { (firedTimer) in
                 // Find the family associated with the fired timer
@@ -696,9 +696,9 @@ extension MasterViewController  {
 
                 // FROM 1.1.1
                 // Check if we need to run a review prompt
-                if self.installCount > kFontInstallCountBeforeReviewRequest {
+                if self.installCount > FONTISMO_CONSTANTS.PRE_REVIEW_INSTALL_COUNT {
                     self.installCount = 0
-                    UserDefaults.standard.set(self.installCount, forKey: kDefaultsKeys.fontInstallCount)
+                    UserDefaults.standard.set(self.installCount, forKey: FONTISMO_CONSTANTS.PREFS_KEYS.FONT_INSTALL_COUNT)
                     self.requestReview()
                 }
             }

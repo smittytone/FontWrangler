@@ -68,7 +68,7 @@ class FeedbackViewController: UIViewController,
         self.feedbackText.textColor = .lightGray
 
         // ...and set the text counter...
-        self.textLengthLabel.text = "0/\(kMaxFeedbackCharacters)"
+        self.textLengthLabel.text = "0/\(FONTISMO_CONSTANTS.MAX_FEEDBACK_CHARACTERS)"
         
         // ..and the 'Send' button
         self.sendButton.setTitle("Cancel", for: .normal)
@@ -289,14 +289,14 @@ class FeedbackViewController: UIViewController,
     // MARK: - UITextViewDelegate Functions
 
     /**
-     Trap text changes so that no more than kMaxFeedbackCharacters
+     Trap text changes so that no more than FONTISMO_CONSTANTS.MAX_FEEDBACK_CHARACTERS
      can be entered into the UITextView
      */
     func textViewDidChange(_ textView: UITextView) {
         
-        if self.feedbackText.text.count > kMaxFeedbackCharacters {
-            // Prune the feedback to kMaxFeedbackCharacters chars
-            let edit: Substring = self.feedbackText.text.prefix(kMaxFeedbackCharacters)
+        if self.feedbackText.text.count > FONTISMO_CONSTANTS.MAX_FEEDBACK_CHARACTERS {
+            // Prune the feedback to FONTISMO_CONSTANTS.MAX_FEEDBACK_CHARACTERS chars
+            let edit: Substring = self.feedbackText.text.prefix(FONTISMO_CONSTANTS.MAX_FEEDBACK_CHARACTERS)
             textView.text = String(edit)
             
             // Tell the user about the limit by flashing the
@@ -308,7 +308,7 @@ class FeedbackViewController: UIViewController,
         self.sendButton.setTitle(self.feedbackText.text.count > 0 ? "Send" : "Cancel", for: .normal)
 
         // Set the text length label
-        self.textLengthLabel.text = "\(self.feedbackText.text.count)/\(kMaxFeedbackCharacters)"
+        self.textLengthLabel.text = "\(self.feedbackText.text.count)/\(FONTISMO_CONSTANTS.MAX_FEEDBACK_CHARACTERS)"
     }
 
 
@@ -338,7 +338,7 @@ class FeedbackViewController: UIViewController,
         self.feedbackText.layer.borderColor = UIColor.red.cgColor
         
         // Switch the border back to grey in half a second
-        _ = Timer.scheduledTimer(withTimeInterval: kFlashBorderTime, repeats: false, block: { (timer) in
+        _ = Timer.scheduledTimer(withTimeInterval: FONTISMO_CONSTANTS.FEEDBACK_BORDER_FLASH_TIME, repeats: false, block: { (timer) in
             self.feedbackText.layer.borderColor = UIColor.gray.cgColor;
         })
     }

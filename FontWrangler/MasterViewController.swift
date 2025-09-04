@@ -19,7 +19,6 @@ enum FilterMenuItems: String {
     case headline
     case decorative
     case monospace
-    case ancient
     case viewOptions
     case new
     case installed
@@ -72,7 +71,6 @@ final class MasterViewController: UITableViewController,
         .headline: 0,
         .decorative: 0,
         .monospace: 0,
-        .ancient: 0,
         .new: 0,
         .installed: 0,
         .uninstalled: 0,
@@ -198,17 +196,17 @@ final class MasterViewController: UITableViewController,
                                                      
             let showNewFontsAction = UIAction(title: "New",
                                               handler: { (_) in
-                                                  self.setViewOptions(kFontShowModeIndices.new)
+                                                  self.setViewOptions(FONTISMO_CONSTANTS.FONT_SHOW_MODE_INDICES.NEW)
                                               })
             
             let showInstalledFontsAction = UIAction(title: "Installed",
                                                     handler: { (_) in
-                                                        self.setViewOptions(kFontShowModeIndices.installed)
+                                                        self.setViewOptions(FONTISMO_CONSTANTS.FONT_SHOW_MODE_INDICES.INSTALLED)
                                                     })
             
             let showUninstalledFontsAction = UIAction(title: "Not Iinstalled",
                                                       handler: { (_) in
-                                                          self.setViewOptions(kFontShowModeIndices.uninstalled)
+                                                          self.setViewOptions(FONTISMO_CONSTANTS.FONT_SHOW_MODE_INDICES.UNINSTALLED)
                                                       })
             
             let showAllFontsAction = UIAction(title: "Show All",
@@ -258,7 +256,6 @@ final class MasterViewController: UITableViewController,
             self.filterMenuItemIndices[.headline] = 1
             self.filterMenuItemIndices[.decorative] = 2
             self.filterMenuItemIndices[.monospace] = 3
-            self.filterMenuItemIndices[.ancient] = 4
             self.filterMenuItemIndices[.viewOptions] = 4
             self.filterMenuItemIndices[.new] = 0
             self.filterMenuItemIndices[.installed] = 1
@@ -318,8 +315,8 @@ final class MasterViewController: UITableViewController,
 
         // FROM 1.1.1
         // Get the font install count
-        self.installCount = UserDefaults.standard.integer(forKey: kDefaultsKeys.fontInstallCount)
-        UserDefaults.standard.set(self.installCount, forKey: kDefaultsKeys.fontInstallCount)
+        self.installCount = UserDefaults.standard.integer(forKey: FONTISMO_CONSTANTS.PREFS_KEYS.FONT_INSTALL_COUNT)
+        UserDefaults.standard.set(self.installCount, forKey: FONTISMO_CONSTANTS.PREFS_KEYS.FONT_INSTALL_COUNT)
     }
 
 
@@ -343,7 +340,7 @@ final class MasterViewController: UITableViewController,
         self.saveFontList()
         
         // Record the number of installs
-        UserDefaults.standard.set(self.installCount, forKey: kDefaultsKeys.fontInstallCount)
+        UserDefaults.standard.set(self.installCount, forKey: FONTISMO_CONSTANTS.PREFS_KEYS.FONT_INSTALL_COUNT)
     }
 
 
@@ -358,11 +355,11 @@ final class MasterViewController: UITableViewController,
         // self.setInstallButtonState()
         
         // FROM 1.2.0
-        self.doIndicateNewFonts = UserDefaults.standard.bool(forKey: kDefaultsKeys.shouldShowNewFonts)
+        self.doIndicateNewFonts = UserDefaults.standard.bool(forKey: FONTISMO_CONSTANTS.PREFS_KEYS.SHOW_NEW_FONTS)
         
         // FROM 2.0.0
         // Check for auto-installation
-        self.shouldAutoInstallFonts = UserDefaults.standard.bool(forKey: kDefaultsKeys.shouldAutoInstall)
+        self.shouldAutoInstallFonts = UserDefaults.standard.bool(forKey: FONTISMO_CONSTANTS.PREFS_KEYS.FONT_AUTO_INSTALL)
 
         // Show the intro panel
         // NOTE `showIntroPanel()` checks whether the panel should
@@ -382,7 +379,7 @@ final class MasterViewController: UITableViewController,
 
         // Get the default to see if we go ahead and display the intro panel
         let defaults: UserDefaults = UserDefaults.standard
-        let shouldShowIntro = defaults.bool(forKey: kDefaultsKeys.shouldShowIntro)
+        let shouldShowIntro = defaults.bool(forKey: FONTISMO_CONSTANTS.PREFS_KEYS.SHOW_INTRO)
 
         if shouldShowIntro {
             // Load and configure the menu view controller.
@@ -396,7 +393,7 @@ final class MasterViewController: UITableViewController,
             self.splitViewController!.present(ivc, animated: true, completion: nil)
 
             // Write out to defaults so that the panel isn't shown again
-            defaults.set(false, forKey: kDefaultsKeys.shouldShowIntro)
+            defaults.set(false, forKey: FONTISMO_CONSTANTS.PREFS_KEYS.SHOW_INTRO)
         }
     }
 
@@ -562,7 +559,7 @@ final class MasterViewController: UITableViewController,
     @objc
     func doShowWebsite(_ sender: Any) {
 
-        guard let webURL = URL(string: kWebsiteURL) else { fatalError("Expected a valid Fontismo website URL") }
+        guard let webURL = URL(string: FONTISMO_CONSTANTS.URLS.WEBSITE) else { fatalError("Expected a valid Fontismo website URL") }
         
         UIApplication.shared.open(webURL,
                                   options: [:],
@@ -808,14 +805,14 @@ final class MasterViewController: UITableViewController,
         guard let currentVersion = Bundle.main.object(forInfoDictionaryKey: infoDictionaryKey) as? String
             else { fatalError("Expected to find a bundle version in the info dictionary") }
 
-        if let lastVersionChecked = UserDefaults.standard.string(forKey: kDefaultsKeys.lastReviewVersion) {
+        if let lastVersionChecked = UserDefaults.standard.string(forKey: FONTISMO_CONSTANTS.PREFS_KEYS.LAST_REVIEW_VERSION) {
             // Make sure the user has not already been prompted for this version
             if currentVersion != lastVersionChecked {
                 makeRequest(currentVersion)
             }
         } else {
             // Just in case...
-            UserDefaults.standard.set("1.0.0", forKey: kDefaultsKeys.lastReviewVersion)
+            UserDefaults.standard.set("1.0.0", forKey: FONTISMO_CONSTANTS.PREFS_KEYS.LAST_REVIEW_VERSION)
             makeRequest(currentVersion)
         }
     }
@@ -836,7 +833,7 @@ final class MasterViewController: UITableViewController,
             if navigationController?.topViewController is MasterViewController {
                 // Show the rating request dialog if 'self' is present
                 SKStoreReviewController.requestReview()
-                UserDefaults.standard.set(currentVersion, forKey: kDefaultsKeys.lastReviewVersion)
+                UserDefaults.standard.set(currentVersion, forKey: FONTISMO_CONSTANTS.PREFS_KEYS.LAST_REVIEW_VERSION)
             }
         }
     }
@@ -879,7 +876,7 @@ final class MasterViewController: UITableViewController,
      */
     private func doReview() {
 
-        guard let writeReviewURL = URL(string: kAppStoreURL + "?action=write-review") else { fatalError("Expected a valid Fontismo review URL") }
+        guard let writeReviewURL = URL(string: FONTISMO_CONSTANTS.URLS.APP_STORE + "?action=write-review") else { fatalError("Expected a valid Fontismo review URL") }
 
         UIApplication.shared.open(writeReviewURL, options: [:]) { (returnValue) in
 
@@ -887,10 +884,10 @@ final class MasterViewController: UITableViewController,
             guard let currentVersion = Bundle.main.object(forInfoDictionaryKey: infoDictionaryKey) as? String
                 else { fatalError("Expected to find a bundle version in the info dictionary") }
 
-            if let lastVersionChecked = UserDefaults.standard.string(forKey: kDefaultsKeys.lastReviewVersion) {
+            if let lastVersionChecked = UserDefaults.standard.string(forKey: FONTISMO_CONSTANTS.PREFS_KEYS.LAST_REVIEW_VERSION) {
                 // Make sure the user has not already been prompted for this version
                 if currentVersion != lastVersionChecked {
-                    UserDefaults.standard.set(currentVersion, forKey: kDefaultsKeys.lastReviewVersion)
+                    UserDefaults.standard.set(currentVersion, forKey: FONTISMO_CONSTANTS.PREFS_KEYS.LAST_REVIEW_VERSION)
                 }
             }
         }

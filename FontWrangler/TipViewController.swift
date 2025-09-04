@@ -60,32 +60,32 @@ class TipViewController: UIViewController,
         let nc: NotificationCenter = .default
         nc.addObserver(self,
                        selector: #selector(productListReceived),
-                       name: NSNotification.Name(rawValue: kPaymentNotifications.updated),
+                       name: NSNotification.Name(rawValue: FONTISMO_CONSTANTS.PAYMENT_NOTIFICATIONS.UPDATED),
                        object: nil)
 
         nc.addObserver(self,
                        selector: #selector(showThankYou),
-                       name: NSNotification.Name(rawValue: kPaymentNotifications.tip),
+                       name: NSNotification.Name(rawValue: FONTISMO_CONSTANTS.PAYMENT_NOTIFICATIONS.TIP),
                        object: nil)
         
         nc.addObserver(self,
                        selector: #selector(storeFailure),
-                       name: NSNotification.Name(rawValue: kPaymentNotifications.failed),
+                       name: NSNotification.Name(rawValue: FONTISMO_CONSTANTS.PAYMENT_NOTIFICATIONS.FAILED),
                        object: nil)
         
         nc.addObserver(self,
                        selector: #selector(showThankYou),
-                       name: NSNotification.Name(rawValue: kPaymentNotifications.restored),
+                       name: NSNotification.Name(rawValue: FONTISMO_CONSTANTS.PAYMENT_NOTIFICATIONS.RESTORED),
                        object: nil)
         
         nc.addObserver(self,
                        selector: #selector(storeCancel),
-                       name: NSNotification.Name(rawValue: kPaymentNotifications.cancelled),
+                       name: NSNotification.Name(rawValue: FONTISMO_CONSTANTS.PAYMENT_NOTIFICATIONS.CANCELLED),
                        object: nil)
 
         nc.addObserver(self,
                        selector: #selector(purchaseDeferred),
-                       name: NSNotification.Name(rawValue: kPaymentNotifications.inflight),
+                       name: NSNotification.Name(rawValue: FONTISMO_CONSTANTS.PAYMENT_NOTIFICATIONS.INFLIGHT),
                        object: nil)
     }
 
@@ -160,11 +160,11 @@ class TipViewController: UIViewController,
         
         let isPortrait: Bool = size.height > size.width
         if !isPortrait {
-            upperLogoConstraint.constant = kLogoLandscapeSeparation
-            upperTextConstraint.constant = kTextLandscapeSeparation
+            upperLogoConstraint.constant = FONTISMO_CONSTANTS.TIP_LOGO_LANDSCAPE_SEPARATION
+            upperTextConstraint.constant = FONTISMO_CONSTANTS.TIP_TEXT_LANDSCAPE_SEPARATION
         } else {
-            upperLogoConstraint.constant = kStandardSeparation
-            upperTextConstraint.constant = kStandardSeparation
+            upperLogoConstraint.constant = FONTISMO_CONSTANTS.TIP_ITEM_SEPARATION
+            upperTextConstraint.constant = FONTISMO_CONSTANTS.TIP_ITEM_SEPARATION
         }
     }
 

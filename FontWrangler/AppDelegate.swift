@@ -27,38 +27,38 @@ class AppDelegate: UIResponder,
 
         // The app version
         defaults.set(Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as! String,
-                     forKey: kDefaultsKeys.appVersion)
+                     forKey: FONTISMO_CONSTANTS.PREFS_KEYS.APP_VERSION)
 
         // The app build
         defaults.set(Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as! String,
-                     forKey: kDefaultsKeys.appBuild)
+                     forKey: FONTISMO_CONSTANTS.PREFS_KEYS.APP_BUILD)
 
         // Whether the app should show first-run guidance
         // NOTE Check for key presence before writing a default value, otherwise
         //      the panel is always shown when the app launches
-        let introKeyIsPresent = defaults.object(forKey: kDefaultsKeys.shouldShowIntro)
+        let introKeyIsPresent = defaults.object(forKey: FONTISMO_CONSTANTS.PREFS_KEYS.SHOW_INTRO)
         if introKeyIsPresent == nil {
-            defaults.set(true, forKey: kDefaultsKeys.shouldShowIntro)
+            defaults.set(true, forKey: FONTISMO_CONSTANTS.PREFS_KEYS.SHOW_INTRO)
         }
         
         // Set the creators string for the Settings > Authors readout
         let creators = self.getCreators()
         if !creators.isEmpty {
-            defaults.set(creators, forKey: kDefaultsKeys.authors)
+            defaults.set(creators, forKey: FONTISMO_CONSTANTS.PREFS_KEYS.AUTHORS)
         }
         
         // FROM 1.2.0
         // Highlight fonts added to the app in this version
-        let newKeyIsPresent = defaults.object(forKey: kDefaultsKeys.shouldShowNewFonts)
+        let newKeyIsPresent = defaults.object(forKey: FONTISMO_CONSTANTS.PREFS_KEYS.SHOW_NEW_FONTS)
         if newKeyIsPresent == nil {
-            defaults.set(true, forKey: kDefaultsKeys.shouldShowNewFonts)
+            defaults.set(true, forKey: FONTISMO_CONSTANTS.PREFS_KEYS.SHOW_NEW_FONTS)
         }
         
         // FROM 2.0.0
         // Automatically install previewed fonts
-        let shouldAutoInstall = defaults.object(forKey: kDefaultsKeys.shouldAutoInstall)
+        let shouldAutoInstall = defaults.object(forKey: FONTISMO_CONSTANTS.PREFS_KEYS.FONT_AUTO_INSTALL)
         if shouldAutoInstall == nil {
-            defaults.set(false, forKey: kDefaultsKeys.shouldAutoInstall)
+            defaults.set(false, forKey: FONTISMO_CONSTANTS.PREFS_KEYS.FONT_AUTO_INSTALL)
         }
         
         return true
@@ -102,7 +102,7 @@ class AppDelegate: UIResponder,
     func getCreators() -> String {
         
         let fm = FileManager.default
-        let defaultFontsPath = self.bundlePath + kDefaultsPath
+        let defaultFontsPath = self.bundlePath + FONTISMO_CONSTANTS.FONT_DEFAULTS_FILENAME
         var fontDictionary: [String: Any] = [:]
         
         if fm.fileExists(atPath: defaultFontsPath) {

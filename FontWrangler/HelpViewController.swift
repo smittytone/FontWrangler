@@ -37,7 +37,7 @@ final class HelpViewController: UIViewController,
         self.pageIndex = 0
 
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
-        for i in 0..<kHelpPageCount {
+        for i in 0..<FONTISMO_CONSTANTS.HELP_PAGE_COUNT {
             let hpvc: HelpPageViewController = storyboard.instantiateViewController(withIdentifier: "help.page.view") as! HelpPageViewController
             hpvc.index = i
             pageViewControllers.append(hpvc)
@@ -110,7 +110,7 @@ final class HelpViewController: UIViewController,
         
         let hpvc: HelpPageViewController = viewController as! HelpPageViewController
         
-        if hpvc.index == kHelpPageCount - 1 {
+        if hpvc.index == FONTISMO_CONSTANTS.HELP_PAGE_COUNT - 1 {
             // Return nil to indicate we can't go any further
             return nil
         }
@@ -124,7 +124,7 @@ final class HelpViewController: UIViewController,
         
         // NOTE This has to be set absolutely - the view controller has not been populated
         //      when this is first called
-        return kHelpPageCount
+        return FONTISMO_CONSTANTS.HELP_PAGE_COUNT
     }
 
     

@@ -288,22 +288,22 @@ extension MasterViewController {
                 }
                 
                 // If any of the options are `true` and the relevant family property is set, add the family
-                if self.viewOptions[kFontShowModeIndices.new] && !family.isNew {
+                if self.viewOptions[FONTISMO_CONSTANTS.FONT_SHOW_MODE_INDICES.NEW] && !family.isNew {
                     // Family isn't new, so move to the next one
                     continue
                 }
 
-                if self.viewOptions[kFontShowModeIndices.installed] == self.viewOptions[kFontShowModeIndices.uninstalled] {
+                if self.viewOptions[FONTISMO_CONSTANTS.FONT_SHOW_MODE_INDICES.INSTALLED] == self.viewOptions[FONTISMO_CONSTANTS.FONT_SHOW_MODE_INDICES.UNINSTALLED] {
                     self.displayFamilies.append(family)
                     continue
                 }
                 
-                if self.viewOptions[kFontShowModeIndices.installed] && family.fontsAreInstalled {
+                if self.viewOptions[FONTISMO_CONSTANTS.FONT_SHOW_MODE_INDICES.INSTALLED] && family.fontsAreInstalled {
                     self.displayFamilies.append(family)
                     continue
                 }
                 
-                if self.viewOptions[kFontShowModeIndices.uninstalled] && !family.fontsAreInstalled {
+                if self.viewOptions[FONTISMO_CONSTANTS.FONT_SHOW_MODE_INDICES.UNINSTALLED] && !family.fontsAreInstalled {
                     self.displayFamilies.append(family)
                 }
             }

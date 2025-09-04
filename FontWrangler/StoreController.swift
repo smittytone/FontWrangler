@@ -74,7 +74,7 @@ final class StoreController: NSObject,
         } else {
             // Could not establish the request, so treat this as a failure
             // and notify the host view controller
-            self.notifyParent(kPaymentNotifications.failed)
+            self.notifyParent(FONTISMO_CONSTANTS.PAYMENT_NOTIFICATIONS.FAILED)
         }
     }
 
@@ -110,7 +110,7 @@ final class StoreController: NSObject,
         }
 #endif
         // Tell the host view controller the Product list has been updated
-        notifyParent(kPaymentNotifications.updated)
+        notifyParent(FONTISMO_CONSTANTS.PAYMENT_NOTIFICATIONS.UPDATED)
     }
 
 
@@ -142,14 +142,14 @@ final class StoreController: NSObject,
                 case .purchasing:
                     purchaseState = "purchase in flight"
                 case .deferred:
-                    self.notifyParent(kPaymentNotifications.inflight, userInfo)
+                    self.notifyParent(FONTISMO_CONSTANTS.PAYMENT_NOTIFICATIONS.INFLIGHT, userInfo)
                     purchaseState = "purchase deferred"
                 case .purchased:
-                    self.notifyParent(kPaymentNotifications.tip, userInfo)
+                    self.notifyParent(FONTISMO_CONSTANTS.PAYMENT_NOTIFICATIONS.TIP, userInfo)
                     purchaseState = "purchase succeeded"
                     doFinishTransaction = true
                 case .restored:
-                    self.notifyParent(kPaymentNotifications.restored)
+                    self.notifyParent(FONTISMO_CONSTANTS.PAYMENT_NOTIFICATIONS.RESTORED)
                     purchaseState = "purchases restored"
                     doFinishTransaction = true
                 case .failed:
@@ -159,10 +159,10 @@ final class StoreController: NSObject,
                     // Trap cancelled purchases so we send the correct
                     // notification to the host view controller
                     if (transaction.error as? SKError)?.code == .paymentCancelled {
-                        self.notifyParent(kPaymentNotifications.cancelled, userInfo)
+                        self.notifyParent(FONTISMO_CONSTANTS.PAYMENT_NOTIFICATIONS.CANCELLED, userInfo)
                         purchaseState = "purchase cancelled"
                     } else {
-                        self.notifyParent(kPaymentNotifications.failed, userInfo)
+                        self.notifyParent(FONTISMO_CONSTANTS.PAYMENT_NOTIFICATIONS.FAILED, userInfo)
                         purchaseState = "purchase failed"
 
                         if let err = transaction.error {

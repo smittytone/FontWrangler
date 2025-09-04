@@ -47,10 +47,10 @@ class DetailViewController: UIViewController,
 
     private var substituteFont: UIFont? = nil
     private var variantsButton: UIBarButtonItem? = nil
-    private var fontSize: CGFloat = kBaseDynamicSampleFontSize
+    private var fontSize: CGFloat = FONTISMO_CONSTANTS.FONT_DYNAMIC_SIZE
     private var hasFlipped: Bool = false
     private var dynamicFlipBoundary: CGFloat = 0.0
-    private var storeSliderValue: Float = Float(kBaseDynamicSampleFontSize)
+    private var storeSliderValue: Float = Float(FONTISMO_CONSTANTS.FONT_DYNAMIC_SIZE)
 
 
     // MARK: - Lifecycle Functions
@@ -67,13 +67,13 @@ class DetailViewController: UIViewController,
         self.variantsButton = rightButton
         
         // Set the base size
-        self.substituteFont = UIFont(name: "Arial", size: KBaseUserSampleFontSize)
-        self.fontSize = kBaseDynamicSampleFontSize
+        self.substituteFont = UIFont(name: "Arial", size: FONTISMO_CONSTANTS.FONT_SAMPLE_SIZE)
+        self.fontSize = FONTISMO_CONSTANTS.FONT_DYNAMIC_SIZE
         self.fontSizeSlider.value = Float(self.fontSize)
         self.fontSizeLabel.text = "\(Int(self.fontSize))pt"
         
         // Set the font sample text
-        self.dynamicSampleTextView.text = kFontSampleText_1
+        self.dynamicSampleTextView.text = FONTISMO_CONSTANTS.FONT_SAMPLE[0]
         self.dynamicSampleTextView.isEditable = true
         self.dynamicSampleTextView.alpha = 0.3
         self.dynamicSampleTextView.textContainer.lineBreakMode = .byCharWrapping
@@ -331,10 +331,10 @@ class DetailViewController: UIViewController,
                 //let numLines = Int(self.dynamicSampleTextView.contentSize.height / self.dynamicSampleTextView.font!.lineHeight)
                 let numLines: Int = self.dynamicSampleTextView.layoutManager.lines
 
-                if numLines > kFontSampleText_1_Lines && self.fontSize > CGFloat(kFontSampleText_1_Limit) {
+                if numLines > FONTISMO_CONSTANTS.FONT_SAMPLE_LINES && self.fontSize > CGFloat(FONTISMO_CONSTANTS.FONT_SAMPLE_LIMIT) {
                     // At least one line has wrapped, so trigger a flip:
                     // Use the un-broken text so it wraps right: no orphans
-                    self.dynamicSampleTextView.text = kFontSampleText_2
+                    self.dynamicSampleTextView.text = FONTISMO_CONSTANTS.FONT_SAMPLE[1]
                     self.hasFlipped = true
 
                     // First time, record the font size at which the flip occurred
@@ -346,7 +346,7 @@ class DetailViewController: UIViewController,
                 // We are flipped - do we need to flip back? Only if the displayed
                 // font size is less than the size at which we flipped
                 if self.fontSize < self.dynamicFlipBoundary {
-                    self.dynamicSampleTextView.text = kFontSampleText_1
+                    self.dynamicSampleTextView.text = FONTISMO_CONSTANTS.FONT_SAMPLE[0]
                     self.hasFlipped = false
                 }
             }
