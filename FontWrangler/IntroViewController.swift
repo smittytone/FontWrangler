@@ -1,17 +1,16 @@
-
-//  IntroViewController.swift
-//  Fontismo
-//
-//
-//  Created by Tony Smith on 10/04/2020.
-//  Copyright © 2025 Tony Smith. All rights reserved.
-
+/*
+ *  IntroViewController.swift
+ *  Fontismo
+ *
+ *  Created by Tony Smith on 10/04/2020.
+ *  Copyright © 2025 Tony Smith. All rights reserved.
+ */
 
 import UIKit
 
 
 final class IntroViewController: UIViewController {
-    
+
     // A sub-class of UIViewController used to add a close button
     // to the presented view
 
@@ -38,11 +37,14 @@ final class IntroViewController: UIViewController {
     /**
      Close the Help panel
      */
-    @IBAction func doClose(_ sender: Any) {
-        
+    @IBAction
+    func doClose(_ sender: Any) {
+
         self.dismiss(animated: true, completion: nil)
     }
 
+
+    // MARK: - Utility Functions
 
     /**
      Add images to the intro text string
@@ -54,15 +56,15 @@ final class IntroViewController: UIViewController {
     internal func makeDisplayString() {
         
         var mas: NSMutableAttributedString = NSMutableAttributedString(attributedString: self.ownTextView.attributedText)
-        if let image = UIImage.init(systemName: "square.and.arrow.down") {
+        if let image = UIImage(systemName: "square.and.arrow.down") {
             mas = self.addImage(mas, 0, image.withTintColor(.label))
         }
         
-        if let image = UIImage.init(systemName: "trash") {
+        if let image = UIImage(systemName: "trash") {
             mas = self.addImage(mas, 1, image.withTintColor(.label))
         }
         
-        if let image = UIImage.init(systemName: "ellipsis.circle") {
+        if let image = UIImage(systemName: "ellipsis.circle") {
             mas = self.addImage(mas, 2, image.withTintColor(.label))
         }
         
@@ -91,12 +93,12 @@ final class IntroViewController: UIViewController {
                 // We're at the correct placeholder, so remove the placeholder and replace it
                 // with an image insertion (the image is the one supplied)
                 let leftRange: NSRange = NSMakeRange(0, range.location)
-                let left: NSMutableAttributedString = NSMutableAttributedString.init(attributedString: text.attributedSubstring(from: leftRange))
+                let left: NSMutableAttributedString = NSMutableAttributedString(attributedString: text.attributedSubstring(from: leftRange))
     
                 let rightRange = NSMakeRange(range.location + range.length, nText.length - range.location + range.length - 2)
-                let right: NSMutableAttributedString = NSMutableAttributedString.init(attributedString: text.attributedSubstring(from: rightRange))
+                let right: NSMutableAttributedString = NSMutableAttributedString(attributedString: text.attributedSubstring(from: rightRange))
                 
-                let imageAttachment = NSTextAttachment.init()
+                let imageAttachment = NSTextAttachment()
                 imageAttachment.image = image
                 let middle = NSMutableAttributedString(attachment: imageAttachment)
 

@@ -1,18 +1,16 @@
-
-//  UserTestSampleView.swift
-//  Fontismo
-//
-//
-//  Created by Tony Smith on 10/04/2020.
-//  Copyright © 2025 Tony Smith. All rights reserved.
-
+/*
+ *  UserTestSampleView.swift
+ *  Fontismo
+ *
+ *  Created by Tony Smith on 10/04/2024.
+ *  Copyright © 2025 Tony Smith. All rights reserved.
+ */
 
 import UIKit
 
 
 final class UserTestSampleView: UIView {
-    
-    
+
     // A UIView sub-class used to draw a rounded red rectangle around
     // the view's contents.
     
@@ -33,5 +31,4 @@ final class UserTestSampleView: UIView {
         path.lineWidth = 2.0
         path.stroke(with: .normal, alpha: 0.7)
     }
-
 }

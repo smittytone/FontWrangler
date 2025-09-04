@@ -1,11 +1,10 @@
-
-//  MasterTableHeaderView.swift
-//  Fontismo
-//
-//
-//  Created by Tony Smith on 18/10/2024.
-//  Copyright © 2025 Tony Smith. All rights reserved.
-
+/*
+ *  MasterTableHeaderView.swift
+ *  Fontismo
+ *
+ *  Created by Tony Smith on 18/10/2024.
+ *  Copyright © 2025 Tony Smith. All rights reserved.
+ */
 
 import UIKit
 
@@ -14,7 +13,6 @@ class MasterTableHeaderView: UIView {
     
     // A UIView sub-class used to provide the view set as the main table's
     // header view.
-
 
     // MARK: - UI properties
 
@@ -28,7 +26,7 @@ class MasterTableHeaderView: UIView {
 
 
     // MARK: - Draw Function
-    
+
     override func draw(_ dirtyRect: CGRect) {
         
         // Adjust the left and right margin constrainsts

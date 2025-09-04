@@ -1,11 +1,10 @@
-
-//  TipViewController.swift
-//  Fontismo
-//
-//
-//  Created by Tony Smith on 03/04/2022.
-//  Copyright © 2025 Tony Smith. All rights reserved.
-
+/*
+ *  TipViewController.swift
+ *  Fontismo
+ *
+ *  Created by Tony Smith on 03/04/2022.
+ *  Copyright © 2025 Tony Smith. All rights reserved.
+ */
 
 import UIKit
 import StoreKit
@@ -29,18 +28,18 @@ class TipViewController: UIViewController,
     private var storeController: StoreController? = nil
     private var clickedCell: TipViewCollectionViewCell? = nil
     private var deferred: String? = nil
-    private var deferTime: Date = Date.init(timeIntervalSinceNow: 0.0)
+    private var deferTime: Date = Date(timeIntervalSinceNow: 0.0)
     private var productIcons: [String] = ["🍬", "☕️", "🍩", "🥧", "🍱"]
 
 
-    // MARK: - Initialisation Functions
-    
+    // MARK: - Lifecycle Functions
+
     override func viewDidLoad() {
         
         super.viewDidLoad()
 
         // Set up the App Store mediatator
-        self.storeController = StoreController.init()
+        self.storeController = StoreController()
         if self.storeController != nil {
             self.storeController!.initPaymentQueue()
         }
@@ -61,32 +60,32 @@ class TipViewController: UIViewController,
         let nc: NotificationCenter = .default
         nc.addObserver(self,
                        selector: #selector(productListReceived),
-                       name: NSNotification.Name.init(rawValue: kPaymentNotifications.updated),
+                       name: NSNotification.Name(rawValue: kPaymentNotifications.updated),
                        object: nil)
 
         nc.addObserver(self,
                        selector: #selector(showThankYou),
-                       name: NSNotification.Name.init(rawValue: kPaymentNotifications.tip),
+                       name: NSNotification.Name(rawValue: kPaymentNotifications.tip),
                        object: nil)
         
         nc.addObserver(self,
                        selector: #selector(storeFailure),
-                       name: NSNotification.Name.init(rawValue: kPaymentNotifications.failed),
+                       name: NSNotification.Name(rawValue: kPaymentNotifications.failed),
                        object: nil)
         
         nc.addObserver(self,
                        selector: #selector(showThankYou),
-                       name: NSNotification.Name.init(rawValue: kPaymentNotifications.restored),
+                       name: NSNotification.Name(rawValue: kPaymentNotifications.restored),
                        object: nil)
         
         nc.addObserver(self,
                        selector: #selector(storeCancel),
-                       name: NSNotification.Name.init(rawValue: kPaymentNotifications.cancelled),
+                       name: NSNotification.Name(rawValue: kPaymentNotifications.cancelled),
                        object: nil)
 
         nc.addObserver(self,
                        selector: #selector(purchaseDeferred),
-                       name: NSNotification.Name.init(rawValue: kPaymentNotifications.inflight),
+                       name: NSNotification.Name(rawValue: kPaymentNotifications.inflight),
                        object: nil)
     }
 
@@ -108,6 +107,9 @@ class TipViewController: UIViewController,
     }
 
 
+    /**
+     Check that the store controller can contact the backend.
+     */
     private func initStore() {
         
         // Start the loading animation
@@ -126,7 +128,7 @@ class TipViewController: UIViewController,
 
 
     /**
-     Update the collection view on rotation
+     Update the collection view on rotation.
      */
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
 
@@ -149,7 +151,10 @@ class TipViewController: UIViewController,
      
      NOTE When called ahead of a rotation, the value of `size`
           is what the frame will **become** -- otherwise it's what
-          the frame **is**
+          the frame **is**.
+
+     - Parameters:
+        - size The size of the constraint.
      */
     private func setKeyConstraints(_ size: CGSize) {
         
@@ -161,12 +166,11 @@ class TipViewController: UIViewController,
             upperLogoConstraint.constant = kStandardSeparation
             upperTextConstraint.constant = kStandardSeparation
         }
-         
     }
 
 
     /**
-     Hide the Products collection view
+     Hide the Products collection view.
      */
     private func hideProductList() {
 
@@ -176,14 +180,14 @@ class TipViewController: UIViewController,
 
 
     /**
-     Reload and preseent the Products collection view
+     Reload and preseent the Products collection view.
      */
     private func showProductList() {
         
         self.priceCollectionView.reloadData()
         updateCollectionViewSize()
         
-        if self.deferred == nil || (Date.init(timeIntervalSinceNow: 0.0) > Date.init(timeInterval: 86400, since: self.deferTime)) {
+        if self.deferred == nil || (Date(timeIntervalSinceNow: 0.0) > Date(timeInterval: 86400, since: self.deferTime)) {
             // Always clear the deferred flag if it's clear anyway, or the defer period is up (24 hours)
             self.deferred = nil
             self.priceCollectionView.isUserInteractionEnabled = true
@@ -200,19 +204,22 @@ class TipViewController: UIViewController,
     // MARK: - Action Functions
     
     /**
-     User has clicked 'Done', so just close the sheet
+     User has clicked `Done`, so just close the sheet.
      */
-    @IBAction @objc func doDone(_ sender: Any) {
-        
+    @IBAction
+    @objc
+    func doDone(_ sender: Any) {
+
         self.dismiss(animated: true, completion: nil)
     }
 
 
     /**
-     Async notification received when we get a list of products from the store: Show the Products
+     Async notification received when we get a list of products from the store: Show the Products.
      */
-    @objc func productListReceived(_ note: Notification) {
-        
+    @objc
+    func productListReceived(_ note: Notification) {
+
         DispatchQueue.main.async {
             self.onAsyncReturn()
 
@@ -233,9 +240,10 @@ class TipViewController: UIViewController,
 
     /**
      Async notification received if something went wrong with the purchase:
-     Clear the selection and post the warnning text
+     Clear the selection and post the warnning text.
      */
-    @objc func storeFailure(_ note: Notification) {
+    @objc
+    func storeFailure(_ note: Notification) {
 
         DispatchQueue.main.async {
             self.onAsyncReturn()
@@ -248,9 +256,10 @@ class TipViewController: UIViewController,
 
     /**
      Async notification received if the user cancelled the purchase:
-     Just clear the selection
+     Just clear the selection.
      */
-    @objc func storeCancel(_ note: Notification) {
+    @objc
+    func storeCancel(_ note: Notification) {
 
         DispatchQueue.main.async {
             self.onAsyncReturn()
@@ -261,14 +270,15 @@ class TipViewController: UIViewController,
 
     /**
      Async notification received if payment has been deferred --
-     usually when a minor requests payment auth from a parent
+     usually when a minor requests payment auth from a parent.
      */
-    @objc func purchaseDeferred(_ note: Notification) {
+    @objc
+    func purchaseDeferred(_ note: Notification) {
 
         // Record the payment ID...
         if let userInfo: [AnyHashable: Any] = note.userInfo {
             self.deferred = userInfo["pid"] as? String
-            self.deferTime = Date.init(timeIntervalSinceNow: 0.0)
+            self.deferTime = Date(timeIntervalSinceNow: 0.0)
         }
         
         // ...and then deactivate the Product List
@@ -282,9 +292,10 @@ class TipViewController: UIViewController,
 
     /**
      Async notification received if the user successfully made a purchase:
-     // Clear the selection, hide the products, and post the thanks text
+     // Clear the selection, hide the products, and post the thanks text.
      */
-    @objc func showThankYou(_ note: Notification) {
+    @objc
+    func showThankYou(_ note: Notification) {
 
         DispatchQueue.main.async {
             self.processDeferred(note)
@@ -297,7 +308,7 @@ class TipViewController: UIViewController,
 
     /**
      Check if we have a deferred purchase (`self.deferred` != nil)
-     Look for a matching product ID and clear the deferred flag if they match
+     Look for a matching product ID and clear the deferred flag if they match.
      */
     private func processDeferred(_ note: Notification) {
         
@@ -305,7 +316,7 @@ class TipViewController: UIViewController,
             if let userInfo: [AnyHashable: Any] = note.userInfo {
                 if pid == userInfo["pid"] as! String {
                     self.deferred = nil
-                    self.deferTime = Date.init(timeIntervalSinceNow: 0.0)
+                    self.deferTime = Date(timeIntervalSinceNow: 0.0)
                 }
             }
         }
@@ -313,7 +324,7 @@ class TipViewController: UIViewController,
 
 
     /**
-     Generic operations to be perfomed on async return from store operations
+     Generic operations to be perfomed on async return from store operations.
      */
     private func onAsyncReturn() {
 
@@ -324,7 +335,7 @@ class TipViewController: UIViewController,
 
     /**
      If there's a reference to a cell, set when it's selected,
-     // then clear the highlight and the stored reference
+     // then clear the highlight and the stored reference.
      */
     func clearCellHighlight() {
 
@@ -339,7 +350,7 @@ class TipViewController: UIViewController,
     // MARK: - NSCollectionViewDelegate Functions
 
     /**
-     Return 1
+     Return 1.
      */
     func numberOfSections(in collectionView: UICollectionView) -> Int {
 
@@ -348,7 +359,7 @@ class TipViewController: UIViewController,
 
 
     /**
-     Just return the number of products we have, or zero
+     Just return the number of products we have, or zero.
      */
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
 
@@ -357,7 +368,7 @@ class TipViewController: UIViewController,
 
 
     /**
-     Create (or retrieve) a CollectionViewItem instance and configure it
+     Create (or retrieve) a CollectionViewItem instance and configure it.
      */
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
 
@@ -386,7 +397,7 @@ class TipViewController: UIViewController,
 
 
     /**
-     A Product has been tapped, so highlight its cell and save a reference
+     A Product has been tapped, so highlight its cell and save a reference.
      */
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
 
@@ -429,7 +440,7 @@ class TipViewController: UIViewController,
 
 
     /**
-     Pop up a general warning alert
+     Pop up a general warning alert.
      */
     private func showWarning(_ note: String? = nil) {
         
@@ -443,7 +454,7 @@ class TipViewController: UIViewController,
 
 
     /**
-     Pop up a 'thanks for your purchase' alert
+     Pop up a `thanks for your purchase` alert.
      */
     private func showThanks() {
         
@@ -452,14 +463,19 @@ class TipViewController: UIViewController,
 
 
     /**
-     Generic alert display function which ensures the alert is actioned on the main thread
+     Generic alert display function which ensures the alert is actioned on the main thread.
+
+     - Parameters:
+        - title   The alert's heading.
+        - message The alert's body text.
+        - doExit  `true` to exit immediately. Default: `false`.
      */
     private func showAlert(_ title: String, _ message: String, _ doExit: Bool = false) {
 
         DispatchQueue.main.async {
-            let alert = UIAlertController.init(title: title,
-                                               message: message,
-                                               preferredStyle: .alert)
+            let alert = UIAlertController(title: title,
+                                          message: message,
+                                          preferredStyle: .alert)
 
             // Set the exit closure: it just closes the view controller
             let outHandler: ((UIAlertAction) -> Void) = { action in
@@ -479,5 +495,4 @@ class TipViewController: UIViewController,
             }
         }
     }
-
 }

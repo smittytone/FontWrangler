@@ -1,11 +1,10 @@
-
-//  HelpPageViewController.swift
-//  Fontismo
-//
-//
-//  Created by Tony Smith on 02/04/2020.
-//  Copyright © 2025 Tony Smith. All rights reserved.
-
+/*
+ *  HelpPageViewController.swift
+ *  Fontismo
+ *
+ *  Created by Tony Smith on 02/04/2020.
+ *  Copyright © 2025 Tony Smith. All rights reserved.
+ */
 
 import UIKit
 @preconcurrency import WebKit
@@ -23,17 +22,18 @@ final class HelpPageViewController: UIViewController,
     @IBOutlet weak var pageWebView: WKWebView!
 
 
-    // MARK: - Object Properties
+    // MARK: - Public Properties
 
-    // Public
     var index: Int = 0
-    
-    // Private
+
+
+    // MARK: - Private Properties
+
     private var helpNav: WKNavigation? = nil
 
 
     // MARK: - Lifecycle Functions
-    
+
     override func viewDidLoad() {
         
         super.viewDidLoad()
@@ -63,19 +63,19 @@ final class HelpPageViewController: UIViewController,
         // Load up the page data
         let dir_url = Bundle.main.bundleURL.appendingPathComponent("help")
         self.helpNav = self.pageWebView.loadFileURL(page_url, allowingReadAccessTo: dir_url)
-        self.pageWebView.evaluateJavaScript("window.scrollTo(0,0)",
-                                            completionHandler: nil)
+        self.pageWebView.evaluateJavaScript("window.scrollTo(0,0)", completionHandler: nil)
     }
 
 
     // MARK: - WKWebView Navigation Functions
 
+    /**
+     Asynchronously show the page view once the HTML file has loaded (triggered by delegate method).
+
+     FROM 2.0.0
+     */
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
         
-        // FROM 2.0.0
-        // Asynchronously show the page view once the HTML file has loaded
-        // (triggered by delegate method)
-
         if let nav = self.helpNav {
             if nav == navigation {
                 // Display the view: we include a timer to allow rendering to complete
@@ -98,11 +98,9 @@ final class HelpPageViewController: UIViewController,
         if navigationAction.navigationType == .linkActivated {
             // The user clicked on a link
             if let linkURL = navigationAction.request.url {
-
 #if DEBUG
                 print(linkURL.absoluteString)
 #endif
-
                 if linkURL.absoluteString == "https://settings/" {
                     if let settingsURL = URL(string: UIApplication.openSettingsURLString) {
                         self.openURL(settingsURL)

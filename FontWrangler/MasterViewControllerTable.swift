@@ -1,11 +1,10 @@
-
-//  MasterViewControllerTable.swift
-//  Fontismo
-//  UITableViewDelegate and UITableViewDataSource functions
-//
-//  Created by Tony Smith on 17/10/2024.
-//  Copyright © 2025 Tony Smith. All rights reserved.
-
+/*
+ *  MasterViewControllerTable.swift
+ *  Fontismo
+ *
+ *  Created by Tony Smith on 17/10/20204.
+ *  Copyright © 2025 Tony Smith. All rights reserved.
+ */
 
 import UIKit
 
@@ -22,7 +21,7 @@ extension MasterViewController {
 
 
     /**
-     Return the number of families to display
+     Return the number of families to display.
      */
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
@@ -31,7 +30,7 @@ extension MasterViewController {
 
 
     /**
-     Return the custom table header row
+     Return the custom table header row.
      */
     override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
 
@@ -41,7 +40,7 @@ extension MasterViewController {
 
 
     /**
-     Return the requested table cell
+     Return the requested table cell.
      */
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
@@ -62,8 +61,8 @@ extension MasterViewController {
             // Highlight new fonts
             if family.isNew && self.doIndicateNewFonts {
                 let labelString = NSMutableAttributedString(string: family.name + (family.isNerdFont ? " Nerd Font " : " "))
-                let imageAttachment: NSTextAttachment = NSTextAttachment.init()
-                if let sealImage = UIImage.init(systemName: "checkmark.seal.fill") {
+                let imageAttachment: NSTextAttachment = NSTextAttachment()
+                if let sealImage = UIImage(systemName: "checkmark.seal.fill") {
                     imageAttachment.image = sealImage.withTintColor(UIColor.systemBlue)
                     let imageString = NSAttributedString(attachment: imageAttachment)
                     labelString.append(imageString)
@@ -81,8 +80,8 @@ extension MasterViewController {
                 // Set the accessory view
                 if family.fontsAreInstalled {
                     // Add a circled tick as the accessory if the font is installed
-                    if let accessoryImage: UIImage = UIImage.init(systemName: "checkmark.circle.fill") {
-                        let accessoryView: UIImageView = UIImageView.init(frame: CGRect.init(x: 0.0, y: 0.0, width: 24.0, height: 24.0))
+                    if let accessoryImage: UIImage = UIImage(systemName: "checkmark.circle.fill") {
+                        let accessoryView: UIImageView = UIImageView(frame: CGRect(x: 0.0, y: 0.0, width: 24.0, height: 24.0))
                         accessoryView.image = accessoryImage
                         accessoryView.contentMode = .scaleToFill
                         cell.accessoryView = accessoryView
@@ -94,16 +93,16 @@ extension MasterViewController {
                     if family.progress != nil {
                         // FROM 2.0.0
                         // Set an activity indicator as the cell's accessory view
-                        let accessoryView: UIActivityIndicatorView = UIActivityIndicatorView.init(frame: CGRect.init(x: 0.0, y: 0.0, width: 24.0, height: 24.0))
+                        let accessoryView: UIActivityIndicatorView = UIActivityIndicatorView(frame: CGRect(x: 0.0, y: 0.0, width: 24.0, height: 24.0))
                         accessoryView.color = UIColor.systemBlue
                         accessoryView.style = .medium
                         accessoryView.contentMode = .scaleToFill
                         accessoryView.startAnimating()
                         cell.accessoryView = accessoryView
-                    } else if let accessoryImage: UIImage = UIImage.init(named: "spacer") {
+                    } else if let accessoryImage: UIImage = UIImage(named: "spacer") {
                         // The family's not being downloaded, so just place the space image
                         // to maintain the size
-                        let accessoryView: UIImageView = UIImageView.init(frame: CGRect.init(x: 0.0, y: 0.0, width: 24.0, height: 24.0))
+                        let accessoryView: UIImageView = UIImageView(frame: CGRect(x: 0.0, y: 0.0, width: 24.0, height: 24.0))
                         accessoryView.image = accessoryImage
                         cell.accessoryView = accessoryView
                     } else {
@@ -131,7 +130,7 @@ extension MasterViewController {
             }
             
             // Set preview image using the font family's tags
-            cell.fontPreviewImageView.image = UIImage.init(named: family.tag)
+            cell.fontPreviewImageView.image = UIImage(named: family.tag)
             
             // FROM 2.0.0 Set the image tint as we're now using template images
             cell.fontPreviewImageView.tintColor = .label
@@ -141,57 +140,53 @@ extension MasterViewController {
 
 
     /**
-     Actions that appear when the table view cell is swiped L-R
-     
-     NOTE These actions affect all families
+     Actions that appear when the table view cell is swiped L-R.
+
+     NOTE These actions affect all families.
      */
     override func tableView(_ tableView: UITableView, leadingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
 
         var config: UISwipeActionsConfiguration? = nil
         var actions = [UIContextualAction]()
-        var action: UIContextualAction = UIContextualAction.init(style: .destructive,
-                                         title: "") { (theAction, theView, handler) in
-                                            // Check that there are fonts to be removed
-                                            if self.anyFontsInstalled() {
-                                                // Remove the installed fonts
-                                                let alert = UIAlertController.init(title: "Are You Sure?",
-                                                                                   message: "Tap OK to uninstall all the typefaces, or Cancel to quit. You can reinstall uninstalled typefaces at any time.",
-                                                                                   preferredStyle: .alert)
-                                                
-                                                alert.addAction(UIAlertAction(title: NSLocalizedString("Cancel", comment: "Default action"),
-                                                                                style: .default,
-                                                                                handler: nil))
-                                                
-                                                alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "Default action"),
-                                                                              style: .default,
-                                                                              handler: { (action) in
-                                                    self.removeAll()
-                                                }))
-                                                
-                                                self.present(alert,
-                                                             animated: true,
-                                                             completion: nil)
-                                            } else {
-                                                self.showAlert("No Typefaces Installed", "You have not yet installed any of the available typefaces")
-                                            }
-                                            
-                                            handler(true)
+        var action: UIContextualAction = UIContextualAction(style: .destructive, title: "") { (theAction, theView, handler) in
+            // Check that there are fonts to be removed
+            if self.anyFontsInstalled() {
+                // Remove the installed fonts
+                let alert = UIAlertController(title: "Are You Sure?",
+                                              message: "Tap OK to uninstall all the typefaces, or Cancel to quit. You can reinstall uninstalled typefaces at any time.",
+                                              preferredStyle: .alert)
+
+                alert.addAction(UIAlertAction(title: NSLocalizedString("Cancel", comment: "Default action"),
+                                              style: .default,
+                                              handler: nil))
+
+                alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "Default action"),
+                                              style: .default,
+                                              handler: { (action) in
+                    self.removeAll()
+                }))
+
+                self.present(alert, animated: true, completion: nil)
+            } else {
+                self.showAlert("No Typefaces Installed", "You have not yet installed any of the available typefaces")
+            }
+
+            handler(true)
         }
-        action.image = UIImage.init(systemName: "trash")
+        action.image = UIImage(systemName: "trash")
         actions.append(action)
         
         // Configure an 'Add All' action
-        action = UIContextualAction.init(style: .normal,
-                                         title: "") { (theAction, theView, handler) in
-                                            // Check that there are fonts to be installed
-                                            if self.allFontsInstalled() {
-                                                self.showAlert("All Typefaces Installed", "You have already installed all of the available typefaces")
-                                            } else {
-                                                // Install any remaining fonts
-                                                self.installAll(self)
-                                            }
-                                            
-                                            handler(true)
+        action = UIContextualAction(style: .normal, title: "") { (theAction, theView, handler) in
+            // Check that there are fonts to be installed
+            if self.allFontsInstalled() {
+                self.showAlert("All Typefaces Installed", "You have already installed all of the available typefaces")
+            } else {
+                // Install any remaining fonts
+                self.installAll(self)
+            }
+
+            handler(true)
         }
         action.image = UIImage(systemName: "square.and.arrow.down.on.square")
 
@@ -200,16 +195,16 @@ extension MasterViewController {
         actions.append(action)
         
         // Create the config to be returned, making sure a full swipe DOESN'T auto-trigger
-        config = UISwipeActionsConfiguration.init(actions: actions)
+        config = UISwipeActionsConfiguration(actions: actions)
         config?.performsFirstActionWithFullSwipe = false
         return config
     }
 
 
     /**
-     Actions that appear when the table view cell is swiped R-L
-     
-     NOTE These actions are family specific
+     Actions that appear when the table view cell is swiped R-L.
+
+     NOTE These actions are family specific.
      */
     override func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
         
@@ -223,29 +218,27 @@ extension MasterViewController {
         if family.progress == nil {
             if family.fontsAreInstalled {
                 // Configure a 'Remove' action -- only one item affected: the table view cell's family
-                action = UIContextualAction.init(style: .destructive,
-                                                 title: "") { (theAction, theView, handler) in
-                                                    // Remove the single, row-referenced font
-                                                    self.removeOneFontFamily(family)
-                                                    handler(true)
+                action = UIContextualAction(style: .destructive, title: "") { (theAction, theView, handler) in
+                    // Remove the single, row-referenced font
+                    self.removeOneFontFamily(family)
+                    handler(true)
                 }
-                action.image = UIImage.init(systemName: "trash")
+                action.image = UIImage(systemName: "trash")
             } else {
                 // Configure an 'Add' action -- only one item affected: the table view cell's
-                action = UIContextualAction.init(style: .normal,
-                                                 title: "") { (theAction, theView, handler) in
-                                                    // Install the single, row-referenced font
-                                                    self.getOneFontFamily(family)
-                                                    handler(true)
+                action = UIContextualAction(style: .normal, title: "") { (theAction, theView, handler) in
+                    // Install the single, row-referenced font
+                    self.getOneFontFamily(family)
+                    handler(true)
                 }
-                action.image = UIImage.init(systemName: "square.and.arrow.down")
+                action.image = UIImage(systemName: "square.and.arrow.down")
                 
                 // Set the colour to blue
                 action.backgroundColor = UIColor.systemBlue
             }
 
             // Create the config to be returned, making sure a full swipe DOESN'T auto-trigger
-            config = UISwipeActionsConfiguration.init(actions: [action])
+            config = UISwipeActionsConfiguration(actions: [action])
         }
 
         config?.performsFirstActionWithFullSwipe = false
@@ -255,6 +248,9 @@ extension MasterViewController {
 
     /**
      Determine which sub-set of the font families we will actually show
+     based on the user's selected view parameters.
+
+     FROM 2.0.0
      */
     internal func setDisplayFamilies() {
         
@@ -318,8 +314,8 @@ extension MasterViewController {
 
 
     /**
-     Update the displayed list of fonts
-     
+     Update the displayed list of fonts.
+
      FROM 2.0.0
      */
     internal func reloadFontList() {

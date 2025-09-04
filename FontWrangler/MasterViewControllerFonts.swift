@@ -1,24 +1,22 @@
-
-//  MasterViewControllerFonts.swift
-//  Fontismo
-//  Font listing and management functions
-//
-//  Created by Tony Smith on 17/10/2024.
-//  Copyright © 2025 Tony Smith. All rights reserved.
-
+/*
+ *  MasterViewControllerFonts.swift
+ *  Fontismo
+ *
+ *  Created by Tony Smith on 17/03/20204.
+ *  Copyright © 2025 Tony Smith. All rights reserved.
+ */
 
 import UIKit
 
 
 extension MasterViewController  {
 
-
     // MARK: - Font List Management Functions
 
     /**
-     Load in the default list of available fonts and then sort it A-Z
-     
-     This list is stored in the main bundle
+     Load in the default list of available fonts and then sort it A-Z.
+
+     This list is stored in the main bundle.
      */
     internal func loadDefaults() {
         
@@ -28,7 +26,7 @@ extension MasterViewController  {
         
         if fm.fileExists(atPath: defaultFontsPath) {
             do {
-                let fileData = try Data(contentsOf: URL.init(fileURLWithPath: defaultFontsPath))
+                let fileData = try Data(contentsOf: URL(fileURLWithPath: defaultFontsPath))
                 fontDictionary = try JSONSerialization.jsonObject(with: fileData, options: []) as! [String: Any]
             } catch {
                 NSLog("[ERROR] can't load defaults: \(error.localizedDescription) - loadDefaults()")
@@ -68,10 +66,10 @@ extension MasterViewController  {
 
 
     /**
-     Update and display the list of available fonts that the app knows about and is managing
-     
+     Update and display the list of available fonts that the app knows about and is managing.
+
      This is the called when the app comes into the foreground
-     and when viewWillAppear() is callled
+     and when `viewWillAppear()` is callled.
      */
     internal func initializeFontList() {
 
@@ -91,7 +89,7 @@ extension MasterViewController  {
 
 
     /**
-     Load in the persisted font list, if it is present
+     Load in the persisted font list, if it is present.
      */
     internal func loadFontList() {
 
@@ -106,8 +104,8 @@ extension MasterViewController  {
                 do {
                     // FROM 1.2.2
                     // Replace deprecated calls for NSCoding with Codable
-                    let data: Data = try Data(contentsOf: URL.init(fileURLWithPath: loadPath))
-                    let decoder = PropertyListDecoder.init()
+                    let data: Data = try Data(contentsOf: URL(fileURLWithPath: loadPath))
+                    let decoder = PropertyListDecoder()
                     loadedFonts = try decoder.decode([UserFont].self, from: data)
                 } catch {
                     // Font list is damaged in some way - remove it and warn the user
@@ -171,7 +169,7 @@ extension MasterViewController  {
 
 
     /**
-     Persist the app's font database
+     Persist the app's font database.
      */
     internal func saveFontList() {
 
@@ -183,16 +181,16 @@ extension MasterViewController  {
             //let data: Data = try NSKeyedArchiver.archivedData(withRootObject: self.fonts, requiringSecureCoding: true)
             // FROM 1.2.2
             // Replace deprecated calls for NSCoding with Codable
-            let encoder: PropertyListEncoder = PropertyListEncoder.init()
+            let encoder: PropertyListEncoder = PropertyListEncoder()
             encoder.outputFormat = .binary
             let data: Data = try encoder.encode(self.fonts)
-            try data.write(to: URL.init(fileURLWithPath: savePath))
+            try data.write(to: URL(fileURLWithPath: savePath))
             
 #if DEBUG
             // Also save a JSON file for easy checking during debugging
-            let jsonEncoder: JSONEncoder = JSONEncoder.init()
+            let jsonEncoder: JSONEncoder = JSONEncoder()
             let jsonData: Data = try jsonEncoder.encode(self.fonts)
-            try jsonData.write(to: URL.init(fileURLWithPath: savePath + ".json"))
+            try jsonData.write(to: URL(fileURLWithPath: savePath + ".json"))
             print("Font state saved \(savePath)")
 #endif
 
@@ -204,7 +202,7 @@ extension MasterViewController  {
 
 
     /**
-     Create a list of font families if we don't have one
+     Create a list of font families if we don't have one.
      */
     internal func setFontFamilies() {
         
@@ -289,9 +287,9 @@ extension MasterViewController  {
 
     /**
      Update the app's record of fonts in response to a notification
-     from the system that some fonts' status has changed
-     
-     Called by 'updateFamilyStatus()'
+     from the system that some fonts' status has changed.
+
+     Called by `updateFamilyStatus()`.
      */
     internal func updateFontStatus() {
 
@@ -346,11 +344,9 @@ extension MasterViewController  {
                                     font.isInstalled = true
                                     font.isDownloaded = true
                                     font.updated = true
-                                    
-                                    #if DEBUG
-                                        print("Font PostScript name changed from '\(font.name)' to '\(fontName)'")
-                                    #endif
-                                    
+#if DEBUG
+                                    print("Font PostScript name changed from '\(font.name)' to '\(fontName)'")
+#endif
                                     font.psname = fontName
                                     break
                                 }
@@ -371,12 +367,13 @@ extension MasterViewController  {
     // MARK: - Family Handling Action Functions
 
     /**
-     Install all available font families, downloading as necessary
-     
-     NOTE Set to `@objc` because it's called as a selector
+     Install all available font families, downloading as necessary.
+
+     NOTE Set to `@objc` because it's called as a selector.
      */
-    @objc func installAll(_ sender: Any) {
-        
+    @objc
+    func installAll(_ sender: Any) {
+
         if self.families.count > 0 {
             for family: FontFamily in self.families {
                 if !family.fontsAreInstalled && family.progress == nil {
@@ -389,11 +386,12 @@ extension MasterViewController  {
         }
     }
 
-    
+
+    /**
+     Uninstall all available fonts.
+     */
     internal func removeAll() {
 
-        // Uninstall all available fonts
-        
         if self.families.count > 0 {
             // Assemble font descriptors for each of the family's fonts.
             // These will be passed to the API for deregistration.
@@ -409,7 +407,7 @@ extension MasterViewController  {
                             let font: UserFont = self.fonts[fontIndex]
 
                             // Font Descriptors take POSTSCRIPT NAMES
-                            let fontDesc: UIFontDescriptor = UIFontDescriptor.init(name: font.psname, size: 48.0)
+                            let fontDesc: UIFontDescriptor = UIFontDescriptor(name: font.psname, size: 48.0)
                             fontDescs.append(fontDesc)
                             
                             // Update the font's state information
@@ -435,7 +433,7 @@ extension MasterViewController  {
 
 
     /**
-     Remove a single font family
+     Remove a single font family.
      */
     func removeOneFontFamily(_ family: FontFamily) {
 
@@ -452,8 +450,7 @@ extension MasterViewController  {
                 font.isDownloaded = false
 
                 // Font Descriptors take the POSTSCRIPT NAME
-                let fontDesc: UIFontDescriptor = UIFontDescriptor.init(name: font.psname,
-                                                                       size: 48.0)
+                let fontDesc: UIFontDescriptor = UIFontDescriptor(name: font.psname, size: 48.0)
                 fontDescs.append(fontDesc)
             }
 
@@ -470,20 +467,21 @@ extension MasterViewController  {
 
 
     /**
-     Acquire a single font fsmily resource using on-demand
+     Acquire a single font family resource using on-demand.
+
+     - Parameters:
+        - family The FontFamily to retrieve.
      */
     func getOneFontFamily(_ family: FontFamily) {
 
         if !family.fontsAreDownloaded {
-            
-            #if DEBUG
-                print("Family '\(family.name)' not downloaded")
-            #endif
-            
+#if DEBUG
+            print("Family '\(family.name)' not downloaded")
+#endif
             // The fsmily's font resource has not been downloaded so get its asset catalog tag
             // ('family.tag') and assemble an asset request
-            let tags: Set<String> = Set.init([family.tag])
-            let fontRequest = NSBundleResourceRequest.init(tags: tags)
+            let tags: Set<String> = Set([family.tag])
+            let fontRequest = NSBundleResourceRequest(tags: tags)
 
             // Store the progress recorder and update the UI on
             // the main thread so the Activity Indicator is shown
@@ -502,8 +500,7 @@ extension MasterViewController  {
                         if familyTimer == firedTimer {
                             aFamily.timer = nil
                             aFamily.progress = nil
-                            
-                            
+
                             DispatchQueue.main.async {
                                 if !aFamily.fontsAreDownloaded {
                                     self.showAlert("Sorry!", "Fontismo could not access the requested typeface because it could not connect to the App Store. Please check your Internet connection and try again.")
@@ -512,12 +509,6 @@ extension MasterViewController  {
                                 // FROM 1.2.0
                                 // Turn off the detail view controller's progress indicator
                                 if let dvc: DetailViewController = self.detailViewController {
-                                    /*
-                                    if !dvc.downloadProgress.isHidden {
-                                        dvc.downloadProgress.stopAnimating()
-                                    }
-                                    */
-                                    
                                     if !dvc.downloadView.isHidden {
                                         dvc.downloadView.doHide()
                                     }
@@ -563,12 +554,6 @@ extension MasterViewController  {
                         self.showAlert("Sorry!", "Fontismo could not access the requested typeface because it was unable to connect to the App Store. Please check your Internet connection and try again.\n(\(error!.localizedDescription))")
                         
                         if let dvc: DetailViewController = self.detailViewController {
-                            /*
-                            if !dvc.downloadProgress.isHidden {
-                                dvc.downloadProgress.stopAnimating()
-                            }
-                            */
-                            
                             if !dvc.downloadView.isHidden {
                                 dvc.downloadView.doHide()
                             }
@@ -577,11 +562,9 @@ extension MasterViewController  {
                     
                     return
                 }
-                
 #if DEBUG
                 print("Family '\(family.name)' downloaded")
 #endif
-                
                 // Keep the downloaded file around permanently, ie.
                 // until the app is deleted
                 Bundle.main.setPreservationPriority(1.0, forTags: tags)
@@ -594,19 +577,21 @@ extension MasterViewController  {
             }
         } else {
             // Font family should already be downloaded
-            #if DEBUG
-                print("Family '\(family.name)' already downloaded")
-            #endif
-            
+#if DEBUG
+            print("Family '\(family.name)' already downloaded")
+#endif
             self.registerFontFamily(family)
         }
     }
 
 
     /**
-     Register the family's fonts
-     
-     NOTE This displays the system's Install dialog
+     Register a family's fonts.
+
+     NOTE This causes the system's Install dialog to be displayed.
+
+     - Parameters:
+        - family The Font Family to register.
      */
     func registerFontFamily(_ family: FontFamily) {
 
@@ -617,11 +602,9 @@ extension MasterViewController  {
                 let font: UserFont = self.fonts[fontIndex]
                 fontNames.append(font.name)
             }
-            
-            #if DEBUG
-                print("Registering family '\(family.name)'...")
-            #endif
-
+#if DEBUG
+            print("Registering family '\(family.name)'...")
+#endif
             // Register the family's fonts using the API
             // NOTE Outcome is operated asynchronously
             self.installCount += 1
@@ -635,7 +618,7 @@ extension MasterViewController  {
 
 
     /**
-     A callback triggered in response to system-level font registration
+     A system-defined callback triggered in response to system-level font registration
      // and re-registrations - see 'installFonts()' and 'uninstallFonts()'
      
      An empty array indicates no errors. Each error reference will contain a CFArray of font asset names
@@ -669,7 +652,7 @@ extension MasterViewController  {
                 } else if let fontNames = errFont as? [String] {
                     family = self.familyFromFontName(fontNames[0])
                 } else {
-                    family = FontFamily.init()
+                    family = FontFamily()
                     family.name = "unknown"
                 }
                 
@@ -701,9 +684,9 @@ extension MasterViewController  {
         // System sets 'done' to true on the final call
         // (according to the header file)
         if done {
-            #if DEBUG
-                print("(De)registration operation complete")
-            #endif
+#if DEBUG
+            print("(De)registration operation complete")
+#endif
             
             // Update the fonts' status and update the UI
             // NOTE Have to do all families becuase we can't know
@@ -727,19 +710,17 @@ extension MasterViewController  {
 
 
     /**
-     Update family status properties
-     
-     Where possible rely on the OS for state data
+     Update family status properties.
+
+     Where possible rely on the OS for state data.
      */
     internal func updateFamilyStatus() {
         
         // Update the status of all the fonts
         self.updateFontStatus()
-        
-        #if DEBUG
-            print("---------------------------------------------------")
-        #endif
-        
+#if DEBUG
+        print("---------------------------------------------------")
+#endif
         // Use the font data to set the familiies' status
         var installedCount = 0
         for family: FontFamily in self.families {
@@ -761,11 +742,9 @@ extension MasterViewController  {
                 family.fontsAreDownloaded = downloaded == fontIndexes.count
 
                 installedCount += (family.fontsAreInstalled ? 1 : 0)
-
 #if DEBUG
-                //print("Family '\(family.name)': downloads: \(downloaded), installs: \(installed) of \(fontIndexes.count). Style: \(family.style), serif: \(family.isSerif ? "YES" : "NO")")
+                print("Family '\(family.name)': downloads: \(downloaded), installs: \(installed) of \(fontIndexes.count). Style: \(family.style), serif: \(family.isSerif ? "YES" : "NO")")
 #endif
-
                 // Turn of progress and/or timers if they're still active
                 if fontIndexes.count == installed {
                     if family.progress != nil {
@@ -788,14 +767,15 @@ extension MasterViewController  {
 
 
     // MARK: - Font Handling Callback Functions
-    
+
     /**
      The app has received a font status update notification
-     eg. the user removed a font using the system UI
-     
-     NOTE Set to `@objc` because it's called as a selector
+     eg. the user removed a font using the system UI.
+
+     NOTE Set to `@objc` because it's called as a selector.
      */
-    @objc internal func fontStatesChanged(_ sender: Any) {
+    @objc
+    internal func fontStatesChanged(_ sender: Any) {
 
         // Update the families' status the UI
         self.updateFamilyStatus()
@@ -804,8 +784,8 @@ extension MasterViewController  {
 
 
     /**
-     A callback triggered in response to system-level font registration
-     and re-registrations - see 'installFonts()' and 'uninstallFonts()'
+     A system-defined callback triggered in response to system-level font registration
+     and re-registrations - see `installFonts()` and `uninstallFonts()`.`
      */
     internal func fontRegistrationHandler(errors: CFArray, done: Bool) -> Bool {
 
@@ -837,9 +817,9 @@ extension MasterViewController  {
 
 
     // MARK: - Utility Functions
-    
+
     /**
-     Simple font name sorting routine
+     Simple font name sorting routine.
      */
     internal func sortFonts() {
 
@@ -851,7 +831,12 @@ extension MasterViewController  {
 
     /**
      Using an index in the main fonts collection, identify
-     the indexed font's family and return it
+     the indexed font's family and return it.
+
+     - Parameters:
+        - index The index of one of the family's fonts.
+
+     - Returns The indexed font's Font Family.
      */
     internal func familyFromFontIndex(_ index: Int) -> FontFamily {
         
@@ -871,7 +856,12 @@ extension MasterViewController  {
 
 
     /**
-     Using font's PostScript name, identify its family and and return it
+     Using font's PostScript name, identify its family and and return it.
+
+     - Parameters:
+        - psname The PostScript name of one of the family's fonts.
+
+     - Returns The named font's Font Family.
      */
     internal func familyFromFontName(_ psname: String) -> FontFamily {
         
@@ -892,7 +882,9 @@ extension MasterViewController  {
 
 
     /**
-     Report if any number of fonts have been installed
+     Report if any number of fonts have been installed.
+
+     - Returns `true` if at least one font has been installed, otherwise `false`.
      */
     internal func anyFontsInstalled() -> Bool {
         
@@ -907,7 +899,9 @@ extension MasterViewController  {
 
 
     /**
-     Report if all the available fonts have been installed
+     Report if all the available fonts have been installed.
+
+     - Returns `true` if all fonts have been installed, otherwise `false`.
      */
     internal func allFontsInstalled() -> Bool {
         
@@ -923,7 +917,13 @@ extension MasterViewController  {
 
     /**
      Get the family human-readable name from the tag,
-     eg. convert 'my_font_one' to 'My Font One'
+     eg. convert `my_font_one` to `My Font One`.
+
+     - Parameters:
+        - name      The font's PostScript name.
+        - separator The separator symbol used in the name. Default: `_`.
+
+     - Returns The human-readable font name.
      */
     internal func getPrinteableName(_ name: String, _ separator: String = "_") -> String {
         
@@ -950,14 +950,6 @@ extension MasterViewController  {
             printeableName = parts[0].capitalized
         }
         
-        /* FROM 2.0.0
-        // Hacks for Nerd Fonts
-        if printeableName.hasSuffix("Nfm") {
-            printeableName = printeableName.replacingOccurrences(of: "Nfm", with: "Nerd Font")
-        }
-         */
-        
         return printeableName
     }
-
 }

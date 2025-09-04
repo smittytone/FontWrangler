@@ -1,11 +1,10 @@
-
-//  Extensions.swift
-//  Fontismo
-//  iOS Class Extensions
-//
-//  Created by Tony Smith on 17/10/2024.
-//  Copyright © 2025 Tony Smith. All rights reserved.
-
+/*
+ *  Extensions.swift
+ *  Fontismo
+ *
+ *  Created by Tony Smith on 17/10/2024.
+ *  Copyright © 2025 Tony Smith. All rights reserved.
+ */
 
 import UIKit
 import StoreKit
@@ -47,7 +46,7 @@ extension SKProduct {
 
     // Add a `localPrice` property which provides the local price with
     // an appropriate currency label attached
-    
+
     var localPrice: String? {
         let priceFormatter: NumberFormatter = NumberFormatter()
         priceFormatter.numberStyle = .currency

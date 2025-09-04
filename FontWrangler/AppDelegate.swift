@@ -1,11 +1,10 @@
-
-//  AppDelegate.swift
-//  Fontismo
-//
-//
-//  Created by Tony Smith on 27/03/2020.
-//  Copyright © 2025 Tony Smith. All rights reserved.
-
+/*
+ *  AppDelegate.swift
+ *  Fontismo
+ *
+ *  Created by Tony Smith on 27/03/2020.
+ *  Copyright © 2025 Tony Smith. All rights reserved.
+ */
 
 import UIKit
 
@@ -15,12 +14,12 @@ class AppDelegate: UIResponder,
                    UIApplicationDelegate {
 
     // MARK: - Private Properties
-    
+
     private let bundlePath = Bundle.main.bundlePath
-    
-    
+
+
     // MARK: - Lifecycle Functions
-    
+
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
 
         // Set data for app settings bundle
@@ -44,7 +43,7 @@ class AppDelegate: UIResponder,
         
         // Set the creators string for the Settings > Authors readout
         let creators = self.getCreators()
-        if creators != "" {
+        if !creators.isEmpty {
             defaults.set(creators, forKey: kDefaultsKeys.authors)
         }
         
@@ -96,7 +95,9 @@ class AppDelegate: UIResponder,
     /**
      Load in the default list of available fonts and extract their creators
      and licence details into a string, which is returned.
-     Returns an empty string on failure
+     Returns an empty string on failure.
+
+     - Returns The authors text.
      */
     func getCreators() -> String {
         
@@ -106,7 +107,7 @@ class AppDelegate: UIResponder,
         
         if fm.fileExists(atPath: defaultFontsPath) {
             do {
-                let fileData = try Data(contentsOf: URL.init(fileURLWithPath: defaultFontsPath))
+                let fileData = try Data(contentsOf: URL(fileURLWithPath: defaultFontsPath))
                 fontDictionary = try JSONSerialization.jsonObject(with: fileData, options: []) as! [String: Any]
             } catch {
                 NSLog("[ERROR] can't load defaults: \(error.localizedDescription) from App Delegate")
@@ -183,6 +184,4 @@ class AppDelegate: UIResponder,
         
         return ""
     }
-    
 }
-

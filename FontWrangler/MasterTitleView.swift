@@ -1,11 +1,10 @@
-
-//  MasterTitleView.swift
-//  Fontismo
-//
-//
-//  Created by Tony Smith on 12/04/2020.
-//  Copyright © 2025 Tony Smith. All rights reserved.
-
+/*
+ *  MasterTitleView.swift
+ *  Fontismo
+ *
+ *  Created by Tony Smith on 12/04/2020.
+ *  Copyright © 2025 Tony Smith. All rights reserved.
+ */
 
 import UIKit
 
@@ -18,9 +17,7 @@ class MasterTitleView: UIView {
     // It contains a single property: the UILabel used to indicate the number
     // of typefaces available and the number that have been installed.
 
-
     // MARK: - UI properties
 
     @IBOutlet weak var infoLabel: UILabel!
-
 }

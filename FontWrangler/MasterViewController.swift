@@ -1,11 +1,10 @@
-
-//  MasterViewController.swift
-//  Fontismo
-//
-//
-//  Created by Tony Smith on 27/03/2020.
-//  Copyright © 2025 Tony Smith. All rights reserved.
-
+/*
+ *  MasterViewController.swift
+ *  Fontismo
+ *
+ *  Created by Tony Smith on 27/03/2020.
+ *  Copyright © 2025 Tony Smith. All rights reserved.
+ */
 
 import UIKit
 import StoreKit
@@ -32,25 +31,23 @@ final class MasterViewController: UITableViewController,
                                   UIPopoverPresentationControllerDelegate,
                                   UIViewControllerTransitioningDelegate {
 
-    
     // MARK: - UI properties
 
     @IBOutlet weak var titleView: MasterTitleView!
     @IBOutlet weak var tableHead: MasterTableHeaderView!
     @IBOutlet weak var viewOptionsButton: UIButton!
-    
-    
+
+
     // MARK: - Public Instance Properties
-    
+
     var fonts = [UserFont]()
-    
-    
+
+
     // MARK: - Private Instance Properties
 
     private  var installButton: UIBarButtonItem? = nil
     private  var menuButton: UIBarButtonItem? = nil
     private  var tvc: TipViewController? = nil
-    
     internal var detailViewController: DetailViewController? = nil
     internal var installCount: Int = -1
     internal var isFontListLoaded: Bool = false
@@ -58,19 +55,18 @@ final class MasterViewController: UITableViewController,
     internal var doIndicateNewFonts: Bool = true
     internal var hasShownClearedListWarning: Bool = false
     internal var shouldAutoInstallFonts: Bool = false
-    
     // Collect all the font families. Each entry contains an array of the
     // indices of member fonts in the main font collection, `fonts`, above
     internal var families = [FontFamily]()
     internal var displayFamilies = [FontFamily]()
     internal var viewOptions: [Bool] = [false, false, false]
+    internal var viewMenu: UIMenu? = nil
     internal var viewStates: [FontFamilyStyle: Bool] = [
         .classic: true,
         .headline: true,
         .decorative: true,
         .monospace: true
     ]
-    
     internal var filterMenuItemIndices: [FilterMenuItems: Int] = [
         .classic: 0,
         .headline: 0,
@@ -82,16 +78,14 @@ final class MasterViewController: UITableViewController,
         .uninstalled: 0,
         .viewOptions: 0
     ]
-    
-    internal var viewMenu: UIMenu? = nil
-    
-    
+
+
     // MARK: - Private Instance Constants
 
     internal let DOCS_PATH = NSSearchPathForDirectoriesInDomains(FileManager.SearchPathDirectory.documentDirectory, FileManager.SearchPathDomainMask.userDomainMask, true)[0]
     internal let BUNDLE_PATH = Bundle.main.bundlePath
-    
-    
+
+
     // MARK: - Lifecycle Functions
 
     override func viewDidLoad() {
@@ -153,7 +147,7 @@ final class MasterViewController: UITableViewController,
             menuButton.style = .plain
         } else {
             // For iOS 13, use the old-style UIAlert menu
-            menuButton = UIBarButtonItem(image: UIImage.init(systemName: "ellipsis.circle"),
+            menuButton = UIBarButtonItem(image: UIImage(systemName: "ellipsis.circle"),
                                          style: .plain,
                                          target: self,
                                          action: #selector(self.doShowMenu(_:)))
@@ -165,7 +159,7 @@ final class MasterViewController: UITableViewController,
         
         /* REMOVED IN 2.0.0
         // Set up the 'Install' button on the right
-        let addAllButton = UIBarButtonItem(image: UIImage.init(systemName: "square.and.arrow.down.on.square"),
+        let addAllButton = UIBarButtonItem(image: UIImage(systemName: "square.and.arrow.down.on.square"),
                                            style: .plain,
                                            target: self,
                                            action: #selector(self.installAll(_:)))
@@ -229,13 +223,13 @@ final class MasterViewController: UITableViewController,
                                                    self.setContextMenu(false)
                                                })
             
-            let viewSubMenu: UIMenu = UIMenu.init(title: "", options: .displayInline, children: [
+            let viewSubMenu: UIMenu = UIMenu(title: "", options: .displayInline, children: [
                 showNewFontsAction,
                 showInstalledFontsAction,
                 showUninstalledFontsAction
             ])
             
-            let controlSubMenu: UIMenu = UIMenu.init(title: "", options: .displayInline, children: [
+            let controlSubMenu: UIMenu = UIMenu(title: "", options: .displayInline, children: [
                 showAllFontsAction,
                 clearAllFontsAction
             ])
@@ -270,7 +264,7 @@ final class MasterViewController: UITableViewController,
             self.filterMenuItemIndices[.installed] = 1
             self.filterMenuItemIndices[.uninstalled] = 2
             self.filterMenuItemIndices[.monospace] = 3
-            
+
             self.viewOptionsButton.menu = filterMenu
             self.viewOptionsButton.showsMenuAsPrimaryAction = true
         } else {
@@ -309,13 +303,13 @@ final class MasterViewController: UITableViewController,
 
         // FROM 1.1.1
         // Ask for a review on a long press
-        let pressLong: UILongPressGestureRecognizer = UILongPressGestureRecognizer.init(target: self,
-                                                                                        action: #selector(self.doRequestReview))
+        let pressLong: UILongPressGestureRecognizer = UILongPressGestureRecognizer(target: self,
+                                                                                   action: #selector(self.doRequestReview))
         self.view?.addGestureRecognizer(pressLong)
         
         // FROM 2.0.0
-        let doubleTap: UITapGestureRecognizer = UITapGestureRecognizer.init(target: self,
-                                                                            action: #selector(self.doRequestReview))
+        let doubleTap: UITapGestureRecognizer = UITapGestureRecognizer(target: self,
+                                                                       action: #selector(self.doRequestReview))
         doubleTap.numberOfTapsRequired = 2
         self.view?.addGestureRecognizer(doubleTap)
 
@@ -328,7 +322,7 @@ final class MasterViewController: UITableViewController,
         UserDefaults.standard.set(self.installCount, forKey: kDefaultsKeys.fontInstallCount)
     }
 
-    
+
     override func viewWillAppear(_ animated: Bool) {
 
         // Clear selection if the split view isn't collapsed
@@ -339,9 +333,10 @@ final class MasterViewController: UITableViewController,
             self.navigationItem.titleView = self.titleView
         }
     }
-    
-    
-    @objc func hasBackgrounded() {
+
+
+    @objc
+    func hasBackgrounded() {
 
         // Save the list
         // NOTE This is probably unnecessary now
@@ -352,7 +347,8 @@ final class MasterViewController: UITableViewController,
     }
 
 
-    @objc func willForeground() {
+    @objc
+    func willForeground() {
 
         // Prepare the font list table
         self.initializeFontList()
@@ -381,7 +377,6 @@ final class MasterViewController: UITableViewController,
      NOTE This should appear on the first use of the app, but never again.
           However, the user can choose to re-show the panel by flipping a
           switch in the app settings
-
      */
     private func showIntroPanel() {
 
@@ -408,73 +403,70 @@ final class MasterViewController: UITableViewController,
 
     // MARK: - UI Action Functions — Top-Left Menu
 
-    @objc func doShowMenu(_ sender: Any) {
+    /**
+     FROM 1.1.2
+     We've removed the 'Help' menu and replaced it with an action menu,
+     which includes a Help option and space for other things
 
-        // FROM 1.1.2
-        // We've removed the 'Help' menu and replaced it with an action menu,
-        // which includes a Help option and space for other things
-        
-        // FROM 2.0.0
-        // This is now only called if the host device is on iOS 13, our minimum
-        // supported version. iOS 14 and up will result in a contextual menu
-        
-        let actionMenu: UIAlertController = UIAlertController.init(title: nil,
-                                                                   message: nil,
-                                                                   preferredStyle: .actionSheet)
+     FROM 2.0.0
+     This is now only called if the host device is on iOS 13, our minimum
+     supported version. iOS 14 and up will result in a contextual menu
+     */
+    @objc
+    func doShowMenu(_ sender: Any) {
+
+        let actionMenu: UIAlertController = UIAlertController(title: nil,
+                                                              message: nil,
+                                                              preferredStyle: .actionSheet)
         
         // Allow the user to view the Help screen
         var action: UIAlertAction!
-        action = UIAlertAction.init(title: "Show Help",
-                                    style: .default,
-                                    handler: { (_) in
-                                        self.doShowHelpSheet(self)
-                                    })
+        action = UIAlertAction(title: "Show Help",
+                               style: .default,
+                               handler: { (_) in
+                                   self.doShowHelpSheet(self)
+                               })
         actionMenu.addAction(action)
 
         // Allow the user to view the app's settings
-        action = UIAlertAction.init(title: "Settings",
-                                    style: .default,
-                                    handler: { (_) in
-                                        UIApplication.shared.open(URL(string: UIApplication.openSettingsURLString)!)
-                                    })
-
+        action = UIAlertAction(title: "Settings",
+                               style: .default,
+                               handler: { (_) in
+                                   UIApplication.shared.open(URL(string: UIApplication.openSettingsURLString)!)
+                               })
         actionMenu.addAction(action)
         
         // Allow the user to report a bug
-        action = UIAlertAction.init(title: "Give Feedback",
-                                    style: .default,
-                                    handler: { (_) in
-                                        self.doShowFeedbackSheet(self)
-                                    })
-
+        action = UIAlertAction(title: "Give Feedback",
+                               style: .default,
+                               handler: { (_) in
+                                   self.doShowFeedbackSheet(self)
+                               })
         actionMenu.addAction(action)
         
         // Allow the user to review the app
-        action = UIAlertAction.init(title: "Review Fontismo",
-                                    style: .default,
-                                    handler: { (_) in
-                                        self.doReview()
-                                    })
-        
+        action = UIAlertAction(title: "Review Fontismo",
+                               style: .default,
+                               handler: { (_) in
+                                   self.doReview()
+                               })
         actionMenu.addAction(action)
         
         // Allow the user to go to the website
-        action = UIAlertAction.init(title: "Visit Fontismo’s Website",
-                                    style: .default,
-                                    handler: { (_) in
-                                        self.doShowWebsite(self)
-                                    })
-
+        action = UIAlertAction(title: "Visit Fontismo’s Website",
+                               style: .default,
+                               handler: { (_) in
+                                   self.doShowWebsite(self)
+                               })
         actionMenu.addAction(action)
         
         // FROM 1.2.0
         // Allow the user to report a bug
-        action = UIAlertAction.init(title: "Fuel Development",
-                                    style: .default,
-                                    handler: { (_) in
-                                        self.doShowTipSheet(self)
-                                    })
-
+        action = UIAlertAction(title: "Fuel Development",
+                               style: .default,
+                               handler: { (_) in
+                                   self.doShowTipSheet(self)
+                               })
         actionMenu.addAction(action)
         
         // If we're on an iPad we need to do a little extra setup
@@ -486,9 +478,9 @@ final class MasterViewController: UITableViewController,
         } else {
             // Allow the user to cancel the menu on an iPhone,
             // which treats the menu modally
-            action = UIAlertAction.init(title: "Cancel",
-                                        style: .cancel,
-                                        handler: nil)
+            action = UIAlertAction(title: "Cancel",
+                                   style: .cancel,
+                                   handler: nil)
             actionMenu.addAction(action)
         }
         
@@ -499,9 +491,11 @@ final class MasterViewController: UITableViewController,
     }
 
 
-    @objc func doShowHelpSheet(_ sender: Any) {
-
-        // Display the Help panel
+    /**
+     Display the Help panel
+     */
+    @objc
+    func doShowHelpSheet(_ sender: Any) {
 
         // Load and configure the menu view controller
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
@@ -515,11 +509,14 @@ final class MasterViewController: UITableViewController,
     }
 
 
-    @objc func doShowFeedbackSheet(_ sender: Any) {
+    /**
+     Display the Feedback alert.
 
-        // FROM 1.1.2
-        // Display the Feedback alert
-        
+     FROM 1.1.2
+     */
+    @objc
+    func doShowFeedbackSheet(_ sender: Any) {
+
         // Load and configure the menu view controller
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         let fvc: FeedbackViewController = storyboard.instantiateViewController(withIdentifier: "feedback.view.controller") as! FeedbackViewController
@@ -536,13 +533,16 @@ final class MasterViewController: UITableViewController,
         // Show the feedback view controller
         self.present(fvc, animated: true, completion: nil)
     }
-    
-    
-    @objc func doShowTipSheet(_ sender: Any) {
-        
-        // FROM 1.2.0
-        // Display the StoreKit sheet for tips
-        
+
+
+    /**
+     Display the StoreKit sheet for tips.
+
+     FROM 1.2.0
+     */
+    @objc
+    func doShowTipSheet(_ sender: Any) {
+
         if self.tvc == nil {
             let storyboard = UIStoryboard(name: "Main", bundle: nil)
             self.tvc = storyboard.instantiateViewController(withIdentifier: "tip.view.controller") as? TipViewController
@@ -552,15 +552,16 @@ final class MasterViewController: UITableViewController,
         
         self.present(self.tvc!, animated: true, completion: nil)
     }
-    
-    
+
+
     /**
-     Open the Fontismo web page in Safari
-     
+     Open the Fontismo web page in Safari.
+
      FROM 1.1.2
      */
-    @objc func doShowWebsite(_ sender: Any) {
-        
+    @objc
+    func doShowWebsite(_ sender: Any) {
+
         guard let webURL = URL(string: kWebsiteURL) else { fatalError("Expected a valid Fontismo website URL") }
         
         UIApplication.shared.open(webURL,
@@ -585,11 +586,16 @@ final class MasterViewController: UITableViewController,
         // Update the menu and table
         self.doShowSome(nil, .unknown)
     }
-    
-    
+
+    /**
+     Set the contextual menu options.
+
+     NOTE The view options are subdivisions of the class-based view.
+
+     - Parameters:
+        - index The index of the option being set.
+     */
     private func setViewOptions(_ index: Int) {
-        
-        // NOTE The view options are subdivisions of the class-based view
         
         // Invert the selected item
         self.viewOptions[index] = !self.viewOptions[index]
@@ -604,10 +610,14 @@ final class MasterViewController: UITableViewController,
         // Update the menu and table
         self.doShowSome(nil, .unknown)
     }
-    
-    
+
+
     /**
-     General Filter contextual menu handler
+     General Filter contextual menu handler.
+
+     - Parameters:
+        - item  The contextual menu item.
+        - style The currently selected font style.
      */
     private func doShowSome(_ item: UIAction?, _ style: FontFamilyStyle) {
         
@@ -651,7 +661,7 @@ final class MasterViewController: UITableViewController,
             // present an informational alert about how to fix it
             if self.displayFamilies.count == 0 && !self.hasShownClearedListWarning {
                 // Empty display
-                let paraStyle: NSMutableParagraphStyle = NSMutableParagraphStyle.init()
+                let paraStyle: NSMutableParagraphStyle = NSMutableParagraphStyle()
                 paraStyle.alignment = .center
                 
                 let attributes: [NSAttributedString.Key : Any] = [
@@ -659,18 +669,18 @@ final class MasterViewController: UITableViewController,
                     .font: UIFont.systemFont(ofSize: 18.0, weight: .bold)
                 ]
                 
-                let titleString: NSMutableAttributedString = NSMutableAttributedString.init(string: "Use the ", attributes: attributes)
-                if let buttonImage = UIImage.init(systemName: "line.3.horizontal.decrease.circle") {
-                    let imageAttachment: NSTextAttachment = NSTextAttachment.init()
+                let titleString: NSMutableAttributedString = NSMutableAttributedString(string: "Use the ", attributes: attributes)
+                if let buttonImage = UIImage(systemName: "line.3.horizontal.decrease.circle") {
+                    let imageAttachment: NSTextAttachment = NSTextAttachment()
                     imageAttachment.image = buttonImage.withTintColor(UIColor.systemBlue)
                     let imageString = NSAttributedString(attachment: imageAttachment)
                     titleString.append(imageString)
                 } else {
-                    let nameString: NSAttributedString = NSAttributedString.init(string: "Sort", attributes: attributes)
+                    let nameString: NSAttributedString = NSAttributedString(string: "Sort", attributes: attributes)
                     titleString.append(nameString)
                 }
                 
-                let endString: NSAttributedString = NSAttributedString.init(string: " button above to select the styles of face you’d like to see listed", attributes: attributes)
+                let endString: NSAttributedString = NSAttributedString(string: " button above to select the styles of face you’d like to see listed", attributes: attributes)
                 titleString.append(endString)
                 
                 self.hasShownClearedListWarning = true
@@ -683,9 +693,9 @@ final class MasterViewController: UITableViewController,
     // MARK: - Utility Functions
 
     /**
-     Update the UI on the main thread
-     
-     This function usually called from callbacks
+     Update the UI on the main thread.
+
+     This function usually called from callbacks.
      */
     func updateUIonMain() {
 
@@ -708,7 +718,7 @@ final class MasterViewController: UITableViewController,
      we need to enable or disable the install button.
      
      UNUSED 2.0.0
-     */
+
     internal func setInstallButtonState() {
 
         if self.fonts.count > 0 {
@@ -728,18 +738,23 @@ final class MasterViewController: UITableViewController,
             self.installButton?.isEnabled = true
         }
     }
+    */
 
 
     /**
      Generic alert display function which ensures
      the alert is actioned on the main thread.
+
+     - Parameters:
+        - title   The alert heading.
+        - message The alert body text.
      */
     internal func showAlert(_ title: String, _ message: String) {
         
          DispatchQueue.main.async {
-            let alert = UIAlertController.init(title: title,
-                                               message: message,
-                                               preferredStyle: .alert)
+            let alert = UIAlertController(title: title,
+                                          message: message,
+                                          preferredStyle: .alert)
             alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "Default action"),
                                           style: .default,
                                           handler: nil))
@@ -756,15 +771,18 @@ final class MasterViewController: UITableViewController,
      attributed string for the title.
      
      FROM 2.0.0
+
+     - Parameters:
+        - title   The attributed alert heading.
+        - message The alert body text.
      */
     internal func showFancyAlert(_ title: NSAttributedString, _ message: String) {
         
         DispatchQueue.main.async {
-            let alert = UIAlertController.init(title: "",
-                                               message: message,
-                                               preferredStyle: .alert)
+            let alert = UIAlertController(title: "",
+                                          message: message,
+                                          preferredStyle: .alert)
             alert.setValue(title, forKey: "attributedTitle")
-            
             alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "Default action"),
                                           style: .default,
                                           handler: nil))
@@ -780,8 +798,8 @@ final class MasterViewController: UITableViewController,
 
     /**
      Show the 'please review' dialog if the user is on a new version
-     and has installed at least 20 fonts
-     
+     and has installed at least 20 fonts.
+
      FROM 1.1.1
      */
     internal func requestReview() {
@@ -804,9 +822,12 @@ final class MasterViewController: UITableViewController,
 
 
     /**
-     Configure the rating dialog to appear in two seconds' time
-     
+     Configure the rating dialog to appear in two seconds' time.
+
      FROM 1.1.1
+
+     - Parameters:
+        - currentVersion The current version of the app.
      */
     private func makeRequest(_ currentVersion: String) {
 
@@ -822,24 +843,23 @@ final class MasterViewController: UITableViewController,
 
 
     /**
-     Display an option to review the app on a long press of the master view
-     
+     Display an option to review the app on a long press of the master view.
+
      FROM 1.1.1
      */
-    @objc private func doRequestReview() {
+    @objc
+    private func doRequestReview() {
 
         DispatchQueue.main.async {
-            let alert = UIAlertController.init(title: "Would you like to rate or review this app?",
-                                               message: "If you have found Fontismo useful, please consider writing a short App Store review.",
-                                               preferredStyle: .alert)
+            let alert = UIAlertController(title: "Would you like to rate or review this app?",
+                                          message: "If you have found Fontismo useful, please consider writing a short App Store review.",
+                                          preferredStyle: .alert)
 
-            alert.addAction(UIAlertAction(title: NSLocalizedString("Not Now",
-                                                                   comment: "Default action"),
+            alert.addAction(UIAlertAction(title: NSLocalizedString("Not Now", comment: "Default action"),
                                           style: .default,
                                           handler: nil))
 
-            alert.addAction(UIAlertAction(title: NSLocalizedString("Yes, Please",
-                                                                   comment: "Default action"),
+            alert.addAction(UIAlertAction(title: NSLocalizedString("Yes, Please", comment: "Default action"),
                                           style: .default,
                                           handler: { (action) in
                                             self.doReview()
@@ -853,8 +873,8 @@ final class MasterViewController: UITableViewController,
 
 
     /**
-     User has chosen to review the app, so pass them on to where they can do so
-     
+     User has chosen to review the app, so pass them on to where they can do so.
+
      FROM 1.1.2
      */
     private func doReview() {
@@ -876,7 +896,7 @@ final class MasterViewController: UITableViewController,
         }
     }
 
-    
+
     // MARK: - Segues
 
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -919,20 +939,19 @@ final class MasterViewController: UITableViewController,
             }
         }
     }
-    
+
 
     // MARK: - UIViewControllerTransitioningDelegate Functions
 
     /**
-     Instantiate and return the Presentation Controller
-     
+     Instantiate and return the Presentation Controller.
+
      NOTE This delegate method should only be called on an iPad
           (see 'doShowFeedbackSheet()')
      */
     func presentationController(forPresented presented: UIViewController, presenting: UIViewController?, source: UIViewController) -> UIPresentationController? {
         
-        return FeedbackPresentationController.init(presentedViewController: presented,
-                                                   presenting: source)
+        return FeedbackPresentationController(presentedViewController: presented, presenting: source)
     }
 
 }

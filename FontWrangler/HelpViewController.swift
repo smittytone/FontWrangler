@@ -1,11 +1,10 @@
-
-//  HelpViewController.swift
-//  Fontismo
-//
-//
-//  Created by Tony Smith on 02/04/2020.
-//  Copyright © 2025 Tony Smith. All rights reserved.
-
+/*
+ *  HelpViewController.swift
+ *  Fontismo
+ *
+ *  Created by Tony Smith on 02/04/2020.
+ *  Copyright © 2025 Tony Smith. All rights reserved.
+ */
 
 import UIKit
 
@@ -13,28 +12,28 @@ import UIKit
 final class HelpViewController: UIViewController,
                                 UIPageViewControllerDelegate,
                                 UIPageViewControllerDataSource {
-    
-    
+
     // Manage the Help View screen, which cointains a series of
     // UIPageViewController-mediated pages.
 
+    // MARK: - Private Properties
 
-    // MARK: - Object properties
-
-    // Private
     private var pageViewControllers = [HelpPageViewController]()
     private var pvc: UIPageViewController? = nil
 
-    // Public
+
+    // MARK: - Public Properties
+
     var pageIndex: Int = 0
 
 
     // MARK: - Lifecycle Functions
-    
+
     override func viewDidLoad() {
         
         super.viewDidLoad()
         
+        // Always start at page one
         self.pageIndex = 0
 
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
@@ -72,12 +71,13 @@ final class HelpViewController: UIViewController,
 
 
     // MARK: - Action Functions
-    
+
     /**
-     Close the Help panel
+     Close the Help panel.
      */
-    @IBAction func doClose(_ sender: Any) {
-            
+    @IBAction
+    func doClose(_ sender: Any) {
+
         // FROM 1.1.1
         // Halt the web pages if open
         for pvc in self.pageViewControllers {
@@ -104,8 +104,8 @@ final class HelpViewController: UIViewController,
         self.pageIndex = hpvc.index - 1
         return pageViewControllers[self.pageIndex]
     }
-    
-    
+
+
     func pageViewController(_ pageViewController: UIPageViewController, viewControllerAfter viewController: UIViewController) -> UIViewController? {
         
         let hpvc: HelpPageViewController = viewController as! HelpPageViewController
@@ -132,5 +132,4 @@ final class HelpViewController: UIViewController,
         
         return self.pageIndex
     }
-
 }

@@ -1,20 +1,19 @@
-
-//  TipViewCollectionViewCell.swift
-//  Fontismo
-//
-//
-//  Created by Tony Smith on 11/04/2022.
-//  Copyright © 2025 Tony Smith. All rights reserved.
-
+/*
+ *  TipViewCollectionViewCell.swift
+ *  Fontismo
+ *
+ *  Created by Tony Smith on 11/04/2022.
+ *  Copyright © 2025 Tony Smith. All rights reserved.
+ */
 
 import UIKit
 import StoreKit
 
 
 class TipViewCollectionViewCell: UICollectionViewCell {
-    
+
     // MARK: - UI Outlets
-    
+
     @IBOutlet weak var iconLabel: UILabel!
     @IBOutlet weak var priceLabel: UILabel!
 
@@ -40,8 +39,7 @@ class TipViewCollectionViewCell: UICollectionViewCell {
         }
         
         // Highlight the cell
-        let highlightCircle: UIBezierPath = UIBezierPath.init(roundedRect: dirtyRect,
-                                                              cornerRadius: 8.0)
+        let highlightCircle: UIBezierPath = UIBezierPath(roundedRect: dirtyRect, cornerRadius: 8.0)
         highlightCircle.fill()
     }
 }

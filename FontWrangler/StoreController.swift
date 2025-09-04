@@ -1,11 +1,10 @@
-
-//  StoreController.swift
-//  Fontismo
-//
-//
-//  Created by Tony Smith on 03/04/2022.
-//  Copyright © 2025 Tony Smith. All rights reserved.
-
+/*
+ *  StoreController.swift
+ *  Fontismo
+ *
+ *  Created by Tony Smith on 03/04/2022.
+ *  Copyright © 2025 Tony Smith. All rights reserved.
+ */
 
 import UIKit
 import StoreKit
@@ -14,18 +13,18 @@ import StoreKit
 final class StoreController: NSObject,
                              SKProductsRequestDelegate,
                              SKPaymentTransactionObserver {
-    
+
     // This class manages the App Store connection for taking tips
-    
-    
+
+
     // MARK: Private Properties
-    
+
     private var productIdentifiers: [String] = []
     private var productRequest: SKProductsRequest? = nil
 
 
     // MARK: Public Properties
-    
+
     var canMakePayments: Bool {
         return SKPaymentQueue.canMakePayments()
     }
@@ -35,7 +34,7 @@ final class StoreController: NSObject,
 
 
     // MARK: - Initialization Methods
-    
+
     override init() {
 
         self.paymentQueue = SKPaymentQueue.default()
@@ -58,18 +57,18 @@ final class StoreController: NSObject,
 
 
     /**
-     Request a list of available products
-     
+     Request a list of available products.
+
      NOTE List is set in ASC and defined by our
-          Product ID array, `productIdentifiers`
+          Product ID array, `productIdentifiers`.
      */
     func validateProductIdentifiers() {
         
-        self.productRequest = SKProductsRequest.init(productIdentifiers: Set(self.productIdentifiers))
-        if let pr: SKProductsRequest = self.productRequest {
+        self.productRequest = SKProductsRequest(productIdentifiers: Set(self.productIdentifiers))
+        if let skpr: SKProductsRequest = self.productRequest {
             // Set the instance as the request delegate, and start a request for products
-            pr.delegate = self
-            pr.start()
+            skpr.delegate = self
+            skpr.start()
 
             // This yields an async result: see `productsRequest(request, response)`
         } else {
@@ -81,7 +80,7 @@ final class StoreController: NSObject,
 
 
     /**
-     Async handler for Product list request
+     Async handler for the Product list request.
      */
     func productsRequest(_ request: SKProductsRequest, didReceive response: SKProductsResponse) {
 
@@ -94,7 +93,6 @@ final class StoreController: NSObject,
                 }
             }
         }
- 
 #if DEBUG
         // List valid and invalid Product IDs for debugging
         if !response.invalidProductIdentifiers.isEmpty {
@@ -111,7 +109,6 @@ final class StoreController: NSObject,
             }
         }
 #endif
-        
         // Tell the host view controller the Product list has been updated
         notifyParent(kPaymentNotifications.updated)
     }
@@ -120,7 +117,7 @@ final class StoreController: NSObject,
     /**
      Restore past purchases.
      
-     NOTE Tips don't really need this, so this function may be removed in future
+     NOTE Tips don't really need this, so this function may be removed in future.
      */
     func restorePurchasedProducts() {
         
@@ -129,10 +126,10 @@ final class StoreController: NSObject,
 
 
     // MARK: - Payment Processing Handler
-    
+
     /**
-     This is called asynchronously (often not on the main thread) in response
-     to incoming messages from the App Store during purchases
+     This system-defined callback is called asynchronously (often not on the main thread)
+     in response to incoming messages from the App Store during purchases.
      */
     func paymentQueue(_ queue: SKPaymentQueue, updatedTransactions transactions: [SKPaymentTransaction]) {
         
@@ -157,7 +154,8 @@ final class StoreController: NSObject,
                     doFinishTransaction = true
                 case .failed:
                     fallthrough
-                @unknown default:
+                @unknown
+                default:
                     // Trap cancelled purchases so we send the correct
                     // notification to the host view controller
                     if (transaction.error as? SKError)?.code == .paymentCancelled {
@@ -182,21 +180,25 @@ final class StoreController: NSObject,
                 doFinishTransaction = false
             }
             
-            #if DEBUG
+#if DEBUG
             print("Event: purchase \(purchaseState)")
-            #endif
+#endif
         }
     }
 
 
     // MARK: - Payment Event Handlers
-    
+
     /**
-     Generic notification issuer. Receiver is the host view controller
+     Generic notification issuer. Receiver is the host view controller.
+
+     - Parameters:
+        - rawName  The raw (string) notification name.
+        - userInfo A dictionary of optional data to include with the notification.
      */
     private func notifyParent(_ rawName: String, _ userInfo: [AnyHashable: Any]? = nil) {
 
-        NotificationCenter.default.post(name: NSNotification.Name.init(rawValue: rawName),
+        NotificationCenter.default.post(name: NSNotification.Name(rawValue: rawName),
                                         object: self,
                                         userInfo: userInfo)
     }

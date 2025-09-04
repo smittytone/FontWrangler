@@ -1,11 +1,10 @@
-
-//  SceneDelegate.swift
-//  Fontismo
-//
-//
-//  Created by Tony Smith on 27/03/2020.
-//  Copyright © 2025 Tony Smith. All rights reserved.
-
+/*
+ *  SceneDelegate.swift
+ *  Fontismo
+ *
+ *  Created by Tony Smith on 27/03/2020.
+ *  Copyright © 2025 Tony Smith. All rights reserved.
+ */
 
 import UIKit
 
@@ -14,12 +13,11 @@ class SceneDelegate: UIResponder,
                      UIWindowSceneDelegate,
                      UISplitViewControllerDelegate {
 
-    
     // MARK: - Public Properties
-    
+
     var window: UIWindow?
-    
-    
+
+
     // MARK: - Scene State Functions
     
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
@@ -70,7 +68,7 @@ class SceneDelegate: UIResponder,
         // to restore the scene back to its current state.
     }
 
-    
+
     // MARK: - Split View Functions
 
     func splitViewController(_ splitViewController: UISplitViewController, collapseSecondary secondaryViewController: UIViewController, onto primaryViewController:UIViewController) -> Bool {
@@ -85,5 +83,4 @@ class SceneDelegate: UIResponder,
         
         return false
     }
-
 }

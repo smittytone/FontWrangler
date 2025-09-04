@@ -1,11 +1,10 @@
-
-//  FeedbackPresentationController.swift
-//  Fontismo
-//
-//
-//  Created by Tony Smith on 06/02/2021.
-//  Copyright © 2025 Tony Smith. All rights reserved.
-
+/*
+ *  FeedbackPresentationController.swift
+ *  Fontismo
+ *
+ *  Created by Tony Smith on 06/02/2021.
+ *  Copyright © 2025 Tony Smith. All rights reserved.
+ */
 
 import UIKit
 
@@ -21,6 +20,7 @@ class FeedbackPresentationController: UIPresentationController {
 
     private let blurEffectView: UIVisualEffectView!
     private var tapGestureRecognizer: UITapGestureRecognizer = UITapGestureRecognizer()
+
 
     // MARK: - Other Properties
 
@@ -54,7 +54,7 @@ class FeedbackPresentationController: UIPresentationController {
 
 
     // MARK: - Lifecycle Functions
-    
+
     override init(presentedViewController: UIViewController, presenting presentingViewController: UIViewController?) {
         
         // Set up the background blur
@@ -64,30 +64,28 @@ class FeedbackPresentationController: UIPresentationController {
         self.blurEffectView.isUserInteractionEnabled = true
         
         // Initialize the parent class
-        super.init(presentedViewController: presentedViewController,
-                   presenting: presentingViewController)
-        
+        super.init(presentedViewController: presentedViewController, presenting: presentingViewController)
+
         // Set up and add the background tap register
-        self.tapGestureRecognizer = UITapGestureRecognizer(target: self,
-                                                           action: #selector(self.dismiss))
+        self.tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(self.dismiss))
         self.blurEffectView.addGestureRecognizer(tapGestureRecognizer)
     }
 
 
     /**
-     Handler for background taps: dismiss the feedback view controller
+     Handler for background taps: dismiss the feedback view controller.
      */
-    @objc func dismiss() {
-        
-        self.presentedViewController.dismiss(animated: true,
-                                             completion: nil)
+    @objc
+    func dismiss() {
+
+        self.presentedViewController.dismiss(animated: true, completion: nil)
     }
 
 
     // MARK: - Presentation Start and End Functions
-    
+
     /**
-     The Presentation Controller is about to show the FeedbackViewController
+     The Presentation Controller is about to show the FeedbackViewController.
      */
     override func presentationTransitionWillBegin() {
         
@@ -105,7 +103,7 @@ class FeedbackPresentationController: UIPresentationController {
 
 
     /**
-     The Presentation Controller is about to remove the FeedbackViewController
+     The Presentation Controller is about to remove the FeedbackViewController.
      */
     override func dismissalTransitionWillBegin() {
         
@@ -121,7 +119,7 @@ class FeedbackPresentationController: UIPresentationController {
 
 
     /**
-     The presented view is about to be laid out, so configure the layout
+     The presented view is about to be laid out, so configure the layout.
      */
     override func containerViewWillLayoutSubviews() {
         
@@ -135,7 +133,7 @@ class FeedbackPresentationController: UIPresentationController {
 
 
     /**
-     The presented view was laid out, so now set up the frame and the extent of the background blur
+     The presented view was laid out, so now set up the frame and the extent of the background blur.
      */
     override func containerViewDidLayoutSubviews() {
         
@@ -146,5 +144,4 @@ class FeedbackPresentationController: UIPresentationController {
         self.presentedView?.frame = frameOfPresentedViewInContainerView
         blurEffectView.frame = containerView!.bounds
     }
-    
 }

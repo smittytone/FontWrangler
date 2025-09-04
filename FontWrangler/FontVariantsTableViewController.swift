@@ -1,24 +1,22 @@
-
-//  FontVariantsTableViewController.swift
-//  Fontismo
-//
-//
-//  Created by Tony Smith on 01/04/2020.
-//  Copyright © 2025 Tony Smith. All rights reserved.
-
+/*
+ *  FontVariantsTableViewController.swift
+ *  Fontismo
+ *
+ *  Created by Tony Smith on 01/04/2020.
+ *  Copyright © 2025 Tony Smith. All rights reserved.
+ */
 
 import UIKit
 
 
 final class FontVariantsTableViewController: UITableViewController {
-    
+
     // This UITableViewController manages the font variants menu if it is
     // enabled by the detail view controller - ie. if the selected font
     // has variants, eg. Regular, Bold, Italic, etc.
     //
     // The user can select a variant to demo that specific font
-    
-    
+
     // MARK: - Public Properties
     
     var fontIndices: [Int]? = nil
@@ -114,7 +112,6 @@ final class FontVariantsTableViewController: UITableViewController {
                     advc.currentFontIndex = indexPath.row
                     self.currentFont = indexPath.row
                     //advc.configureView()
-                    
 #if DEBUG
                     print("Font selected '\(font.name)' at row \(indexPath.row)")
 #endif
@@ -140,10 +137,11 @@ final class FontVariantsTableViewController: UITableViewController {
     }
 
 
+    /**
+     FROM 1.1.0
+     */
     private func processHanalei(_ cell: FontVariantsTableViewCell, _ font: UserFont) -> FontVariantsTableViewCell {
 
-        // FROM 1.1.2
-        
         var hanaleiName: String = "";
         if (font.name as NSString).contains("Fill") {
             hanaleiName = "Fill "
@@ -155,8 +153,8 @@ final class FontVariantsTableViewController: UITableViewController {
 
 
     /**
-     Deal with the fact that Ioskeva Term and Iosevka Term Slab Regular have no `-regular` in its PostScript name
-     
+     Deal with the fact that Ioskeva Term and Iosevka Term Slab Regular have no `-regular` in its PostScript name.
+
      FROM 2.0.0
      */
     private func processIosevka(_ cell: FontVariantsTableViewCell, _ font: UserFont) -> FontVariantsTableViewCell {
@@ -174,8 +172,8 @@ final class FontVariantsTableViewController: UITableViewController {
 
 
     /**
-     Deal with the fact that Roboto Mono has non-standard style PostScript name suffixes
-     
+     Deal with the fact that Roboto Mono has non-standard style PostScript name suffixes.
+
      FROM 2.0.0
      */
     func getRobotoMonoVarName(_ name: String) -> String {

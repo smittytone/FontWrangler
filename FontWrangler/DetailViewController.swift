@@ -1,11 +1,10 @@
-
-//  DetailViewController.swift
-//  Fontismo
-//
-//
-//  Created by Tony Smith on 27/03/2020.
-//  Copyright © 2025 Tony Smith. All rights reserved.
-
+/*
+ *  DetailViewController.swift
+ *  Fontismo
+ *
+ *  Created by Tony Smith on 27/03/2020.
+ *  Copyright © 2025 Tony Smith. All rights reserved.
+ */
 
 import UIKit
 
@@ -15,35 +14,19 @@ class DetailViewController: UIViewController,
                             UITextViewDelegate {
 
     // MARK: - UI properties
-    
+
     @IBOutlet weak var fontStatusLabel: UILabel!
-    
     @IBOutlet weak var dynamicSampleHeadLabel: UILabel!
     @IBOutlet weak var dynamicSampleTextView: UITextView!
     @IBOutlet weak var uninstalledPreviewImage: UIImageView!
-
     @IBOutlet weak var fontSizeLabel: UILabel!
     @IBOutlet weak var fontSizeSlider: UISlider!
-
     @IBOutlet weak var downloadProgress: UIActivityIndicatorView!
-    
     @IBOutlet weak var downloadView: RetrievalView!
 
-    // REMOVED IN 1.1.0
-    //@IBOutlet weak var dynamicSampleParentView: UserTestSampleView!
-    //@IBOutlet weak var userSampleHeadLabel: UILabel!
-    //@IBOutlet weak var userSampleTextView: UITextView!
 
+    // MARK: - Public Properties
 
-    // MARK: - Object properties
-    
-    private var substituteFont: UIFont? = nil
-    private var variantsButton: UIBarButtonItem? = nil
-    private var fontSize: CGFloat = kBaseDynamicSampleFontSize
-    private var hasFlipped: Bool = false
-    private var dynamicFlipBoundary: CGFloat = 0.0
-    private var storeSliderValue: Float = Float(kBaseDynamicSampleFontSize)
-    
     var mvc: MasterViewController? = nil
     var currentFamily: FontFamily? = nil
     var currentFontIndex: Int = 0
@@ -52,12 +35,22 @@ class DetailViewController: UIViewController,
     var shouldAutoInstallFonts: Bool = false
 
     var detailItem: UserFont? {
-        
+
         didSet {
             // When set, update the view immediately
             self.configureView()
         }
     }
+
+
+    // MARK: - Private properties
+
+    private var substituteFont: UIFont? = nil
+    private var variantsButton: UIBarButtonItem? = nil
+    private var fontSize: CGFloat = kBaseDynamicSampleFontSize
+    private var hasFlipped: Bool = false
+    private var dynamicFlipBoundary: CGFloat = 0.0
+    private var storeSliderValue: Float = Float(kBaseDynamicSampleFontSize)
 
 
     // MARK: - Lifecycle Functions
@@ -74,7 +67,7 @@ class DetailViewController: UIViewController,
         self.variantsButton = rightButton
         
         // Set the base size
-        self.substituteFont = UIFont.init(name: "Arial", size: KBaseUserSampleFontSize)
+        self.substituteFont = UIFont(name: "Arial", size: KBaseUserSampleFontSize)
         self.fontSize = kBaseDynamicSampleFontSize
         self.fontSizeSlider.value = Float(self.fontSize)
         self.fontSizeLabel.text = "\(Int(self.fontSize))pt"
@@ -87,21 +80,13 @@ class DetailViewController: UIViewController,
         
         self.downloadView.layer.cornerRadius = 16
         
-        // REMOVED IN 1.1.0
-        // Block access to the user-entered sample
-        //self.dynamicSampleParentView.alpha = 0.3
-        //self.userSampleTextView.isEditable = false
-        //self.userSampleTextView.alpha = 0.3
-
         // Check for on-screen taps to end user sample editing
-        let tapRec: UITapGestureRecognizer = UITapGestureRecognizer.init(target: self,
-                                                                         action: #selector(self.doTap))
+        let tapRec: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(self.doTap))
         self.view?.addGestureRecognizer(tapRec)
 
         // FROM 1.1.0
         // Add pinch-to-zoom for font scaling
-        let pinchRec: UIPinchGestureRecognizer = UIPinchGestureRecognizer.init(target: self,
-                                                                               action: #selector(self.doSwipe))
+        let pinchRec: UIPinchGestureRecognizer = UIPinchGestureRecognizer(target: self, action: #selector(self.doSwipe))
         self.view?.addGestureRecognizer(pinchRec)
         
         // Configure the detail view
@@ -118,7 +103,7 @@ class DetailViewController: UIViewController,
     override func viewDidAppear(_ animated: Bool) {
         
         super.viewDidAppear(animated)
-        
+
         // FROM 2.0.0
         if let detail: UserFont = self.detailItem {
             if !detail.isInstalled {
@@ -139,7 +124,7 @@ class DetailViewController: UIViewController,
 
 
     /**
-     Update the user interface for the detail item
+     Update the user interface for the detail item.
      */
     func configureView() {
         
@@ -153,10 +138,6 @@ class DetailViewController: UIViewController,
         guard let unImage = self.uninstalledPreviewImage else { return }
         guard let dloadView = self.downloadView else { return }
         
-        // REMOVED IN 1.1.0
-        // guard let sampleNote = self.userSampleTextView else { return }
-        // guard let parent = self.dynamicSampleParentView else { return }
-
         // FROM 2.0.0
         // Turn off the indicator and hide
         // dloadProgress.stopAnimating()
@@ -195,7 +176,7 @@ class DetailViewController: UIViewController,
 
             if detail.isInstalled {
                 // Set the sample's font
-                if let font: UIFont = UIFont.init(name: detail.psname, size: self.fontSize) {
+                if let font: UIFont = UIFont(name: detail.psname, size: self.fontSize) {
                     sampleText.font = font
                 }
                 
@@ -222,7 +203,7 @@ class DetailViewController: UIViewController,
                 // FROM 2.0.0
                 // Use graphic preview for uninstalled fonts
                 if let cf: FontFamily = self.currentFamily {
-                    if let image: UIImage = UIImage.init(named: "preview_" + cf.tag) {
+                    if let image: UIImage = UIImage(named: "preview_" + cf.tag) {
                         unImage.image = image
                     }
                 }
@@ -267,41 +248,36 @@ class DetailViewController: UIViewController,
     }
 
 
-    private func doInstall() {
+    /**
+     Offer to install the font if it has not yet been installed.
 
-        // FROM 1.1.0
-        // Offer to install the font if it has not yet been installed
+     FROM 1.1.0
+     */
+    private func doInstall() {
 
         // Create and present an alert with two buttons
         if let cf: FontFamily = self.currentFamily {
-            let alert = UIAlertController.init(title: "",
-                                               message: "This font family is not installed. Dynamic previews are not enabled for uninstalled fonts. Would you like to install \(cf.name) now?",
-                                               preferredStyle: .alert)
+            let alert = UIAlertController(title: "",
+                                          message: "This font family is not installed. Dynamic previews are not enabled for uninstalled fonts. Would you like to install \(cf.name) now?",
+                                          preferredStyle: .alert)
 
-            var alertButton = UIAlertAction.init(title: "Yes",
-                                                 style: .default) { (action) in
+            var alertButton = UIAlertAction(title: "Yes", style: .default) { (action) in
                 // Install the font
                 self.installCurrentFamily()
             }
-
             alert.addAction(alertButton)
 
-            alertButton = UIAlertAction.init(title: "No",
-                                             style: .cancel,
-                                             handler: nil)
-
+            alertButton = UIAlertAction(title: "No", style: .cancel, handler: nil)
             alert.addAction(alertButton)
 
-            self.present(alert,
-                         animated: true,
-                         completion: nil)
+            self.present(alert, animated: true, completion: nil)
         }
     }
 
 
     /**
      If a single family has been tapped in the master view, we set the value
-     // of `currentFamily`. If it has been set, run the install process for it
+     // of `currentFamily`. If it has been set, run the install process for it.
      */
     private func installCurrentFamily() {
         
@@ -331,9 +307,10 @@ class DetailViewController: UIViewController,
     // MARK: - Action Functions
 
     /**
-     Respond to the user adjusting the font size slider
+     Respond to the user adjusting the font size slider.
      */
-    @IBAction private func setFontSize(_ sender: Any) {
+    @IBAction
+    private func setFontSize(_ sender: Any) {
 
         // Update the current font size based on the slider value and update the UI
         self.fontSize = CGFloat(Int(self.fontSizeSlider.value))
@@ -378,16 +355,17 @@ class DetailViewController: UIViewController,
         // Update the view
         // self.configureView()
         self.fontSizeLabel.text = "\(Int(self.fontSize))pt"
-        if let font: UIFont = UIFont.init(name: self.detailItem!.psname, size: self.fontSize) {
+        if let font: UIFont = UIFont(name: self.detailItem!.psname, size: self.fontSize) {
             self.dynamicSampleTextView.font = font
         }
     }
 
 
     /**
-     End editing of the user sample text view on a tap
+     End editing of the user sample text view on a tap.
      */
-    @objc private func doTap() {
+    @objc
+    private func doTap() {
 
         if let dstv = self.dynamicSampleTextView {
             dstv.endEditing(true)
@@ -396,11 +374,12 @@ class DetailViewController: UIViewController,
 
 
     /**
-     Triggered by the pinch gesture on the main view
-     
+     Triggered by the pinch gesture on the main view.
+
      FROM 1.1.0
      */
-    @objc private func doSwipe(_ pgr: UIPinchGestureRecognizer) {
+    @objc
+    private func doSwipe(_ pgr: UIPinchGestureRecognizer) {
 
         guard pgr.view != nil else { return }
         
@@ -425,7 +404,7 @@ class DetailViewController: UIViewController,
 
 
     /**
-     Stop the download process if the user has cancelled it
+     Stop the download process if the user has cancelled it.
      */
     func doCancelInstall() {
         
@@ -435,10 +414,11 @@ class DetailViewController: UIViewController,
 
 
     /**
-     Load and configure the font variants menu view controller
+     Load and configure the font variants menu view controller.
      */
-    @objc private func showVariantsMenu() {
-        
+    @objc
+    private func showVariantsMenu() {
+
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         let fvtvc: FontVariantsTableViewController = storyboard.instantiateViewController(withIdentifier: "font.variants.controller") as! FontVariantsTableViewController
         fvtvc.dvc = self
@@ -462,7 +442,7 @@ class DetailViewController: UIViewController,
 
 
     /**
-     Extract the font variant from the font name
+     Extract the font variant from the font name.
      */
     private func getVariantName(_ fontName: String) -> String {
         
@@ -479,7 +459,7 @@ class DetailViewController: UIViewController,
      */
 
     /**
-     Set Quirk for Bungee, which has non-variant fonts under the same tag
+     Set Quirk for Bungee, which has non-variant fonts under the same tag.
      */
     private func getBungeeTitle(_ fontName: String) -> String {
 
@@ -493,8 +473,8 @@ class DetailViewController: UIViewController,
 
 
     /**
-     Set Quirk for Hanalei, which has non-variant fonts under the same tag
-     
+     Set Quirk for Hanalei, which has non-variant fonts under the same tag.
+
      FROM 1.1.2
      */
     private func getHanaleiTitle(_ fontName: String) -> String {
@@ -509,8 +489,8 @@ class DetailViewController: UIViewController,
 
 
     /**
-     Set Quirk for FiraCode, which has non-variant fonts under the same tag
-     
+     Set Quirk for FiraCode, which has non-variant fonts under the same tag.
+
      FROM 2.0.0
      */
     private func getFiraCodeTitle(_ fontName: String) -> String {
@@ -523,8 +503,8 @@ class DetailViewController: UIViewController,
 
 
     /**
-     Set Quirk for FiraCode, which has mis-named font variants
-     
+     Set Quirk for FiraCode, which has mis-named font variants.
+
      FROM 2.0.0
      */
     func getFiraCodeVariant(_ initial: String) -> String {
@@ -537,20 +517,20 @@ class DetailViewController: UIViewController,
 
 
     /**
-     Set Quirk for Roboto Mono NFM, which has mis-named font variants
-     
+     Set Quirk for Roboto Mono NFM, which has mis-named font variants.
+
      FROM 2.0.0
      */
     private func getRobotoMonoTitle(_ fontName: String) -> String {
         
-        let fvtvc: FontVariantsTableViewController = FontVariantsTableViewController.init()
+        let fvtvc: FontVariantsTableViewController = FontVariantsTableViewController()
         return "Roboto Mono NF " + fvtvc.getRobotoMonoVarName(fontName)
     }
 
 
     /**
-     Set Quirk for Iosevka, which has non-variant fonts under the same tag
-     
+     Set Quirk for Iosevka, which has non-variant fonts under the same tag.
+
      FROM 2.0.0
      */
     private func getNerdFontTitle(_ fontName: String, _ familyName: String) -> String {
@@ -572,13 +552,12 @@ class DetailViewController: UIViewController,
     // MARK: - UITextViewDelegate Functions
 
     /**
-     If the sample text has changed, record the fact
-     
+     If the sample text has changed (the user has entered something), record the fact.
+
      FROM 1.1.1
      */
     func textViewDidChange(_ textView: UITextView) {
 
         self.hasCustomText = true
     }
-
 }

@@ -1,17 +1,16 @@
-
-//  RetrievalView.swift
-//  Fontismo
-//
-//
-//  Created by Tony Smith on 30/10/2024.
-//  Copyright © 2025 Tony Smith. All rights reserved.
-
+/*
+ *  RetrievalView.swift
+ *  Fontismo
+ *
+ *  Created by Tony Smith on 30/10/2024.
+ *  Copyright © 2025 Tony Smith. All rights reserved.
+ */
 
 import UIKit
 
 
 final class RetrievalView: UIView {
-    
+
     // Translucent view containing font family download progress updates.
     // Displayed only on the Detail View Controller
 
@@ -26,7 +25,7 @@ final class RetrievalView: UIView {
 
 
     /**
-     Present the view and start animating the indicator
+     Present the view and start animating the indicator.
      */
     func doShow() {
         
@@ -36,7 +35,7 @@ final class RetrievalView: UIView {
 
 
     /**
-     Stop the indicator and hide the vie
+     Stop the indicator and hide the view.
      */
     func doHide() {
         

@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		3B0DF57C2440C8F50037BEDE /* IntroViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B0DF57B2440C8F50037BEDE /* IntroViewController.swift */; };
 		3B2011DC24433F0800441739 /* MasterTitleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B2011DB24433F0800441739 /* MasterTitleView.swift */; };
-		3B25B94224407C0A0078B869 /* UserTestSampleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B25B94124407C0A0078B869 /* UserTestSampleView.swift */; };
 		3B2D46412CC2A5A8003F6ACD /* MasterTableHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B2D46402CC2A5A8003F6ACD /* MasterTableHeaderView.swift */; };
 		3B35362427F9D18A00F11FDF /* TipViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B35362327F9D18A00F11FDF /* TipViewController.swift */; };
 		3B35362627F9D76A00F11FDF /* StoreController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B35362527F9D76A00F11FDF /* StoreController.swift */; };
@@ -380,7 +379,6 @@
 				3B0DF57C2440C8F50037BEDE /* IntroViewController.swift in Sources */,
 				3B2011DC24433F0800441739 /* MasterTitleView.swift in Sources */,
 				3BD0DF4A24332B7F002878F7 /* FontWranglerFontListTableViewCell.swift in Sources */,
-				3B25B94224407C0A0078B869 /* UserTestSampleView.swift in Sources */,
 				3B35362427F9D18A00F11FDF /* TipViewController.swift in Sources */,
 				3B879A32242E00B400BE47DC /* DetailViewController.swift in Sources */,
 				3B6E85E42430AB8500C6549A /* Constants.swift in Sources */,

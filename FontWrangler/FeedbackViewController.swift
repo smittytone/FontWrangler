@@ -1,11 +1,10 @@
-
-//  FeedbackViewController.swift
-//  Fontismo
-//
-//
-//  Created by Tony Smith on 25/01/2021.
-//  Copyright © 2025 Tony Smith. All rights reserved.
-
+/*
+ *  FeedbackViewController.swift
+ *  Fontismo
+ *
+ *  Created by Tony Smith on 25/01/2021.
+ *  Copyright © 2025 Tony Smith. All rights reserved.
+ */
 
 import UIKit
 
@@ -21,8 +20,8 @@ class FeedbackViewController: UIViewController,
     @IBOutlet var connectionProgress: UIActivityIndicatorView!
     @IBOutlet var textLengthLabel: UILabel!
     @IBOutlet var sendButton: UIButton!
-    
-    
+
+
     // MARK: - Private Properties
 
     private var feedbackTask: URLSessionTask? = nil
@@ -41,14 +40,13 @@ class FeedbackViewController: UIViewController,
         self.feedbackText.layer.borderColor = UIColor.gray.cgColor;
         self.feedbackText.layer.borderWidth = 2.0;
         self.feedbackText.layer.cornerRadius = 8.0;
-        self.feedbackText.textContainerInset = UIEdgeInsets.init(top: 8, left: 5, bottom: 8, right: 5)
+        self.feedbackText.textContainerInset = UIEdgeInsets(top: 8, left: 5, bottom: 8, right: 5)
         
         // Set the View Controller as the UITextView's delegate
         self.feedbackText.delegate = self
 
         // Set the tap recognizer that'll hide the keyboard
-        self.tapGestureRecognizer = UITapGestureRecognizer(target: self,
-                                                           action: #selector(self.dismissKeyboard))
+        self.tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(self.dismissKeyboard))
         self.view.addGestureRecognizer(self.tapGestureRecognizer)
     }
 
@@ -80,11 +78,13 @@ class FeedbackViewController: UIViewController,
     // MARK: - User Action Functions
 
     /**
-     User has clicked 'Cancel', so just close the sheet
-     
-     'Cancel' is the X button in the top right
+     User has clicked 'Cancel', so just close the sheet.
+
+     'Cancel' is the X button in the top right.
      */
-    @IBAction @objc func doCancel(sender: Any?) {
+    @IBAction
+    @objc
+    func doCancel(sender: Any?) {
 
         dismissKeyboard()
         self.dismiss(animated: true, completion: nil)
@@ -92,9 +92,11 @@ class FeedbackViewController: UIViewController,
 
 
     /**
-     User clicked 'Send' so get the message (if there is one) from the text field and send it
+     User clicked 'Send' so get the message (if there is one) from the text field and send it.
      */
-    @IBAction @objc func doSend(sender: Any?) {
+    @IBAction
+    @objc
+    func doSend(sender: Any?) {
 
         self.feedbackText.resignFirstResponder()
         let feedback: String = self.feedbackText.text
@@ -118,25 +120,23 @@ class FeedbackViewController: UIViewController,
              """
 
             let dict: NSMutableDictionary = NSMutableDictionary()
-            dict.setObject(dataString,
-                           forKey: NSString.init(string: "text"))
-            dict.setObject(true,
-                           forKey: NSString.init(string: "mrkdwn"))
+            dict.setObject(dataString, forKey: NSString(string: "text"))
+            dict.setObject(true, forKey: NSString(string: "mrkdwn"))
 
-            if let url: URL = URL.init(string: MNU_SECRETS.ADDRESS.B + MNU_SECRETS.ADDRESS.A) {
-                var request: URLRequest = URLRequest.init(url: url)
+            if let url: URL = URL(string: MNU_SECRETS.ADDRESS.B + MNU_SECRETS.ADDRESS.A) {
+                var request: URLRequest = URLRequest(url: url)
                 request.httpMethod = "POST"
                 do {
                     request.httpBody = try JSONSerialization.data(withJSONObject: dict,
-                                                                  options:JSONSerialization.WritingOptions.init(rawValue: 0))
+                                                                  options:JSONSerialization.WritingOptions(rawValue: 0))
 
                     request.addValue(userAgent, forHTTPHeaderField: "User-Agent")
                     request.addValue("application/json", forHTTPHeaderField: "Content-type")
 
                     let config: URLSessionConfiguration = URLSessionConfiguration.ephemeral
-                    let session: URLSession = URLSession.init(configuration: config,
-                                                              delegate: self,
-                                                              delegateQueue: OperationQueue.main)
+                    let session: URLSession = URLSession(configuration: config,
+                                                         delegate: self,
+                                                         delegateQueue: OperationQueue.main)
                     self.feedbackTask = session.dataTask(with: request)
                     self.feedbackTask?.resume()
                 } catch {
@@ -151,10 +151,11 @@ class FeedbackViewController: UIViewController,
 
 
     /**
-     Tell the UITextView to end editing -- which will remove the keyboard
+     Tell the UITextView to end editing -- which will remove the keyboard.
      */
-    @objc func dismissKeyboard() {
-        
+    @objc
+    func dismissKeyboard() {
+
         self.feedbackText.resignFirstResponder()
     }
 
@@ -162,7 +163,7 @@ class FeedbackViewController: UIViewController,
     // MARK: - URLSession Delegate Functions
 
     /**
-     Some sort of connection error - report it
+     Some sort of connection error has occurred - report it.
      */
     func urlSession(_ session: URLSession, didBecomeInvalidWithError error: Error?) {
 
@@ -171,7 +172,7 @@ class FeedbackViewController: UIViewController,
 
 
     /**
-     The operation to send the comment completed
+     The operation to send the comment completed.
      */
     func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
 
@@ -183,13 +184,13 @@ class FeedbackViewController: UIViewController,
             DispatchQueue.main.async {
                 self.connectionProgress.stopAnimating()
 
-                let alert = UIAlertController.init(title: "Thanks For Your Feedback!",
-                                               message: "Your comments have been received and we’ll take a look at them shortly.",
-                                               preferredStyle: .alert)
+                let alert = UIAlertController(title: "Thanks For Your Feedback!",
+                                              message: "Your comments have been received and we’ll take a look at them shortly.",
+                                              preferredStyle: .alert)
+
                 alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "Default action"),
                                               style: .default,
                                               handler: { (action) in
-                    
                     // Dismiss the FeedbackViewController now we're done
                     self.dismiss(animated: true, completion: nil)
                 }))
@@ -204,31 +205,33 @@ class FeedbackViewController: UIViewController,
     // MARK: - Misc Functions
 
     /**
-     Present an error message specific to sending feedback
-     
+     Present an error message specific to sending feedback.
+
      This is called from multiple locations: if the initial request can't be created,
-     there was a send failure, or a server error
+     there was a send failure, or a server error.
      */
     func sendFeedbackError() {
 
         DispatchQueue.main.async {
             self.connectionProgress.stopAnimating()
             
-            let alert = UIAlertController.init(title: "Feedback Could Not Be Sent",
-                                               message: "Unfortunately, your comments could not be send at this time. Please try again later.",
-                                               preferredStyle: .alert)
+            let alert = UIAlertController(title: "Feedback Could Not Be Sent",
+                                          message: "Unfortunately, your comments could not be send at this time. Please try again later.",
+                                          preferredStyle: .alert)
+
             alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "Default action"),
                                           style: .default,
                                           handler: nil))
-            self.present(alert,
-                         animated: true,
-                         completion: nil)
+
+            self.present(alert, animated: true, completion: nil)
         }
     }
 
 
     /**
-     Return the user-agent string
+     Generate the user-agent string.
+
+     - Returns The user-agent string.
      */
     func getUserAgent() -> String {
         
@@ -242,9 +245,11 @@ class FeedbackViewController: UIViewController,
 
 
     /**
-     Return a device-type string
-     
+     Generate a device-type string, consumed by `getUserAgent()`.
+
      FROM 1.1.2
+
+     - Returns The device-type string.
      */
     static func getDeviceType() -> String {
         
@@ -266,7 +271,9 @@ class FeedbackViewController: UIViewController,
 
 
     /**
-     Return the current date as formatted string
+     Return the current date as formatted string.
+
+     - Returns The current date.
      */
     func getDateString() -> String {
         
@@ -298,9 +305,8 @@ class FeedbackViewController: UIViewController,
         }
         
         // Set the button title according to the amount of feedback text
-        self.sendButton.setTitle(self.feedbackText.text.count > 0 ? "Send" : "Cancel",
-                                 for: .normal)
-        
+        self.sendButton.setTitle(self.feedbackText.text.count > 0 ? "Send" : "Cancel", for: .normal)
+
         // Set the text length label
         self.textLengthLabel.text = "\(self.feedbackText.text.count)/\(kMaxFeedbackCharacters)"
     }
@@ -308,8 +314,8 @@ class FeedbackViewController: UIViewController,
 
     /**
      When the user starts enterting text, remove the placeholder text
-     // and set the correct text colour
-     
+     // and set the correct text colour.
+
      FROM 1.2.0
      */
     func textViewDidBeginEditing(_ textView: UITextView) {
@@ -336,5 +342,4 @@ class FeedbackViewController: UIViewController,
             self.feedbackText.layer.borderColor = UIColor.gray.cgColor;
         })
     }
-
 }
