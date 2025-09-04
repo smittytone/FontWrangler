@@ -225,6 +225,7 @@
 					abel,
 					alfa_slab_one,
 					allan,
+					alumni_sans_pinstripe,
 					amatic_sc,
 					audiowide,
 					bangers,
@@ -273,6 +274,7 @@
 					lobster,
 					luckiest_guy,
 					megrim,
+					metal_mania,
 					michroma,
 					mirza,
 					monaspice_nfm,
@@ -281,6 +283,7 @@
 					noto_linear_b,
 					nova_cut,
 					odibee_sans,
+					oldenburg,
 					oswald,
 					oxygen,
 					pacifico,
@@ -547,7 +550,7 @@
 				CODE_SIGN_ENTITLEMENTS = FontWrangler/FontWrangler.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 84;
+				CURRENT_PROJECT_VERSION = 85;
 				DEVELOPMENT_TEAM = Y5J3K52DNA;
 				INFOPLIST_FILE = FontWrangler/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Fontismo;
@@ -579,7 +582,7 @@
 				CODE_SIGN_ENTITLEMENTS = FontWrangler/FontWrangler.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 84;
+				CURRENT_PROJECT_VERSION = 85;
 				DEVELOPMENT_TEAM = Y5J3K52DNA;
 				INFOPLIST_FILE = FontWrangler/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Fontismo;
