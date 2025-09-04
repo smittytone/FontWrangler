@@ -287,6 +287,7 @@
 					pirata_one,
 					plaster,
 					playball,
+					playfair_display,
 					poiret_one,
 					quicksand,
 					radley,
@@ -294,8 +295,11 @@
 					righteous,
 					risque,
 					roboto,
+					roboto_condensed,
 					roboto_mono_nfm,
+					rocksalt,
 					rokkitt,
+					rowdies,
 					sancreek,
 					shojumaru,
 					shrikhand,
@@ -543,7 +547,7 @@
 				CODE_SIGN_ENTITLEMENTS = FontWrangler/FontWrangler.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 83;
+				CURRENT_PROJECT_VERSION = 84;
 				DEVELOPMENT_TEAM = Y5J3K52DNA;
 				INFOPLIST_FILE = FontWrangler/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Fontismo;
@@ -575,7 +579,7 @@
 				CODE_SIGN_ENTITLEMENTS = FontWrangler/FontWrangler.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 83;
+				CURRENT_PROJECT_VERSION = 84;
 				DEVELOPMENT_TEAM = Y5J3K52DNA;
 				INFOPLIST_FILE = FontWrangler/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Fontismo;

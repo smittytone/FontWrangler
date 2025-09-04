@@ -47,8 +47,8 @@ extension MasterViewController  {
                 newFont.tag = aFont["tag"] ?? ""
                 
                 // FROM 2.0.0
-                let serifFlag: String = aFont["serif"] ?? ""
-                newFont.isSerif = (serifFlag == "true" || serifFlag == "")
+                let serifFlag: String = aFont["serif"] ?? "true"
+                newFont.isSerif = (serifFlag == "true")
                 newFont.style = aFont["class"] ?? "Unknown"
                 newFont.creator = aFont["creator"]
                 newFont.familyName = aFont["fname"] ?? ""
@@ -57,7 +57,7 @@ extension MasterViewController  {
             }
             
             // Sort the list
-            //self.sortFonts()
+            // self.sortFonts()
         } else {
             NSLog("[ERROR] can't load defaults - loadDefaults()")
             self.showAlert("Error", "Sorry, the default font list is missing — Fontismo has become damaged. Please reinstall the app.")
@@ -723,7 +723,10 @@ extension MasterViewController  {
 #endif
         // Use the font data to set the familiies' status
         var installedCount = 0
-        for family: FontFamily in self.families {
+#if DEBUG
+        print("\(self.families.count) families listed")
+#endif
+        for (i, family) in self.families.enumerated() {
             // Familities fonts have been downloaed - have they been installed?
             // The number of font installations should match the number of
             // fonts in the family
@@ -743,7 +746,8 @@ extension MasterViewController  {
 
                 installedCount += (family.fontsAreInstalled ? 1 : 0)
 #if DEBUG
-                print("Family '\(family.name)': downloads: \(downloaded), installs: \(installed) of \(fontIndexes.count). Style: \(family.style), serif: \(family.isSerif ? "YES" : "NO")")
+                let count = String(format:"%03d", i + 1)
+                print("\(family.isNew ? "*" : " ") \(count). Family '\(family.name)': downloads: \(downloaded), installs: \(installed) of \(fontIndexes.count). Style: \(family.style), serif: \(family.isSerif ? "YES" : "NO")")
 #endif
                 // Turn of progress and/or timers if they're still active
                 if fontIndexes.count == installed {
