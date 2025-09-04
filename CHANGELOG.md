@@ -1,6 +1,7 @@
 ## Release Notes ##
 
-- 2.0.1 *Unreleased*
+- 2.1.0 *Unreleased*
+    - Add ten new fonts.
     - Correct and update Help text.
     - Update first-run intro text.
     - Improve UI language consistency.
