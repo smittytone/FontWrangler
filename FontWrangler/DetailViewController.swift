@@ -257,7 +257,7 @@ class DetailViewController: UIViewController,
             // if !detail.isInstalled { doInstall() }
         } else {
             // Hide the labels; disable the slider
-            self.title = "Font Info"
+            self.title = "Typeface Info"
             statusLabel.text = "No font selected"
             sizeLabel.text = ""
             sizeSlider.value = Float(self.fontSize)

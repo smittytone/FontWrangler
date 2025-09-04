@@ -88,6 +88,7 @@
 		3BD7E1882431FD2600FD8941 /* Fonts.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Fonts.xcassets; path = "/Users/smitty/Library/Mobile Documents/com~apple~CloudDocs/Documents/Programming/FontWrangler/Fonts.xcassets"; sourceTree = "<absolute>"; };
 		3BD7E18A243212E100FD8941 /* defaults.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = defaults.json; path = "/Users/smitty/Library/Mobile Documents/com~apple~CloudDocs/Documents/Programming/FontWrangler/defaults.json"; sourceTree = "<absolute>"; };
 		3BE5B2AA2434AD6B00A0C33A /* FontFamily.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FontFamily.swift; sourceTree = "<group>"; };
+		3BF264C92E69881C004C4D01 /* CHANGELOG.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = CHANGELOG.md; sourceTree = "<group>"; };
 		3BFF9F8824373134008B1EA9 /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
@@ -169,6 +170,7 @@
 			isa = PBXGroup;
 			children = (
 				3B94175A2AF173DC00D77BBC /* README.md */,
+				3BF264C92E69881C004C4D01 /* CHANGELOG.md */,
 				3B94175B2AF173DC00D77BBC /* LICENSE.md */,
 			);
 			name = Misc;
@@ -540,7 +542,7 @@
 				CODE_SIGN_ENTITLEMENTS = FontWrangler/FontWrangler.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 81;
+				CURRENT_PROJECT_VERSION = 82;
 				DEVELOPMENT_TEAM = Y5J3K52DNA;
 				INFOPLIST_FILE = FontWrangler/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Fontismo;
@@ -550,7 +552,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.0.0;
+				MARKETING_VERSION = 2.0.1;
 				"OTHER_SWIFT_FLAGS[arch=*]" = "-DDEBUG";
 				PRODUCT_BUNDLE_IDENTIFIER = com.bps.fontwrangler;
 				PRODUCT_NAME = Fontismo;
@@ -572,7 +574,7 @@
 				CODE_SIGN_ENTITLEMENTS = FontWrangler/FontWrangler.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 81;
+				CURRENT_PROJECT_VERSION = 82;
 				DEVELOPMENT_TEAM = Y5J3K52DNA;
 				INFOPLIST_FILE = FontWrangler/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Fontismo;
@@ -582,7 +584,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.0.0;
+				MARKETING_VERSION = 2.0.1;
 				"OTHER_SWIFT_FLAGS[arch=*]" = "-DRELEASE";
 				PRODUCT_BUNDLE_IDENTIFIER = com.bps.fontwrangler;
 				PRODUCT_NAME = Fontismo;

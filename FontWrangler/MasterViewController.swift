@@ -68,8 +68,7 @@ final class MasterViewController: UITableViewController,
         .classic: true,
         .headline: true,
         .decorative: true,
-        .monospace: true,
-        .ancient: true
+        .monospace: true
     ]
     
     internal var filterMenuItemIndices: [FilterMenuItems: Int] = [
@@ -203,12 +202,6 @@ final class MasterViewController: UITableViewController,
                                                          self.doShowSome(action, .monospace)
                                                      })
                                                      
-            let showAncientFontsAction = UIAction(title: "Ancient",
-                                                     image: UIImage(named: "style_anc"),
-                                                     handler: { (action) in
-                                                         self.doShowSome(action, .ancient)
-                                                     }) 
-            
             let showNewFontsAction = UIAction(title: "New",
                                               handler: { (_) in
                                                   self.setViewOptions(kFontShowModeIndices.new)
@@ -265,7 +258,6 @@ final class MasterViewController: UITableViewController,
             let filterMenu = UIMenu(title: "Show Typefaces that are...", children: [
                 showClassicFontsAction, showHeadlineFontsAction,
                 showDecorativeFontsAction, showMonospaceFontsAction,
-                showAncientFontsAction,
                 viewSubMenu, controlSubMenu])
             
             self.filterMenuItemIndices[.classic] = 0
