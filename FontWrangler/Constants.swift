@@ -66,7 +66,7 @@ struct FONTISMO_CONSTANTS {
     }
 
     static let FONTS_DIR_PATH                   = "/fonts"
-    static let FONT_LIST_SUB_PATH               = "/.fontlist"
+    static let FONT_LIST_SUB_PATH               = "/fontlist"
     static let FONT_DEFAULTS_FILENAME           = "/defaults.json"
     static let FONT_SAMPLE: [String]            = ["ABCDEFGHI\nJKLMNOPQ\nRSTUVWXYZ\n0123456789\nabcdefghi\njklmnopq\nrstuvwxyz\n!@£$%^&~*()[]{}",
                                                    "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyz!@£$%^&~*()[]{}"]
@@ -74,7 +74,11 @@ struct FONTISMO_CONSTANTS {
     static let FONT_SAMPLE_LIMIT                = 48.0
     static let FONT_SAMPLE_SIZE: CGFloat        = 20.0
     static let FONT_DYNAMIC_SIZE: CGFloat       = 32.0
-    static let PRE_REVIEW_INSTALL_COUNT         = 20
+#if DEBUG
+    static let REVIEW_TRIGGER_INSTALL_COUNT     = 2000
+#else
+    static let REVIEW_TRIGGER_INSTALL_COUNT     = 20
+#endif
     static let HELP_PAGE_COUNT                  = 5
     static let MAX_FEEDBACK_CHARACTERS          = 512
     static let FEEDBACK_BORDER_FLASH_TIME       = 0.2

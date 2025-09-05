@@ -311,7 +311,7 @@ final class MasterViewController: UITableViewController,
         self.view?.addGestureRecognizer(doubleTap)
 
         // Load up the default list
-        self.loadDefaults()
+        loadDefaults()
 
         // FROM 1.1.1
         // Get the font install count
@@ -569,8 +569,8 @@ final class MasterViewController: UITableViewController,
 
     // MARK: - UIAction Functions — Filter Contextual Menu
     
-    private func setContextMenu(_ state: Bool) {
-        
+    internal func setContextMenu(_ state: Bool) {
+
         // Enable or clear all the typeface classes
         self.viewStates[.classic] = state
         self.viewStates[.headline] = state

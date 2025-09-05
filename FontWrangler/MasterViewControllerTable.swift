@@ -149,26 +149,41 @@ extension MasterViewController {
         var config: UISwipeActionsConfiguration? = nil
         var actions = [UIContextualAction]()
         var action: UIContextualAction = UIContextualAction(style: .destructive, title: "") { (theAction, theView, handler) in
+            // FROM 2.0.0
+            var fontsNotShownCount: Int = 0
+            if self.families.count != self.displayFamilies.count {
+                // What's show is not the full selection
+                fontsNotShownCount = self.families.count - self.displayFamilies.count
+            }
+
+            var alertMessage: String
+            if fontsNotShownCount == 0 {
+                alertMessage = "Tap OK to uninstall all of your installed typefaces, or tap Cancel to keep them. You can reinstall typefaces at any time."
+            } else {
+                let delta: String = fontsNotShownCount == 1 ? "is" : "are"
+                alertMessage = "Tap OK to uninstall all of your installed typefaces, including \(fontsNotShownCount) that \(delta) hidden from this list by filters, or tap Cancel to keep them. You can reinstall these typefaces at any time."
+            }
+
             // Check that there are fonts to be removed
             if self.anyFontsInstalled() {
                 // Remove the installed fonts
                 let alert = UIAlertController(title: "Are You Sure?",
-                                              message: "Tap OK to uninstall all the typefaces, or Cancel to quit. You can reinstall uninstalled typefaces at any time.",
+                                              message: alertMessage,
                                               preferredStyle: .alert)
 
                 alert.addAction(UIAlertAction(title: NSLocalizedString("Cancel", comment: "Default action"),
                                               style: .default,
                                               handler: nil))
 
-                alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "Default action"),
-                                              style: .default,
+                alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "Non-default action"),
+                                              style: .destructive,
                                               handler: { (action) in
                     self.removeAll()
                 }))
 
                 self.present(alert, animated: true, completion: nil)
             } else {
-                self.showAlert("No Typefaces Installed", "You have not yet installed any of the available typefaces")
+                self.showAlert("No Typefaces Installed", "You have not yet installed any of the available typefaces.")
             }
 
             handler(true)
@@ -180,7 +195,7 @@ extension MasterViewController {
         action = UIContextualAction(style: .normal, title: "") { (theAction, theView, handler) in
             // Check that there are fonts to be installed
             if self.allFontsInstalled() {
-                self.showAlert("All Typefaces Installed", "You have already installed all of the available typefaces")
+                self.showAlert("All Typefaces Installed", "You have already installed all of the available typefaces.")
             } else {
                 // Install any remaining fonts
                 self.installAll(self)

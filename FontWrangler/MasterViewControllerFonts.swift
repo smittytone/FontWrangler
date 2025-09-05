@@ -132,7 +132,6 @@ extension MasterViewController  {
 #if DEBUG
                         print("\(self.fonts.count - loadedFonts.count) new fonts added to defaults")
 #endif
-                        
                     }
                     
                     // Update the fonts collection (build from defaults.json) using values loaded
@@ -156,12 +155,12 @@ extension MasterViewController  {
                 // NOTE If the file doesn't exist, we use the defaults we previously loaded
                 // TODO Should this be an error we expose to the user?
                 if self.fonts.count == 0 {
-                    // Load in the defaults if there's no font list in place
+                    // Use the defaults if there's no font list in place
                     self.showAlert("Sorry!", "Fontismo’s default font list can’t be loaded — the app may have become damaged. Please reinstall it.")
                     return
                 }
                 
-                // Save the defaults
+                // Save the defaults to the fontlist
                 self.saveFontList()
             }
         }
@@ -178,9 +177,7 @@ extension MasterViewController  {
 
         do {
             // Try to encode the object to data and then try to write out the data
-            //let data: Data = try NSKeyedArchiver.archivedData(withRootObject: self.fonts, requiringSecureCoding: true)
-            // FROM 1.2.2
-            // Replace deprecated calls for NSCoding with Codable
+            // FROM 1.2.2 replace deprecated calls for NSCoding with Codable
             let encoder: PropertyListEncoder = PropertyListEncoder()
             encoder.outputFormat = .binary
             let data: Data = try encoder.encode(self.fonts)
@@ -191,7 +188,7 @@ extension MasterViewController  {
             let jsonEncoder: JSONEncoder = JSONEncoder()
             let jsonData: Data = try jsonEncoder.encode(self.fonts)
             try jsonData.write(to: URL(fileURLWithPath: savePath + ".json"))
-            print("Font state saved \(savePath)")
+            //print("Font state saved \(savePath).json")
 #endif
 
         } catch {
@@ -308,9 +305,9 @@ extension MasterViewController  {
             for registeredDescriptor in registeredDescriptors {
                 if let fontName = CTFontDescriptorCopyAttribute(registeredDescriptor, kCTFontNameAttribute) as? String {
 
-                    #if DEBUG
-                        print("CoreText Font Manager says '\(fontName)' is registered...")
-                    #endif
+#if DEBUG2
+                    print("CoreText Font Manager says '\(fontName)' is registered...")
+#endif
 
                     for font: UserFont in self.fonts {
                         // Match against PostScript name
@@ -319,9 +316,9 @@ extension MasterViewController  {
                             font.isDownloaded = true
                             font.updated = true
                             setCount += 1
-                            #if DEBUG
-                                print("  ...and matched for '\(font.name)'")
-                            #endif
+#if DEBUG2
+                            print("  ...and matched for '\(font.name)'")
+#endif
 
                             break
                         }
@@ -422,7 +419,7 @@ extension MasterViewController  {
                 // Unregister the fonts via the API
                 CTFontManagerUnregisterFontDescriptors(fontDescs as CFArray,
                                                        .persistent,
-                                                       self.familyRegistrationHandler(errors:done:))
+                                                       self.familyRegistrationHandler)
             }
 
             // FROM 1.1.1
@@ -457,7 +454,7 @@ extension MasterViewController  {
             // Deregister the fonts using the API
             CTFontManagerUnregisterFontDescriptors(fontDescs as CFArray,
                                                    .persistent,
-                                                   self.fontRegistrationHandler(errors:done:))
+                                                   self.fontRegistrationHandler(cfErrors:done:))
         }
 
         // FROM 1.1.1
@@ -525,8 +522,6 @@ extension MasterViewController  {
             })
 
             fontRequest.beginAccessingResources { (error) in
-                // THIS BLOCK IS A CLOSURE
-                
                 // Update the UI (on the main thread) to remove the
                 // Activity Indicator
                 family.progress = nil
@@ -571,17 +566,16 @@ extension MasterViewController  {
                 
                 // Update the font's state
                 family.fontsAreDownloaded = true
-                
-                // Register the font with the OS
-                self.registerFontFamily(family)
             }
         } else {
             // Font family should already be downloaded
 #if DEBUG
             print("Family '\(family.name)' already downloaded")
 #endif
-            self.registerFontFamily(family)
         }
+
+        // Register the font with the OS
+        registerFontFamily(family)
     }
 
 
@@ -612,15 +606,15 @@ extension MasterViewController  {
                                                      nil,
                                                      .persistent,
                                                      true,
-                                                     self.familyRegistrationHandler(errors:done:))
+                                                     self.familyRegistrationHandler(cfErrors:done:))
         }
     }
 
 
     /**
      A system-defined callback triggered in response to system-level font registration
-     // and re-registrations - see 'installFonts()' and 'uninstallFonts()'
-     
+     and re-registrations - see `installFonts()` and `uninstallFonts()`.
+
      An empty array indicates no errors. Each error reference will contain a CFArray of font asset names
      corresponding to kCTFontManagerErrorFontAssetNameKey. These represent the font asset names that were
      not successfully registered. Note, the handler may be called multiple times during the registration process.
@@ -628,24 +622,21 @@ extension MasterViewController  {
      The handler should return `false` if the operation is to be stopped.
      This may be desirable after receiving an error.
      */
-    func familyRegistrationHandler(errors: CFArray, done: Bool) -> Bool {
-
-        // Set the return value
-        let returnValue: Bool = true
+    func familyRegistrationHandler(cfErrors: CFArray, done: Bool) -> Bool {
 
         // Process any errors passed in
-        let errs = errors as NSArray
-        if errs.count > 0 {
-            for err in errs {
+        let nsErrors = cfErrors as NSArray
+        if nsErrors.count > 0 {
+            for anyError in nsErrors {
                 // For now, just print the error
                 // TODO better error handling
-                let error: NSError = err as! NSError
-                NSLog("[ERROR] \(error.localizedDescription)")
-                
+                let nsError: NSError = anyError as! NSError
+                NSLog("[ERROR] \(nsError.localizedDescription)")
+
                 // Get the error-generating font's name
                 // FROM 2.0.0 we also check if `errFont` is an array, as it will be in the case
-                // when a family contains multiople fonts.
-                let errFont = error.userInfo[kCTFontManagerErrorFontAssetNameKey as String]
+                // when a family contains multiple fonts.
+                let errFont = nsError.userInfo[kCTFontManagerErrorFontAssetNameKey as String]
                 var family: FontFamily
                 if let fontName = errFont as? String {
                     family = self.familyFromFontName(fontName)
@@ -658,7 +649,7 @@ extension MasterViewController  {
                 
                 // FROM 2.0.0
                 // Check for user cancellation
-                if error.localizedDescription.hasPrefix("The operation was cancelled") {
+                if nsError.localizedDescription.hasPrefix("The operation was cancelled") {
                     DispatchQueue.main.async {
                         if let dvc = self.detailViewController {
                             dvc.doCancelInstall()
@@ -667,24 +658,20 @@ extension MasterViewController  {
                     
                     // Invalidate the install timer so we don't get a time-out alert
                     family.timer?.invalidate()
-                    
                     return false
                 }
                 
                 // Post a warning
-                self.showAlert("Sorry!", "Fontismo had a problem registering typeface \(family.name).\n(\(error.localizedDescription))")
+                self.showAlert("Sorry!", "Fontismo had a problem registering typeface \(family.name).\n(\(nsError.localizedDescription)).")
             }
-
-            // As recommended, return `false` on error to halt further processing.
-            // HOWEVER, this was cancel other installations if multiple installations
-            // have been requested, so we *don't* return `false`
-            // returnValue  = false
         }
 
         // System sets 'done' to true on the final call
-        // (according to the header file)
+        // (according to the header file) but may be for
+        // each font registration in the set passed to
+        // `CTFontManagerRegisterFontsWithAssetNames()`
         if done {
-#if DEBUG
+#if DEBUG2
             print("(De)registration operation complete")
 #endif
             
@@ -696,7 +683,7 @@ extension MasterViewController  {
 
                 // FROM 1.1.1
                 // Check if we need to run a review prompt
-                if self.installCount > FONTISMO_CONSTANTS.PRE_REVIEW_INSTALL_COUNT {
+                if self.installCount > FONTISMO_CONSTANTS.REVIEW_TRIGGER_INSTALL_COUNT {
                     self.installCount = 0
                     UserDefaults.standard.set(self.installCount, forKey: FONTISMO_CONSTANTS.PREFS_KEYS.FONT_INSTALL_COUNT)
                     self.requestReview()
@@ -705,7 +692,7 @@ extension MasterViewController  {
         }
 
         // Signal state of operation
-        return returnValue
+        return true
     }
 
 
@@ -791,15 +778,15 @@ extension MasterViewController  {
      A system-defined callback triggered in response to system-level font registration
      and re-registrations - see `installFonts()` and `uninstallFonts()`.`
      */
-    internal func fontRegistrationHandler(errors: CFArray, done: Bool) -> Bool {
+    internal func fontRegistrationHandler(cfErrors: CFArray, done: Bool) -> Bool {
 
         // Process any errors passed in
-        let errs = errors as NSArray
-        if errs.count > 0 {
-            for err in errs {
+        let nsErrors = cfErrors as NSArray
+        if nsErrors.count > 0 {
+            for anyError in nsErrors {
                 // For now, just print the error
-                // TODO better error handling
-                NSLog("[ERROR] \(err)")
+                let nsError: NSError = anyError as! NSError
+                NSLog("[ERROR] \(nsError.localizedDescription)")
             }
 
             // As recommended, return false on error to
