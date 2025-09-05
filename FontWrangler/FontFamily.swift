@@ -35,7 +35,8 @@ class FontFamily {
     var name: String = ""                       // Family name, taken from the asset catalog tag
     var fontsAreDownloaded: Bool = false        // Are all the family's fonts downloaded?
     var fontsAreInstalled: Bool = false         // Are all the family's fonts installed?
-    var fontIndices: [Int]? = nil               // Array of indices to fonts in primary array
+    var fontIndices: [Int]? = nil               // Array of the indices within the main fonts array
+                                                // of the member fonts of this family
     var progress: Progress? = nil               // Progress instances used during font installation
     var timer: Timer? = nil                     // Timer instance used to timeout installation
     // FROM 1.2.0
