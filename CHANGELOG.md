@@ -5,6 +5,7 @@
     - Correct and update Help text.
     - Update first-run intro text.
     - Improve UI language consistency.
+    - Convert key tasks to async operation, now they're busy enough to block the UI.
     - Bring codebase up to date with my other apps.
 - 2.0.0 *12 November 2024*
     - Support iOS 18 icons.

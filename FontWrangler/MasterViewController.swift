@@ -76,6 +76,9 @@ final class MasterViewController: UITableViewController,
         .uninstalled: 0,
         .viewOptions: 0
     ]
+    // FROM 2.1.0
+    internal var currentInstallCount: Int = 0
+    internal var isActive: Bool = false
 
 
     // MARK: - Private Instance Constants
@@ -651,9 +654,9 @@ final class MasterViewController: UITableViewController,
             }
             
             // Update the table
-            self.setDisplayFamilies()
-            self.reloadFontList()
-            
+            // setDisplayFamilies() // Now called by `updateFontList()`
+            updateFontList()
+
             // Check for nothing being shown, and if it's the first time,
             // present an informational alert about how to fix it
             if self.displayFamilies.count == 0 && !self.hasShownClearedListWarning {
@@ -694,7 +697,7 @@ final class MasterViewController: UITableViewController,
 
      This function usually called from callbacks.
      */
-    func updateUIonMain() {
+    func updateFontListOnMainThread() {
 
         DispatchQueue.main.async {
             if let dvc = self.detailViewController {
@@ -705,7 +708,7 @@ final class MasterViewController: UITableViewController,
             // Set the 'Add All' button state and update the table
             // self.setInstallButtonState()
             
-            self.reloadFontList()
+            self.updateFontList()
         }
     }
 

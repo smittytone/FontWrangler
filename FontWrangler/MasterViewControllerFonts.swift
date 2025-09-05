@@ -75,16 +75,15 @@ extension MasterViewController  {
 
         // Load the saved list from disk
         // NOTE If nothing is loaded from disk, 'self.fonts' will be the defaults
-        self.loadFontList()
+        loadFontList()
         
         // Determing the font families available in the font list
-        self.setFontFamilies()
-        self.setDisplayFamilies()
-        
+        setFontFamilies()
+
         // Double-check what's installed and what isn't and
         // update the fonts' status
         // NOTE This will save the list always
-        self.reloadFontList()
+        updateFontList()
     }
 
 
@@ -124,16 +123,13 @@ extension MasterViewController  {
                     // We loaded in some valid data so set it as the primary store
                     // NOTE This must come before any other font addition/removal code
                     //      because it resets 'self.fonts'
-                    
+#if DEBUG
                     // Check sizes in case we are updating from an old version and therefore the defaults will
                     // be larger than the loaded file. BUT we need to port across status values!
                     if loadedFonts.count != self.fonts.count {
-                        // Copy the loaded status data to the new defaults
-#if DEBUG
                         print("\(self.fonts.count - loadedFonts.count) new fonts added to defaults")
-#endif
                     }
-                    
+#endif
                     // Update the fonts collection (build from defaults.json) using values loaded
                     // NOTE This should mean that changes in defaults.json should be preserved.
                     for font: UserFont in self.fonts {
@@ -182,15 +178,13 @@ extension MasterViewController  {
             encoder.outputFormat = .binary
             let data: Data = try encoder.encode(self.fonts)
             try data.write(to: URL(fileURLWithPath: savePath))
-            
 #if DEBUG
             // Also save a JSON file for easy checking during debugging
             let jsonEncoder: JSONEncoder = JSONEncoder()
             let jsonData: Data = try jsonEncoder.encode(self.fonts)
             try jsonData.write(to: URL(fileURLWithPath: savePath + ".json"))
-            //print("Font state saved \(savePath).json")
+            print("Font state saved \(savePath).json")
 #endif
-
         } catch {
             NSLog("[ERROR] Can't write font file: \(error.localizedDescription) - saveFontList()")
             self.showAlert("Error", "Sorry, Fontismo can’t access internal storage. It may have been damaged or mis-installed. Please re-installed from the App Store.")
@@ -305,7 +299,7 @@ extension MasterViewController  {
             for registeredDescriptor in registeredDescriptors {
                 if let fontName = CTFontDescriptorCopyAttribute(registeredDescriptor, kCTFontNameAttribute) as? String {
 
-#if DEBUG2
+#if DEBUG
                     print("CoreText Font Manager says '\(fontName)' is registered...")
 #endif
 
@@ -316,7 +310,7 @@ extension MasterViewController  {
                             font.isDownloaded = true
                             font.updated = true
                             setCount += 1
-#if DEBUG2
+#if DEBUG
                             print("  ...and matched for '\(font.name)'")
 #endif
 
@@ -370,14 +364,26 @@ extension MasterViewController  {
      */
     @objc
     func installAll(_ sender: Any) {
-
+        
         if self.families.count > 0 {
+            // FROM 2.1.0
+            self.currentInstallCount = 0
             for family: FontFamily in self.families {
                 if !family.fontsAreInstalled && family.progress == nil {
-                    // If the family is not marked as installed,
-                    // assume it is not downloaded (it might be
-                    // present) and attempt to get it
-                    self.getOneFontFamily(family)
+                    self.currentInstallCount += 1
+                }
+            }
+
+            // FROM 2.1.0
+            // The lists of families and fonts are so large, we need to spawn a thread for this
+            DispatchQueue(label: FONTISMO_CONSTANTS.ASYNC_QUEUE_ID).async {
+                for family: FontFamily in self.families {
+                    if !family.fontsAreInstalled && family.progress == nil {
+                        // If the family is not marked as installed,
+                        // assume it is not downloaded (it might be
+                        // present) and attempt to get it
+                        self.getOneFontFamily(family)
+                    }
                 }
             }
         }
@@ -390,41 +396,47 @@ extension MasterViewController  {
     internal func removeAll() {
 
         if self.families.count > 0 {
-            // Assemble font descriptors for each of the family's fonts.
-            // These will be passed to the API for deregistration.
-            var fontDescs = [UIFontDescriptor]()
-            for family: FontFamily in self.families {
-                if family.fontsAreDownloaded {
-                    // Update the family's state information
-                    family.fontsAreInstalled = false
-                    family.fontsAreDownloaded = false
-                    
-                    if let fontIndexes: [Int] = family.fontIndices {
-                        for fontIndex: Int in fontIndexes {
-                            let font: UserFont = self.fonts[fontIndex]
+            // FROM 2.1.0
+            // The lists of families and fonts are so large, we need to spawn a thread for this
+            self.currentInstallCount = 0
+            DispatchQueue(label: FONTISMO_CONSTANTS.ASYNC_QUEUE_ID).async {
+                // Assemble font descriptors for each of the family's fonts.
+                // These will be passed to the API for deregistration.
+                var fontDescs = [UIFontDescriptor]()
+                for family: FontFamily in self.families {
+                    if family.fontsAreDownloaded {
+                        // Update the family's state information
+                        family.fontsAreInstalled = false
+                        family.fontsAreDownloaded = false
+                        self.currentInstallCount += 1
 
-                            // Font Descriptors take POSTSCRIPT NAMES
-                            let fontDesc: UIFontDescriptor = UIFontDescriptor(name: font.psname, size: 48.0)
-                            fontDescs.append(fontDesc)
-                            
-                            // Update the font's state information
-                            font.isInstalled = false
-                            font.isDownloaded = false
+                        if let fontIndexes: [Int] = family.fontIndices {
+                            for fontIndex: Int in fontIndexes {
+                                let font: UserFont = self.fonts[fontIndex]
+
+                                // Font Descriptors take POSTSCRIPT NAMES
+                                let fontDesc: UIFontDescriptor = UIFontDescriptor(name: font.psname, size: 48.0)
+                                fontDescs.append(fontDesc)
+
+                                // Update the font's state information
+                                font.isInstalled = false
+                                font.isDownloaded = false
+                            }
                         }
                     }
                 }
-            }
-            
-            if fontDescs.count > 0 {
-                // Unregister the fonts via the API
-                CTFontManagerUnregisterFontDescriptors(fontDescs as CFArray,
-                                                       .persistent,
-                                                       self.familyRegistrationHandler)
-            }
 
-            // FROM 1.1.1
-            // Add the number of fonts removed to the current total
-            self.installCount += fontDescs.count
+                if fontDescs.count > 0 {
+                    // Unregister the fonts via the API
+                    CTFontManagerUnregisterFontDescriptors(fontDescs as CFArray,
+                                                           .persistent,
+                                                           self.familyDeregistrationHandler)
+                }
+
+                // FROM 1.1.1
+                // Add the number of fonts removed to the current total
+                self.installCount += fontDescs.count
+            }
         }
     }
 
@@ -433,6 +445,8 @@ extension MasterViewController  {
      Remove a single font family.
      */
     func removeOneFontFamily(_ family: FontFamily) {
+
+        self.isActive = true
 
         if let fontIndexes: [Int] = family.fontIndices {
             // Iterate the family's fonts, clearing their flags and adding their
@@ -454,7 +468,7 @@ extension MasterViewController  {
             // Deregister the fonts using the API
             CTFontManagerUnregisterFontDescriptors(fontDescs as CFArray,
                                                    .persistent,
-                                                   self.fontRegistrationHandler(cfErrors:done:))
+                                                   self.familyDeregistrationHandler)
         }
 
         // FROM 1.1.1
@@ -471,6 +485,8 @@ extension MasterViewController  {
      */
     func getOneFontFamily(_ family: FontFamily) {
 
+        self.isActive = true
+
         if !family.fontsAreDownloaded {
 #if DEBUG
             print("Family '\(family.name)' not downloaded")
@@ -483,9 +499,7 @@ extension MasterViewController  {
             // Store the progress recorder and update the UI on
             // the main thread so the Activity Indicator is shown
             family.progress = fontRequest.progress
-            DispatchQueue.main.async {
-                self.reloadFontList()
-            }
+            updateFontListOnMainThread()
 
             // Set a timeout timer on this family-specific request
             family.timer = Timer.scheduledTimer(withTimeInterval: FONTISMO_CONSTANTS.TIMEOUTS.FONT_DOWNLOAD,
@@ -512,22 +526,24 @@ extension MasterViewController  {
                                 }
                                 
                                 // Update the typeface table
-                                self.reloadFontList()
+                                self.updateFontList()
                             }
 
                             break
                         }
                     }
                 }
-            })
+            }
+            /* END OF CLOSURE */
+            )
 
             fontRequest.beginAccessingResources { (error) in
-                // Update the UI (on the main thread) to remove the
-                // Activity Indicator
+                // Stop the main display activity indicator for this family
+                // This will reflected in the main UI when `updateFontList()` is called
                 family.progress = nil
-                DispatchQueue.main.async {
-                    self.reloadFontList()
-                }
+                //DispatchQueue.main.async {
+                //    self.updateFontList()
+                //}
 
                 // Check for a download error
                 if error != nil {
@@ -553,6 +569,9 @@ extension MasterViewController  {
                                 dvc.downloadView.doHide()
                             }
                         }
+
+                        // Update the main font list
+                        self.updateFontList()
                     }
 
                     return
@@ -609,7 +628,7 @@ extension MasterViewController  {
                                                      nil,
                                                      .persistent,
                                                      true,
-                                                     self.familyRegistrationHandler(cfErrors:done:))
+                                                     self.familyRegistrationHandler)
         }
     }
 
@@ -625,7 +644,7 @@ extension MasterViewController  {
      The handler should return `false` if the operation is to be stopped.
      This may be desirable after receiving an error.
      */
-    func familyRegistrationHandler(cfErrors: CFArray, done: Bool) -> Bool {
+    func familyRegistrationHandler(_ cfErrors: CFArray, _ done: Bool) -> Bool {
 
         // Process any errors passed in
         let nsErrors = cfErrors as NSArray
@@ -674,7 +693,7 @@ extension MasterViewController  {
         // each font registration in the set passed to
         // `CTFontManagerRegisterFontsWithAssetNames()`
         if done {
-#if DEBUG2
+#if DEBUG
             print("(De)registration operation complete")
 #endif
             
@@ -682,19 +701,60 @@ extension MasterViewController  {
             // NOTE Have to do all families becuase we can't know
             //      which family has been registered
             DispatchQueue.main.async {
-                self.reloadFontList()
+                self.updateFontList()
+                self.currentInstallCount -= 1
+                if self.currentInstallCount < 1 {
+                    self.isActive = false
 
-                // FROM 1.1.1
-                // Check if we need to run a review prompt
-                if self.installCount > FONTISMO_CONSTANTS.REVIEW_TRIGGER_INSTALL_COUNT {
-                    self.installCount = 0
-                    UserDefaults.standard.set(self.installCount, forKey: FONTISMO_CONSTANTS.PREFS_KEYS.FONT_INSTALL_COUNT)
-                    self.requestReview()
+                    // FROM 1.1.1
+                    // Check if we need to run a review prompt
+                    if self.installCount > FONTISMO_CONSTANTS.REVIEW_TRIGGER_INSTALL_COUNT {
+                        self.installCount = 0
+                        UserDefaults.standard.set(self.installCount, forKey: FONTISMO_CONSTANTS.PREFS_KEYS.FONT_INSTALL_COUNT)
+                        self.requestReview()
+                    }
                 }
             }
         }
 
         // Signal state of operation
+        return true
+    }
+
+
+    /**
+     A system-defined callback triggered in response to system-level font registration
+     and re-registrations - see `installFonts()` and `uninstallFonts()`.`
+     */
+    internal func familyDeregistrationHandler(_ cfErrors: CFArray, _ done: Bool) -> Bool {
+
+        // Process any errors passed in
+        let nsErrors = cfErrors as NSArray
+        if nsErrors.count > 0 {
+            for anyError in nsErrors {
+                // For now, just print the error
+                let nsError: NSError = anyError as! NSError
+                NSLog("[ERROR] \(nsError.localizedDescription)")
+            }
+
+            // As recommended, return false on error to
+            // halt further processing
+            return false
+        }
+
+        // System sets 'done' to true on the final call
+        // (according to the header file)
+        if done {
+            // Update the fonts' status to match the system,
+            // save, and update the UI
+            self.currentInstallCount -= 1
+            if self.currentInstallCount < 1 {
+                updateFontListOnMainThread()
+                self.isActive = false
+            }
+        }
+
+        // Signal OK
         return true
     }
 
@@ -769,44 +829,13 @@ extension MasterViewController  {
      NOTE Set to `@objc` because it's called as a selector.
      */
     @objc
-    internal func fontStatesChanged(_ sender: Any) {
+    internal func fontStatesChanged(_ note: NSNotification) {
 
         // Update the families' status the UI
-        self.updateFamilyStatus()
-        self.updateUIonMain()
-    }
-
-
-    /**
-     A system-defined callback triggered in response to system-level font registration
-     and re-registrations - see `installFonts()` and `uninstallFonts()`.`
-     */
-    internal func fontRegistrationHandler(cfErrors: CFArray, done: Bool) -> Bool {
-
-        // Process any errors passed in
-        let nsErrors = cfErrors as NSArray
-        if nsErrors.count > 0 {
-            for anyError in nsErrors {
-                // For now, just print the error
-                let nsError: NSError = anyError as! NSError
-                NSLog("[ERROR] \(nsError.localizedDescription)")
-            }
-
-            // As recommended, return false on error to
-            // halt further processing
-            return false
+        // FROM 2.1.0 but only when we didn't initiate the change
+        if !self.isActive {
+            updateFontListOnMainThread()
         }
-
-        // System sets 'done' to true on the final call
-        // (according to the header file)
-        if done {
-            // Update the fonts' status to match the system,
-            // save, and update the UI
-            self.updateUIonMain()
-        }
-
-        // Signal OK
-        return true
     }
 
 

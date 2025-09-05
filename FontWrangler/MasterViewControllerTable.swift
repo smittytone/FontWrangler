@@ -277,7 +277,7 @@ extension MasterViewController {
         // by checking that all view options are `false` and all view states are `true`.
         if !self.viewOptions.contains(true) && !self.viewStates.values.contains(false) {
             self.displayFamilies = self.families
-            self.updateFamilyStatus()
+            updateFamilyStatus()
             return
         }
         
@@ -324,7 +324,7 @@ extension MasterViewController {
             }
         }
         
-        self.updateFamilyStatus()
+        updateFamilyStatus()
     }
 
 
@@ -333,9 +333,10 @@ extension MasterViewController {
 
      FROM 2.0.0
      */
-    internal func reloadFontList() {
-        
-        self.updateFamilyStatus()
+    internal func updateFontList() {
+
+        //updateFamilyStatus() // Called by `setDisplayFamilies()`
+        setDisplayFamilies()
         self.tableView.reloadData()
     }
 }

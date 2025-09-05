@@ -86,6 +86,8 @@ struct FONTISMO_CONSTANTS {
     static let TIP_ITEM_SEPARATION              = 8.0
     static let TIP_LOGO_LANDSCAPE_SEPARATION    = -16.0
     static let TIP_TEXT_LANDSCAPE_SEPARATION    = 0.0
+    // FROM 2.1.0
+    static let ASYNC_QUEUE_ID                   = "com.bps.fontismo.async-queue"
 
 
 }
