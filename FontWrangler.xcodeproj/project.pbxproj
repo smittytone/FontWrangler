@@ -28,7 +28,6 @@
 		3B879A3A242E00B600BE47DC /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3B879A38242E00B600BE47DC /* LaunchScreen.storyboard */; };
 		3B879A43242E1C0100BE47DC /* UserFont.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B879A42242E1C0100BE47DC /* UserFont.swift */; };
 		3B9417582AF1731800D77BBC /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 3B9417572AF1731800D77BBC /* Settings.bundle */; };
-		3B94175D2AF173DC00D77BBC /* LICENSE.md in Resources */ = {isa = PBXBuildFile; fileRef = 3B94175B2AF173DC00D77BBC /* LICENSE.md */; };
 		3B9C64A32432887B0057B8ED /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3B9C64A22432887B0057B8ED /* Assets.xcassets */; };
 		3BA9276824360F9200B4BA99 /* HelpViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BA9276724360F9200B4BA99 /* HelpViewController.swift */; };
 		3BA9277424361D3600B4BA99 /* HelpPageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BA9277324361D3600B4BA99 /* HelpPageViewController.swift */; };
@@ -317,7 +316,7 @@
 					unifraktur_maguntia,
 				);
 				LastSwiftUpdateCheck = 1130;
-				LastUpgradeCheck = 1610;
+				LastUpgradeCheck = 1640;
 				ORGANIZATIONNAME = "Tony Smith";
 				TargetAttributes = {
 					3B879A27242E00B400BE47DC = {
@@ -350,7 +349,6 @@
 			files = (
 				3B879A35242E00B400BE47DC /* Main.storyboard in Resources */,
 				3BF457CF2AF2453600FF67E6 /* Configuration.storekit in Resources */,
-				3B94175D2AF173DC00D77BBC /* LICENSE.md in Resources */,
 				3B879A3A242E00B600BE47DC /* LaunchScreen.storyboard in Resources */,
 				3BD7E18B243212E200FD8941 /* defaults.json in Resources */,
 				3BD7E1892431FD2600FD8941 /* Fonts.xcassets in Resources */,
@@ -453,6 +451,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = Y5J3K52DNA;
 				EMBED_ASSET_PACKS_IN_PRODUCT_BUNDLE = NO;
 				ENABLE_ON_DEMAND_RESOURCES = YES;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -519,6 +518,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = Y5J3K52DNA;
 				EMBED_ASSET_PACKS_IN_PRODUCT_BUNDLE = NO;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_ON_DEMAND_RESOURCES = YES;
@@ -550,8 +550,7 @@
 				CODE_SIGN_ENTITLEMENTS = FontWrangler/FontWrangler.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 87;
-				DEVELOPMENT_TEAM = Y5J3K52DNA;
+				CURRENT_PROJECT_VERSION = 88;
 				INFOPLIST_FILE = FontWrangler/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Fontismo;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
@@ -582,8 +581,7 @@
 				CODE_SIGN_ENTITLEMENTS = FontWrangler/FontWrangler.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 87;
-				DEVELOPMENT_TEAM = Y5J3K52DNA;
+				CURRENT_PROJECT_VERSION = 88;
 				INFOPLIST_FILE = FontWrangler/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Fontismo;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";

@@ -43,7 +43,7 @@ extension MasterViewController  {
                 newFont.isNew = (flag == "true")
                 newFont.name = aFont["name"] ?? ""
                 newFont.psname = aFont["name"] ?? ""
-                newFont.path = aFont["path"] ?? ""
+                newFont.path = aFont["path"] ?? "ttf"
                 newFont.tag = aFont["tag"] ?? ""
                 
                 // FROM 2.0.0
@@ -528,7 +528,7 @@ extension MasterViewController  {
                 DispatchQueue.main.async {
                     self.reloadFontList()
                 }
-                
+
                 // Check for a download error
                 if error != nil {
                     // Handle errors
@@ -536,25 +536,25 @@ extension MasterViewController  {
                     // NOTE #2 Not sure if this ever gets called... app usually timeouts
                     //         It does get called if we download in Airplane Mode.
                     NSLog("[ERROR] \(error!.localizedDescription)")
-                    
+
                     // Zap the associated timer early
                     if family.timer != nil {
                         family.timer!.invalidate()
                         family.timer = nil
                     }
-                    
+
                     // FROM 1.2.0
                     // Turn off the detail view controller's progress indicator
                     DispatchQueue.main.async {
                         self.showAlert("Sorry!", "Fontismo could not access the requested typeface because it was unable to connect to the App Store. Please check your Internet connection and try again.\n(\(error!.localizedDescription))")
-                        
+
                         if let dvc: DetailViewController = self.detailViewController {
                             if !dvc.downloadView.isHidden {
                                 dvc.downloadView.doHide()
                             }
                         }
                     }
-                    
+
                     return
                 }
 #if DEBUG
@@ -563,19 +563,22 @@ extension MasterViewController  {
                 // Keep the downloaded file around permanently, ie.
                 // until the app is deleted
                 Bundle.main.setPreservationPriority(1.0, forTags: tags)
-                
+
                 // Update the font's state
                 family.fontsAreDownloaded = true
+
+                // Register the font with the OS
+                self.registerFontFamily(family)
             }
+            /* END OF CLOSURE */
         } else {
             // Font family should already be downloaded
 #if DEBUG
             print("Family '\(family.name)' already downloaded")
 #endif
+            // Register the font with the OS
+            registerFontFamily(family)
         }
-
-        // Register the font with the OS
-        registerFontFamily(family)
     }
 
 
