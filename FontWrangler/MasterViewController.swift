@@ -48,7 +48,7 @@ final class MasterViewController: UITableViewController,
     private  var menuButton: UIBarButtonItem? = nil
     private  var tvc: TipViewController? = nil
     internal var detailViewController: DetailViewController? = nil
-    internal var installCount: Int = -1
+    internal var totalInstallCount: Int = -1
     internal var isFontListLoaded: Bool = false
     internal var gotFontFamilies: Bool = false
     internal var doIndicateNewFonts: Bool = true
@@ -318,8 +318,8 @@ final class MasterViewController: UITableViewController,
 
         // FROM 1.1.1
         // Get the font install count
-        self.installCount = UserDefaults.standard.integer(forKey: FONTISMO_CONSTANTS.PREFS_KEYS.FONT_INSTALL_COUNT)
-        UserDefaults.standard.set(self.installCount, forKey: FONTISMO_CONSTANTS.PREFS_KEYS.FONT_INSTALL_COUNT)
+        self.totalInstallCount = UserDefaults.standard.integer(forKey: FONTISMO_CONSTANTS.PREFS_KEYS.FONT_INSTALL_COUNT)
+        UserDefaults.standard.set(self.totalInstallCount, forKey: FONTISMO_CONSTANTS.PREFS_KEYS.FONT_INSTALL_COUNT)
     }
 
 
@@ -343,7 +343,7 @@ final class MasterViewController: UITableViewController,
         self.saveFontList()
         
         // Record the number of installs
-        UserDefaults.standard.set(self.installCount, forKey: FONTISMO_CONSTANTS.PREFS_KEYS.FONT_INSTALL_COUNT)
+        UserDefaults.standard.set(self.totalInstallCount, forKey: FONTISMO_CONSTANTS.PREFS_KEYS.FONT_INSTALL_COUNT)
     }
 
 

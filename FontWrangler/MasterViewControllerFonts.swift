@@ -435,7 +435,7 @@ extension MasterViewController  {
 
                 // FROM 1.1.1
                 // Add the number of fonts removed to the current total
-                self.installCount += fontDescs.count
+                self.totalInstallCount += fontDescs.count
             }
         }
     }
@@ -473,7 +473,7 @@ extension MasterViewController  {
 
         // FROM 1.1.1
         // Add the number of fonts removed to the current total
-        self.installCount += 1
+        self.totalInstallCount += 1
     }
 
 
@@ -623,7 +623,7 @@ extension MasterViewController  {
 #endif
             // Register the family's fonts using the API
             // NOTE Outcome is operated asynchronously
-            self.installCount += 1
+            self.totalInstallCount += 1
             CTFontManagerRegisterFontsWithAssetNames(fontNames as CFArray,
                                                      nil,
                                                      .persistent,
@@ -708,9 +708,9 @@ extension MasterViewController  {
 
                     // FROM 1.1.1
                     // Check if we need to run a review prompt
-                    if self.installCount > FONTISMO_CONSTANTS.REVIEW_TRIGGER_INSTALL_COUNT {
-                        self.installCount = 0
-                        UserDefaults.standard.set(self.installCount, forKey: FONTISMO_CONSTANTS.PREFS_KEYS.FONT_INSTALL_COUNT)
+                    if self.totalInstallCount > FONTISMO_CONSTANTS.REVIEW_TRIGGER_INSTALL_COUNT {
+                        self.totalInstallCount = 0
+                        UserDefaults.standard.set(self.totalInstallCount, forKey: FONTISMO_CONSTANTS.PREFS_KEYS.FONT_INSTALL_COUNT)
                         self.requestReview()
                     }
                 }
