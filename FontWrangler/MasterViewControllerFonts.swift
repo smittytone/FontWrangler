@@ -57,7 +57,7 @@ extension MasterViewController  {
             }
             
             // Sort the list
-            // self.sortFonts()
+            self.sortFonts()
         } else {
             NSLog("[ERROR] can't load defaults - loadDefaults()")
             self.showAlert("Error", "Sorry, the default font list is missing — Fontismo has become damaged. Please reinstall the app.")
@@ -524,26 +524,27 @@ extension MasterViewController  {
                                         dvc.downloadView.doHide()
                                     }
                                 }
-                                
+
                                 // Update the typeface table
                                 self.updateFontList()
-                            }
+                            } /* END OF CLOSURE */
 
                             break
                         }
                     }
                 }
-            }
-            /* END OF CLOSURE */
+            } /* END OF CLOSURE */
             )
 
             fontRequest.beginAccessingResources { (error) in
                 // Stop the main display activity indicator for this family
                 // This will reflected in the main UI when `updateFontList()` is called
                 family.progress = nil
-                //DispatchQueue.main.async {
-                //    self.updateFontList()
-                //}
+                /* FROM 2.1.0
+                DispatchQueue.main.async {
+                    self.updateFontList()
+                }
+                */
 
                 // Check for a download error
                 if error != nil {
@@ -572,7 +573,7 @@ extension MasterViewController  {
 
                         // Update the main font list
                         self.updateFontList()
-                    }
+                    } /* END OF CLOSURE */
 
                     return
                 }
@@ -588,8 +589,7 @@ extension MasterViewController  {
 
                 // Register the font with the OS
                 self.registerFontFamily(family)
-            }
-            /* END OF CLOSURE */
+            } /* END OF CLOSURE */
         } else {
             // Font family should already be downloaded
 #if DEBUG
@@ -630,132 +630,6 @@ extension MasterViewController  {
                                                      true,
                                                      self.familyRegistrationHandler)
         }
-    }
-
-
-    /**
-     A system-defined callback triggered in response to system-level font registration
-     and re-registrations - see `installFonts()` and `uninstallFonts()`.
-
-     An empty array indicates no errors. Each error reference will contain a CFArray of font asset names
-     corresponding to kCTFontManagerErrorFontAssetNameKey. These represent the font asset names that were
-     not successfully registered. Note, the handler may be called multiple times during the registration process.
-     The done parameter will be set to true when the registration process has completed.
-     The handler should return `false` if the operation is to be stopped.
-     This may be desirable after receiving an error.
-     */
-    func familyRegistrationHandler(_ cfErrors: CFArray, _ done: Bool) -> Bool {
-
-        // Process any errors passed in
-        let nsErrors = cfErrors as NSArray
-        if nsErrors.count > 0 {
-            for anyError in nsErrors {
-                // For now, just print the error
-                // TODO better error handling
-                let nsError: NSError = anyError as! NSError
-                NSLog("[ERROR] \(nsError.localizedDescription)")
-
-                // Get the error-generating font's name
-                // FROM 2.0.0 we also check if `errFont` is an array, as it will be in the case
-                // when a family contains multiple fonts.
-                let errFont = nsError.userInfo[kCTFontManagerErrorFontAssetNameKey as String]
-                var family: FontFamily
-                if let fontName = errFont as? String {
-                    family = self.familyFromFontName(fontName)
-                } else if let fontNames = errFont as? [String] {
-                    family = self.familyFromFontName(fontNames[0])
-                } else {
-                    family = FontFamily()
-                    family.name = "unknown"
-                }
-                
-                // FROM 2.0.0
-                // Check for user cancellation
-                if nsError.localizedDescription.hasPrefix("The operation was cancelled") {
-                    DispatchQueue.main.async {
-                        if let dvc = self.detailViewController {
-                            dvc.doCancelInstall()
-                        }
-                    }
-                    
-                    // Invalidate the install timer so we don't get a time-out alert
-                    family.timer?.invalidate()
-                    return false
-                }
-                
-                // Post a warning
-                self.showAlert("Sorry!", "Fontismo had a problem registering typeface \(family.name).\n(\(nsError.localizedDescription)).")
-            }
-        }
-
-        // System sets 'done' to true on the final call
-        // (according to the header file) but may be for
-        // each font registration in the set passed to
-        // `CTFontManagerRegisterFontsWithAssetNames()`
-        if done {
-#if DEBUG
-            print("(De)registration operation complete")
-#endif
-            
-            // Update the fonts' status and update the UI
-            // NOTE Have to do all families becuase we can't know
-            //      which family has been registered
-            DispatchQueue.main.async {
-                self.updateFontList()
-                self.currentInstallCount -= 1
-                if self.currentInstallCount < 1 {
-                    self.isActive = false
-
-                    // FROM 1.1.1
-                    // Check if we need to run a review prompt
-                    if self.totalInstallCount > FONTISMO_CONSTANTS.REVIEW_TRIGGER_INSTALL_COUNT {
-                        self.totalInstallCount = 0
-                        UserDefaults.standard.set(self.totalInstallCount, forKey: FONTISMO_CONSTANTS.PREFS_KEYS.FONT_INSTALL_COUNT)
-                        self.requestReview()
-                    }
-                }
-            }
-        }
-
-        // Signal state of operation
-        return true
-    }
-
-
-    /**
-     A system-defined callback triggered in response to system-level font registration
-     and re-registrations - see `installFonts()` and `uninstallFonts()`.`
-     */
-    internal func familyDeregistrationHandler(_ cfErrors: CFArray, _ done: Bool) -> Bool {
-
-        // Process any errors passed in
-        let nsErrors = cfErrors as NSArray
-        if nsErrors.count > 0 {
-            for anyError in nsErrors {
-                // For now, just print the error
-                let nsError: NSError = anyError as! NSError
-                NSLog("[ERROR] \(nsError.localizedDescription)")
-            }
-
-            // As recommended, return false on error to
-            // halt further processing
-            return false
-        }
-
-        // System sets 'done' to true on the final call
-        // (according to the header file)
-        if done {
-            // Update the fonts' status to match the system,
-            // save, and update the UI
-            self.currentInstallCount -= 1
-            if self.currentInstallCount < 1 {
-                updateFontListOnMainThread()
-                self.isActive = false
-            }
-        }
-
-        // Signal OK
-        return true
     }
 
 
@@ -836,6 +710,132 @@ extension MasterViewController  {
         if !self.isActive {
             updateFontListOnMainThread()
         }
+    }
+
+
+    /**
+     A system-defined callback triggered in response to system-level font registration
+     and re-registrations - see `installFonts()` and `uninstallFonts()`.
+
+     An empty array indicates no errors. Each error reference will contain a CFArray of font asset names
+     corresponding to kCTFontManagerErrorFontAssetNameKey. These represent the font asset names that were
+     not successfully registered. Note, the handler may be called multiple times during the registration process.
+     The done parameter will be set to true when the registration process has completed.
+     The handler should return `false` if the operation is to be stopped.
+     This may be desirable after receiving an error.
+     */
+    func familyRegistrationHandler(_ cfErrors: CFArray, _ done: Bool) -> Bool {
+
+        // Process any errors passed in
+        let nsErrors = cfErrors as NSArray
+        if nsErrors.count > 0 {
+            for anyError in nsErrors {
+                // For now, just print the error
+                // TODO better error handling
+                let nsError: NSError = anyError as! NSError
+                NSLog("[ERROR] \(nsError.localizedDescription)")
+
+                // Get the error-generating font's name
+                // FROM 2.0.0 we also check if `errFont` is an array, as it will be in the case
+                // when a family contains multiple fonts.
+                let errFont = nsError.userInfo[kCTFontManagerErrorFontAssetNameKey as String]
+                var family: FontFamily
+                if let fontName = errFont as? String {
+                    family = self.familyFromFontName(fontName)
+                } else if let fontNames = errFont as? [String] {
+                    family = self.familyFromFontName(fontNames[0])
+                } else {
+                    family = FontFamily()
+                    family.name = "unknown"
+                }
+
+                // FROM 2.0.0
+                // Check for user cancellation
+                if nsError.localizedDescription.hasPrefix("The operation was cancelled") {
+                    DispatchQueue.main.async {
+                        if let dvc = self.detailViewController {
+                            dvc.doCancelInstall()
+                        }
+                    } /* END OF CLOSURE*/
+
+                    // Invalidate the install timer so we don't get a time-out alert
+                    family.timer?.invalidate()
+                    return false
+                }
+
+                // Post a warning
+                self.showAlert("Sorry!", "Fontismo had a problem registering typeface \(family.name).\n(\(nsError.localizedDescription)).")
+            }
+        }
+
+        // System sets 'done' to true on the final call
+        // (according to the header file) but may be for
+        // each font registration in the set passed to
+        // `CTFontManagerRegisterFontsWithAssetNames()`
+        if done {
+#if DEBUG
+            print("(De)registration operation complete")
+#endif
+
+            // Update the fonts' status and update the UI
+            // NOTE Have to do all families becuase we can't know
+            //      which family has been registered
+            DispatchQueue.main.async {
+                self.updateFontList()
+                self.currentInstallCount -= 1
+                if self.currentInstallCount < 1 {
+                    self.isActive = false
+
+                    // FROM 1.1.1
+                    // Check if we need to run a review prompt
+                    if self.totalInstallCount > FONTISMO_CONSTANTS.REVIEW_TRIGGER_INSTALL_COUNT {
+                        self.totalInstallCount = 0
+                        UserDefaults.standard.set(self.totalInstallCount, forKey: FONTISMO_CONSTANTS.PREFS_KEYS.FONT_INSTALL_COUNT)
+                        self.requestReview()
+                    }
+                }
+            } /* END OF CLOSURE */
+        }
+
+        // Signal state of operation
+        return true
+    }
+
+
+    /**
+     A system-defined callback triggered in response to system-level font registration
+     and re-registrations - see `installFonts()` and `uninstallFonts()`.`
+     */
+    internal func familyDeregistrationHandler(_ cfErrors: CFArray, _ done: Bool) -> Bool {
+
+        // Process any errors passed in
+        let nsErrors = cfErrors as NSArray
+        if nsErrors.count > 0 {
+            for anyError in nsErrors {
+                // For now, just print the error
+                let nsError: NSError = anyError as! NSError
+                NSLog("[ERROR] \(nsError.localizedDescription)")
+            }
+
+            // As recommended, return false on error to
+            // halt further processing
+            return false
+        }
+
+        // System sets 'done' to true on the final call
+        // (according to the header file)
+        if done {
+            // Update the fonts' status to match the system,
+            // save, and update the UI
+            self.currentInstallCount -= 1
+            if self.currentInstallCount < 1 {
+                updateFontListOnMainThread()
+                self.isActive = false
+            }
+        }
+
+        // Signal OK
+        return true
     }
 
 
