@@ -17,6 +17,8 @@ final class FontVariantsTableViewController: UITableViewController {
     //
     // The user can select a variant to demo that specific font
 
+    @IBOutlet weak var variantsTable: UITableView!
+
     // MARK: - Public Properties
     
     var fontIndices: [Int]? = nil
@@ -30,6 +32,22 @@ final class FontVariantsTableViewController: UITableViewController {
         
         super.viewDidLoad()
         self.clearsSelectionOnViewWillAppear = false
+    }
+
+
+    override func viewWillAppear(_ animated: Bool) {
+
+        super.viewWillAppear(animated)
+
+        // FROM 2.1.0
+        // Auto-scroll to the selected row and reload to make it visible.
+        // This ensure re-clicks on the menu show the last-ticked row
+        if self.currentFont != -1 {
+            self.variantsTable.scrollToRow(at: IndexPath(row: self.currentFont, section: 0),
+                                           at: .middle,
+                                           animated: false)
+            self.variantsTable.reloadData()
+        }
     }
 
 
