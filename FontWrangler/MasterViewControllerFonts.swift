@@ -504,37 +504,7 @@ extension MasterViewController  {
             // Set a timeout timer on this family-specific request
             family.timer = Timer.scheduledTimer(withTimeInterval: FONTISMO_CONSTANTS.TIMEOUTS.FONT_DOWNLOAD,
                                                 repeats: false,
-                                                block: { (firedTimer) in
-                // Find the family associated with the fired timer
-                for aFamily: FontFamily in self.families {
-                    if let familyTimer = aFamily.timer {
-                        if familyTimer == firedTimer {
-                            aFamily.timer = nil
-                            aFamily.progress = nil
-
-                            DispatchQueue.main.async {
-                                if !aFamily.fontsAreDownloaded {
-                                    self.showAlert("Sorry!", "Fontismo could not access the requested typeface because it could not connect to the App Store. Please check your Internet connection and try again.")
-                                }
-                                
-                                // FROM 1.2.0
-                                // Turn off the detail view controller's progress indicator
-                                if let dvc: DetailViewController = self.detailViewController {
-                                    if !dvc.downloadView.isHidden {
-                                        dvc.downloadView.doHide()
-                                    }
-                                }
-
-                                // Update the typeface table
-                                self.updateFontList()
-                            } /* END OF CLOSURE */
-
-                            break
-                        }
-                    }
-                }
-            } /* END OF CLOSURE */
-            )
+                                                block: self.downloadTimeoutHandler)
 
             fontRequest.beginAccessingResources { (error) in
                 // Stop the main display activity indicator for this family
@@ -562,13 +532,11 @@ extension MasterViewController  {
 
                     // FROM 1.2.0
                     // Turn off the detail view controller's progress indicator
-                    DispatchQueue.main.async {
+                    DispatchQueue.main.async(qos: .userInteractive) {
                         self.showAlert("Sorry!", "Fontismo could not access the requested typeface because it was unable to connect to the App Store. Please check your Internet connection and try again.\n(\(error!.localizedDescription))")
 
-                        if let dvc: DetailViewController = self.detailViewController {
-                            if !dvc.downloadView.isHidden {
-                                dvc.downloadView.doHide()
-                            }
+                        if let dvc: DetailViewController = self.detailViewController, !dvc.downloadView.isHidden {
+                            dvc.downloadView.doHide()
                         }
 
                         // Update the main font list
@@ -612,6 +580,16 @@ extension MasterViewController  {
     func registerFontFamily(_ family: FontFamily) {
 
         if let fontIndexes: [Int] = family.fontIndices {
+            // FROM 2.1.0
+            // Change the retrieval view text
+            if Thread.isMainThread {
+                self.detailViewController?.downloadView.doShow("Registering...")
+            } else {
+                DispatchQueue.main.sync {
+                    self.detailViewController?.downloadView.doShow("Registering...")
+                }
+            }
+
             // Add the fonts' FILE NAMEs to 'fontNames'
             var fontNames = [String]()
             for fontIndex: Int in fontIndexes {
@@ -717,6 +695,9 @@ extension MasterViewController  {
      A system-defined callback triggered in response to system-level font registration
      and re-registrations - see `installFonts()` and `uninstallFonts()`.
 
+     Typically, we register multiple fonts because we call registration on a per-family basis.
+     So this will be called multiple times, but `done` should be `true` only on the last of these.
+
      An empty array indicates no errors. Each error reference will contain a CFArray of font asset names
      corresponding to kCTFontManagerErrorFontAssetNameKey. These represent the font asset names that were
      not successfully registered. Note, the handler may be called multiple times during the registration process.
@@ -752,7 +733,7 @@ extension MasterViewController  {
                 // FROM 2.0.0
                 // Check for user cancellation
                 if nsError.localizedDescription.hasPrefix("The operation was cancelled") {
-                    DispatchQueue.main.async {
+                    DispatchQueue.main.async(qos: .userInteractive) {
                         if let dvc = self.detailViewController {
                             dvc.doCancelInstall()
                         }
@@ -768,23 +749,30 @@ extension MasterViewController  {
             }
         }
 
-        // System sets 'done' to true on the final call
-        // (according to the header file) but may be for
-        // each font registration in the set passed to
-        // `CTFontManagerRegisterFontsWithAssetNames()`
+        // System sets 'done' to true on the final call (according to the header file) but may be for
+        // each font registration in the set passed to `CTFontManagerRegisterFontsWithAssetNames()`
         if done {
 #if DEBUG
-            print("(De)registration operation complete")
+            print("Font registration operation complete")
 #endif
-
-            // Update the fonts' status and update the UI
-            // NOTE Have to do all families becuase we can't know
-            //      which family has been registered
-            DispatchQueue.main.async {
+            // FROM 2.1.0
+            // Make sure UI updating takes place on the main thread
+            DispatchQueue.main.async(qos: .userInteractive) {
+                // Update the fonts' status and update the UI
+                // NOTE Have to do all families becuase we can't know
+                //      which family has been registered
                 self.updateFontList()
+
+                // Have we got to the last family on the list?
                 self.currentInstallCount -= 1
                 if self.currentInstallCount < 1 {
+                    // Yes we have, so mark the process as done
                     self.isActive = false
+
+                    // Show the font on the detail view, if it's up
+                    if let dvc = self.detailViewController {
+                        dvc.configureView()
+                    }
 
                     // FROM 1.1.1
                     // Check if we need to run a review prompt
@@ -797,7 +785,7 @@ extension MasterViewController  {
             } /* END OF CLOSURE */
         }
 
-        // Signal state of operation
+        // Signal OK to continue processing registrations
         return true
     }
 
@@ -825,6 +813,9 @@ extension MasterViewController  {
         // System sets 'done' to true on the final call
         // (according to the header file)
         if done {
+#if DEBUG
+            print("Font deregistration operation complete")
+#endif
             // Update the fonts' status to match the system,
             // save, and update the UI
             self.currentInstallCount -= 1
@@ -834,8 +825,42 @@ extension MasterViewController  {
             }
         }
 
-        // Signal OK
+        // Signal OK to continue processing deregistrations
         return true
+    }
+
+
+    /**
+     The download timer has fired: we have exceeded the download timeout period.
+     */
+    internal func downloadTimeoutHandler(_ firedTimer: Timer) {
+
+        // Find the family associated with the fired timer
+        for aFamily: FontFamily in self.families {
+            if let familyTimer = aFamily.timer {
+                if familyTimer == firedTimer {
+                    aFamily.timer = nil
+                    aFamily.progress = nil
+
+                    DispatchQueue.main.async(qos: .userInteractive) {
+                        if !aFamily.fontsAreDownloaded {
+                            self.showAlert("Sorry!", "Fontismo could not access the requested typeface because it could not connect to the App Store. Please check your Internet connection and try again.")
+                        }
+
+                        // FROM 1.2.0
+                        // Turn off the detail view controller's progress indicator
+                        if let dvc = self.detailViewController, !dvc.downloadView.isHidden {
+                            dvc.downloadView.doHide(true)
+                        }
+
+                        // Update the typeface table
+                        self.updateFontList()
+                    } /* END OF CLOSURE */
+
+                    break
+                }
+            }
+        }
     }
 
 

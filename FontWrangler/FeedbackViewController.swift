@@ -181,7 +181,7 @@ class FeedbackViewController: UIViewController,
             self.sendFeedbackError()
         } else {
             // The comment was submitted successfully, so thank the user
-            DispatchQueue.main.async {
+            DispatchQueue.main.async(qos: .userInteractive) {
                 self.connectionProgress.stopAnimating()
 
                 let alert = UIAlertController(title: "Thanks For Your Feedback!",
@@ -212,7 +212,7 @@ class FeedbackViewController: UIViewController,
      */
     func sendFeedbackError() {
 
-        DispatchQueue.main.async {
+        DispatchQueue.main.async(qos: .userInteractive) {
             self.connectionProgress.stopAnimating()
             
             let alert = UIAlertController(title: "Feedback Could Not Be Sent",

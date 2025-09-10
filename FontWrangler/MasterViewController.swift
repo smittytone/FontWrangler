@@ -699,7 +699,9 @@ final class MasterViewController: UITableViewController,
      */
     func updateFontListOnMainThread() {
 
-        DispatchQueue.main.async {
+        DispatchQueue.main.async(qos: .userInteractive) {
+            self.updateFontList()
+
             if let dvc = self.detailViewController {
                 dvc.configureView()
             }
@@ -707,8 +709,6 @@ final class MasterViewController: UITableViewController,
             // REMOVED 2.0.0
             // Set the 'Add All' button state and update the table
             // self.setInstallButtonState()
-            
-            self.updateFontList()
         }
     }
 
@@ -751,7 +751,7 @@ final class MasterViewController: UITableViewController,
      */
     internal func showAlert(_ title: String, _ message: String) {
         
-         DispatchQueue.main.async {
+         DispatchQueue.main.async(qos: .userInteractive) {
             let alert = UIAlertController(title: title,
                                           message: message,
                                           preferredStyle: .alert)
@@ -778,7 +778,7 @@ final class MasterViewController: UITableViewController,
      */
     internal func showFancyAlert(_ title: NSAttributedString, _ message: String) {
         
-        DispatchQueue.main.async {
+        DispatchQueue.main.async(qos: .userInteractive) {
             let alert = UIAlertController(title: "",
                                           message: message,
                                           preferredStyle: .alert)
@@ -832,7 +832,7 @@ final class MasterViewController: UITableViewController,
     private func makeRequest(_ currentVersion: String) {
 
         let twoSecondsFromNow = DispatchTime.now() + 2.0
-        DispatchQueue.main.asyncAfter(deadline: twoSecondsFromNow) { [navigationController] in
+        DispatchQueue.main.asyncAfter(deadline: twoSecondsFromNow, qos: .userInteractive) { [navigationController] in
             if navigationController?.topViewController is MasterViewController {
                 // Show the rating request dialog if 'self' is present
                 SKStoreReviewController.requestReview()
@@ -850,7 +850,7 @@ final class MasterViewController: UITableViewController,
     @objc
     private func doRequestReview() {
 
-        DispatchQueue.main.async {
+        DispatchQueue.main.async(qos: .userInteractive) {
             let alert = UIAlertController(title: "Would you like to rate or review this app?",
                                           message: "If you have found Fontismo useful, please consider writing a short App Store review.",
                                           preferredStyle: .alert)

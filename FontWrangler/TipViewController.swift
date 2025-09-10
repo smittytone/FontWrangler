@@ -220,7 +220,7 @@ class TipViewController: UIViewController,
     @objc
     func productListReceived(_ note: Notification) {
 
-        DispatchQueue.main.async {
+        DispatchQueue.main.async(qos: .userInteractive) {
             self.onAsyncReturn()
 
             if let sc = self.storeController {
@@ -245,7 +245,7 @@ class TipViewController: UIViewController,
     @objc
     func storeFailure(_ note: Notification) {
 
-        DispatchQueue.main.async {
+        DispatchQueue.main.async(qos: .userInteractive) {
             self.onAsyncReturn()
             self.processDeferred(note)
             self.hideProductList()
@@ -261,7 +261,7 @@ class TipViewController: UIViewController,
     @objc
     func storeCancel(_ note: Notification) {
 
-        DispatchQueue.main.async {
+        DispatchQueue.main.async(qos: .userInteractive) {
             self.onAsyncReturn()
             self.processDeferred(note)
         }
@@ -282,7 +282,7 @@ class TipViewController: UIViewController,
         }
         
         // ...and then deactivate the Product List
-        DispatchQueue.main.async {
+        DispatchQueue.main.async(qos: .userInteractive) {
             self.clearCellHighlight()
             self.hideProductList()
             self.showAlert("Thank You!", "Fontismo will wait for the payment to be authorised.")
@@ -297,7 +297,7 @@ class TipViewController: UIViewController,
     @objc
     func showThankYou(_ note: Notification) {
 
-        DispatchQueue.main.async {
+        DispatchQueue.main.async(qos: .userInteractive) {
             self.processDeferred(note)
             self.onAsyncReturn()
             self.hideProductList()
@@ -472,7 +472,7 @@ class TipViewController: UIViewController,
      */
     private func showAlert(_ title: String, _ message: String, _ doExit: Bool = false) {
 
-        DispatchQueue.main.async {
+        DispatchQueue.main.async(qos: .userInteractive) {
             let alert = UIAlertController(title: title,
                                           message: message,
                                           preferredStyle: .alert)

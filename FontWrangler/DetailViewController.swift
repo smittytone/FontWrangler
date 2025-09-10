@@ -91,7 +91,7 @@ class DetailViewController: UIViewController,
         self.view?.addGestureRecognizer(pinchRec)
         
         // Configure the detail view
-        self.configureView()
+        configureView()
         
         // Set the preview image tint as we're now using template images
         self.uninstalledPreviewImage.tintColor = .label
@@ -108,13 +108,14 @@ class DetailViewController: UIViewController,
         // FROM 2.0.0
         if let detail: UserFont = self.detailItem {
             if !detail.isInstalled {
-                // Font not installed, so offer to install it
+                // Font not installed, so either install it automatically,
+                // or offer to install it
                 if self.shouldAutoInstallFonts {
-                    // Don't ask: perform the install automatically
-                    self.installCurrentFamily()
+                    // Don't ask, just perform the install
+                    installCurrentFamily()
                 } else {
-                    // Ask: dffer the installation as a choice
-                    self.doInstall()
+                    // Offer the installation as a choice
+                    queryInstall()
                 }
             }
         }
@@ -130,7 +131,7 @@ class DetailViewController: UIViewController,
 
         // FROM 2.1.0
         // Make sure this UI update code runs on the main thread
-        DispatchQueue.main.async {
+        DispatchQueue.main.async(qos: .userInteractive) {
             // Make sure we can access the UI items -- they may not have been
             // instantiated, if 'self.detailItem' is set before the view loads
             guard let statusLabel = self.fontStatusLabel else { return }
@@ -143,8 +144,10 @@ class DetailViewController: UIViewController,
 
             // FROM 2.0.0
             // Turn off the indicator and hide
-            // dloadProgress.stopAnimating()
-            dloadView.doHide()
+            // Turn off the indicator and hide
+            if !dloadView.isHidden {
+                dloadView.doHide()
+            }
 
             if let detail = self.detailItem {
                 // We have an item to display, so load the font and register
@@ -238,11 +241,11 @@ class DetailViewController: UIViewController,
 
                 // REMOVED 2.0.0
                 // Font not installed, so offer to install it
-                // if !detail.isInstalled { doInstall() }
+                // if !detail.isInstalled { queryInstall() }
             } else {
                 // Hide the labels; disable the slider
                 self.title = "Typeface Info"
-                statusLabel.text = "No font selected"
+                statusLabel.text = "No variant selected"
                 sizeLabel.text = ""
                 sizeSlider.value = Float(self.fontSize)
                 sizeSlider.isEnabled = false
@@ -253,19 +256,19 @@ class DetailViewController: UIViewController,
 
 
     /**
-     Offer to install the font if it has not yet been installed.
+     Offer to install the current family if it has not yet been installed.
 
      FROM 1.1.0
      */
-    private func doInstall() {
+    private func queryInstall() {
 
         // FROM 2.1.0
         // Make sure this UI update code runs on the main thread
-        DispatchQueue.main.async {
+        DispatchQueue.main.async(qos: .userInteractive) {
             // Create and present an alert with two buttons
             if let cf: FontFamily = self.currentFamily {
                 let alert = UIAlertController(title: "",
-                                              message: "This font family is not installed. Dynamic previews are not enabled for uninstalled fonts. Would you like to install \(cf.name) now?",
+                                              message: "This typeface family is not installed. Dynamic previews are not enabled for uninstalled typefaces. Would you like to install \(cf.name) now?",
                                               preferredStyle: .alert)
 
                 // Add choice: YES
@@ -288,13 +291,12 @@ class DetailViewController: UIViewController,
 
     /**
      If a single family has been tapped in the master view, we set the value
-     // of `currentFamily`. If it has been set, run the install process for it.
+     of `currentFamily`. If it has been set, run the install process for it.
      */
     private func installCurrentFamily() {
         
         if let cf: FontFamily = self.currentFamily {
-            // Install the font family
-            // self.downloadProgress.startAnimating()
+            // Show the download status panel (this view only)
             if Thread.isMainThread {
                 self.downloadView.doShow()
             } else {
@@ -303,6 +305,8 @@ class DetailViewController: UIViewController,
                 }
             }
 
+            // Get the current family
+            self.mvc!.currentInstallCount = 1
             self.mvc!.getOneFontFamily(cf)
         }
     }
@@ -357,7 +361,7 @@ class DetailViewController: UIViewController,
         }
 
         // Update the view
-        // self.configureView()
+        // configureView()
         self.fontSizeLabel.text = "\(Int(self.fontSize))pt"
         if let font: UIFont = UIFont(name: self.detailItem!.psname, size: self.fontSize) {
             self.dynamicSampleTextView.font = font
@@ -415,10 +419,10 @@ class DetailViewController: UIViewController,
         // FROM 2.1.0
         // Make sure this UI changing function runs on the main thread
         if Thread.isMainThread {
-            self.downloadView.doHide()
+            self.downloadView.doHide(true)
         } else {
             DispatchQueue.main.sync {
-                self.downloadView.doHide()
+                self.downloadView.doHide(true)
             }
         }
     }
