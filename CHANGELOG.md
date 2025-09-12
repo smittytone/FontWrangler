@@ -1,6 +1,6 @@
 ## Release Notes ##
 
-- 2.1.0 *Unreleased*
+- 2.1.0 *12 September 2025*
     - Add ten new fonts.
     - Correct and update Help text.
     - Update first-run intro text.
