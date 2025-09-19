@@ -32,7 +32,8 @@ final class MasterViewController: UITableViewController,
 
     // MARK: - UI properties
 
-    @IBOutlet weak var titleView: MasterTitleView!
+    @IBOutlet weak var titleView: MasterTitleView!          // iOS 13-18 - DEPRECATED
+    @IBOutlet weak var titleView26: MasterTitleView!        // iOS 26+
     @IBOutlet weak var tableHead: MasterTableHeaderView!
     @IBOutlet weak var viewOptionsButton: UIButton!
 
@@ -272,10 +273,15 @@ final class MasterViewController: UITableViewController,
             self.viewOptionsButton.isHidden = true
         }
 
-        // Set the title view and its font count info
-        // NOTE The title view is placed in the centre of the nav bar
-        self.navigationItem.titleView = self.titleView
-        self.titleView.infoLabel.text = "No fonts installed (of 0)"
+        // FROM 2.1.1
+        // Adjust the logo title in the nav bar for macOS 26
+        if #available(iOS 26, *) {
+            self.navigationItem.titleView = self.titleView26
+            self.titleView26.infoLabel.text = "No fonts installed (of 0)"
+        } else {
+            self.navigationItem.titleView = self.titleView
+            self.titleView.infoLabel.text = "No fonts installed (of 0)"
+        }
 
         // Set up the split view controller
         if let split = self.splitViewController {
@@ -320,6 +326,12 @@ final class MasterViewController: UITableViewController,
         // Get the font install count
         self.totalInstallCount = UserDefaults.standard.integer(forKey: FONTISMO_CONSTANTS.PREFS_KEYS.FONT_INSTALL_COUNT)
         UserDefaults.standard.set(self.totalInstallCount, forKey: FONTISMO_CONSTANTS.PREFS_KEYS.FONT_INSTALL_COUNT)
+
+        // FROM 2.1.1
+        // Zap the extra space between the table view and the nav bar
+        if #available(iOS 15, *) {
+            self.tableView.sectionHeaderTopPadding = 0
+        }
     }
 
 
@@ -329,8 +341,15 @@ final class MasterViewController: UITableViewController,
         self.clearsSelectionOnViewWillAppear = self.splitViewController!.isCollapsed
         super.viewWillAppear(animated)
         self.willForeground()
+
         if self.clearsSelectionOnViewWillAppear {
-            self.navigationItem.titleView = self.titleView
+            // FROM 2.2.0
+            // Use a different title for macOS 26+
+            if #available(iOS 26, *) {
+                self.navigationItem.titleView = self.titleView26
+            } else {
+                self.navigationItem.titleView = self.titleView
+            }
         }
     }
 
