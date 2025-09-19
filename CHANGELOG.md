@@ -1,5 +1,7 @@
 ## Release Notes ##
 
+- 2.2.0 *Unreleased*
+    - Support macOS 26.
 - 2.1.0 *12 September 2025*
     - Add ten new fonts.
     - Correct and update Help text.

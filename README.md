@@ -1,4 +1,4 @@
-# Fontismo 2.1.0 #
+# Fontismo 2.2.0 #
 
 *Fontismo* provides a means to install a selection of OpenType (`.otf`) and TrueType (`.ttf`) files on an iPad or iPhone. It requires iOS 13.0 or above.
 
