@@ -33,6 +33,26 @@ class SceneDelegate: UIResponder,
         navigationController.topViewController?.navigationItem.leftBarButtonItem = splitViewController.displayModeButtonItem
         navigationController.topViewController?.navigationItem.leftItemsSupplementBackButton = true
         splitViewController.delegate = self
+
+        // FROM 2.1.1
+        // Instantiate a new Split View Controller so we can apply the new settings for iOS 26+
+        // that we can't include in the XIB because it breaks backwards compatibility
+        if #available(iOS 26, *) {
+            // Create the SVC
+            let newSplitViewController = UISplitViewController(style: .doubleColumn)
+            newSplitViewController.preferredDisplayMode = .oneOverSecondary
+            newSplitViewController.preferredSplitBehavior = .overlay
+            newSplitViewController.maximumPrimaryColumnWidth = 720.0
+            newSplitViewController.minimumPrimaryColumnWidth = 720.0
+            newSplitViewController.viewControllers = splitViewController.viewControllers
+            newSplitViewController.delegate = self
+
+            // Add the new SVC to the window
+            window.rootViewController = newSplitViewController
+
+            // Attempt to set the navbar background colour to white
+            navigationController.toolbar.backgroundColor = .systemBackground
+        }
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {
