@@ -273,8 +273,8 @@ final class MasterViewController: UITableViewController,
             self.viewOptionsButton.isHidden = true
         }
 
-        // FROM 2.1.1
-        // Adjust the logo title in the nav bar for macOS 26
+        // FROM 2.2.0
+        // Adjust the logo title in the nav bar for iOS 26
         if #available(iOS 26, *) {
             self.navigationItem.titleView = self.titleView26
             self.titleView26.infoLabel.text = "No fonts installed (of 0)"
@@ -327,7 +327,7 @@ final class MasterViewController: UITableViewController,
         self.totalInstallCount = UserDefaults.standard.integer(forKey: FONTISMO_CONSTANTS.PREFS_KEYS.FONT_INSTALL_COUNT)
         UserDefaults.standard.set(self.totalInstallCount, forKey: FONTISMO_CONSTANTS.PREFS_KEYS.FONT_INSTALL_COUNT)
 
-        // FROM 2.1.1
+        // FROM 2.2.0
         // Zap the extra space between the table view and the nav bar
         if #available(iOS 15, *) {
             self.tableView.sectionHeaderTopPadding = 0
@@ -344,7 +344,7 @@ final class MasterViewController: UITableViewController,
 
         if self.clearsSelectionOnViewWillAppear {
             // FROM 2.2.0
-            // Use a different title for macOS 26+
+            // Use a different title for iOS 26+
             if #available(iOS 26, *) {
                 self.navigationItem.titleView = self.titleView26
             } else {

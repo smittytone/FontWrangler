@@ -20,7 +20,7 @@ class FeedbackViewController: UIViewController,
     @IBOutlet weak var connectionProgress: UIActivityIndicatorView!
     @IBOutlet weak var textLengthLabel: UILabel!
     @IBOutlet weak var sendButton: UIButton!
-    // FROM 2.1.1
+    // FROM 2.2.0
     @IBOutlet weak var textTopContstraint: NSLayoutConstraint!
     @IBOutlet weak var exitButtonTopContstraint: NSLayoutConstraint!
 
@@ -52,7 +52,7 @@ class FeedbackViewController: UIViewController,
         self.tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(self.dismissKeyboard))
         self.view.addGestureRecognizer(self.tapGestureRecognizer)
 
-        // FROM 2.1.1
+        // FROM 2.2.0
         // Adjust the items at the top of the view under iOS 26+
         if #available(iOS 26, *) {
             self.textTopContstraint.constant = 22

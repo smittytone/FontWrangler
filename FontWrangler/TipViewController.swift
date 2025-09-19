@@ -21,7 +21,7 @@ class TipViewController: UIViewController,
     @IBOutlet weak var priceCollectionView: UICollectionView!
     @IBOutlet weak var upperLogoConstraint: NSLayoutConstraint!
     @IBOutlet weak var upperTextConstraint: NSLayoutConstraint!
-    // FROM 2.1.1
+    // FROM 2.2.0
     @IBOutlet weak var exitButtonTopConstraint: NSLayoutConstraint!
     @IBOutlet weak var exitButtonRightConstraint: NSLayoutConstraint!
 
@@ -91,7 +91,7 @@ class TipViewController: UIViewController,
                        name: NSNotification.Name(rawValue: FONTISMO_CONSTANTS.PAYMENT_NOTIFICATIONS.INFLIGHT),
                        object: nil)
 
-        // FROM 2.1.1
+        // FROM 2.2.0
         // Adjust the items at the top of the view under iOS 26+
         if #available(iOS 26, *) {
             self.exitButtonTopConstraint.constant = 20

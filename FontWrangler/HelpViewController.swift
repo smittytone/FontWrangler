@@ -18,7 +18,7 @@ final class HelpViewController: UIViewController,
 
     // MARK: - UI Properties
 
-    // FROM 2.1.1
+    // FROM 2.2.0
     @IBOutlet weak var titleLeftConstraint: NSLayoutConstraint!
     @IBOutlet weak var exitButtonRightConstraint: NSLayoutConstraint!
     @IBOutlet weak var titleTopConstraint: NSLayoutConstraint!
@@ -76,7 +76,7 @@ final class HelpViewController: UIViewController,
         proxy.pageIndicatorTintColor = UIColor.label.withAlphaComponent(0.4)
         proxy.currentPageIndicatorTintColor = UIColor.label
 
-        // FROM 2.1.1
+        // FROM 2.2.0
         // Adjust the items at the top of the view under iOS 26+
         if #available(iOS 26, *) {
             self.titleLeftConstraint.constant = 32

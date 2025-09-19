@@ -34,7 +34,7 @@ class SceneDelegate: UIResponder,
         navigationController.topViewController?.navigationItem.leftItemsSupplementBackButton = true
         splitViewController.delegate = self
 
-        // FROM 2.1.1
+        // FROM 2.2.0
         // Instantiate a new Split View Controller so we can apply the new settings for iOS 26+
         // that we can't include in the XIB because it breaks backwards compatibility
         if #available(iOS 26, *) {
