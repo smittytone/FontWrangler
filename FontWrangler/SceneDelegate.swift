@@ -50,8 +50,10 @@ class SceneDelegate: UIResponder,
             // Add the new SVC to the window
             window.rootViewController = newSplitViewController
 
-            // Attempt to set the navbar background colour to white
+            // Attempt to set the detail view navbar background colour to white/black (not grey)
             navigationController.toolbar.backgroundColor = .systemBackground
+            navigationController.navigationBar.backgroundColor = .systemBackground
+            navigationController.navigationBar.tintColor = .systemBlue
         }
     }
 

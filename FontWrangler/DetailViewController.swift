@@ -63,9 +63,9 @@ class DetailViewController: UIViewController,
                                           style: .plain,
                                           target: self,
                                           action: #selector(self.showVariantsMenu))
-        navigationItem.rightBarButtonItem = rightButton
+        self.navigationItem.rightBarButtonItem = rightButton
         self.variantsButton = rightButton
-        
+
         // Set the base size
         self.substituteFont = UIFont(name: "Arial", size: FONTISMO_CONSTANTS.FONT_SAMPLE_SIZE)
         self.fontSize = FONTISMO_CONSTANTS.FONT_DYNAMIC_SIZE
@@ -82,12 +82,12 @@ class DetailViewController: UIViewController,
         self.downloadView.layer.cornerRadius = 16
         
         // Check for on-screen taps to end user sample editing
-        let tapRec: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(self.doTap))
+        let tapRec = UITapGestureRecognizer(target: self, action: #selector(self.doTap))
         self.view?.addGestureRecognizer(tapRec)
 
         // FROM 1.1.0
         // Add pinch-to-zoom for font scaling
-        let pinchRec: UIPinchGestureRecognizer = UIPinchGestureRecognizer(target: self, action: #selector(self.doSwipe))
+        let pinchRec = UIPinchGestureRecognizer(target: self, action: #selector(self.doSwipe))
         self.view?.addGestureRecognizer(pinchRec)
         
         // Configure the detail view
