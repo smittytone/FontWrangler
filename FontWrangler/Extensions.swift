@@ -33,11 +33,16 @@ extension NSLayoutManager {
 extension UISplitViewController {
     
     func toggleMasterView() {
-        
+
+        // FROM 2.1.1
+        // Wrap the detail view trigger, or it'll crash on macOS 26
         let barButtonItem = self.displayModeButtonItem
-        let _ = UIApplication.shared.sendAction(barButtonItem.action!,
-                                                to: barButtonItem.target,
-                                                from: nil, for: nil)
+        if let action = barButtonItem.action {
+            let _ = UIApplication.shared.sendAction(action,
+                                                    to: barButtonItem.target,
+                                                    from: nil,
+                                                    for: nil)
+        }
     }
 }
 
