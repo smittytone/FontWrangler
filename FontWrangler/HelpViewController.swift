@@ -12,9 +12,17 @@ import UIKit
 final class HelpViewController: UIViewController,
                                 UIPageViewControllerDelegate,
                                 UIPageViewControllerDataSource {
-
+    
     // Manage the Help View screen, which cointains a series of
     // UIPageViewController-mediated pages.
+
+    // MARK: - UI Properties
+
+    // FROM 2.1.1
+    @IBOutlet weak var titleLeftConstraint: NSLayoutConstraint!
+    @IBOutlet weak var exitButtonRightConstraint: NSLayoutConstraint!
+    @IBOutlet weak var titleTopConstraint: NSLayoutConstraint!
+    @IBOutlet weak var exitButtonTopConstraint: NSLayoutConstraint!
 
     // MARK: - Private Properties
 
@@ -67,6 +75,15 @@ final class HelpViewController: UIViewController,
         let proxy = UIPageControl.appearance()
         proxy.pageIndicatorTintColor = UIColor.label.withAlphaComponent(0.4)
         proxy.currentPageIndicatorTintColor = UIColor.label
+
+        // FROM 2.1.1
+        // Adjust the items at the top of the view under iOS 26+
+        if #available(iOS 26, *) {
+            self.titleLeftConstraint.constant = 32
+            self.titleTopConstraint.constant = 16
+            self.exitButtonRightConstraint.constant = 14
+            self.exitButtonTopConstraint.constant = 8
+        }
     }
 
 

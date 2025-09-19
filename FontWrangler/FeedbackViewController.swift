@@ -16,10 +16,13 @@ class FeedbackViewController: UIViewController,
 
     // MARK: - UI Outlets
 
-    @IBOutlet var feedbackText: UITextView!
-    @IBOutlet var connectionProgress: UIActivityIndicatorView!
-    @IBOutlet var textLengthLabel: UILabel!
-    @IBOutlet var sendButton: UIButton!
+    @IBOutlet weak var feedbackText: UITextView!
+    @IBOutlet weak var connectionProgress: UIActivityIndicatorView!
+    @IBOutlet weak var textLengthLabel: UILabel!
+    @IBOutlet weak var sendButton: UIButton!
+    // FROM 2.1.1
+    @IBOutlet weak var textTopContstraint: NSLayoutConstraint!
+    @IBOutlet weak var exitButtonTopContstraint: NSLayoutConstraint!
 
 
     // MARK: - Private Properties
@@ -48,6 +51,13 @@ class FeedbackViewController: UIViewController,
         // Set the tap recognizer that'll hide the keyboard
         self.tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(self.dismissKeyboard))
         self.view.addGestureRecognizer(self.tapGestureRecognizer)
+
+        // FROM 2.1.1
+        // Adjust the items at the top of the view under iOS 26+
+        if #available(iOS 26, *) {
+            self.textTopContstraint.constant = 22
+            self.exitButtonTopContstraint.constant = 25
+        }
     }
 
 
