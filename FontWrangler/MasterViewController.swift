@@ -80,6 +80,8 @@ final class MasterViewController: UITableViewController,
     // FROM 2.1.0
     internal var currentInstallCount: Int = 0
     internal var isActive: Bool = false
+    // FROM 2.2.0
+    internal var reviewAlert: UIAlertController? = nil
 
 
     // MARK: - Private Instance Constants
@@ -275,13 +277,12 @@ final class MasterViewController: UITableViewController,
 
         // FROM 2.2.0
         // Adjust the logo title in the nav bar for iOS 26
-        if #available(iOS 26, *) {
-            self.navigationItem.titleView = self.titleView26
-            self.titleView26.infoLabel.text = "No fonts installed (of 0)"
-        } else {
-            self.navigationItem.titleView = self.titleView
-            self.titleView.infoLabel.text = "No fonts installed (of 0)"
-        }
+        //if #available(iOS 26, *) {
+        //    self.titleView = self.titleView26
+        //}
+        self.titleView = self.titleView26
+        self.navigationItem.titleView = self.titleView
+        self.titleView.infoLabel.text = "No fonts installed (of 0)"
 
         // Set up the split view controller
         if let split = self.splitViewController {
@@ -309,13 +310,11 @@ final class MasterViewController: UITableViewController,
 
         // FROM 1.1.1
         // Ask for a review on a long press
-        let pressLong: UILongPressGestureRecognizer = UILongPressGestureRecognizer(target: self,
-                                                                                   action: #selector(self.doRequestReview))
+        let pressLong = UILongPressGestureRecognizer(target: self, action: #selector(self.doRequestReview))
         self.view?.addGestureRecognizer(pressLong)
         
         // FROM 2.0.0
-        let doubleTap: UITapGestureRecognizer = UITapGestureRecognizer(target: self,
-                                                                       action: #selector(self.doRequestReview))
+        let doubleTap = UITapGestureRecognizer(target: self, action: #selector(self.doRequestReview))
         doubleTap.numberOfTapsRequired = 2
         self.view?.addGestureRecognizer(doubleTap)
 
@@ -332,6 +331,14 @@ final class MasterViewController: UITableViewController,
         if #available(iOS 15, *) {
             self.tableView.sectionHeaderTopPadding = 0
         }
+
+        // FROM 2.2.0
+        // Add search
+        //self.toolbarItems = [
+        //    UIBarButtonItem(systemItem: .search
+        //]
+
+        //self.navigationController?.setToolbarHidden(false, animated: true)
     }
 
 
@@ -346,12 +353,11 @@ final class MasterViewController: UITableViewController,
             // FROM 2.2.0
             // Use a different title for iOS 26+
             if #available(iOS 26, *) {
-                self.navigationItem.titleView = self.titleView26
-            } else {
-                self.navigationItem.titleView = self.titleView
+                self.titleView = self.titleView26
             }
-        }
-    }
+
+            self.navigationItem.titleView = self.titleView
+        }    }
 
 
     @objc
@@ -854,7 +860,10 @@ final class MasterViewController: UITableViewController,
         DispatchQueue.main.asyncAfter(deadline: twoSecondsFromNow, qos: .userInteractive) { [navigationController] in
             if navigationController?.topViewController is MasterViewController {
                 // Show the rating request dialog if 'self' is present
-                SKStoreReviewController.requestReview()
+                //SKStoreReviewController.requestReview()
+                let scenes = UIApplication.shared.connectedScenes
+                let currentWindowScene = scenes[scenes.endIndex] as! UIWindowScene
+                SKStoreReviewController.requestReview(in: currentWindowScene)
                 UserDefaults.standard.set(currentVersion, forKey: FONTISMO_CONSTANTS.PREFS_KEYS.LAST_REVIEW_VERSION)
             }
         }
@@ -869,24 +878,29 @@ final class MasterViewController: UITableViewController,
     @objc
     private func doRequestReview() {
 
-        DispatchQueue.main.async(qos: .userInteractive) {
-            let alert = UIAlertController(title: "Would you like to rate or review this app?",
-                                          message: "If you have found Fontismo useful, please consider writing a short App Store review.",
-                                          preferredStyle: .alert)
+        if self.reviewAlert == nil {
+            DispatchQueue.main.async(qos: .userInteractive) {
+                self.reviewAlert = UIAlertController(title: "Would you like to rate or review this app?",
+                                              message: "If you have found Fontismo useful, please consider writing a short App Store review.",
+                                              preferredStyle: .alert)
 
-            alert.addAction(UIAlertAction(title: NSLocalizedString("Not Now", comment: "Default action"),
-                                          style: .default,
-                                          handler: nil))
+                self.reviewAlert?.addAction(UIAlertAction(title: NSLocalizedString("Not Now", comment: "Default action"),
+                                              style: .default,
+                                              handler: { (_) in
+                    self.reviewAlert = nil
+                }))
 
-            alert.addAction(UIAlertAction(title: NSLocalizedString("Yes, Please", comment: "Default action"),
-                                          style: .default,
-                                          handler: { (action) in
-                                            self.doReview()
-                                          }))
+                self.reviewAlert?.addAction(UIAlertAction(title: NSLocalizedString("Yes, Please", comment: "Default action"),
+                                              style: .default,
+                                              handler: { (_) in
+                    self.reviewAlert = nil
+                    self.doReview()
+                }))
 
-            self.present(alert,
-                         animated: true,
-                         completion: nil)
+                self.present(self.reviewAlert!,
+                             animated: true,
+                             completion: nil)
+            }
         }
     }
 
@@ -933,7 +947,8 @@ final class MasterViewController: UITableViewController,
                 }
 
                 // Get the detail controller and set key properties
-                let controller = (segue.destination as! UINavigationController).topViewController as! DetailViewController
+                let nav = (segue.destination as! UINavigationController)
+                let controller = nav.topViewController as! DetailViewController
                 controller.currentFamily = family
                 controller.mvc = self
                 controller.currentFontIndex = 0
@@ -952,7 +967,7 @@ final class MasterViewController: UITableViewController,
                 }
                 
                 controller.navigationItem.leftItemsSupplementBackButton = true
-                
+
                 // Keep a reference to the detail view controller
                 self.detailViewController = controller
             }

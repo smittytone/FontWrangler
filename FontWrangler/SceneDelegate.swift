@@ -27,13 +27,13 @@ class SceneDelegate: UIResponder,
         // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
         
         guard let window = self.window else { return }
-        window.tintColor = UIColor.systemBlue
         guard let splitViewController = window.rootViewController as? UISplitViewController else { return }
         guard let navigationController = splitViewController.viewControllers.last as? UINavigationController else { return }
-        // NOTE The next line adds a second, unwanted nave bar button in iOS 26+ and possibly 13+
-        //navigationController.topViewController?.navigationItem.leftBarButtonItem = splitViewController.displayModeButtonItem
-        navigationController.topViewController?.navigationItem.leftItemsSupplementBackButton = true
+
+        window.tintColor = UIColor.systemBlue
         splitViewController.delegate = self
+        navigationController.topViewController?.navigationItem.leftBarButtonItem = splitViewController.displayModeButtonItem
+        navigationController.topViewController?.navigationItem.leftItemsSupplementBackButton = true
 
         // FROM 2.2.0
         // Instantiate a new Split View Controller so we can apply the new settings for iOS 26+
