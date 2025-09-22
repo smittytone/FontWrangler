@@ -167,14 +167,16 @@ class TipViewController: UIViewController,
         - size The size of the constraint.
      */
     private func setKeyConstraints(_ size: CGSize) {
-        
-        let isPortrait: Bool = size.height > size.width
-        if !isPortrait {
-            upperLogoConstraint.constant = FONTISMO_CONSTANTS.TIP_LOGO_LANDSCAPE_SEPARATION
-            upperTextConstraint.constant = FONTISMO_CONSTANTS.TIP_TEXT_LANDSCAPE_SEPARATION
-        } else {
-            upperLogoConstraint.constant = FONTISMO_CONSTANTS.TIP_ITEM_SEPARATION
-            upperTextConstraint.constant = FONTISMO_CONSTANTS.TIP_ITEM_SEPARATION
+
+        if #unavailable(iOS 26) {
+            let isPortrait: Bool = size.height > size.width
+            if !isPortrait {
+                upperLogoConstraint.constant = FONTISMO_CONSTANTS.TIP_LOGO_LANDSCAPE_SEPARATION
+                upperTextConstraint.constant = FONTISMO_CONSTANTS.TIP_TEXT_LANDSCAPE_SEPARATION
+            } else {
+                upperLogoConstraint.constant = FONTISMO_CONSTANTS.TIP_ITEM_SEPARATION
+                upperTextConstraint.constant = FONTISMO_CONSTANTS.TIP_ITEM_SEPARATION
+            }
         }
     }
 
