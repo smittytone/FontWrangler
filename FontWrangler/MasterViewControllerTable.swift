@@ -34,6 +34,14 @@ extension MasterViewController {
      */
     override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
 
+        // FROM 2.2.0
+        // For iOS 26+ make the bar a standard colour but translucent to match the nav bar
+        if #available(iOS 26, *) {
+            self.tableHead.backgroundColor = .systemBackground.withAlphaComponent(0.2)
+        } else {
+            self.tableHead.backgroundColor = .systemBackground.withAlphaComponent(0.9)
+        }
+
         self.tableHead.parent = tableView
         return self.tableHead
     }
