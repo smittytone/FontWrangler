@@ -30,7 +30,8 @@ class SceneDelegate: UIResponder,
         window.tintColor = UIColor.systemBlue
         guard let splitViewController = window.rootViewController as? UISplitViewController else { return }
         guard let navigationController = splitViewController.viewControllers.last as? UINavigationController else { return }
-        navigationController.topViewController?.navigationItem.leftBarButtonItem = splitViewController.displayModeButtonItem
+        // NOTE The next line adds a second, unwanted nave bar button in iOS 26+ and possibly 13+
+        //navigationController.topViewController?.navigationItem.leftBarButtonItem = splitViewController.displayModeButtonItem
         navigationController.topViewController?.navigationItem.leftItemsSupplementBackButton = true
         splitViewController.delegate = self
 
@@ -49,11 +50,6 @@ class SceneDelegate: UIResponder,
 
             // Add the new SVC to the window
             window.rootViewController = newSplitViewController
-
-            // Attempt to set the detail view navbar background colour to white/black (not grey)
-            navigationController.toolbar.backgroundColor = .systemBackground
-            navigationController.navigationBar.backgroundColor = .systemBackground
-            navigationController.navigationBar.tintColor = .systemBlue
         }
     }
 
@@ -104,5 +100,23 @@ class SceneDelegate: UIResponder,
         }
         
         return false
+    }
+
+
+    // FROM 2.2.0
+    // This is required to force the initial appearance of the master view on iPhone
+    // under iOS 26+
+    @available(iOS 14.0, *)
+    func splitViewController(_ spvc: UISplitViewController, topColumnForCollapsingToProposedTopColumn proposedTopColumn: UISplitViewController.Column) -> UISplitViewController.Column {
+
+        let svc = spvc.viewController(for: .secondary)
+        guard let nc = svc as? UINavigationController else { return .primary }
+        guard let dvc = nc.topViewController as? DetailViewController else { return .primary }
+
+        if dvc.detailItem == nil {
+            return .primary
+        }
+
+        return .secondary
     }
 }
