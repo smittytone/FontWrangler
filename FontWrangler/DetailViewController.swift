@@ -38,7 +38,13 @@ class DetailViewController: UIViewController,
 
         didSet {
             // When set, update the view immediately
-            self.configureView()
+            if Thread.isMainThread {
+                self.configureView()
+            } else {
+                DispatchQueue.main.sync {
+                    self.configureView()
+                }
+            }
         }
     }
 
@@ -129,129 +135,126 @@ class DetailViewController: UIViewController,
      */
     func configureView() {
 
-        // FROM 2.1.0
-        // Make sure this UI update code runs on the main thread
-        DispatchQueue.main.async(qos: .userInteractive) {
-            // Make sure we can access the UI items -- they may not have been
-            // instantiated, if 'self.detailItem' is set before the view loads
-            guard let statusLabel = self.fontStatusLabel else { return }
-            guard let sampleText = self.dynamicSampleTextView else { return }
-            guard let sampleHead = self.dynamicSampleHeadLabel else { return }
-            guard let sizeLabel = self.fontSizeLabel else { return }
-            guard let sizeSlider = self.fontSizeSlider else { return }
-            guard let unImage = self.uninstalledPreviewImage else { return }
-            guard let dloadView = self.downloadView else { return }
+        // Make sure we can access the UI items -- they may not have been
+        // instantiated, if 'self.detailItem' is set before the view loads
+        guard let statusLabel = self.fontStatusLabel else { return }
+        guard let sampleText = self.dynamicSampleTextView else { return }
+        guard let sampleHead = self.dynamicSampleHeadLabel else { return }
+        guard let sizeLabel = self.fontSizeLabel else { return }
+        guard let sizeSlider = self.fontSizeSlider else { return }
+        guard let unImage = self.uninstalledPreviewImage else { return }
+        guard let dloadView = self.downloadView else { return }
 
-            // FROM 2.0.0
-            // Turn off the indicator and hide
-            // Turn off the indicator and hide
-            if !dloadView.isHidden {
-                dloadView.doHide()
-            }
+        // FROM 2.0.0
+        // Turn off the indicator and hide
+        // Turn off the indicator and hide
+        if !dloadView.isHidden {
+            dloadView.doHide()
+        }
 
-            if let detail = self.detailItem {
-                // We have an item to display, so load the font and register
-                // it for this process only
+        if let detail = self.detailItem {
+            // We have an item to display, so load the font and register
+            // it for this process only
 
-                // Set the view title and show the detail
-                if self.mvc != nil {
-                    if self.currentFamily != nil {
-                        if detail.tag == "bungee" {
-                            // Use Bungee quirk
-                            self.title = self.getBungeeTitle(detail.name)
-                        } else if detail.tag == "hanalei" {
-                            // Use Hanalei quirk
-                            self.title = self.getHanaleiTitle(detail.name)
-                        } else if detail.tag == "fira_code_nfm" {
-                            // Use Fira Code quirk
-                            self.title = self.getFiraCodeTitle(detail.name)
-                        } else if detail.tag == "roboto_mono_nfm" {
-                            self.title = self.getRobotoMonoTitle(detail.name)
-                        } else if detail.tag.contains("_nfm") {
-                            // Use quirk for other Nerd Fonts
-                            self.title = self.getNerdFontTitle(detail.name, self.currentFamily!.name)
-                        } else {
-                            self.title = self.currentFamily!.name + self.getVariantName(detail.name)
-                        }
+            // Set the view title and show the detail
+            if self.mvc != nil {
+                if self.currentFamily != nil {
+                    if detail.tag == "bungee" {
+                        // Use Bungee quirk
+                        self.title = self.getBungeeTitle(detail.name)
+                    } else if detail.tag == "hanalei" {
+                        // Use Hanalei quirk
+                        self.title = self.getHanaleiTitle(detail.name)
+                    } else if detail.tag == "fira_code_nfm" {
+                        // Use Fira Code quirk
+                        self.title = self.getFiraCodeTitle(detail.name)
+                    } else if detail.tag == "roboto_mono_nfm" {
+                        self.title = self.getRobotoMonoTitle(detail.name)
+                    } else if detail.tag.contains("_nfm") {
+                        // Use quirk for other Nerd Fonts
+                        self.title = self.getNerdFontTitle(detail.name, self.currentFamily!.name)
                     } else {
-                        self.title = self.mvc!.getPrinteableName(detail.name, "-")
+                        self.title = self.currentFamily!.name + self.getVariantName(detail.name)
                     }
                 } else {
-                    self.title = detail.name
+                    self.title = self.mvc!.getPrinteableName(detail.name, "-")
                 }
-
-                if detail.isInstalled {
-                    // Set the sample's font
-                    if let font: UIFont = UIFont(name: detail.psname, size: self.fontSize) {
-                        sampleText.font = font
-                    }
-
-                    sampleText.alpha = 1.0
-                    sampleText.isHidden = false
-
-                    // Set the font size slider control and label
-                    sizeLabel.text = "\(Int(self.fontSize))pt"
-                    sizeSlider.setValue(Float(self.fontSize), animated: true)
-                    sizeSlider.tintColor = .systemBlue
-                    sizeSlider.isEnabled = true
-
-                    // FROM 2.0.0
-                    unImage.isHidden = true
-                } else {
-                    // sampleText.font = self.substituteFont
-                    // sampleText.alpha = 0.3
-                    sampleText.isHidden = true
-
-                    sizeLabel.text = ""
-                    sizeSlider.isEnabled = false
-                    sizeSlider.tintColor = .gray
-
-                    // FROM 2.0.0
-                    // Use graphic preview for uninstalled fonts
-                    if let cf: FontFamily = self.currentFamily {
-                        if let image: UIImage = UIImage(named: "preview_" + cf.tag) {
-                            unImage.image = image
-                        }
-                    }
-
-                    unImage.alpha = 0.5
-                    unImage.isHidden = false
-                }
-
-                // Set the font status label
-                // FROM 2.0.0 Remove typeface type
-                // let ext = (detail.path as NSString).pathExtension.lowercased()
-                // var labelText = "This " + (ext == "otf" ? "OpenType" : "TrueType" ) + " font is "
-                var labelText: String = "This typeface is "
-                labelText += (detail.isInstalled ? "installed" : "not installed")
-                statusLabel.text = labelText
-
-                // Enable or disable the Variants button according to whether there are any
-                var count = 0
-                if let cf: FontFamily = self.currentFamily {
-                    if let familyFonts: [Int] = cf.fontIndices {
-                        count = familyFonts.count
-                    }
-
-                    // Set the creator
-                    sampleHead.text = "Created by \(cf.creator)"
-                }
-
-                self.variantsButton?.isEnabled = count > 1 ? true : false
-
-                // REMOVED 2.0.0
-                // Font not installed, so offer to install it
-                // if !detail.isInstalled { queryInstall() }
             } else {
-                // Hide the labels; disable the slider
-                self.title = "Typeface Info"
-                statusLabel.text = "No variant selected"
-                sizeLabel.text = ""
-                sizeSlider.value = Float(self.fontSize)
-                sizeSlider.isEnabled = false
-                self.variantsButton?.isEnabled = false
+                self.title = detail.name
+                self.navigationItem.title = detail.name
             }
-        } /* END OF CLOSURE */
+
+            if detail.isInstalled {
+                // Set the sample's font
+                if let font: UIFont = UIFont(name: detail.psname, size: self.fontSize) {
+                    sampleText.font = font
+                }
+
+                sampleText.alpha = 1.0
+                sampleText.isHidden = false
+
+                // Set the font size slider control and label
+                sizeLabel.text = "\(Int(self.fontSize))pt"
+                sizeSlider.setValue(Float(self.fontSize), animated: true)
+                sizeSlider.tintColor = .systemBlue
+                sizeSlider.isEnabled = true
+
+                // FROM 2.0.0
+                unImage.isHidden = true
+            } else {
+                // sampleText.font = self.substituteFont
+                // sampleText.alpha = 0.3
+                sampleText.isHidden = true
+
+                sizeLabel.text = ""
+                sizeSlider.isEnabled = false
+                sizeSlider.tintColor = .gray
+
+                // FROM 2.0.0
+                // Use graphic preview for uninstalled fonts
+                if let cf: FontFamily = self.currentFamily {
+                    if let image: UIImage = UIImage(named: "preview_" + cf.tag) {
+                        unImage.image = image
+                    }
+                }
+
+                unImage.alpha = 0.5
+                unImage.isHidden = false
+            }
+
+            // Set the font status label
+            // FROM 2.0.0 Remove typeface type
+            // let ext = (detail.path as NSString).pathExtension.lowercased()
+            // var labelText = "This " + (ext == "otf" ? "OpenType" : "TrueType" ) + " font is "
+            var labelText: String = "This typeface is "
+            labelText += (detail.isInstalled ? "installed" : "not installed")
+            statusLabel.text = labelText
+
+            // Enable or disable the Variants button according to whether there are any
+            var count = 0
+            if let cf: FontFamily = self.currentFamily {
+                if let familyFonts: [Int] = cf.fontIndices {
+                    count = familyFonts.count
+                }
+
+                // Set the creator
+                sampleHead.text = "Created by \(cf.creator)"
+            }
+
+            self.variantsButton?.isEnabled = count > 1 ? true : false
+
+            // REMOVED 2.0.0
+            // Font not installed, so offer to install it
+            // if !detail.isInstalled { queryInstall() }
+        } else {
+            // Hide the labels; disable the slider
+            self.title = "Typeface Info"
+            statusLabel.text = "No variant selected"
+            sizeLabel.text = ""
+            sizeSlider.value = Float(self.fontSize)
+            sizeSlider.isEnabled = false
+            self.variantsButton?.isEnabled = false
+        }
     }
 
 
