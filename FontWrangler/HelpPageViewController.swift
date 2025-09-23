@@ -55,8 +55,12 @@ final class HelpPageViewController: UIViewController,
         
         // FROM 1.2.0
         // Add separate CSS, HTML for iPhone and iPad versions
+        // FROM 2.2.0
+        // Add separate pages for iOS 26 HTML and images, with new paths
+        var pageStore = "18"
+        if #available(iOS 26, *) { pageStore = "26" }
         let pagePrefix = UIDevice.current.userInterfaceIdiom == .phone ? "phone" : "pad"
-        let page_url = Bundle.main.url(forResource: "\(pagePrefix)_page\(self.index)",
+        let page_url = Bundle.main.url(forResource: "/html/\(pageStore)/\(pagePrefix)_page\(self.index)",
                                        withExtension: "html",
                                        subdirectory: "help")!
         
