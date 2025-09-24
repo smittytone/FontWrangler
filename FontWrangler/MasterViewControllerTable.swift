@@ -68,7 +68,10 @@ extension MasterViewController {
             // FROM 1.2.0
             // Highlight new fonts
             if family.isNew && self.doIndicateNewFonts {
-                let labelString = NSMutableAttributedString(string: family.name + (family.isNerdFont ? " Nerd Font " : " "))
+                // FROM 2.2.0 include foreground colour to ensure image is correctly
+                //            tinted when full screen on iPad on 26+
+                let labelString = NSMutableAttributedString(string: family.name + (family.isNerdFont ? " Nerd Font " : " "),
+                                                            attributes: [.foregroundColor: UIColor.label])
                 let imageAttachment: NSTextAttachment = NSTextAttachment()
                 if let sealImage = UIImage(systemName: "checkmark.seal.fill") {
                     imageAttachment.image = sealImage.withTintColor(UIColor.systemBlue)
