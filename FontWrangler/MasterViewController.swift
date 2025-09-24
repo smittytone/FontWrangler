@@ -85,200 +85,206 @@ final class MasterViewController: UITableViewController,
 
     // MARK: - Private Instance Constants
 
-    internal let DOCS_PATH = NSSearchPathForDirectoriesInDomains(FileManager.SearchPathDirectory.documentDirectory, FileManager.SearchPathDomainMask.userDomainMask, true)[0]
+    internal let DOCS_PATH = NSSearchPathForDirectoriesInDomains(FileManager.SearchPathDirectory.documentDirectory,
+                                                                 FileManager.SearchPathDomainMask.userDomainMask, true)[0]
     internal let BUNDLE_PATH = Bundle.main.bundlePath
 
 
     // MARK: - Lifecycle Functions
 
     override func viewDidLoad() {
-        
+
         super.viewDidLoad()
 
         // FROM 2.0.0
         // Provide a contextual menu on iOS 14 and up, or an alert menu on iOS 13
         // NOTE We don't support iOS 12 and under (no font capability)
         var menuButton: UIBarButtonItem
-        if #available(iOS 14, *) {
-            // Generate the main contextual menu with the usual buttons
-            let showHelpAction = UIAction(title: "Show Help",
-                                          image: UIImage(systemName: "questionmark.circle"),
+        //if #available(iOS 14, *) {
+        // Generate the main contextual menu with the usual buttons
+        let showHelpAction = UIAction(title: "Show Help",
+                                      image: UIImage(systemName: "questionmark.circle"),
+                                      handler: { (_) in
+            self.doShowHelpSheet(self)
+        })
+
+        let showSettingsAction = UIAction(title: "Settings",
+                                          image: UIImage(systemName: "gearshape"),
                                           handler: { (_) in
-                                              self.doShowHelpSheet(self)
-                                          })
-            
-            let showSettingsAction = UIAction(title: "Settings",
-                                              image: UIImage(systemName: "gearshape"),
-                                              handler: { (_) in
-                                                  UIApplication.shared.open(URL(string: UIApplication.openSettingsURLString)!)
-                                              })
-            
-            let showFeedbackSheetAction = UIAction(title: "Give Feedback",
-                                                   image: UIImage(systemName: "envelope"),
-                                                   handler: { (_) in
-                                                       self.doShowFeedbackSheet(self)
-                                                   })
-            
-            let showReviewOfferAction = UIAction(title: "Review Fontismo",
-                                                 image: UIImage(systemName: "pencil.and.scribble"),
-                                                 handler: { (_) in
-                                                     self.doReview()
-                                                 })
-            
-            let showWebsiteAction = UIAction(title: "Visit Fontismo’s Website",
-                                             image: UIImage(systemName: "globe"),
+            UIApplication.shared.open(URL(string: UIApplication.openSettingsURLString)!)
+        })
+
+        let showFeedbackSheetAction = UIAction(title: "Give Feedback",
+                                               image: UIImage(systemName: "envelope"),
+                                               handler: { (_) in
+            self.doShowFeedbackSheet(self)
+        })
+
+        let showReviewOfferAction = UIAction(title: "Review Fontismo",
+                                             image: UIImage(systemName: "pencil.and.scribble"),
                                              handler: { (_) in
-                                                 self.doShowWebsite(self)
-                                             })
-            
-            let showTipsAction = UIAction(title: "Fuel Development",
-                                          image: UIImage(systemName: "fork.knife"),
-                                          handler: { (_) in
-                                              self.doShowTipSheet(self)
-                                          })
-            
-            // Assemble the menu, add it to the central table header button,
-            // and enable menu delivery by the button
-            let mainMenu = UIMenu(title: "", children: [
-                showHelpAction, showSettingsAction, showFeedbackSheetAction,
-                showReviewOfferAction, showWebsiteAction, showTipsAction
-            ])
-            
-            menuButton = UIBarButtonItem()
-            menuButton.image = UIImage(systemName: "ellipsis.circle")
-            menuButton.menu = mainMenu
-            menuButton.style = .plain
-        } else {
-            // For iOS 13, use the old-style UIAlert menu
-            menuButton = UIBarButtonItem(image: UIImage(systemName: "ellipsis.circle"),
-                                         style: .plain,
-                                         target: self,
-                                         action: #selector(self.doShowMenu(_:)))
-        }
-        
+            self.doReview()
+        })
+
+        let showWebsiteAction = UIAction(title: "Visit Fontismo’s Website",
+                                         image: UIImage(systemName: "globe"),
+                                         handler: { (_) in
+            self.doShowWebsite(self)
+        })
+
+        let showTipsAction = UIAction(title: "Fuel Development",
+                                      image: UIImage(systemName: "fork.knife"),
+                                      handler: { (_) in
+            self.doShowTipSheet(self)
+        })
+
+        // Assemble the menu, add it to the central table header button,
+        // and enable menu delivery by the button
+        let mainMenu = UIMenu(title: "", children: [
+            showHelpAction, showSettingsAction, showFeedbackSheetAction,
+            showReviewOfferAction, showWebsiteAction, showTipsAction
+        ])
+
+        menuButton = UIBarButtonItem()
+        menuButton.image = UIImage(systemName: "ellipsis.circle")
+        menuButton.menu = mainMenu
+        menuButton.style = .plain
+        // FROM 2.2.0
+        menuButton.tintColor = .systemBlue
+        /* }
+         else {
+         // For iOS 13, use the old-style UIAlert menu
+         // FROM 2.2.0 this will never be called
+
+         menuButton = UIBarButtonItem(image: UIImage(systemName: "ellipsis.circle"),
+         style: .plain,
+         target: self,
+         action: #selector(self.doShowMenu(_:)))
+         }
+         */
+
         // Add whatever menu button we've created to the navigation bar
         self.menuButton = menuButton
         self.navigationItem.rightBarButtonItem = menuButton
-        
+
         /* REMOVED IN 2.0.0
-        // Set up the 'Install' button on the right
-        let addAllButton = UIBarButtonItem(image: UIImage(systemName: "square.and.arrow.down.on.square"),
-                                           style: .plain,
-                                           target: self,
-                                           action: #selector(self.installAll(_:)))
-        self.navigationItem.leftBarButtonItem = menuButton
-        self.installButton = addAllButton
-        */
+         // Set up the 'Install' button on the right
+         let addAllButton = UIBarButtonItem(image: UIImage(systemName: "square.and.arrow.down.on.square"),
+         style: .plain,
+         target: self,
+         action: #selector(self.installAll(_:)))
+         self.navigationItem.leftBarButtonItem = menuButton
+         self.installButton = addAllButton
+         */
 
         // FROM 2.0.0
         // Assemble a contextual menu for font list subdivision
         // NOTE This is only available in iOS 14 and up so we disable the options
         //      button for earlier iOS versions
-        if #available(iOS 14, *) {
-            let showClassicFontsAction = UIAction(title: "Classic",
-                                                  image: UIImage(named: "style_class"),
-                                                  handler: { (action) in
-                                                      self.doShowSome(action, .classic)
-                                                  })
-            
-            let showHeadlineFontsAction = UIAction(title: "Headline",
-                                                   image: UIImage(named: "style_head"),
-                                                   handler: { (action) in
-                                                       self.doShowSome(action, .headline)
-                                                   })
-            
-            let showDecorativeFontsAction = UIAction(title: "Decorative",
-                                                     image: UIImage(named: "style_dec"),
-                                                     handler: { (action) in
-                                                         self.doShowSome(action, .decorative)
-                                                     })
-            
-            let showMonospaceFontsAction = UIAction(title: "Monospace",
-                                                     image: UIImage(named: "style_mono"),
-                                                     handler: { (action) in
-                                                         self.doShowSome(action, .monospace)
-                                                     })
-                                                     
-            let showNewFontsAction = UIAction(title: "New",
-                                              handler: { (_) in
-                                                  self.setViewOptions(FONTISMO_CONSTANTS.FONT_SHOW_MODE_INDICES.NEW)
-                                              })
-            
-            let showInstalledFontsAction = UIAction(title: "Installed",
-                                                    handler: { (_) in
-                                                        self.setViewOptions(FONTISMO_CONSTANTS.FONT_SHOW_MODE_INDICES.INSTALLED)
-                                                    })
-            
-            let showUninstalledFontsAction = UIAction(title: "Not Iinstalled",
-                                                      handler: { (_) in
-                                                          self.setViewOptions(FONTISMO_CONSTANTS.FONT_SHOW_MODE_INDICES.UNINSTALLED)
-                                                      })
-            
-            let showAllFontsAction = UIAction(title: "Show All",
-                                              image: nil,
-                                              handler: { (_) in
-                                                  self.setContextMenu(true)
-                                              })
-            
-            let clearAllFontsAction = UIAction(title: "Clear Selections",
-                                               image: nil,
-                                               handler: { (_) in
-                                                   self.setContextMenu(false)
-                                               })
-            
-            let viewSubMenu: UIMenu = UIMenu(title: "", options: .displayInline, children: [
-                showNewFontsAction,
-                showInstalledFontsAction,
-                showUninstalledFontsAction
-            ])
-            
-            let controlSubMenu: UIMenu = UIMenu(title: "", options: .displayInline, children: [
-                showAllFontsAction,
-                clearAllFontsAction
-            ])
-            
-            // Set the state indicators to on, ie. show all
-            showClassicFontsAction.state = .on
-            showHeadlineFontsAction.state = .on
-            showDecorativeFontsAction.state = .on
-            showMonospaceFontsAction.state = .on
-            
-            /*
-            self.filterMenuItemIndices[.classic] = 0
-            self.filterMenuItemIndices[.headline] = 1
-            self.filterMenuItemIndices[.decorative] = 2
-            self.filterMenuItemIndices[.monospace] = 3
-            */             
-            
-            // Assemble the menu, add it to the central table header button,
-            // and enable menu delivery by the button
-            let filterMenu = UIMenu(title: "Show Typefaces that are...", children: [
-                showClassicFontsAction, showHeadlineFontsAction,
-                showDecorativeFontsAction, showMonospaceFontsAction,
-                viewSubMenu, controlSubMenu])
-            
-            self.filterMenuItemIndices[.classic] = 0
-            self.filterMenuItemIndices[.headline] = 1
-            self.filterMenuItemIndices[.decorative] = 2
-            self.filterMenuItemIndices[.monospace] = 3
-            self.filterMenuItemIndices[.viewOptions] = 4
-            self.filterMenuItemIndices[.new] = 0
-            self.filterMenuItemIndices[.installed] = 1
-            self.filterMenuItemIndices[.uninstalled] = 2
-            self.filterMenuItemIndices[.monospace] = 3
+        //if #available(iOS 14, *) {
+        let showClassicFontsAction = UIAction(title: "Classic",
+                                              image: UIImage(named: "style_class"),
+                                              handler: { (action) in
+            self.doShowSome(action, .classic)
+        })
 
-            self.viewOptionsButton.menu = filterMenu
-            self.viewOptionsButton.showsMenuAsPrimaryAction = true
-        } else {
-            // iOS 13: hide the button
-            self.viewOptionsButton.isHidden = true
-        }
+        let showHeadlineFontsAction = UIAction(title: "Headline",
+                                               image: UIImage(named: "style_head"),
+                                               handler: { (action) in
+            self.doShowSome(action, .headline)
+        })
+
+        let showDecorativeFontsAction = UIAction(title: "Decorative",
+                                                 image: UIImage(named: "style_dec"),
+                                                 handler: { (action) in
+            self.doShowSome(action, .decorative)
+        })
+
+        let showMonospaceFontsAction = UIAction(title: "Monospace",
+                                                image: UIImage(named: "style_mono"),
+                                                handler: { (action) in
+            self.doShowSome(action, .monospace)
+        })
+
+        let showNewFontsAction = UIAction(title: "New",
+                                          handler: { (_) in
+            self.setViewOptions(FONTISMO_CONSTANTS.FONT_SHOW_MODE_INDICES.NEW)
+        })
+
+        let showInstalledFontsAction = UIAction(title: "Installed",
+                                                handler: { (_) in
+            self.setViewOptions(FONTISMO_CONSTANTS.FONT_SHOW_MODE_INDICES.INSTALLED)
+        })
+
+        let showUninstalledFontsAction = UIAction(title: "Not Iinstalled",
+                                                  handler: { (_) in
+            self.setViewOptions(FONTISMO_CONSTANTS.FONT_SHOW_MODE_INDICES.UNINSTALLED)
+        })
+
+        let showAllFontsAction = UIAction(title: "Show All",
+                                          image: nil,
+                                          handler: { (_) in
+            self.setContextMenu(true)
+        })
+
+        let clearAllFontsAction = UIAction(title: "Clear Selections",
+                                           image: nil,
+                                           handler: { (_) in
+            self.setContextMenu(false)
+        })
+
+        let viewSubMenu: UIMenu = UIMenu(title: "", options: .displayInline, children: [
+            showNewFontsAction,
+            showInstalledFontsAction,
+            showUninstalledFontsAction
+        ])
+
+        let controlSubMenu: UIMenu = UIMenu(title: "", options: .displayInline, children: [
+            showAllFontsAction,
+            clearAllFontsAction
+        ])
+
+        // Set the state indicators to on, ie. show all
+        showClassicFontsAction.state = .on
+        showHeadlineFontsAction.state = .on
+        showDecorativeFontsAction.state = .on
+        showMonospaceFontsAction.state = .on
+
+        /*
+         self.filterMenuItemIndices[.classic] = 0
+         self.filterMenuItemIndices[.headline] = 1
+         self.filterMenuItemIndices[.decorative] = 2
+         self.filterMenuItemIndices[.monospace] = 3
+         */
+
+        // Assemble the menu, add it to the central table header button,
+        // and enable menu delivery by the button
+        let filterMenu = UIMenu(title: "Show Typefaces that are...", children: [
+            showClassicFontsAction, showHeadlineFontsAction,
+            showDecorativeFontsAction, showMonospaceFontsAction,
+            viewSubMenu, controlSubMenu])
+
+        self.filterMenuItemIndices[.classic] = 0
+        self.filterMenuItemIndices[.headline] = 1
+        self.filterMenuItemIndices[.decorative] = 2
+        self.filterMenuItemIndices[.monospace] = 3
+        self.filterMenuItemIndices[.viewOptions] = 4
+        self.filterMenuItemIndices[.new] = 0
+        self.filterMenuItemIndices[.installed] = 1
+        self.filterMenuItemIndices[.uninstalled] = 2
+        self.filterMenuItemIndices[.monospace] = 3
+
+        self.viewOptionsButton.menu = filterMenu
+        self.viewOptionsButton.showsMenuAsPrimaryAction = true
+    /*
+    } else {
+        // iOS 13: hide the button
+        // FROM 2.2.0 will never be called
+        self.viewOptionsButton.isHidden = true
+    }
+     */
 
         // FROM 2.2.0
-        // Adjust the logo title in the nav bar for iOS 26
-        //if #available(iOS 26, *) {
-        //    self.titleView = self.titleView26
-        //}
         self.titleView = self.titleView26
         self.navigationItem.titleView = self.titleView
         self.titleView.infoLabel.text = "No fonts installed (of 0)"
@@ -350,13 +356,10 @@ final class MasterViewController: UITableViewController,
 
         if self.clearsSelectionOnViewWillAppear {
             // FROM 2.2.0
-            // Use a different title for iOS 26+
-            if #available(iOS 26, *) {
-                self.titleView = self.titleView26
-            }
-
+            self.titleView = self.titleView26
             self.navigationItem.titleView = self.titleView
-        }    }
+        }
+    }
 
 
     @objc
@@ -435,7 +438,7 @@ final class MasterViewController: UITableViewController,
      FROM 2.0.0
      This is now only called if the host device is on iOS 13, our minimum
      supported version. iOS 14 and up will result in a contextual menu
-     */
+
     @objc
     func doShowMenu(_ sender: Any) {
 
@@ -513,6 +516,7 @@ final class MasterViewController: UITableViewController,
                      animated: true,
                      completion: nil)
     }
+     */
 
 
     /**

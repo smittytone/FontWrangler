@@ -47,7 +47,8 @@ class SceneDelegate: UIResponder,
             newSplitViewController.minimumPrimaryColumnWidth = 720.0
             newSplitViewController.viewControllers = splitViewController.viewControllers
             newSplitViewController.delegate = self
-
+            newSplitViewController.displayModeButtonItem.tintColor = .systemBlue
+            
             // Add the new SVC to the window
             window.rootViewController = newSplitViewController
         }
@@ -106,7 +107,6 @@ class SceneDelegate: UIResponder,
     // FROM 2.2.0
     // This is required to force the initial appearance of the master view on iPhone
     // under iOS 26+
-    @available(iOS 14.0, *)
     func splitViewController(_ spvc: UISplitViewController, topColumnForCollapsingToProposedTopColumn proposedTopColumn: UISplitViewController.Column) -> UISplitViewController.Column {
 
         let svc = spvc.viewController(for: .secondary)
