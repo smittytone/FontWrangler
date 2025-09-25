@@ -33,10 +33,10 @@ final class MasterViewController: UITableViewController,
     // MARK: - UI properties
 
     @IBOutlet weak var titleView: MasterTitleView!          // iOS 13-18 - DEPRECATED
-    @IBOutlet weak var titleView26: MasterTitleView!        // iOS 26+
     @IBOutlet weak var tableHead: MasterTableHeaderView!
     @IBOutlet weak var viewOptionsButton: UIButton!
     // FROM 2.2.0
+    @IBOutlet weak var titleView26: MasterTitleView!        // iOS 26+
     @IBOutlet weak var searchBar: UISearchBar!
 
 
@@ -85,6 +85,7 @@ final class MasterViewController: UITableViewController,
     // FROM 2.2.0
     internal var reviewAlert: UIAlertController? = nil
     internal var searchString = ""
+    internal var toggleSearchAction: UIAction? = nil
 
 
     // MARK: - Private Instance Constants
@@ -103,9 +104,8 @@ final class MasterViewController: UITableViewController,
         // FROM 2.0.0
         // Provide a contextual menu on iOS 14 and up, or an alert menu on iOS 13
         // NOTE We don't support iOS 12 and under (no font capability)
+        // FROM 2.2.0 remove iOS 13 support
         var menuButton: UIBarButtonItem
-        //if #available(iOS 14, *) {
-        // Generate the main contextual menu with the usual buttons
         let showHelpAction = UIAction(title: "Show Help",
                                       image: UIImage(systemName: "questionmark.circle"),
                                       handler: { (_) in
@@ -155,138 +155,17 @@ final class MasterViewController: UITableViewController,
         menuButton.style = .plain
         // FROM 2.2.0
         menuButton.tintColor = .systemBlue
-        /* }
-         else {
-         // For iOS 13, use the old-style UIAlert menu
-         // FROM 2.2.0 this will never be called
-
-         menuButton = UIBarButtonItem(image: UIImage(systemName: "ellipsis.circle"),
-         style: .plain,
-         target: self,
-         action: #selector(self.doShowMenu(_:)))
-         }
-         */
 
         // Add whatever menu button we've created to the navigation bar
         self.menuButton = menuButton
         self.navigationItem.rightBarButtonItem = menuButton
 
-        /* REMOVED IN 2.0.0
-         // Set up the 'Install' button on the right
-         let addAllButton = UIBarButtonItem(image: UIImage(systemName: "square.and.arrow.down.on.square"),
-         style: .plain,
-         target: self,
-         action: #selector(self.installAll(_:)))
-         self.navigationItem.leftBarButtonItem = menuButton
-         self.installButton = addAllButton
-         */
-
         // FROM 2.0.0
         // Assemble a contextual menu for font list subdivision
         // NOTE This is only available in iOS 14 and up so we disable the options
         //      button for earlier iOS versions
-        //if #available(iOS 14, *) {
-        let showClassicFontsAction = UIAction(title: "Classic",
-                                              image: UIImage(named: "style_class"),
-                                              handler: { (action) in
-            self.doShowSome(action, .classic)
-        })
-
-        let showHeadlineFontsAction = UIAction(title: "Headline",
-                                               image: UIImage(named: "style_head"),
-                                               handler: { (action) in
-            self.doShowSome(action, .headline)
-        })
-
-        let showDecorativeFontsAction = UIAction(title: "Decorative",
-                                                 image: UIImage(named: "style_dec"),
-                                                 handler: { (action) in
-            self.doShowSome(action, .decorative)
-        })
-
-        let showMonospaceFontsAction = UIAction(title: "Monospace",
-                                                image: UIImage(named: "style_mono"),
-                                                handler: { (action) in
-            self.doShowSome(action, .monospace)
-        })
-
-        let showNewFontsAction = UIAction(title: "New",
-                                          handler: { (_) in
-            self.setViewOptions(FONTISMO_CONSTANTS.FONT_SHOW_MODE_INDICES.NEW)
-        })
-
-        let showInstalledFontsAction = UIAction(title: "Installed",
-                                                handler: { (_) in
-            self.setViewOptions(FONTISMO_CONSTANTS.FONT_SHOW_MODE_INDICES.INSTALLED)
-        })
-
-        let showUninstalledFontsAction = UIAction(title: "Not Iinstalled",
-                                                  handler: { (_) in
-            self.setViewOptions(FONTISMO_CONSTANTS.FONT_SHOW_MODE_INDICES.UNINSTALLED)
-        })
-
-        let showAllFontsAction = UIAction(title: "Show All",
-                                          image: nil,
-                                          handler: { (_) in
-            self.setContextMenu(true)
-        })
-
-        let clearAllFontsAction = UIAction(title: "Clear Selections",
-                                           image: nil,
-                                           handler: { (_) in
-            self.setContextMenu(false)
-        })
-
-        let viewSubMenu: UIMenu = UIMenu(title: "", options: .displayInline, children: [
-            showNewFontsAction,
-            showInstalledFontsAction,
-            showUninstalledFontsAction
-        ])
-
-        let controlSubMenu: UIMenu = UIMenu(title: "", options: .displayInline, children: [
-            showAllFontsAction,
-            clearAllFontsAction
-        ])
-
-        // Set the state indicators to on, ie. show all
-        showClassicFontsAction.state = .on
-        showHeadlineFontsAction.state = .on
-        showDecorativeFontsAction.state = .on
-        showMonospaceFontsAction.state = .on
-
-        /*
-         self.filterMenuItemIndices[.classic] = 0
-         self.filterMenuItemIndices[.headline] = 1
-         self.filterMenuItemIndices[.decorative] = 2
-         self.filterMenuItemIndices[.monospace] = 3
-         */
-
-        // Assemble the menu, add it to the central table header button,
-        // and enable menu delivery by the button
-        let filterMenu = UIMenu(title: "Show Typefaces that are...", children: [
-            showClassicFontsAction, showHeadlineFontsAction,
-            showDecorativeFontsAction, showMonospaceFontsAction,
-            viewSubMenu, controlSubMenu])
-
-        self.filterMenuItemIndices[.classic] = 0
-        self.filterMenuItemIndices[.headline] = 1
-        self.filterMenuItemIndices[.decorative] = 2
-        self.filterMenuItemIndices[.monospace] = 3
-        self.filterMenuItemIndices[.viewOptions] = 4
-        self.filterMenuItemIndices[.new] = 0
-        self.filterMenuItemIndices[.installed] = 1
-        self.filterMenuItemIndices[.uninstalled] = 2
-        self.filterMenuItemIndices[.monospace] = 3
-
-        self.viewOptionsButton.menu = filterMenu
-        self.viewOptionsButton.showsMenuAsPrimaryAction = true
-        /*
-        } else {
-            // iOS 13: hide the button
-            // FROM 2.2.0 will never be called
-            self.viewOptionsButton.isHidden = true
-        }
-         */
+        // FROM 2.2.0 remove iOS 13 support and migrate to separate function for reuse
+        makeContextMenu()
 
         // FROM 2.2.0
         self.titleView = self.titleView26
@@ -392,10 +271,6 @@ final class MasterViewController: UITableViewController,
         // Prepare the font list table
         self.initializeFontList()
 
-        // REMOVED 2.0.0
-        // Update the UI
-        // self.setInstallButtonState()
-        
         // FROM 1.2.0
         self.doIndicateNewFonts = UserDefaults.standard.bool(forKey: FONTISMO_CONSTANTS.PREFS_KEYS.SHOW_NEW_FONTS)
         
@@ -441,95 +316,6 @@ final class MasterViewController: UITableViewController,
 
 
     // MARK: - UI Action Functions — Top-Right Menu
-
-    /**
-     FROM 1.1.2
-     We've removed the 'Help' menu and replaced it with an action menu,
-     which includes a Help option and space for other things
-
-     FROM 2.0.0
-     This is now only called if the host device is on iOS 13, our minimum
-     supported version. iOS 14 and up will result in a contextual menu
-
-    @objc
-    func doShowMenu(_ sender: Any) {
-
-        let actionMenu: UIAlertController = UIAlertController(title: nil,
-                                                              message: nil,
-                                                              preferredStyle: .actionSheet)
-        
-        // Allow the user to view the Help screen
-        var action: UIAlertAction!
-        action = UIAlertAction(title: "Show Help",
-                               style: .default,
-                               handler: { (_) in
-                                   self.doShowHelpSheet(self)
-                               })
-        actionMenu.addAction(action)
-
-        // Allow the user to view the app's settings
-        action = UIAlertAction(title: "Settings",
-                               style: .default,
-                               handler: { (_) in
-                                   UIApplication.shared.open(URL(string: UIApplication.openSettingsURLString)!)
-                               })
-        actionMenu.addAction(action)
-        
-        // Allow the user to report a bug
-        action = UIAlertAction(title: "Give Feedback",
-                               style: .default,
-                               handler: { (_) in
-                                   self.doShowFeedbackSheet(self)
-                               })
-        actionMenu.addAction(action)
-        
-        // Allow the user to review the app
-        action = UIAlertAction(title: "Review Fontismo",
-                               style: .default,
-                               handler: { (_) in
-                                   self.doReview()
-                               })
-        actionMenu.addAction(action)
-        
-        // Allow the user to go to the website
-        action = UIAlertAction(title: "Visit Fontismo’s Website",
-                               style: .default,
-                               handler: { (_) in
-                                   self.doShowWebsite(self)
-                               })
-        actionMenu.addAction(action)
-        
-        // FROM 1.2.0
-        // Allow the user to report a bug
-        action = UIAlertAction(title: "Fuel Development",
-                               style: .default,
-                               handler: { (_) in
-                                   self.doShowTipSheet(self)
-                               })
-        actionMenu.addAction(action)
-        
-        // If we're on an iPad we need to do a little extra setup
-        // before presenting it, in order to set the menu below the
-        // menu button which triggers it
-        if UIDevice.current.userInterfaceIdiom == .pad {
-            actionMenu.popoverPresentationController?.barButtonItem = self.menuButton;
-            actionMenu.popoverPresentationController?.sourceView = self.view;
-        } else {
-            // Allow the user to cancel the menu on an iPhone,
-            // which treats the menu modally
-            action = UIAlertAction(title: "Cancel",
-                                   style: .cancel,
-                                   handler: nil)
-            actionMenu.addAction(action)
-        }
-        
-        // Present the menu
-        self.present(actionMenu,
-                     animated: true,
-                     completion: nil)
-    }
-     */
-
 
     /**
      Display the Help panel
@@ -611,7 +397,122 @@ final class MasterViewController: UITableViewController,
 
 
     // MARK: - UIAction Functions — Filter Contextual Menu
-    
+
+    /**
+     Assemble the filter contextual menu.
+
+     FROM 2.2.0 migrated from `viewDidLoad()`.
+     */
+    internal func makeContextMenu() {
+
+        let showClassicFontsAction = UIAction(title: "Classic",
+                                              image: UIImage(named: "style_class"),
+                                              handler: { (action) in
+            self.doShowSome(action, .classic)
+        })
+
+        let showHeadlineFontsAction = UIAction(title: "Headline",
+                                               image: UIImage(named: "style_head"),
+                                               handler: { (action) in
+            self.doShowSome(action, .headline)
+        })
+
+        let showDecorativeFontsAction = UIAction(title: "Decorative",
+                                                 image: UIImage(named: "style_dec"),
+                                                 handler: { (action) in
+            self.doShowSome(action, .decorative)
+        })
+
+        let showMonospaceFontsAction = UIAction(title: "Monospace",
+                                                image: UIImage(named: "style_mono"),
+                                                handler: { (action) in
+            self.doShowSome(action, .monospace)
+        })
+
+        let showNewFontsAction = UIAction(title: "New",
+                                          handler: { (_) in
+            self.setViewOptions(FONTISMO_CONSTANTS.FONT_SHOW_MODE_INDICES.NEW)
+        })
+
+        let showInstalledFontsAction = UIAction(title: "Installed",
+                                                handler: { (_) in
+            self.setViewOptions(FONTISMO_CONSTANTS.FONT_SHOW_MODE_INDICES.INSTALLED)
+        })
+
+        let showUninstalledFontsAction = UIAction(title: "Not Iinstalled",
+                                                  handler: { (_) in
+            self.setViewOptions(FONTISMO_CONSTANTS.FONT_SHOW_MODE_INDICES.UNINSTALLED)
+        })
+
+        let showAllFontsAction = UIAction(title: "Show All",
+                                          image: nil,
+                                          handler: { (_) in
+            self.setContextMenu(true)
+        })
+
+        let clearAllFontsAction = UIAction(title: "Clear Selections",
+                                           image: nil,
+                                           handler: { (_) in
+            self.setContextMenu(false)
+        })
+
+        // FROM 2.2.0
+        if self.toggleSearchAction == nil {
+            self.toggleSearchAction = UIAction(title: "Hide Search Bar",
+                                               image: nil,
+                                               handler: { (_) in
+                self.toggleSearch()
+            })
+        }
+
+        let viewSubMenu: UIMenu = UIMenu(title: "", options: .displayInline, children: [
+            showNewFontsAction,
+            showInstalledFontsAction,
+            showUninstalledFontsAction
+        ])
+
+        let controlSubMenu: UIMenu = UIMenu(title: "", options: .displayInline, children: [
+            showAllFontsAction,
+            clearAllFontsAction
+        ])
+
+        let searchSubMenu: UIMenu = UIMenu(title: "", options: .displayInline, children: [
+            self.toggleSearchAction!
+        ])
+
+        // Set the state indicators to on, ie. show all
+        showClassicFontsAction.state = .on
+        showHeadlineFontsAction.state = .on
+        showDecorativeFontsAction.state = .on
+        showMonospaceFontsAction.state = .on
+
+        // Assemble the menu, add it to the central table header button,
+        // and enable menu delivery by the button
+        let filterMenu = UIMenu(title: "Show Typefaces that are...", children: [
+            showClassicFontsAction,
+            showHeadlineFontsAction,
+            showDecorativeFontsAction,
+            showMonospaceFontsAction,
+            viewSubMenu,
+            controlSubMenu,
+            searchSubMenu
+        ])
+
+        self.filterMenuItemIndices[.classic] = 0
+        self.filterMenuItemIndices[.headline] = 1
+        self.filterMenuItemIndices[.decorative] = 2
+        self.filterMenuItemIndices[.monospace] = 3
+        self.filterMenuItemIndices[.viewOptions] = 4
+        self.filterMenuItemIndices[.new] = 0
+        self.filterMenuItemIndices[.installed] = 1
+        self.filterMenuItemIndices[.uninstalled] = 2
+        self.filterMenuItemIndices[.monospace] = 3
+
+        self.viewOptionsButton.menu = filterMenu
+        self.viewOptionsButton.showsMenuAsPrimaryAction = true
+    }
+
+
     internal func setContextMenu(_ state: Bool) {
 
         // Enable or clear all the typeface classes
@@ -726,6 +627,17 @@ final class MasterViewController: UITableViewController,
                 self.hasShownClearedListWarning = true
                 self.showFancyAlert(titleString, "")
             }
+        }
+    }
+
+
+    private func toggleSearch() {
+
+        if let tsa = self.toggleSearchAction {
+            let doHide = tsa.title.hasPrefix("H")
+            self.navigationController?.setToolbarHidden(doHide, animated: true)
+            self.toggleSearchAction!.title = doHide ? "Show Search Bar" : "Hide Search Bar"
+            makeContextMenu()
         }
     }
 
@@ -938,4 +850,97 @@ final class MasterViewController: UITableViewController,
 
         self.searchBar.endEditing(true)
     }
+
+
+    /*
+     LEGACY FUNCTIONS
+     */
+
+    /**
+     FROM 1.1.2
+     We've removed the 'Help' menu and replaced it with an action menu,
+     which includes a Help option and space for other things
+
+     FROM 2.0.0
+     This is now only called if the host device is on iOS 13, our minimum
+     supported version. iOS 14 and up will result in a contextual menu
+
+    @objc
+    func doShowMenu(_ sender: Any) {
+
+        let actionMenu: UIAlertController = UIAlertController(title: nil,
+                                                              message: nil,
+                                                              preferredStyle: .actionSheet)
+
+        // Allow the user to view the Help screen
+        var action: UIAlertAction!
+        action = UIAlertAction(title: "Show Help",
+                               style: .default,
+                               handler: { (_) in
+                                   self.doShowHelpSheet(self)
+                               })
+        actionMenu.addAction(action)
+
+        // Allow the user to view the app's settings
+        action = UIAlertAction(title: "Settings",
+                               style: .default,
+                               handler: { (_) in
+                                   UIApplication.shared.open(URL(string: UIApplication.openSettingsURLString)!)
+                               })
+        actionMenu.addAction(action)
+
+        // Allow the user to report a bug
+        action = UIAlertAction(title: "Give Feedback",
+                               style: .default,
+                               handler: { (_) in
+                                   self.doShowFeedbackSheet(self)
+                               })
+        actionMenu.addAction(action)
+
+        // Allow the user to review the app
+        action = UIAlertAction(title: "Review Fontismo",
+                               style: .default,
+                               handler: { (_) in
+                                   self.doReview()
+                               })
+        actionMenu.addAction(action)
+
+        // Allow the user to go to the website
+        action = UIAlertAction(title: "Visit Fontismo’s Website",
+                               style: .default,
+                               handler: { (_) in
+                                   self.doShowWebsite(self)
+                               })
+        actionMenu.addAction(action)
+
+        // FROM 1.2.0
+        // Allow the user to report a bug
+        action = UIAlertAction(title: "Fuel Development",
+                               style: .default,
+                               handler: { (_) in
+                                   self.doShowTipSheet(self)
+                               })
+        actionMenu.addAction(action)
+
+        // If we're on an iPad we need to do a little extra setup
+        // before presenting it, in order to set the menu below the
+        // menu button which triggers it
+        if UIDevice.current.userInterfaceIdiom == .pad {
+            actionMenu.popoverPresentationController?.barButtonItem = self.menuButton;
+            actionMenu.popoverPresentationController?.sourceView = self.view;
+        } else {
+            // Allow the user to cancel the menu on an iPhone,
+            // which treats the menu modally
+            action = UIAlertAction(title: "Cancel",
+                                   style: .cancel,
+                                   handler: nil)
+            actionMenu.addAction(action)
+        }
+
+        // Present the menu
+        self.present(actionMenu,
+                     animated: true,
+                     completion: nil)
+    }
+     */
 }
