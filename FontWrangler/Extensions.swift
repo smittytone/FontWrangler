@@ -68,9 +68,10 @@ extension UIImage {
 
     func scale(to: CGSize) -> UIImage {
         if #available(iOS 26, *) {
-            return UIGraphicsImageRenderer(size: to).image { _ in
+            let image = UIGraphicsImageRenderer(size: to).image { _ in
                 draw(in: CGRect(origin: .zero, size: to))
             }
+            return image.withRenderingMode(.alwaysTemplate)
         }
 
         return self
