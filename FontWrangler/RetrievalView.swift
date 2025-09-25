@@ -23,12 +23,24 @@ final class RetrievalView: UIView {
     @IBOutlet weak var actionLabel: UILabel!
 
 
+    // MARK: - Private Properties
+
+    private var backgroundSetFor26: Bool = false
+
+
     // MARK: - Control Functions
 
     /**
      Present the view and start animating the indicator.
      */
     func doShow(_ text: String = "Retrieving...") {
+
+        // FROM 2.2.0
+        // Make the background glass for 26
+        if #available(iOS 26, *), !self.backgroundSetFor26 {
+            self.backgroundView.effect = UIGlassEffect(style: .clear)
+            self.backgroundSetFor26 = true
+        }
 
         self.downloadProgress.startAnimating()
         self.actionLabel.text = text
