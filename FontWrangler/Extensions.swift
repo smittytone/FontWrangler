@@ -59,3 +59,20 @@ extension SKProduct {
         return priceFormatter.string(from: self.price)
     }
 }
+
+
+extension UIImage {
+
+    // Return a version of the image scaled to the specified size
+    // (or just return the image on iOS 18 or under)
+
+    func scale(to: CGSize) -> UIImage {
+        if #available(iOS 26, *) {
+            return UIGraphicsImageRenderer(size: to).image { _ in
+                draw(in: CGRect(origin: .zero, size: to))
+            }
+        }
+
+        return self
+    }
+}

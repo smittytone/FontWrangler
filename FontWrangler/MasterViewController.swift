@@ -405,26 +405,27 @@ final class MasterViewController: UITableViewController,
      */
     internal func makeContextMenu() {
 
+        let ios26size = CGSize(width: 16.0, height: 16.0)
         let showClassicFontsAction = UIAction(title: "Classic",
-                                              image: UIImage(named: "style_class"),
+                                              image: UIImage(named: "style_class")?.scale(to: ios26size),
                                               handler: { (action) in
             self.doShowSome(action, .classic)
         })
 
         let showHeadlineFontsAction = UIAction(title: "Headline",
-                                               image: UIImage(named: "style_head"),
+                                               image: UIImage(named: "style_head")?.scale(to: ios26size),
                                                handler: { (action) in
             self.doShowSome(action, .headline)
         })
 
         let showDecorativeFontsAction = UIAction(title: "Decorative",
-                                                 image: UIImage(named: "style_dec"),
+                                                 image: UIImage(named: "style_dec")?.scale(to: ios26size),
                                                  handler: { (action) in
             self.doShowSome(action, .decorative)
         })
 
         let showMonospaceFontsAction = UIAction(title: "Monospace",
-                                                image: UIImage(named: "style_mono"),
+                                                image: UIImage(named: "style_mono")?.scale(to: ios26size),
                                                 handler: { (action) in
             self.doShowSome(action, .monospace)
         })
