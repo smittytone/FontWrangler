@@ -2,6 +2,7 @@
 
 - 2.2.0 *Unreleased*
     - Initial support for iOS 26.
+    - Add Search bar to filter typefaces by name.
     - Minimum supported iOS version is now 14.0 (2020).
 - 2.1.0 *12 September 2025*
     - Add ten new fonts.

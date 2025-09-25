@@ -27,7 +27,8 @@ enum FilterMenuItems: String {
 
 final class MasterViewController: UITableViewController,
                                   UIPopoverPresentationControllerDelegate,
-                                  UIViewControllerTransitioningDelegate {
+                                  UIViewControllerTransitioningDelegate,
+                                  UISearchBarDelegate {
 
     // MARK: - UI properties
 
@@ -35,6 +36,8 @@ final class MasterViewController: UITableViewController,
     @IBOutlet weak var titleView26: MasterTitleView!        // iOS 26+
     @IBOutlet weak var tableHead: MasterTableHeaderView!
     @IBOutlet weak var viewOptionsButton: UIButton!
+    // FROM 2.2.0
+    @IBOutlet weak var searchBar: UISearchBar!
 
 
     // MARK: - Public Instance Properties
@@ -81,6 +84,7 @@ final class MasterViewController: UITableViewController,
     internal var isActive: Bool = false
     // FROM 2.2.0
     internal var reviewAlert: UIAlertController? = nil
+    internal var searchString = ""
 
 
     // MARK: - Private Instance Constants
@@ -276,13 +280,13 @@ final class MasterViewController: UITableViewController,
 
         self.viewOptionsButton.menu = filterMenu
         self.viewOptionsButton.showsMenuAsPrimaryAction = true
-    /*
-    } else {
-        // iOS 13: hide the button
-        // FROM 2.2.0 will never be called
-        self.viewOptionsButton.isHidden = true
-    }
-     */
+        /*
+        } else {
+            // iOS 13: hide the button
+            // FROM 2.2.0 will never be called
+            self.viewOptionsButton.isHidden = true
+        }
+         */
 
         // FROM 2.2.0
         self.titleView = self.titleView26
@@ -338,12 +342,14 @@ final class MasterViewController: UITableViewController,
         }
 
         // FROM 2.2.0
-        // Add search
-        //self.toolbarItems = [
-        //    UIBarButtonItem(systemItem: .search
-        //]
+        // Add search to the toolbar...
+        self.toolbarItems = [UIBarButtonItem(customView: self.searchBar)]
+        self.navigationController?.setToolbarHidden(false, animated: true)
 
-        //self.navigationController?.setToolbarHidden(false, animated: true)
+        // ...and add a tap gesture to dismiss the keyboard
+        let keyDismissTap = UITapGestureRecognizer(target: self, action: #selector(self.dismissKeyboard))
+        keyDismissTap.cancelsTouchesInView = false
+        self.view?.addGestureRecognizer(keyDismissTap)
     }
 
 
@@ -358,6 +364,12 @@ final class MasterViewController: UITableViewController,
             // FROM 2.2.0
             self.titleView = self.titleView26
             self.navigationItem.titleView = self.titleView
+        }
+
+        // FROM 2.2.0
+        if !self.searchString.isEmpty {
+            self.searchBar.text = self.searchString
+            self.searchBar(self.searchBar, textDidChange: self.searchString)
         }
     }
 
@@ -862,6 +874,11 @@ final class MasterViewController: UITableViewController,
 
                 // Keep a reference to the detail view controller
                 self.detailViewController = controller
+
+                // FROM 2.2.0
+                if let text = self.searchBar.text {
+                    self.searchString = text
+                }
             }
         }
     }
@@ -880,4 +897,45 @@ final class MasterViewController: UITableViewController,
         return FeedbackPresentationController(presentedViewController: presented, presenting: source)
     }
 
+
+    // MARK: - UISearchBarDelegate Functions
+
+    func searchBar(_ sb: UISearchBar, textDidChange: String) {
+
+        // Dismiss the keyboard if the user has cleared the text
+        // NOTE May remove this - it is really correct behaviour?
+        if textDidChange == "" {
+            sb.endEditing(true)
+        } else {
+            sb.text = sb.text?.capitalized
+        }
+
+        // Update the list
+        setDisplayFamilies()
+    }
+
+
+    func searchBarTextDidEndEditing(_ sb: UISearchBar) {
+
+        // Just update the list
+        setDisplayFamilies()
+    }
+
+
+    func searchBarSearchButtonClicked(_ sb: UISearchBar) {
+
+        // End editing when the DONE button clicked
+        sb.endEditing(true)
+    }
+
+
+    /**
+     Dismiss the keyboard as the result of a tap outside the keyboard
+     (See `viewDidLoad()`
+     */
+    @objc
+    internal func dismissKeyboard() {
+
+        self.searchBar.endEditing(true)
+    }
 }

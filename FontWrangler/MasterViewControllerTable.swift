@@ -288,10 +288,18 @@ extension MasterViewController {
         // by checking that all view options are `false` and all view states are `true`.
         if !self.viewOptions.contains(true) && !self.viewStates.values.contains(false) {
             self.displayFamilies = self.families
+            limitToSearchText()
             updateFamilyStatus()
             return
         }
-        
+
+        // FROM 2.2.0
+        // Implement search text-based filtering
+        var searchText = ""
+        if let text = self.searchBar.text, !text.isEmpty {
+            searchText = text
+        }
+
         // Iterate over the list of families. Check if it is one of the selected
         // family classess. If so set a flag.
         for family in self.families {
@@ -309,7 +317,7 @@ extension MasterViewController {
                 // view options?
                 if !self.viewOptions.contains(true) {
                     // No view options set, so add the family and continue
-                    self.displayFamilies.append(family)
+                    appendToList(family, searchText)
                     continue
                 }
                 
@@ -320,21 +328,22 @@ extension MasterViewController {
                 }
 
                 if self.viewOptions[FONTISMO_CONSTANTS.FONT_SHOW_MODE_INDICES.INSTALLED] == self.viewOptions[FONTISMO_CONSTANTS.FONT_SHOW_MODE_INDICES.UNINSTALLED] {
-                    self.displayFamilies.append(family)
+                    appendToList(family, searchText)
                     continue
                 }
                 
                 if self.viewOptions[FONTISMO_CONSTANTS.FONT_SHOW_MODE_INDICES.INSTALLED] && family.fontsAreInstalled {
-                    self.displayFamilies.append(family)
+                    appendToList(family, searchText)
                     continue
                 }
                 
                 if self.viewOptions[FONTISMO_CONSTANTS.FONT_SHOW_MODE_INDICES.UNINSTALLED] && !family.fontsAreInstalled {
-                    self.displayFamilies.append(family)
+                    appendToList(family, searchText)
                 }
             }
         }
-        
+
+        self.tableView.reloadData()
         updateFamilyStatus()
     }
 
@@ -346,8 +355,50 @@ extension MasterViewController {
      */
     internal func updateFontList() {
 
-        //updateFamilyStatus() // Called by `setDisplayFamilies()`
         setDisplayFamilies()
         self.tableView.reloadData()
+    }
+
+
+    /**
+     If there is text in the search bar, use it to filter out
+     families from the list we'll display.
+
+     // FROM 2.2.0
+     */
+    internal func limitToSearchText() {
+
+        if let text = self.searchBar.text, !text.isEmpty {
+            var families = [FontFamily]()
+            for family in self.displayFamilies {
+                if family.name.hasPrefix(text) {
+                    families.append(family)
+                }
+            }
+
+            if families.count != self.displayFamilies.count {
+                self.displayFamilies = families
+            }
+        }
+
+        self.tableView.reloadData()
+    }
+
+
+    /**
+     Add a font family to the display list if either the search text is clear,
+     or the family's name is prefixed by the search text.
+
+     FROM 2.2.0
+
+     - Parameters:
+        - family:     The font family to test.
+        - searchText: A search string.
+     */
+    private func appendToList(_ family: FontFamily, _ searchText: String) {
+
+        if searchText.isEmpty || family.name.hasPrefix(searchText) {
+            self.displayFamilies.append(family)
+        }
     }
 }
