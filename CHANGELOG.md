@@ -1,6 +1,6 @@
 ## Release Notes ##
 
-- 2.2.0 *Unreleased*
+- 2.2.0 *28 September 2025**
     - Initial support for iOS 26.
     - Add Search bar to filter typefaces by name.
     - Minimum supported iOS version is now 14.0 (2020).
